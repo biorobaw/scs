@@ -132,11 +132,14 @@ public class SSLRobot extends LocalizableRobot {
 		boolean front = irreader.somethingFront();
 		boolean any = irreader.somethingClose();
 		boolean canForward = !front && !irreader.somethingReallyClose();
+        // Seeing close feeder overrides affordances
+        Feeder closest = getClosestFeeder();
+        boolean feederClose = closest != null && closest.getPosition().distance(new Point3f()) < .4f;
 		for (Affordance af : possibleAffordances) {
 			if (af instanceof TurnAffordance) {
 				// af.setRealizable(true);
 				TurnAffordance tf = (TurnAffordance) af;
-				if (tf.getAngle() > 0) // left
+               	if (tf.getAngle() > 0) // left
 					// I can turn left if left is free, or if I cannot go
 					// forward and right is not an option
 					// Then, upon not advancing, one side occupied allows the
@@ -146,7 +149,7 @@ public class SSLRobot extends LocalizableRobot {
 				else
 					tf.setRealizable(!right || (!canForward && left));
 			} else if (af instanceof ForwardAffordance) {
-				af.setRealizable(canForward);
+				af.setRealizable(feederClose || canForward);
 			} else if (af instanceof EatAffordance) {
 				af.setRealizable(isFeederClose());
 			}
