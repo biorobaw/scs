@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="us-ascii"?>
+
+<world>
+        <boundingRect x='-.5' y='-.5' w='1' h='1'/>
+        
+        <!--  Landmark superior CYAN --> 
+        <cylinder r='0.045' h='0.3' cr='0' cg='1' cb='1' xp='0' yp='0.15' zp='-0.55'/>
+
+        <!--  Landmark inferior YELLOW --> 
+        <cylinder r='0.045' h='0.3' cr='1' cg='1' cb='0' xp='0' yp='0.15' zp='0.55'/>
+
+        <!--  Landmark izquierda GREEN --> 
+        <cylinder r='0.045' h='0.3' cr='0' cg='1' cb='0' xp='-0.55' yp='0.15' zp='0'/>
+
+        <!--  Landmark derecha MAGENTA --> 
+        <cylinder r='0.045' h='0.3' cr='1' cg='0' cb='1' xp='0.55' yp='0.15' zp='0'/>
+        
+ 		<!-- Begin marcas en pared -->
+		<!-- blancas 
+		<box x='0.06' y='0.04' z='0.011' cr='1' cg='1' cb='1' xp='0' yp='0.15' zp='0.585'/>		
+		-->
+		<!-- End marcas en pared -->
+ 
+ 		<!-- Begin Laberinto -->
+		<!-- Paredes exteriores -->
+
+        <pool r='.5' h='0.025' cr='1' cg='0' cb='0' xp='0' yp='0' zp='0'/>
+
+		<!-- End Laberinto -->
+		
+        <floor r='4' h='0' cr='0' cg='0' cb='0' xp='0' yp='-0.075' zp='0'/>
+        <feeder r='0.05' h='0' cr='0' cg='0' cb='1' xp='0' yp='0.0' zp='-0.2'/>
+        
+        <topview x='0' y='2' z='0'/>
+        <thirdview x='2.1' y='2.5' z='2.1'/>
+        <robotview x='0' y='0' z='.35'/> 
+        <!--<robotview x='0.495' y='-0.025' z='-0.425'/> -->
+</world>
+

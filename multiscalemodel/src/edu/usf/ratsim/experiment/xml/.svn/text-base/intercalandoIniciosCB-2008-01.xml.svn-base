@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="us-ascii"?>
+
+<simulation>
+	<point name='D1' xp='-0.3' yp='0' zp='0.6' rot='0'/>
+	<point name='D2' xp='-0.6' yp='0' zp='-0.3' rot='0'/>
+	<point name='D3' xp='-0.3' yp='0' zp='-0.6' rot='0'/>
+	<point name='D4' xp='-0.6' yp='0' zp='0.3' rot='0'/>
+	
+	<point name='newD1' xp='-0.6' yp='0' zp='0.6' rot='0'/>
+	<point name='otroD1' xp='0.6' yp='0' zp='0.6' rot='0'/>
+	
+
+	<!--habituation name ='HA1' pointName='D1' reps='1' time='600'/-->
+	<training name ='TR1' pointName='D1' reps='5' time='0'/>
+	<training name ='TR2' pointName='otroD1' reps='5' time='0'/>
+	<training name ='TR3' pointName='D1' reps='5' time='0'/>
+	<training name ='TR4' pointName='otroD1' reps='5' time='0'/>
+	<!--training name ='TR2' pointName='otroD1' reps='5' time='0'/-->
+	
+	<testing name ='TE2' pointName='D2' reps='1' time='0'/>
+	<testing name ='TE3' pointName='D3' reps='1' time='0'/>
+	<testing name ='TE4' pointName='D4' reps='1' time='0'/>
+		
+	<!-- genera el mapa CB-2008-01 (a) -->
+	<operation name='remove' primitive='B7A' trial='HA1'/>
+
+	<!-- genera el mapa CB-2008-01 (b) -->
+	<operation name='add' primitive='B7A' trial='TE5'/>
+	<testing name ='TE5' pointName='newD1' reps='1' time='0'/>
+	<testing name ='TE6' pointName='D2' reps='1' time='0'/>
+	<testing name ='TE7' pointName='D3' reps='1' time='0'/>
+	<testing name ='TE8' pointName='D4' reps='1' time='0'/>
+
+	<!-- genera el mapa CB-2008-01 (c) -->
+	<operation name='remove' primitive='B5' trial='TE9'/>
+	<operation name='remove' primitive='B6' trial='TE9'/>
+	<operation name='remove' primitive='B7A' trial='TE9'/>
+	<testing name ='TE9' pointName='newD1' reps='1' time='0'/>
+	<testing name ='TE10' pointName='D2' reps='1' time='0'/>
+	<testing name ='TE11' pointName='D3' reps='1' time='0'/>
+	<testing name ='TE12' pointName='D4' reps='1' time='0'/>
+
+</simulation>

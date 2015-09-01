@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="us-ascii"?>
+
+<world>
+        <!--  Landmark superior --> 
+        <cylinder r='0.045' h='0.3' cr='0' cg='1' cb='1' xp='0' yp='0.15' zp='-0.75'/>
+
+        <!--  Landmark inferior --> 
+        <cylinder r='0.045' h='0.3' cr='1' cg='1' cb='0' xp='0' yp='0.15' zp='0.75'/>
+
+        <!--  Landmark cercana a la pared lateral izquierda del brazo izquierdo del laberinto --> 
+        <cylinder r='0.045' h='0.3' cr='1' cg='0' cb='1' xp='-0.750' yp='0.15' zp='-0.0'/>
+
+        <!--  Landmark cercana a la pared lateral derecha del brazo derecho del laberinto --> 
+        <cylinder r='0.045' h='0.3' cr='1' cg='1' cb='1' xp='0.645' yp='0.15' zp='-0.240'/>              
+
+        <!-- Posicion de inicio en blanco -->
+		<!-- cylinder r='0.06' h='0' cr='1' cg='1' cb='1' xp='0' yp='-0.015' zp='0.55'-->		
+ 
+ 		<!-- Begin Laberinto -->        
+        <box name='B1' x='0.125' y='0.011' z='0.01' cr='1' cg='0' cb='0' xp='-0.250' yp='0' zp='-0.390'/>
+        
+		<box name='B2' x='0.315' y='0.011' z='0.01' cr='1' cg='0' cb='0' xp='0.435' yp='0' zp='-0.390'/> 
+		<box name='B3' x='0.675' y='0.011' z='0.01' cr='1' cg='0' cb='0' xp='0.075' yp='0' zp='-0.585'/> 
+		<box name='B4' x='0.240' y='0.011' z='0.01' cr='1' cg='0' cb='0' xp='-0.360' yp='0' zp='0.09'/> 
+		<box name='B5' x='0.215' y='0.011' z='0.01' cr='1' cg='0' cb='0' xp='0.325' yp='0' zp='0.09'/> 
+		<box name='B6' x='0.215' y='0.011' z='0.01' cr='1' cg='0' cb='0' xp='0.325' yp='0' zp='0.39'/> 
+		<box name='B7' x='0.115' y='0.011' z='0.01' cr='1' cg='0' cb='0' xp='-0.250' yp='0' zp='-0.105'/>
+		<box name='B8' x='0.310' y='0.011' z='0.01' cr='1' cg='0' cb='0' xp='0.440' yp='0' zp='-0.105'/>
+
+		<box name='B9' x='0.445' y='0.011' z='0.01' cr='1' cg='0' cb='0' xp='0.315' yp='0' zp='0.585'/>
+
+		<box name='B10' x='0.01' y='0.011' z='0.150' cr='1' cg='0' cb='0' xp='-0.360' yp='0' zp='-0.250'/> 
+		<box name='B11' x='0.01' y='0.011' z='0.340' cr='1' cg='0' cb='0' xp='-0.6' yp='0' zp='-0.250'/> 
+		<box name='B12' x='0.01' y='0.011' z='0.150' cr='1' cg='0' cb='0' xp='0.525' yp='0' zp='0.240'/>
+		<box name='B13' x='0.01' y='0.011' z='0.345' cr='1' cg='0' cb='0' xp='0.750' yp='0' zp='0.240'/>
+		<box name='B14' x='0.01' y='0.011' z='0.100' cr='1' cg='0' cb='0' xp='0.750' yp='0' zp='-0.480'/>
+		<box name='B15' x='0.01' y='0.011' z='0.145' cr='1' cg='0' cb='0' xp='-0.120' yp='0' zp='-0.250'/>
+		<box name='B16' x='0.01' y='0.011' z='0.240' cr='1' cg='0' cb='0' xp='-0.120' yp='0' zp='0.330'/>
+		<box name='B17' x='0.01' y='0.011' z='0.145' cr='1' cg='0' cb='0' xp='0.120' yp='0' zp='-0.250'/>
+		<box name='B18' x='0.01' y='0.011' z='0.150' cr='1' cg='0' cb='0' xp='0.120' yp='0' zp='0.240'/>			
+		<!-- End Laberinto -->
+		
+        <floor r='4' cr='0' cg='0' cb='0' xp='0' yp='-0.075' zp='0'/>
+        <!-- Comida de color azul -->
+        <food r='0.06' h='0' cr='0' cg='0' cb='1' xp='0.71' yp='-0.017' zp='-0.48'/>
+
+        <topview x='0' y='3' z='0'/>
+        <thirdview x='.7' y='.4' z='.7'/>
+        <robotview x='0' y='-0.025' z='0.495'/> 
+        <!--<robotview x='0.495' y='-0.025' z='-0.425'/> -->
+</world>
+

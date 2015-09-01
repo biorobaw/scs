@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<calibration>
+	
+	<model>
+		<wallInhibition>
+			<value>.1</value>
+			<value>.2</value>
+			<value>.4</value>
+			<value>.8</value>
+			<value>1.6</value>
+			<value>3.2</value>
+		</wallInhibition>
+	</model>
+	
+</calibration>

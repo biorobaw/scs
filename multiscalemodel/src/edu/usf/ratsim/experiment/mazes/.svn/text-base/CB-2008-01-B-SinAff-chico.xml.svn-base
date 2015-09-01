@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="us-ascii"?>
+
+<world>
+        <!--  Landmark superior --> 
+        <cylinder r='0.025' h='0.30' cr='0' cg='1' cb='1' xp='0' yp='0' zp='-0.75'/>
+
+        <!--  Landmark inferior --> 
+        <cylinder r='0.025' h='0.30' cr='1' cg='1' cb='0' xp='0' yp='0' zp='0.75'/>
+
+        <!--  Landmark izquierda --> 
+        <cylinder r='0.025' h='0.30' cr='1' cg='0' cb='1' xp='-0.75' yp='0' zp='0'/>
+
+        <!--  Landmark derecha --> 
+        <cylinder r='0.025' h='0.30' cr='1' cg='1' cb='1' xp='0.75' yp='0' zp='0'/>
+        
+ 		<!-- Begin marcas en pared -->
+		<!-- blancas 
+		<box x='0.06' y='0.04' z='0.011' cr='1' cg='1' cb='1' xp='0' yp='0' zp='0.585'/>		
+		-->
+		<!-- End marcas en pared -->
+ 
+ 		<!-- Begin Laberinto -->
+		<!-- Paredes exteriores --> 		        
+        <box x='0.695' y='0.04' z='0.025' cr='1' cg='0' cb='0' xp='0' yp='0' zp='-0.680'/>
+        <box x='0.695' y='0.04' z='0.025' cr='1' cg='0' cb='0' xp='0' yp='0' zp='0.680'/>
+        <box x='0.025' y='0.04' z='0.695' cr='1' cg='0' cb='0' xp='-0.680' yp='0' zp='0'/>
+        <box x='0.025' y='0.04' z='0.695' cr='1' cg='0' cb='0' xp='0.680' yp='0' zp='0'/>
+        <!-- Cajas interiores -->
+        <!-- D1 --> <box x='0.07' y='0.04' z='0.07' cr='1' cg='0' cb='0' xp='-0.45' yp='0' zp='-0.45'/>
+        <!-- D2 --> <box x='0.07' y='0.04' z='0.07' cr='1' cg='0' cb='0' xp='-0.45' yp='0' zp='-0.15'/>
+        <!-- D3 --> <box x='0.07' y='0.04' z='0.07' cr='1' cg='0' cb='0' xp='-0.45' yp='0' zp='0.15'/>
+        <!-- D4 --> <box x='0.07' y='0.04' z='0.07' cr='1' cg='0' cb='0' xp='-0.45' yp='0' zp='0.45'/>
+        <!-- D5 --> <box x='0.07' y='0.04' z='0.21' cr='1' cg='0' cb='0' xp='-0.15' yp='0' zp='-0.3'/>
+        <!-- D6 --> <box x='0.07' y='0.04' z='0.21' cr='1' cg='0' cb='0' xp='-0.15' yp='0' zp='0.3'/>
+        <!-- D7 --> <box x='0.07' y='0.04' z='0.23' cr='1' cg='0' cb='0' xp='0.15' yp='0' zp='-0.42'/>
+        <!-- D8 --> <box x='0.07' y='0.04' z='0.21' cr='1' cg='0' cb='0' xp='0.15' yp='0' zp='0'/>
+        <!-- D9 --> <box x='0.07' y='0.04' z='0.14' cr='1' cg='0' cb='0' xp='0.15' yp='0' zp='0.50'/>
+        <!-- D10 --> <box x='0.07' y='0.04' z='0.07' cr='1' cg='0' cb='0' xp='0.45' yp='0' zp='-0.45'/>
+        <!-- D11 --> <box x='0.07' y='0.04' z='0.07' cr='1' cg='0' cb='0' xp='0.45' yp='0' zp='-0.15'/>
+        <!-- D12 --> <box x='0.07' y='0.04' z='0.07' cr='1' cg='0' cb='0' xp='0.45' yp='0' zp='0.15'/>
+        <!-- D13 --> <box x='0.07' y='0.04' z='0.07' cr='1' cg='0' cb='0' xp='0.45' yp='0' zp='0.45'/>
+
+		<!-- End Laberinto -->
+		
+        <floor r='4' cr='0' cg='0.5' cb='0' xp='0' yp='-0.075' zp='0'/>
+        <food r='0.06' h='0' cr='0' cg='0' cb='1' xp='-0.30' yp='-0.04' zp='-0.60'/>
+        <topview x='0' y='2' z='0'/>
+        <thirdview x='2.1' y='2.5' z='2.1'/>
+        <robotview x='0' y='-0.025' z='0.495'/> 
+        <!--<robotview x='0.495' y='-0.025' z='-0.425'/> -->
+</world>
+

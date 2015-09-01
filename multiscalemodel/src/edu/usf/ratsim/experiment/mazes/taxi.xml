@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="us-ascii"?>
+
+<world>
+        <boundingRect x='0' y='0' w='2' h='2'/>
+        
+        <floor r='4' h='0' cr='0' cg='0' cb='0' xp='0' yp='0' zp='-0.075'/>
+        
+        <feeder id='0' r='0.05' h='0' cr='1' cg='1' cb='0' xp='1.25' yp='0.05' zp='0'/> <!-- Y -->
+        <feeder id='1' r='0.05' h='0' cr='1' cg='0' cb='0' xp='.05' yp='0.05' zp='0'/> <!-- R -->
+        <feeder id='2' r='0.05' h='0' cr='0' cg='1' cb='0' xp='0.05' yp='1.95' zp='0'/> <!-- G -->
+        <feeder id='3' r='0.05' h='0' cr='0' cg='0' cb='1' xp='1.95' yp='1.95' zp='0'/> <!-- B -->
+        
+        <!-- Exterior walls -->	
+        <wall cr='1' cg='1' cb='1' h='0.1' x1='0' y1='0.0' z1='0' x2='0' y2='2' z2='0'/>
+        <wall cr='1' cg='1' cb='1' h='0.1' x1='0' y1='2' z1='0' x2='2' y2='2' z2='0'/>
+        <wall cr='1' cg='1' cb='1' h='0.1' x1='2' y1='2' z1='0' x2='2' y2='0' z2='0'/>
+        <wall cr='1' cg='1' cb='1' h='0.1' x1='2' y1='0.0' z1='0' x2='0' y2='0' z2='0'/>
+        <!-- Interior walls -->	
+        <wall cr='1' cg='1' cb='1' h='0.1' x1='0.4' y1='0' z1='0' x2='.4' y2='.8' z2='0'/>
+        <wall cr='1' cg='1' cb='1' h='0.1' x1='.8' y1='2' z1='0' x2='.8' y2='1.2' z2='0'/>
+        <wall cr='1' cg='1' cb='1' h='0.1' x1='1.2' y1='0' z1='0' x2='1.2' y2='.8' z2='0'/>
+
+        
+        <topview x='1' y='1' z='4'/>
+        <thirdview x='2.1' y='2.5' z='2.1'/>
+        <robotview x='1' y='1' z='0' theta='1.57'/> 
+
+        <!--<robotview x='0.495' y='-0.025' z='-0.425'/> -->
+</world>
+

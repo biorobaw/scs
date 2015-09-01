@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<!-- Just a test of new format -->
+
+<experiment>
+	<!--Robot startin points -->
+	<point>
+		<name>S</name>
+		<xp>0</xp>
+		<yp>0</yp>
+		<zp>0</zp>
+		<rot>1.57</rot>
+	</point>
+	
+	
+	<maze>/edu/usf/ratsim/experiment/mazes/taxiNoWalls.xml</maze>
+	
+	<!--Subject groups -->
+	<group>
+		<name>Three Layers</name>
+		<numMembers>100</numMembers>
+		<model>
+			<name>MultiScaleMultiIntentionCooperativeModel</name>
+			<params>
+				<numPCLayers>3</numPCLayers>
+				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<minRadius>.05</minRadius>
+				<!-- .05 m of ".2 radius" -->
+				<maxRadius>.3</maxRadius>
+				<placeCells>exponential</placeCells>
+				<!-- .25 m of ".2 radius" -->
+				<numHDLayers>4</numHDLayers>
+				<minHDCellsPerLayer>1</minHDCellsPerLayer>
+				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
+				<numIntentions>1</numIntentions>
+				<deterministicActionSelection>true</deterministicActionSelection>
+				<foodReward>10000</foodReward>
+				<nonFoodReward>0</nonFoodReward>
+				<discountFactor>1</discountFactor>
+				<alpha>0.9</alpha>
+				<initialValue>0</initialValue>
+				<flashingReward>10000</flashingReward>
+				<nonFlashingReward>10000</nonFlashingReward>
+				<wallAvoidingVal>0</wallAvoidingVal>
+				<explorationHalfLifeVal>.25</explorationHalfLifeVal>
+				<proportionalQL>true</proportionalQL>
+				
+				
+			</params>
+		</model>
+		<initializers>
+			<initializer>
+				<name>feederSelector</name>
+				<params>
+					<numFeeders>1</numFeeders>
+				</params>
+			</initializer>
+		</initializers>
+	</group>
+	
+	<group>
+		<name>One Layer - Small</name>
+		<numMembers>100</numMembers>
+		<model>
+			<name>MultiScaleMultiIntentionCooperativeModel</name>
+			<params>
+				<numPCLayers>1</numPCLayers>
+				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<minRadius>.05</minRadius>
+				<!-- .05 m of ".2 radius" -->
+				<maxRadius>.3</maxRadius>
+				<placeCells>exponential</placeCells>
+				<!-- .25 m of ".2 radius" -->
+				<numHDLayers>4</numHDLayers>
+				<minHDCellsPerLayer>1</minHDCellsPerLayer>
+				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
+				<numIntentions>1</numIntentions>
+				<deterministicActionSelection>true</deterministicActionSelection>
+				<foodReward>10000</foodReward>
+				<nonFoodReward>0</nonFoodReward>
+				<discountFactor>1</discountFactor>
+				<alpha>0.9</alpha>
+				<initialValue>0</initialValue>
+				<flashingReward>10000</flashingReward>
+				<nonFlashingReward>10000</nonFlashingReward>
+				<wallAvoidingVal>0</wallAvoidingVal>
+				<explorationHalfLifeVal>.25</explorationHalfLifeVal>
+				<proportionalQL>true</proportionalQL>
+			</params>
+		</model>
+		<initializers>
+			<initializer>
+				<name>feederSelector</name>
+				<params>
+					<numFeeders>1</numFeeders>
+				</params>
+			</initializer>
+		</initializers>
+	</group>
+	
+	<group>
+		<name>One Layer - Medium</name>
+		<numMembers>100</numMembers>
+		<model>
+			<name>MultiScaleMultiIntentionCooperativeModel</name>
+			<params>
+				<numPCLayers>1</numPCLayers>
+				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<minRadius>.15</minRadius>
+				<!-- .05 m of ".2 radius" -->
+				<maxRadius>.3</maxRadius>
+				<placeCells>exponential</placeCells>
+				<!-- .25 m of ".2 radius" -->
+				<numHDLayers>4</numHDLayers>
+				<minHDCellsPerLayer>1</minHDCellsPerLayer>
+				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
+				<numIntentions>1</numIntentions>
+				<deterministicActionSelection>true</deterministicActionSelection>
+				<foodReward>10000</foodReward>
+				<nonFoodReward>0</nonFoodReward>
+				<discountFactor>1</discountFactor>
+				<alpha>0.9</alpha>
+				<initialValue>0</initialValue>
+				<flashingReward>10000</flashingReward>
+				<nonFlashingReward>10000</nonFlashingReward>
+				<wallAvoidingVal>0</wallAvoidingVal>
+				<explorationHalfLifeVal>.25</explorationHalfLifeVal>
+				<proportionalQL>true</proportionalQL>
+			</params>
+		</model>
+		<initializers>
+			<initializer>
+				<name>feederSelector</name>
+				<params>
+					<numFeeders>1</numFeeders>
+				</params>
+			</initializer>
+		</initializers>
+	</group>
+	
+	<group>
+		<name>One Layer - Large</name>
+		<numMembers>100</numMembers>
+		<model>
+			<name>MultiScaleMultiIntentionCooperativeModel</name>
+			<params>
+				<numPCLayers>1</numPCLayers>
+				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<minRadius>.3</minRadius>
+				<!-- .05 m of ".2 radius" -->
+				<maxRadius>.3</maxRadius>
+				<placeCells>exponential</placeCells>
+				<!-- .25 m of ".2 radius" -->
+				<numHDLayers>4</numHDLayers>
+				<minHDCellsPerLayer>1</minHDCellsPerLayer>
+				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
+				<numIntentions>1</numIntentions>
+				<deterministicActionSelection>true</deterministicActionSelection>
+				<foodReward>10000</foodReward>
+				<nonFoodReward>0</nonFoodReward>
+				<discountFactor>1</discountFactor>
+				<alpha>0.9</alpha>
+				<initialValue>0</initialValue>
+				<flashingReward>10000</flashingReward>
+				<nonFlashingReward>10000</nonFlashingReward>
+				<wallAvoidingVal>0</wallAvoidingVal>
+				<explorationHalfLifeVal>.25</explorationHalfLifeVal>
+				<proportionalQL>true</proportionalQL>
+			</params>
+		</model>
+		<initializers>
+			<initializer>
+				<name>feederSelector</name>
+				<params>
+					<numFeeders>1</numFeeders>
+				</params>
+			</initializer>
+		</initializers>
+	</group>
+	
+	<group>
+		<name>One Layer - Really Large</name>
+		<numMembers>100</numMembers>
+		<model>
+			<name>MultiScaleMultiIntentionCooperativeModel</name>
+			<params>
+				<numPCLayers>1</numPCLayers>
+				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<minRadius>.8</minRadius>
+				<!-- .05 m of ".2 radius" -->
+				<maxRadius>1</maxRadius>
+				<placeCells>exponential</placeCells>
+				<!-- .25 m of ".2 radius" -->
+				<numHDLayers>4</numHDLayers>
+				<minHDCellsPerLayer>1</minHDCellsPerLayer>
+				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
+				<numIntentions>1</numIntentions>
+				<deterministicActionSelection>true</deterministicActionSelection>
+				<foodReward>10000</foodReward>
+				<nonFoodReward>0</nonFoodReward>
+				<discountFactor>1</discountFactor>
+				<alpha>0.9</alpha>
+				<initialValue>0</initialValue>
+				<flashingReward>10000</flashingReward>
+				<nonFlashingReward>10000</nonFlashingReward>
+				<wallAvoidingVal>0</wallAvoidingVal>
+				<explorationHalfLifeVal>.25</explorationHalfLifeVal>
+				<proportionalQL>true</proportionalQL>
+			</params>
+		</model>
+		<initializers>
+			<initializer>
+				<name>feederSelector</name>
+				<params>
+					<numFeeders>1</numFeeders>
+				</params>
+			</initializer>
+		</initializers>
+	</group>
+	
+	<group>
+		<name>Naive</name>
+		<numMembers>100</numMembers>
+		<model>
+			<name>MultiScaleMultiIntentionCooperativeModel</name>
+			<params>
+				<numPCLayers>3</numPCLayers>
+				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<minRadius>.05</minRadius>
+				<!-- .05 m of ".2 radius" -->
+				<maxRadius>.3</maxRadius>
+				<placeCells>exponential</placeCells>
+				<!-- .25 m of ".2 radius" -->
+				<numHDLayers>4</numHDLayers>
+				<minHDCellsPerLayer>1</minHDCellsPerLayer>
+				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
+				<numIntentions>1</numIntentions>
+				<deterministicActionSelection>true</deterministicActionSelection>
+				<foodReward>10000</foodReward>
+				<nonFoodReward>0</nonFoodReward>
+				<discountFactor>1</discountFactor>
+				<alpha>0</alpha>
+				<initialValue>0</initialValue>
+				<flashingReward>10000</flashingReward>
+				<nonFlashingReward>10000</nonFlashingReward>
+				<wallAvoidingVal>0</wallAvoidingVal>
+				<explorationHalfLifeVal>.25</explorationHalfLifeVal>
+				<proportionalQL>true</proportionalQL>
+				
+				
+			</params>
+		</model>
+		<initializers>
+			<initializer>
+				<name>feederSelector</name>
+				<params>
+					<numFeeders>1</numFeeders>
+				</params>
+			</initializer>
+		</initializers>
+	</group>
+	
+	<trial>
+		<name>training</name>
+		<reps>100</reps>
+		<groups>
+			<group>One Layer - Small</group>
+			<group>One Layer - Medium</group>
+			<group>One Layer - Large</group>
+			<group>One Layer - Really Large</group>
+			<group>Three Layers</group>
+		</groups>
+		<initialTasks>
+			<task>
+				<name>PlaceRobotInitiallyTask</name>
+				<params>
+					<initialPosition>S</initialPosition>
+				</params>
+			</task>
+			<task>
+				<name>ResetModelTask</name>
+				<params>
+				</params>
+			</task>
+			<task>
+				<name>DeactivateAllFeeders</name>
+				<params>
+				</params>
+			</task>
+			<task>
+				<name>ActivateRandomFeeder</name>
+				<params>
+				</params>
+			</task>
+			
+		</initialTasks>
+		<afterCycleTasks>
+			
+			<task>
+				<name>GiveFood</name>
+			</task>
+			<task>
+				<name>ResetRobotAte</name>
+			</task>
+			
+			<!-- <task> <name>UnflashFeeder</name> </task> -->
+		</afterCycleTasks>
+		<afterTrialTasks>
+			<task>
+				<name>ExplorationIncRepTask</name>
+			</task>
+		</afterTrialTasks>
+		<stopConditions>
+			<stopCondition>
+				<name>FoundNFood</name>
+				<params>
+					<n>1</n>
+				</params>
+				
+			</stopCondition>
+			<stopCondition>
+				<name>Time</name>
+				<params>
+					<time>5000</time>
+				</params>
+			</stopCondition> 
+			
+		</stopConditions>
+		<afterCycleLoggers>
+			<logger>
+				<name>PositionLogger</name>
+			</logger>
+			<logger>
+				<name>WantedFeederLogger</name>
+			</logger>
+			
+			
+		</afterCycleLoggers>
+		<afterTrialLoggers>
+			<logger>
+				<name>PolicyDumperWithIntention</name>
+				<params>
+					<numIntentions>1</numIntentions>
+				</params>
+			</logger> 
+			<logger>
+				<name>WallLogger</name>
+			</logger>
+		</afterTrialLoggers>
+		<plotters>
+			
+
+		</plotters>
+	</trial>
+	
+	<trial>
+		<name>training</name>
+		<reps>1</reps>
+		<groups>
+			<group>Naive</group>
+		</groups>
+		<initialTasks>
+			<task>
+				<name>PlaceRobotInitiallyTask</name>
+				<params>
+					<initialPosition>S</initialPosition>
+				</params>
+			</task>
+			<task>
+				<name>ResetModelTask</name>
+				<params>
+				</params>
+			</task>
+			<task>
+				<name>DeactivateAllFeeders</name>
+				<params>
+				</params>
+			</task>
+			<task>
+				<name>ActivateRandomFeeder</name>
+				<params>
+				</params>
+			</task>
+			
+		</initialTasks>
+		<afterCycleTasks>
+			
+			<task>
+				<name>GiveFood</name>
+			</task>
+			<task>
+				<name>ResetRobotAte</name>
+			</task>
+			
+			<!-- <task> <name>UnflashFeeder</name> </task> -->
+		</afterCycleTasks>
+		<afterTrialTasks>
+		</afterTrialTasks>
+		<stopConditions>
+			<stopCondition>
+				<name>FoundNFood</name>
+				<params>
+					<n>1</n>
+				</params>
+				
+			</stopCondition>
+			<stopCondition>
+				<name>Time</name>
+				<params>
+					<time>5000</time>
+				</params>
+			</stopCondition> 
+			
+		</stopConditions>
+		<afterCycleLoggers>
+			<logger>
+				<name>PositionLogger</name>
+			</logger>
+			<logger>
+				<name>WantedFeederLogger</name>
+			</logger>
+			
+			
+		</afterCycleLoggers>
+		<afterTrialLoggers>
+			<!--<logger>
+				<name>PolicyDumperWithIntention</name>
+				<params>
+					<numIntentions>1</numIntentions>
+				</params>
+			</logger> -->
+			<logger>
+				<name>WallLogger</name>
+			</logger>
+		</afterTrialLoggers>
+		<plotters>
+			
+
+		</plotters>
+	</trial>
+	
+	<!-- 4 testing trials -->
+	<postproc>
+		<name>toRData</name>
+		<params>
+		</params>
+	</postproc>
+	<!--  <postproc>
+		<name>plots</name>
+		<params>
+		</params>
+	</postproc> -->
+	<postproc>
+		<name>moveLogs</name>
+		<params></params>
+	</postproc>
+
+	
+</experiment>
