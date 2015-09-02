@@ -5,9 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.channels.FileChannel;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 import org.apache.commons.io.FileUtils;
 
@@ -15,24 +12,13 @@ public class IOUtils {
 
 	public static void copyFile(String src, String dst) {
 		if (!(new File(dst).exists())){
-			FileChannel fc = null;
 			try {
-				fc = FileChannel.open(Paths.get(src), StandardOpenOption.WRITE);
-				fc.lock();
 				FileUtils.copyFile(new File(src), new File(dst));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} finally {
-				if (fc != null)
-					try {
-						fc.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 			}
-		}
+ 		}
 
 		
 	}
