@@ -8,9 +8,9 @@
 			<!-- Distance from which the food is accessible according to the universe -->
 			<closeToFoodThrs>0.15</closeToFoodThrs>
 			<!-- Map file -->
-			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
+			<maze>src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>false</display>
+			<display>true</display>
 		</params>
 	</universe>
 	
@@ -106,6 +106,8 @@
 			<explorationHalfLifeVal>1</explorationHalfLifeVal>
 			<!-- Value assigned to wall actions for the wall taxic modules -->
 			<wallTaxicVal>50</wallTaxicVal>
+			<!-- Minimum distance to take wall into account -->
+			<wallTooCloseDist>.05</wallTooCloseDist>			
 			<!-- Attentional span for still exploration -->
 			<!-- TODO: look at this -->
 			<maxAttentionSpan>20</maxAttentionSpan>
@@ -525,7 +527,7 @@
 			<!-- Number of episodes -->
 			<number>1</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>00</sleep>
+			<sleep>50</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Turn of the flash of all the feeders -->

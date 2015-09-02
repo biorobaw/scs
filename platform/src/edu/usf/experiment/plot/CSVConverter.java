@@ -15,7 +15,7 @@ public class CSVConverter extends Plotter {
 	public void plot() {
 		String logPath = getLogPath();
 		URL resource = getClass().getResource("/edu/usf/experiment/plot/convert.r");
-		IOUtils.copyResource(resource,logPath + "convert.r");
+		IOUtils.copyResource(resource, logPath + "convert.r");
 		IOUtils.exec("Rscript convert.r", logPath);
 		IOUtils.delete(logPath + "convert.r");
 	}

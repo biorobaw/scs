@@ -33,7 +33,6 @@ import edu.usf.ratsim.nsl.modules.StillExplorer;
 import edu.usf.ratsim.nsl.modules.SubjectAte;
 import edu.usf.ratsim.nsl.modules.SubjectTriedToEat;
 import edu.usf.ratsim.nsl.modules.Voter;
-import edu.usf.ratsim.nsl.modules.WallTaxic;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.GradientValue;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.GradientVotes;
@@ -48,6 +47,7 @@ import edu.usf.ratsim.nsl.modules.taxic.FlashingTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.taxic.FlashingTaxicValueSchema;
 import edu.usf.ratsim.nsl.modules.taxic.TaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.taxic.TaxicValueSchema;
+import edu.usf.ratsim.nsl.modules.taxic.WallTaxic;
 
 public class MultiScaleArtificialPCModel extends Model {
 
@@ -92,6 +92,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		float explorationReward = params.getChildFloat("explorationReward");
 		// float wallFollowingVal = params.getChildFloat("wallFollowingVal");
 		float wallTaxicVal = params.getChildFloat("wallTaxicVal");
+		float wallTooCloseDist = params.getChildFloat("wallTooCloseDist");
 		int maxAttentionSpan = params.getChildInt("maxAttentionSpan");
 		float wallInhibition = params.getChildFloat("wallInhibition");
 		float explorationHalfLifeVal = params
@@ -229,7 +230,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		// addModule(attExpl);
 		// votesPorts.add((Float1dPort) attExpl.getOutPort("votes"));
 		WallTaxic wallTaxic = new WallTaxic("Wall Taxic", subject, lRobot,
-				wallTaxicVal);
+				wallTaxicVal, nonFoodReward, wallTooCloseDist);
 		addModule(wallTaxic);
 		votesPorts.add((Float1dPort) wallTaxic.getOutPort("votes"));
 

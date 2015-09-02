@@ -72,6 +72,7 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 						.getClosestFeeder().getId()
 				&& robot.getFlashingFeeder().getId() != goalFeeder
 						.get();
+//		System.out.println("Feeder to eat: " + feederToEat);
 		for (Affordance af : affs) {
 			float value = 0;
 			if (af.isRealizable()) {

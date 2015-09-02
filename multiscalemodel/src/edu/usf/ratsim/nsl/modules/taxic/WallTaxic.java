@@ -1,4 +1,4 @@
-package edu.usf.ratsim.nsl.modules;
+package edu.usf.ratsim.nsl.modules.taxic;
 
 import java.util.List;
 
@@ -28,9 +28,11 @@ public class WallTaxic extends Module {
 	private Subject sub;
 	private float taxicVal;
 	private LocalizableRobot robot;
+	private float negReward;
+	private float tooCloseDist;
 
 	public WallTaxic(String name, Subject sub, LocalizableRobot robot,
-			float taxicVal) {
+			float taxicVal, float negReward, float tooCloseDist) {
 		super(name);
 		votes = new float[sub.getPossibleAffordances().size()];
 		addOutPort("votes", new Float1dPortArray(this, votes));
@@ -38,6 +40,9 @@ public class WallTaxic extends Module {
 		this.sub = sub;
 		this.taxicVal = taxicVal;
 		this.robot = robot;
+
+		this.negReward = negReward;
+		this.tooCloseDist = tooCloseDist;
 	}
 
 	public void run() {
@@ -47,50 +52,50 @@ public class WallTaxic extends Module {
 		List<Point3f> interestingPoints = robot.getVisibleWallEnds();
 
 		for (Point3f p : interestingPoints) {
-			// For each affordance set a value based on current interest point
-			List<Affordance> affs = robot.checkAffordances(sub
-					.getPossibleAffordances());
-			int voteIndex = 0;
-			for (Affordance af : affs) {
-				float value = 0;
-				if (af.isRealizable()) {
-					if (af instanceof TurnAffordance
-							|| af instanceof ForwardAffordance) {
-						Point3f newPos = GeomUtils.simulate(p, af);
-						Quat4f rotToNewPos = GeomUtils.angleToPoint(newPos);
+			if (p.distance(new Point3f()) > tooCloseDist) {
+				// For each affordance set a value based on current interest
+				// point
+				List<Affordance> affs = robot.checkAffordances(sub
+						.getPossibleAffordances());
+				int voteIndex = 0;
+				for (Affordance af : affs) {
+					float value = 0;
+					if (af.isRealizable()) {
+						if (af instanceof TurnAffordance
+								|| af instanceof ForwardAffordance) {
+							Point3f newPos = GeomUtils.simulate(p, af);
+							Quat4f rotToNewPos = GeomUtils.angleToPoint(newPos);
 
-						float angleDiff = Math.abs(GeomUtils
-								.rotToAngle(rotToNewPos));
-						float feederVal;
-						if (angleDiff < robot.getHalfFieldView())
-							feederVal = getPointValue(newPos, taxicVal);
-						else
-							feederVal = -getPointValue(newPos, taxicVal);
-						if (feederVal > value)
-							value = feederVal;
+							float angleDiff = Math.abs(GeomUtils
+									.rotToAngle(rotToNewPos));
+							float feederVal;
+							if (angleDiff < robot.getHalfFieldView())
+								feederVal = getPointValue(newPos, taxicVal);
+							else
+								feederVal = -getPointValue(newPos, taxicVal);
+							if (feederVal > value)
+								value = feederVal;
 
-					} else if (af instanceof EatAffordance) {
-					} else
-						throw new RuntimeException("Affordance "
-								+ af.getClass().getName()
-								+ " not supported by robot");
+						} else if (af instanceof EatAffordance) {
+						} else
+							throw new RuntimeException("Affordance "
+									+ af.getClass().getName()
+									+ " not supported by robot");
+					}
+
+					if (value != Float.NEGATIVE_INFINITY)
+						votes[voteIndex] = value;
+					else
+						votes[voteIndex] = 0;
+					voteIndex++;
 				}
-
-				if (value != Float.NEGATIVE_INFINITY)
-					votes[voteIndex] = value;
-				else
-					votes[voteIndex] = 0;
-				voteIndex++;
 			}
 		}
 	}
 
 	private float getPointValue(Point3f feederPos, float reward) {
 		float steps = GeomUtils.getStepsToFeeder(feederPos, sub);
-		if (steps < 10)
-			return 0;
-		else 
-			return (float) (reward * Math.pow(.9, steps));
+		return (float) Math.max(0, (reward + negReward * steps));
 	}
 
 	@Override

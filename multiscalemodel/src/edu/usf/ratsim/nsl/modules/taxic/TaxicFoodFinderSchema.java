@@ -127,9 +127,7 @@ public class TaxicFoodFinderSchema extends Module {
 
 	private float getFeederValue(Point3f feederPos) {
 		float steps = GeomUtils.getStepsToFeeder(feederPos, subject);
-		return (float) Math.max(0, (reward + negReward * steps)); // *
-																	// Math.pow(lambda,
-																	// ));
+		return (float) Math.max(0, (reward + negReward * steps)); 
 	}
 
 	@Override
