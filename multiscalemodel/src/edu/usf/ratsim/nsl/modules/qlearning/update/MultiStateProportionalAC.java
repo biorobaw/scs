@@ -84,26 +84,36 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 			if (tracesDecay != 0)
 				for (int state = 0; state < statesBefore.getSize(); state++) {
+					boolean mustUpdate = false;
 					stateTraces[state] *= tracesDecay;
 					// Replacing states
 					stateTraces[state] = Math.max(statesBefore.get(state),
 							stateTraces[state]);
-					for (int i = 0; i < numActions; i++)
+					mustUpdate = mustUpdate || stateTraces[state] != 0;
+					for (int i = 0; i < numActions; i++) {
 						actionTraces[state][i] *= tracesDecay;
-					if (a != -1)
+						mustUpdate = mustUpdate || actionTraces[state][i] != 0;
+					}
+					if (a != -1){
 						actionTraces[state][a] = Math
 								.max(statesBefore.get(state),
 										actionTraces[state][a]);
-				}
+						mustUpdate = mustUpdate || actionTraces[state][a] != 0;
+					}
 
-			// Do the update once for each state
-			for (int stateBefore = 0; stateBefore < statesBefore.getSize(); stateBefore++)
-				// Dont bother if the activation is to small
-				if (statesBefore.get(stateBefore) > 0 && a != -1)
-					updateLastAction(stateBefore, a, statesBefore, value,
-							reward, taxicValueEstBefore, taxicValueEstAfter,
-							rlValueEstBefore, rlValueEstAfter, stateTraces,
-							actionTraces);
+					if (mustUpdate && a != -1)
+						updateLastAction(state, a, statesBefore, value, reward,
+								taxicValueEstBefore, taxicValueEstAfter,
+								rlValueEstBefore, rlValueEstAfter, stateTraces,
+								actionTraces);
+				}
+			else
+				for (int state = 0; state < statesBefore.getSize(); state++)
+					if (statesBefore.get(state) > 0 && a != -1)
+						updateLastAction(state, a, statesBefore, value, reward,
+								taxicValueEstBefore, taxicValueEstAfter,
+								rlValueEstBefore, rlValueEstAfter, stateTraces,
+								actionTraces);
 		}
 	}
 
@@ -135,7 +145,7 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 		}
 		value.set(sBefore, numActions, newValue);
 
-		for (int updateAction = 0; updateAction < numActions; updateAction++){
+		for (int updateAction = 0; updateAction < numActions; updateAction++) {
 			float actionDelta = reward.get() + taxicDiscountFactor
 					* taxicValueEstAfter.get(0) + rlDiscountFactor
 					* rlValueEstAfter.get(0)
@@ -145,7 +155,8 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 				activation = statesBefore.get(sBefore);
 			else
 				activation = actionTraces[sBefore][updateAction];
-			float newActionValue = actionVal + alpha * activation * (actionDelta);
+			float newActionValue = actionVal + alpha * activation
+					* (actionDelta);
 
 			if (Debug.printDelta)
 				System.out.println("State: " + (float) sBefore
@@ -158,7 +169,6 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 			}
 			value.set(sBefore, updateAction, newActionValue);
 		}
-		
 
 		// } else {
 		// // value.set(sBefore, numActions, -3);
