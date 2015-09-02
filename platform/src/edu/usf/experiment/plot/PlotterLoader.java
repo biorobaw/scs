@@ -47,7 +47,7 @@ public class PlotterLoader {
 					Plotter plotter = (Plotter) constructor
 							.newInstance(plotterNode.getChild("params"), logPath);
 					res.add(plotter);
-				} catch (NoSuchMethodException | SecurityException e) {
+				} catch (NoSuchMethodException  e) {
 					e.printStackTrace();
 				} catch (InstantiationException e) {
 					e.printStackTrace();

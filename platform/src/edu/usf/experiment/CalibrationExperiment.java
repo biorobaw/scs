@@ -10,17 +10,20 @@ import edu.usf.experiment.utils.XMLExperimentParser;
 
 public class CalibrationExperiment {
 
-	public CalibrationExperiment(String logPath, String experimentFile,
-			String calibrationFile, int individualNumber) {
+	public CalibrationExperiment(String calibrationFile, String logPath,
+			int individualNumber) {
 		logPath = logPath + "/";
+
+		IOUtils.copyFile(calibrationFile, logPath + "/calibration.xml");
+		ElementWrapper calibrationRoot = XMLExperimentParser
+				.loadRoot(calibrationFile);
+
+		String experimentFile = calibrationRoot.getChildText("experiment");
 
 		IOUtils.copyFile(experimentFile, logPath + "/experiment.xml");
 		ElementWrapper experimentRoot = XMLExperimentParser
 				.loadRoot(experimentFile);
 
-		IOUtils.copyFile(calibrationFile, logPath + "/calibration.xml");
-		ElementWrapper calibrationRoot = XMLExperimentParser
-				.loadRoot(calibrationFile);
 		Map<String, List<String>> paramsToCalibrate = calibrationRoot
 				.getCalibrationList(calibrationRoot);
 
@@ -45,13 +48,13 @@ public class CalibrationExperiment {
 
 		int experimentIndividualNumber = individualNumber
 				% totalExperimentIndividuals;
-		RunIndividualByNumber.runIndividualByNumber(experimentRoot, logPath ,
+		RunIndividualByNumber.runIndividualByNumber(experimentRoot, logPath,
 				experimentIndividualNumber);
 
 	}
 
 	public static void main(String[] args) {
 		CalibrationExperiment cexp = new CalibrationExperiment(args[0],
-				args[1], args[2], Integer.parseInt(args[3]));
+				args[1], Integer.parseInt(args[2]));
 	}
 }

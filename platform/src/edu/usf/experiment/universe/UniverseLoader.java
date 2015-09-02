@@ -47,7 +47,7 @@ public class UniverseLoader {
 			Universe universe = (Universe) constructor.newInstance(universeNode
 					.getChild("params"), logPath);
 			return universe;
-		} catch (NoSuchMethodException | SecurityException e) {
+		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
 			e.printStackTrace();

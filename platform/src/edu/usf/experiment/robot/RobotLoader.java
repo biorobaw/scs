@@ -47,7 +47,7 @@ public class RobotLoader {
 			Robot robot = (Robot) constructor.newInstance(robotNode
 					.getChild("params"));
 			return robot;
-		} catch (NoSuchMethodException | SecurityException e) {
+		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
 			e.printStackTrace();

@@ -49,7 +49,7 @@ public class SubjectLoader {
 			Subject sub = (Subject) constructor.newInstance(subjectName,
 					groupName, modelNode.getChild("params"), robot);
 			return sub;
-		} catch (NoSuchMethodException | SecurityException e) {
+		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {
 			e.printStackTrace();

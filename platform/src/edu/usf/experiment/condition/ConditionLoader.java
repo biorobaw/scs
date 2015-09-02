@@ -51,7 +51,7 @@ public class ConditionLoader {
 				Condition plotter = (Condition) constructor
 						.newInstance(conditionNode.getChild("params"));
 				res.add(plotter);
-			} catch (NoSuchMethodException | SecurityException e) {
+			} catch (NoSuchMethodException e) {
 				e.printStackTrace();
 			} catch (InstantiationException e) {
 				e.printStackTrace();

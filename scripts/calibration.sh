@@ -1,11 +1,11 @@
 #!/bin/bash
 
-calibrationFile=$2
+calibrationFile=$1
 logPath=$2
 if [ -z "$SLURM_ARRAY_TASK_ID" ]; then
-  individual=$SLURM_ARRAY_TASK_ID
+  individual=$3
 else
-  individual=$4
+  individual=$SLURM_ARRAY_TASK_ID
 fi
 
 if [ `hostname` == "pinky" ]; then
@@ -13,5 +13,5 @@ if [ `hostname` == "pinky" ]; then
   export R_LIBS=/work/R-3.1.1/library/
 fi
 
-java -cp "./experiment/src/:./experiment/bin/:./multiscalemodel/target:./multiscalemodel/target/classes:./deps/*:./deps/j3dport/*" edu.usf.experiment.RunIndividualByNumber $calibrationFile $logPath $individual
+java -cp "./platform/src/:./experiment/src/:./bin:./deps/*:./deps/j3dport/*" edu.usf.experiment.CalibrationExperiment $calibrationFile $logPath $individual
 

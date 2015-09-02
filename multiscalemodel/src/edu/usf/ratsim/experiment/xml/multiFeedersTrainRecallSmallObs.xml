@@ -8,7 +8,7 @@
 			<!-- Distance from which the food is accessible according to the universe -->
 			<closeToFoodThrs>0.15</closeToFoodThrs>
 			<!-- Map file -->
-			<maze>src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
+			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
 			<!-- Display de window or run without GUI -->
 			<display>false</display>
 		</params>

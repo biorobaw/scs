@@ -52,7 +52,7 @@ public class LoggerLoader {
 					Logger plotter = (Logger) constructor
 							.newInstance(loggerNode.getChild("params"), logPath);
 					res.add(plotter);
-				} catch (NoSuchMethodException | SecurityException e) {
+				} catch (SecurityException e) {
 					e.printStackTrace();
 				} catch (InstantiationException e) {
 					e.printStackTrace();
@@ -63,6 +63,9 @@ public class LoggerLoader {
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

@@ -45,7 +45,7 @@ public class TaskLoader {
 					Task task = (Task) constructor.newInstance(taskNode
 							.getChild("params"));
 					res.add(task);
-				} catch (NoSuchMethodException | SecurityException e) {
+				} catch (NoSuchMethodException  e) {
 					e.printStackTrace();
 				} catch (InstantiationException e) {
 					e.printStackTrace();
