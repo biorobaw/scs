@@ -2,6 +2,7 @@ package edu.usf.ratsim.nsl.modules;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.vecmath.Point3f;
@@ -11,6 +12,7 @@ import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.ratsim.micronsl.Float1dPort;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
+import edu.usf.ratsim.micronsl.Float1dSparsePortMap;
 import edu.usf.ratsim.micronsl.Module;
 
 public class ArtificialConjCellLayer extends Module {
@@ -39,6 +41,8 @@ public class ArtificialConjCellLayer extends Module {
 
 	private float layerLength;
 
+	private Float1dSparsePortMap activationPort;
+
 	public ArtificialConjCellLayer(String name, LocalizableRobot robot,
 			float placeRadius, float minDirectionRadius,
 			float maxDirectionRadius, int numIntentions, int numCells,
@@ -53,23 +57,17 @@ public class ArtificialConjCellLayer extends Module {
 		this.ymin = ymin;
 		this.ymax = ymax;
 		this.layerLength = layerLength;
-		// active = true;
 
 		cells = new LinkedList<ExponentialConjCell>();
 		random = RandomSingleton.getInstance();
 		int i = 0;
-		float x, y;
 		do {
 			if (placeCellType.equals("goalExponential")
 					|| placeCellType.equals("wallGoalExponential")) {
-				// || placeCellType.equals("wallGoalExponential")) {
 				Point3f prefLocation = createrPreferredLocation(nearGoalProb,
 						goals, xmin, xmax, ymin, ymax);
 				float preferredDirection = (float) (random.nextFloat()
 						* Math.PI * 2);
-				// float directionRadius = r.nextFloat()
-				// * (maxDirectionRadius - minDirectionRadius)
-				// + minDirectionRadius;
 				// Using Inverse transform sampling to sample from k/x between
 				// min and max
 				// https://en.wikipedia.org/wiki/Inverse_transform_sampling. k =
@@ -94,29 +92,11 @@ public class ArtificialConjCellLayer extends Module {
 				System.err.println("Place cell type not implemented");
 				System.exit(1);
 			}
-			// else {
-			// cells.add(new WallExponentialArtificialPlaceCell(
-			// new Point3f(x, y, 0), placeRadius, r));
-			// }
-			// } else {
-			// x = r.nextFloat() * (xmax - xmin) + xmin;
-			// y = r.nextFloat() * (ymax - ymin) + ymin;
-			// // Find if it intersects any wall
-			// if (placeCellType.equals("proportional"))
-			// cells.add(new ProportionalArtificialPlaceCell(new Point3f(
-			// x, y, 0)));
-			// else if (placeCellType.equals("exponential"))
-			// cells.add(new ExponentialArtificialPlaceCell(new Point3f(x,
-			// y, 0), placeRadius));
-			// else
-			// throw new RuntimeException(
-			// "Place cell type not implemented");
-			// }
 			i++;
 		} while (i < numCells);
 
-		activation = new float[cells.size()];
-		addOutPort("activation", new Float1dPortArray(this, activation));
+		activationPort = new Float1dSparsePortMap(this, cells.size(), 4000);
+		addOutPort("activation", activationPort);
 
 		this.robot = robot;
 	}
@@ -207,14 +187,13 @@ public class ArtificialConjCellLayer extends Module {
 		// if (active) {
 		int i = 0;
 		float total = 0;
+		Map<Integer,Float> nonZero = activationPort.getNonZero();
+		nonZero.clear();
 		for (ExponentialConjCell pCell : cells) {
 			float val = pCell.getActivation(pos, direction, intention,
 					distanceToClosestWall);
-			// if (val < 0 || val > 1)
-			// System.err
-			// .println("Activation less than 0 or greater than 1: "
-			// + val);
-			activation[i] = val;
+			if (val != 0)
+				nonZero.put(i, val);
 			total += val;
 			i++;
 		}

@@ -5,8 +5,8 @@ import java.util.Random;
 
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
-import edu.usf.ratsim.micronsl.Float1dPort;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
+import edu.usf.ratsim.micronsl.Float1dSparsePort;
 import edu.usf.ratsim.micronsl.FloatMatrixPort;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.nsl.modules.Voter;
@@ -43,14 +43,13 @@ public class GradientVotes extends Module implements Voter {
 	}
 
 	public void run() {
-		Float1dPort states = (Float1dPort) getInPort("states");
+		Float1dSparsePort states = (Float1dSparsePort) getInPort("states");
 		FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
 		for (int action = 0; action < numActions; action++)
 			actionVote[action] = 0f;
 
 		double sum = 0;
-		float cantStates = states.getSize();
-		for (int state = 0; state < cantStates; state++) {
+		for (Integer state : states.getNonZero().keySet()) {
 			if (connected[state]) {
 				float stateVal = states.get(state);
 				if (stateVal != 0) {

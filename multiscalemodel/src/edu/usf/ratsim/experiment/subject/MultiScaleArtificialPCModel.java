@@ -17,13 +17,13 @@ import edu.usf.ratsim.micronsl.Model;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.micronsl.Port;
 import edu.usf.ratsim.nsl.modules.ArtificialConjCellLayer;
-import edu.usf.ratsim.nsl.modules.AttentionalExplorer;
 import edu.usf.ratsim.nsl.modules.ClosestFeeder;
 import edu.usf.ratsim.nsl.modules.CopyStateModule;
+import edu.usf.ratsim.nsl.modules.CopyStateModuleSparse;
 import edu.usf.ratsim.nsl.modules.DecayingExplorationSchema;
 import edu.usf.ratsim.nsl.modules.ExponentialConjCell;
 import edu.usf.ratsim.nsl.modules.Intention;
-import edu.usf.ratsim.nsl.modules.JointStatesManyConcatenate;
+import edu.usf.ratsim.nsl.modules.JointStatesManySparseConcatenate;
 import edu.usf.ratsim.nsl.modules.JointStatesManySum;
 import edu.usf.ratsim.nsl.modules.LastAteGoalDecider;
 import edu.usf.ratsim.nsl.modules.LastAteIntention;
@@ -54,7 +54,7 @@ public class MultiScaleArtificialPCModel extends Model {
 	// private ProportionalExplorer actionPerformerVote;
 	// private List<WTAVotes> qLActionSel;
 	private List<DecayingExplorationSchema> exploration;
-	private JointStatesManyConcatenate jointPCHDIntentionState;
+	private JointStatesManySparseConcatenate jointPCHDIntentionState;
 	private Intention intentionGetter;
 	private Module rlValue;
 	private List<ArtificialConjCellLayer> conjCellLayers;
@@ -152,10 +152,16 @@ public class MultiScaleArtificialPCModel extends Model {
 		}
 
 		// Concatenate all layers
-		jointPCHDIntentionState = new JointStatesManyConcatenate(
+		jointPCHDIntentionState = new JointStatesManySparseConcatenate(
 				"Joint PC HD Intention State");
 		jointPCHDIntentionState.addInPorts(conjCellLayersPorts);
 		addModule(jointPCHDIntentionState);
+		
+		// Copy last state and votes before recomputing to use in RL algorithm
+		CopyStateModuleSparse stateCopy = new CopyStateModuleSparse("States Before");
+		stateCopy.addInPort("toCopy",
+				jointPCHDIntentionState.getOutPort("jointState"), true);
+		addModule(stateCopy);
 
 		// Create value matrix
 		int numStates = ((Float1dPort) jointPCHDIntentionState
@@ -180,7 +186,7 @@ public class MultiScaleArtificialPCModel extends Model {
 			throw new RuntimeException("Vote mechanism not implemented");
 		// RL votes are based on previous state
 		rlVotes.addInPort("states",
-				jointPCHDIntentionState.getOutPort("jointState"), true);
+				stateCopy.getOutPort("copy"));
 		rlVotes.addInPort("value", valuePort);
 
 		addModule(rlVotes);
@@ -238,12 +244,6 @@ public class MultiScaleArtificialPCModel extends Model {
 		JointStatesManySum jointVotes = new JointStatesManySum("Votes");
 		jointVotes.addInPorts(votesPorts);
 		addModule(jointVotes);
-
-		// Copy last state and votes before recomputing to use in RL algorithm
-		CopyStateModule stateCopy = new CopyStateModule("States Before");
-		stateCopy.addInPort("toCopy",
-				jointPCHDIntentionState.getOutPort("jointState"), true);
-		addModule(stateCopy);
 
 		// Get votes from QL and other behaviors and perform an action
 		// One vote per layer (one now) + taxic + wf

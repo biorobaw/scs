@@ -5,23 +5,24 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.HashSet;
 
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.ratsim.micronsl.Float1dPort;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
+import edu.usf.ratsim.micronsl.Float1dSparsePort;
 import edu.usf.ratsim.micronsl.FloatMatrixPort;
 import edu.usf.ratsim.micronsl.Int1dPort;
 import edu.usf.ratsim.micronsl.Module;
-import edu.usf.ratsim.nsl.modules.StillExplorer;
 import edu.usf.ratsim.support.Configuration;
 
 public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 	private static final String DUMP_FILENAME = "policy.txt";
 
-	private static final float EPS = .2f;
+	private static final float EPS = .01f;
 
 	private static PrintWriter writer;
 
@@ -44,6 +45,10 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 	private float[][] actionTraces;
 
+	private HashSet<Integer> activeStates;
+
+	private HashSet<Integer> toRemove;
+
 	public MultiStateProportionalAC(String name, Subject subject,
 			int numActions, int numStates, float taxicDiscountFactor,
 			float rlDiscountFactor, float alpha, float tracesDecay,
@@ -62,6 +67,9 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 		this.numActions = numActions;
 
 		update = true;
+
+		activeStates = new HashSet<Integer>(10000);
+		toRemove = new HashSet<Integer>(100);
 	}
 
 	public void run() {
@@ -69,7 +77,7 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 		if (update) {
 			Float1dPortArray reward = (Float1dPortArray) getInPort("reward");
 			Int1dPort takenAction = (Int1dPort) getInPort("takenAction");
-			Float1dPort statesBefore = (Float1dPort) getInPort("statesBefore");
+			Float1dSparsePort statesBefore = (Float1dSparsePort) getInPort("statesBefore");
 			Float1dPort statesAfter = (Float1dPort) getInPort("statesAfter");
 			Float1dPort taxicValueEstBefore = (Float1dPort) getInPort("taxicValueEstimationBefore");
 			Float1dPort taxicValueEstAfter = (Float1dPort) getInPort("taxicValueEstimationAfter");
@@ -82,42 +90,42 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 			if (Debug.printValueAfter)
 				System.out.println("Value after: " + rlValueEstAfter.get(0));
 
-			if (tracesDecay != 0)
-				for (int state = 0; state < statesBefore.getSize(); state++) {
-					boolean mustUpdate = false;
-					stateTraces[state] *= tracesDecay;
-					// Replacing states
-					stateTraces[state] = Math.max(statesBefore.get(state),
-							stateTraces[state]);
-					mustUpdate = mustUpdate || stateTraces[state] != 0;
-					for (int i = 0; i < numActions; i++) {
-						actionTraces[state][i] *= tracesDecay;
-						mustUpdate = mustUpdate || actionTraces[state][i] != 0;
-					}
-					if (a != -1){
-						actionTraces[state][a] = Math
-								.max(statesBefore.get(state),
-										actionTraces[state][a]);
-						mustUpdate = mustUpdate || actionTraces[state][a] != 0;
-					}
-
-					if (mustUpdate && a != -1)
-						updateLastAction(state, a, statesBefore, value, reward,
-								taxicValueEstBefore, taxicValueEstAfter,
-								rlValueEstBefore, rlValueEstAfter, stateTraces,
-								actionTraces);
+			activeStates.addAll(statesBefore.getNonZero()
+					.keySet());
+			toRemove.clear();
+			for (Integer state : activeStates) {
+				boolean stillActive = false;
+				stateTraces[state] *= tracesDecay;
+				// Replacing states
+				if (statesBefore.getNonZero().containsKey(state))
+					stateTraces[state] = Math
+							.max(statesBefore.get(state),
+									stateTraces[state]);
+				stillActive = stillActive || stateTraces[state] > EPS;
+				for (int i = 0; i < numActions; i++) {
+					actionTraces[state][i] *= tracesDecay;
+					stillActive = stillActive || actionTraces[state][i] > EPS;
 				}
-			else
-				for (int state = 0; state < statesBefore.getSize(); state++)
-					if (statesBefore.get(state) > 0 && a != -1)
-						updateLastAction(state, a, statesBefore, value, reward,
-								taxicValueEstBefore, taxicValueEstAfter,
-								rlValueEstBefore, rlValueEstAfter, stateTraces,
-								actionTraces);
+				if (a != -1 && statesBefore.getNonZero().containsKey(state)) {
+					actionTraces[state][a] = Math.max(
+							statesBefore.get(state),
+							actionTraces[state][a]);
+					stillActive = stillActive || actionTraces[state][a] > EPS;
+				}
+
+				if (stillActive && a != -1)
+					updateLastAction(state, a, statesBefore, value,
+							reward, taxicValueEstBefore, taxicValueEstAfter,
+							rlValueEstBefore, rlValueEstAfter, stateTraces,
+							actionTraces);
+				else if (!stillActive)
+					toRemove.add(state);
+			}
+			activeStates.removeAll(toRemove);
 		}
 	}
 
-	private void updateLastAction(int sBefore, int a, Float1dPort statesBefore,
+	private void updateLastAction(int sBefore, int a, Float1dSparsePort statesBefore,
 			FloatMatrixPort value, Float1dPort reward,
 			Float1dPort taxicValueEstBefore, Float1dPort taxicValueEstAfter,
 			Float1dPort rlValueEstBefore, Float1dPort rlValueEstAfter,
