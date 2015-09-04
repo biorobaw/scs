@@ -149,7 +149,7 @@
 		<tasks>
 		</tasks>
 	</group>
-	
+<!--	
  <group>
 		<name>NegControl</name>
 		<numMembers>64</numMembers>
@@ -167,7 +167,7 @@
 		<tasks>
 		</tasks>
 	</group>
-	
+-->	
 	<!-- Task to be performed before the eperiment -->
 	<beforeExperimentTasks>
 		<!-- Enable feeders for the to be able to give food -->
@@ -181,11 +181,11 @@
 	<!-- Loggers to be executed before the eperiment -->
 	<beforeExperimentLoggers>
 		<!-- Log walls -->
-		<logger>
+		<!--<logger>
 			<name>edu.usf.experiment.log.WallLogger</name>
 			<params>
 			</params>
-		</logger>
+		</logger>-->
 		<!-- Log conjunctive cells -->
 		<!--<logger>
 			<name>edu.usf.ratsim.experiment.log.PCLogger</name>
@@ -194,9 +194,11 @@
 	<!-- Plots to perform before the experiment -->
 	<beforeExperimentPlotters>
 		<!-- Convert CSV files to rdata files -->
-		<plotter>
+		<!-- <plotter>
+	
+	
 			<name>edu.usf.experiment.plot.CSVConverter</name>
-		</plotter>
+		</plotter> --> 
 		<!-- <plotter> <name>edu.usf.experiment.plot.PlotGatherer</name> </plotter> -->
 		<!--<plotter> <name>edu.usf.ratsim.experiment.plot.PCPlotter</name> </plotter>-->
 	</beforeExperimentPlotters>
@@ -527,7 +529,7 @@
 			<!-- Number of episodes -->
 			<number>1</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>50</sleep>
+			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Turn of the flash of all the feeders -->
@@ -671,7 +673,7 @@
 	</afterExperimentLoggers>
 	<!-- Plotters to execute after the experiment is over -->
 	<afterExperimentPlotters>
-		<plotter>
+		<!--<plotter>
 			<name>edu.usf.experiment.plot.RuntimePerTrialPlotter</name>
 		</plotter>
 		<plotter>
@@ -679,7 +681,7 @@
 			<params>
 				<plotScript>/edu/usf/experiment/plot/plotTimeouts.r</plotScript>
 			</params>
-		</plotter>
+		</plotter> -->
 		<!-- <plotter> <name>edu.usf.experiment.plot.PlotGatherer</name> </plotter> -->
 		<!-- <plotter> <name>edu.usf.experiment.plot.PolicyPlotter</name> </plotter> -->
 	</afterExperimentPlotters>
