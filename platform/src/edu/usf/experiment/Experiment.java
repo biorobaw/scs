@@ -96,6 +96,8 @@ public class Experiment implements Runnable {
 		subject = SubjectLoader.getInstance().load(subjectName, groupName,
 				root.getChild("model"), robot);
 
+		System.out.println("[+] Model created");
+
 		// Load trials that apply to the subject
 		trials = XMLExperimentParser.loadTrials(root, logPath, subject,
 				universe);
