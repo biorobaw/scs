@@ -1,15 +1,18 @@
 require(ggplot2, quietly = TRUE)
 require(plyr, quietly = TRUE)
 
+stepsPerSec <- 4
+
 plotArrival <- function(pathData, plotName){
   #pathData <- pathData[pathData$runtime < 10000,]
-  summarizedRunTimes <- ddply(pathData, .(group, repetition), summarise, sdRT = sd(runtime)/sqrt(length(runtime)), mRT = mean(runtime))
+  pathData$runtime <- pathData$runtime / stepsPerSec
+  summarizedRunTimes <- ddply(pathData, .(group, repetition), summarise, sdRT = sd(runtime), mRT = mean(runtime))
   #   print(head(summarizedRunTimes))
   summarizedRunTimes <- ddply(summarizedRunTimes, .(group), summarise, repetition=repetition, mRT=mRT, sdRT=sdRT, runmedian = runmed(mRT, 31))
   #   print(pathData[1,'trial'])
   p <- ggplot(pathData, aes(x=group, y = runtime)) 
   #p <- p + geom_bar(data=summarizedRunTimes, mapping=aes(x=Group, y = mRT), stat='identity')
-  p <- p + ylab("Num. of Steps") + xlab("Group") 
+  p <- p + ylab("Completion time (s)") + xlab("Group") 
   p <- p + theme(legend.text = element_text(size=16), legend.title = element_text(size=16), text = element_text(size=16)) 
   p <- p + theme(legend.position = c(1, 1), legend.justification = c(1, 1), legend.background = element_rect(colour = NA, fill = NA))
   box <- p + geom_boxplot(aes(fill=group),position=position_dodge(1), notch=TRUE)# + geom_jitter()
@@ -18,6 +21,7 @@ plotArrival <- function(pathData, plotName){
   bar <- ggplot(summarizedRunTimes, aes(x=group, y = mRT)) 
   bar <- bar + geom_bar(aes(y=mRT,fill=group),position=position_dodge(1), stat="identity")
   bar <- bar + geom_errorbar(aes(x=group, ymax=mRT+sdRT, ymin=mRT-sdRT, color=group, width = 0.25))
+  bar <- bar + ylab("Completion time (s)") + xlab("Group") 
   ggsave(plot=bar,filename=paste(plotName, "bar.", pathData[1,'trial'],".pdf", sep=''), width=10, height=10)
 }
 

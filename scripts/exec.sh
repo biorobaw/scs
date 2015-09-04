@@ -14,7 +14,7 @@ fi
 
 echo "Individual " $individual
 
-if [ `hostname` == "pinky" ]; then
+if [ `whoami` == "biorob" ]; then
   export PATH=/work/R-3.1.1/bin:$PATH
   export R_LIBS=/work/R-3.1.1/library/
 else
