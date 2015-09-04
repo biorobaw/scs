@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<calibration>
+	
+	<experiment>multiscalemodel/src/edu/usf/ratsim/experiment/xml/multiFeedersTrainRecallSmallObs.xml</experiment>
+	
+	<model>
+		<minPCRadius>
+			<value>.01</value>
+			<value>.02</value>
+			<value>.04</value>
+			<value>.08</value>
+			<value>.16</value>
+		</minPCRadius>
+	</model>
+	
+</calibration>

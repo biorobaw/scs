@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --time=2:00:00
+#SBATCH --time=2:30:00
 #SBATCH --mem=4000
 #SBATCH --cpus-per-task 2
 
@@ -19,6 +19,5 @@ else
   module add apps/R/3.1.2
   export R_LIBS=/home/m/mllofriualon/R-library/
 fi
-
-java -cp "./platform/src/:./experiment/src/:./bin:./deps/*:./deps/j3dport/*" edu.usf.experiment.CalibrationExperiment $calibrationFile $logPath $individual
+/usr/bin/java -cp "./platform/src/:./experiment/src/:./bin:./deps/*:./deps/j3dport/*" edu.usf.experiment.CalibrationExperiment $calibrationFile $logPath $individual
 
