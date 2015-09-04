@@ -4,6 +4,8 @@ import java.util.List;
 
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.XMLExperimentParser;
+import edu.usf.experiment.utils.IOUtils;
+
 
 /**
  * This class runs one subject from the experiment given its position. Meant for secuential (or parallel) execution of all individuals.
@@ -21,7 +23,8 @@ public class RunIndividualByNumber {
 		String experimentFile = args[0];
 		String logPath = args[1];
 		int individual = Integer.parseInt(args[2]);
-		
+
+		IOUtils.copyFile(experimentFile, logPath + "/experiment.xml");		
 		ElementWrapper root = XMLExperimentParser.loadRoot(args[0]);
 		
 		runIndividualByNumber(root, logPath, individual);
