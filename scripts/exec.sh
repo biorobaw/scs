@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#SBATCH -p development
 #SBATCH --time=2:00:00
 #SBATCH --mem=5000
 #SBATCH --cpus-per-task 2
@@ -22,5 +23,5 @@ else
   export R_LIBS=/home/m/mllofriualon/R-library/
 fi
 
-java -cp "./platform/src/:./multiscalemodel/src/:./bin/:./deps/*:./deps/j3dport/*" edu.usf.experiment.RunIndividualByNumber $experimentFile $logPath $individual
+/usr/bin/java -cp "./platform/src/:./multiscalemodel/src/:./bin/:./deps/*:./deps/j3dport/*" edu.usf.experiment.RunIndividualByNumber $experimentFile $logPath $individual
 
