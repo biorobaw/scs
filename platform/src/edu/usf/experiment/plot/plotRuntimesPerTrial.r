@@ -6,7 +6,7 @@ stepsPerSec <- 4
 plotArrival <- function(pathData, plotName){
   #pathData <- pathData[pathData$runtime < 10000,]
   pathData$runtime <- pathData$runtime / stepsPerSec
-  summarizedRunTimes <- ddply(pathData, .(group, repetition), summarise, sdRT = sd(runtime), mRT = mean(runtime))
+  summarizedRunTimes <- ddply(pathData, .(group, repetition), summarise, sdRT = sd(runtime)/sqrt(length(runtime)), mRT = mean(runtime))
   #   print(head(summarizedRunTimes))
   summarizedRunTimes <- ddply(summarizedRunTimes, .(group), summarise, repetition=repetition, mRT=mRT, sdRT=sdRT, runmedian = runmed(mRT, 31))
   #   print(pathData[1,'trial'])
@@ -34,4 +34,7 @@ runtimes<-Reduce(function(x,y) merge (x,y, all=T), runtimeFrames)
 runtimes <- runtimes[runtimes$runtime != 200000,]
 ddply(runtimes, .(trial), function(x) plotArrival(x, plotName="runtimes"))
 
+fit <- aov (runtime ~ group, runtimes[runtimes$trial == "DelayedCueObs",])
+summary(fit)
+TukeyHSD(fit)
 
