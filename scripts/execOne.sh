@@ -5,10 +5,9 @@
 #SBATCH --mem=5000
 #SBATCH --cpus-per-task 2
 
-experimentFile=$1
-logPath=$2
+logPath=$1
 if [ -z "$SLURM_ARRAY_TASK_ID" ]; then
-  individual=$3
+  individual=$2
 else
   individual=$SLURM_ARRAY_TASK_ID
 fi
@@ -23,5 +22,5 @@ else
   export R_LIBS=/home/m/mllofriualon/R-library/
 fi
 
-/usr/bin/java -cp "./platform/src/:./multiscalemodel/src/:./bin/:./deps/*:./deps/j3dport/*" edu.usf.experiment.RunIndividualByNumber $experimentFile $logPath $individual
+/usr/bin/java -cp "./platform/src/:./multiscalemodel/src/:./bin/:./deps/*:./deps/j3dport/*" edu.usf.experiment.RunIndividualByNumber $logPath $individual
 

@@ -41,14 +41,12 @@ public abstract class Universe {
 	public Universe(ElementWrapper params, String logPath) {
 		CLOSE_TO_FOOD_THRS = params.getChildFloat("closeToFoodThrs");
 
-		String mazeFile = params.getChildText("maze");
-
 		walls = new LinkedList<Wall>();
 		feeders = new LinkedList<Feeder>();
 
-		String dstMazeFile = logPath + "maze.xml";
-		IOUtils.copyFile(mazeFile, dstMazeFile);
-		Document doc = XMLDocReader.readDocument(dstMazeFile);
+		// Assumes maze is already copied by pre-experiment or experiment
+		String mazeFile = logPath + "maze.xml";
+		Document doc = XMLDocReader.readDocument(mazeFile);
 		ElementWrapper maze = new ElementWrapper(doc.getDocumentElement());
 		List<ElementWrapper> list;
 		

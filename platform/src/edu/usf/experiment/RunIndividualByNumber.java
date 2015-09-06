@@ -1,5 +1,6 @@
 package edu.usf.experiment;
 
+import java.io.File;
 import java.util.List;
 
 import edu.usf.experiment.utils.ElementWrapper;
@@ -16,16 +17,15 @@ import edu.usf.experiment.utils.IOUtils;
 public class RunIndividualByNumber {
 
 	public static void main(String[] args) {
-		if (args.length < 3)
+		if (args.length < 2)
 			System.out.println("Usage: java edu.usf.ExperimentRunner "
-					+ "exprimentLayout logPath individualIndex");
+					+ "logPath individualIndex");
 		
-		String experimentFile = args[0];
-		String logPath = args[1];
-		int individual = Integer.parseInt(args[2]);
+		String logPath = args[0];
+		int individual = Integer.parseInt(args[1]);
 
-		IOUtils.copyFile(experimentFile, logPath + "/experiment.xml");		
-		ElementWrapper root = XMLExperimentParser.loadRoot(args[0]);
+		// Assumes pre-experiment put it in the right place
+		ElementWrapper root = XMLExperimentParser.loadRoot(logPath + File.separator + "experiment.xml");
 		
 		runIndividualByNumber(root, logPath, individual);
 		
