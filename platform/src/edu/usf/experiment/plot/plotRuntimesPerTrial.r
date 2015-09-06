@@ -34,7 +34,9 @@ runtimes<-Reduce(function(x,y) merge (x,y, all=T), runtimeFrames)
 runtimes <- runtimes[runtimes$runtime != 200000,]
 ddply(runtimes, .(trial), function(x) plotArrival(x, plotName="runtimes"))
 
-fit <- aov (runtime ~ group, runtimes[runtimes$trial == "DelayedCueObs",])
-summary(fit)
-TukeyHSD(fit)
+#fit <- aov (runtime ~ group, runtimes[runtimes$trial == "DelayedCueObs",])
+#summary(fit)
+#TukeyHSD(fit)
 
+wilcox.test(runtimes[runtimes$trial == "DelayedCueObs" & runtimes$group == "Dorsal",]$runtime, runtimes[runtimes$trial == "DelayedCueObs" & runtimes$group == "Control",]$runtime, alternative = "greater")
+wilcox.test(runtimes[runtimes$trial == "DelayedCueObs" & runtimes$group == "Ventral",]$runtime, runtimes[runtimes$trial == "DelayedCueObs" & runtimes$group == "Control",]$runtime, alternative = "greater")`
