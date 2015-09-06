@@ -67,7 +67,6 @@ public class MultiScaleArtificialPCModel extends Model {
 		// Get some configuration values for place cells + qlearning
 		float minPCRadius = params.getChildFloat("minPCRadius");
 		float maxPCRadius = params.getChildFloat("maxPCRadius");
-
 		int numCCLayers = params.getChildInt("numCCLayers");
 		List<Integer> layerLengths = params.getChildIntList("layerLengths");
 		List<Integer> numCCCellsPerLayer = params

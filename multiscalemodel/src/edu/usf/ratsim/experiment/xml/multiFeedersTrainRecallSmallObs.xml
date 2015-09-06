@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-	
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
@@ -497,30 +496,30 @@
 		<beforeTrialTasks>
 			<!-- Deactivation of a proportion of HPC layers -->
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
 				<params>
 					<group>Ventral</group>
 					<layers>2</layers>
-					<proportion>1</proportion>
-					<constant>.25</constant>
+					<proportion>.5</proportion>
+					<constant>2.3</constant>
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
 				<params>
 					<group>Dorsal</group>
 					<layers>0</layers>
-					<proportion>1</proportion>
-					<constant>.25</constant>
+					<proportion>.5</proportion>
+					<constant>2.3</constant>
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
 				<params>
 					<group>NegControl</group>
-					<layers>0,1,2</layers>
-					<proportion>.99</proportion>
-					<constant>.25</constant>
+					<layers>0,2</layers>
+					<proportion>.5</proportion>
+					<constant>2.3</constant>
 				</params>
 			</task>
 		</beforeTrialTasks>
@@ -546,7 +545,7 @@
 				</task>
 				<!-- Add small obstacles -->
 				<task>
-					<name>edu.usf.experiment.task.AddSmallWallsTask</name>
+					<name>edu.usf.experiment.task.AddFixedSmallWallsTask</name>
 				</task>
 				<!-- Place the animat in a given place -->
 				<task>
