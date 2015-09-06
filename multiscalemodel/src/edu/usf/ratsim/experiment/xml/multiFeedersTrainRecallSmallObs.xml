@@ -58,7 +58,7 @@
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>0.0,.5,1</valueConnProbs>
 			<!-- Minimum conjuntive layer cell radius -->
-			<minPCRadius>.08</minPCRadius>
+			<minPCRadius>.0924</minPCRadius>
 			<!-- Maximum conjuntive layer cell radius -->
 			<maxPCRadius>.1848</maxPCRadius>
 			<!-- Type of conjunctive cell -->
