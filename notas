@@ -12,3 +12,7 @@ Implemented fixed normalization with an empirical constant of 50 dividing. Added
 Second run reflects previous results, although conclusions about differences of dorsal-control are weaker.
 
 Then runned a version without FixedWalls (circe:FixedNormalizationAndRadialInactRandomWalls). Results are better: still a significant difference between contro and ventra, but a significant difference between control and dorsal and much lower times, comparable to those of the real rats. 
+
+Three more runs showed consistent results for two and larger control for one (FixedNormalizationAndRadialInactRandomWalls2).
+
+Later analysis shows that this tests were done with smaller dorsal radius than normal. 
