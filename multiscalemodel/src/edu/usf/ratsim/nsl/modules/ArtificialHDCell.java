@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules;
 
-import edu.usf.ratsim.support.GeomUtils;
+import edu.usf.experiment.utils.GeomUtils;
 
 public class ArtificialHDCell {
 

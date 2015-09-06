@@ -2,7 +2,7 @@ package edu.usf.ratsim.nsl.modules;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.ratsim.support.GeomUtils;
+import edu.usf.experiment.utils.GeomUtils;
 
 public class ExponentialConjCell {
 

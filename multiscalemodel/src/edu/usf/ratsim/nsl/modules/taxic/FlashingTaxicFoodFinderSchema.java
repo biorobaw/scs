@@ -12,11 +12,11 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.Float1dPort;
 import edu.usf.ratsim.micronsl.IntPort;
 import edu.usf.ratsim.micronsl.Module;
-import edu.usf.ratsim.support.GeomUtils;
 
 public class FlashingTaxicFoodFinderSchema extends Module {
 

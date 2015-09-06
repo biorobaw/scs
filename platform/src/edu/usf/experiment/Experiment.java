@@ -1,12 +1,9 @@
 package edu.usf.experiment;
 
+import java.io.File;
 import java.util.List;
 import java.util.Random;
 
-import edu.usf.experiment.log.Logger;
-import edu.usf.experiment.log.LoggerLoader;
-import edu.usf.experiment.plot.Plotter;
-import edu.usf.experiment.plot.PlotterLoader;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.RobotLoader;
 import edu.usf.experiment.subject.Subject;
@@ -35,24 +32,46 @@ public class Experiment implements Runnable {
 	private List<Trial> trials;
 	private List<Task> beforeTasks;
 	private List<Task> afterTasks;
-	private List<Plotter> plotters;
 	private Universe universe;
 	private Subject subject;
-	private List<Plotter> beforePlotters;
-	private List<Plotter> afterPlotters;
-	private List<Logger> beforeLoggers;
-	private List<Logger> afterLoggers;
 
+	protected Experiment(){
+		
+	}
+	
+	/** 
+	 * This constructor performs all file operations in addition to experimental setup
+	 * @param experimentFile
+	 * @param logPath
+	 * @param groupName
+	 * @param subjectName
+	 */
 	public Experiment(String experimentFile, String logPath, String groupName,
 			String subjectName) {
 		logPath = logPath + "/";
 		
+		System.out.println("[+] Creating directories");
+		File file = new File(logPath);
+		file.mkdirs();
+		
 		IOUtils.copyFile(experimentFile, logPath + "/experiment.xml");
 		ElementWrapper root = XMLExperimentParser.loadRoot(experimentFile);
+		
+		String mazeFile = root.getChild("universe").getChild("params")
+				.getChildText("maze");
+		IOUtils.copyFile(mazeFile, logPath + "/maze.xml");
 
 		setup(root, logPath, groupName, subjectName);
 	}
 	
+	/**
+	 * This constructor assumes all files (experiment.xml, maze.xml, the folder) have been put
+	 * into place and just setups the experiment.
+	 * @param root
+	 * @param logPath
+	 * @param groupName
+	 * @param subName
+	 */
 	public Experiment(ElementWrapper root, String logPath, String groupName,
 			String subName) {
 		setup(root, logPath, groupName, subName);
@@ -73,9 +92,6 @@ public class Experiment implements Runnable {
 		props.setProperty("group", groupName);
 		props.setProperty("subject", subjectName);
 		
-		String mazeFile = root.getChild("universe").getChild("params")
-				.getChildText("maze");
-		IOUtils.copyFile(mazeFile, logPath + "/maze.xml");
 		props.setProperty("maze.file", logPath + "/maze.xml");
 
 		universe = UniverseLoader.getInstance().load(root, logPath);
@@ -108,14 +124,6 @@ public class Experiment implements Runnable {
 				params.getChild("beforeExperimentTasks"));
 		afterTasks = TaskLoader.getInstance().load(
 				params.getChild("afterExperimentTasks"));
-		beforePlotters = PlotterLoader.getInstance().load(
-				params.getChild("beforeExperimentPlotters"), logPath);
-		afterPlotters = PlotterLoader.getInstance().load(
-				params.getChild("afterExperimentPlotters"), logPath);
-		beforeLoggers = LoggerLoader.getInstance().load(
-				params.getChild("beforeExperimentLoggers"), logPath);
-		afterLoggers = LoggerLoader.getInstance().load(
-				params.getChild("afterExperimentLoggers"), logPath);
 	}
 
 	/***
@@ -126,12 +134,6 @@ public class Experiment implements Runnable {
 		// Do all before trial tasks
 		for (Task task : beforeTasks)
 			task.perform(this);
-		for (Logger logger : beforeLoggers) {
-			logger.log(this);
-			logger.finalizeLog();
-		}
-		for (Plotter plotter : beforePlotters)
-			plotter.plot();
 
 		// Run each trial in order
 		for (Trial t : trials)
@@ -140,15 +142,6 @@ public class Experiment implements Runnable {
 		// Do all after trial tasks
 		for (Task task : afterTasks)
 			task.perform(this);
-		// Log and finalize
-		for (Logger logger : afterLoggers) {
-			logger.log(this);
-			logger.finalizeLog();
-		}
-		// Plot
-		for (Plotter plotter : afterPlotters)
-			plotter.plot();
-
 	}
 
 	public static void main(String[] args) {
@@ -168,5 +161,9 @@ public class Experiment implements Runnable {
 
 	public Subject getSubject() {
 		return subject;
+	}
+	
+	public void setUniverse(Universe univ){
+		this.universe = univ;
 	}
 }

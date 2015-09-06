@@ -19,9 +19,9 @@ import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
-import edu.usf.ratsim.support.GeomUtils;
 
 public class VirtualRobot extends LocalizableRobot {
 

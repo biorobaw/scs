@@ -25,8 +25,8 @@ import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.Wall;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.experiment.utils.IOUtils;
-import edu.usf.ratsim.support.GeomUtils;
 import edu.usf.ratsim.support.XMLDocReader;
 
 /**
@@ -57,15 +57,13 @@ public class VirtUniverse extends Universe {
 	public VirtUniverse(ElementWrapper params, String logPath) {
 		super(params, logPath);
 
-		String mazeFile = params.getChildText("maze");
 		display = params.getChildBoolean("display");
 
 		wallNodes = new LinkedList<WallNode>();
 
-		// Just initialize the nodes we need
-		String dstMazeFile = logPath + "/maze.xml";
-		IOUtils.copyFile(mazeFile, dstMazeFile);
-		Document doc = XMLDocReader.readDocument(dstMazeFile);
+		// Assume mazefile was copied by pre-experiment or experiment
+		String mazeFile = logPath + "/maze.xml";
+		Document doc = XMLDocReader.readDocument(mazeFile);
 		ElementWrapper maze = new ElementWrapper(doc.getDocumentElement());
 		List<ElementWrapper> list;
 

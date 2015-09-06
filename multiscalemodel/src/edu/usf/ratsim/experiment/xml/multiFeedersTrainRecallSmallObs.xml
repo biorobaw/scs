@@ -58,11 +58,7 @@
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>0.0,.5,1</valueConnProbs>
 			<!-- Minimum conjuntive layer cell radius -->
-<<<<<<< HEAD
 			<minPCRadius>.0924</minPCRadius>
-=======
-			<minPCRadius>.04</minPCRadius>
->>>>>>> 416d593ac03aea8201c90c61874207b111613d05
 			<!-- Maximum conjuntive layer cell radius -->
 			<maxPCRadius>.1848</maxPCRadius>
 			<!-- Type of conjunctive cell -->
@@ -676,16 +672,16 @@
 	</afterExperimentLoggers>
 	<!-- Plotters to execute after the experiment is over -->
 	<afterExperimentPlotters>
-		<!--<plotter>
+		<plotter>
 			<name>edu.usf.experiment.plot.RuntimePerTrialPlotter</name>
 		</plotter>
-		<plotter>
+		<!--<plotter>
 			<name>edu.usf.experiment.plot.RPlotter</name>
 			<params>
 				<plotScript>/edu/usf/experiment/plot/plotTimeouts.r</plotScript>
 			</params>
 		</plotter> -->
-		<!-- <plotter> <name>edu.usf.experiment.plot.PlotGatherer</name> </plotter> -->
+		<plotter> <name>edu.usf.experiment.plot.PlotGatherer</name> </plotter> 
 		<!-- <plotter> <name>edu.usf.experiment.plot.PolicyPlotter</name> </plotter> -->
 	</afterExperimentPlotters>
 </experiment>
