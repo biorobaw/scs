@@ -5,3 +5,10 @@ Single run was non statistically important, .3 for ventral-control. Same for cal
 
 I am going to try running with exec and .08 of radius, although thats close to what it used to be (.09 something). Experiment: smallDorsalExec4-0.08
 
+Same results. I then tried to lower the eleg traces. When the system is able to learn less, ventral becomes more significative, and times resemble the initial results when the plots where consistent. However, dorsal inhibition turns the system better. It could make sense, since the previously learned stuff is no longer valid. Im trying with smaller dorsal, due to the fact that they show more consistent results on dorsalCalib (the first one). 
+
+Implemented fixed normalization with an empirical constant of 50 dividing. Added radial inactivation with a constant of 2.3 that corresponds to 1mm radius full inactivation. Results are similar to previus tests (larger times for all of them, ventral significantly larger). But this time, dorsal was greater than control. I blame the fixed normalization + wall beh for the decay in times of control with respects to our best system (4x decay). Should test different wall configurations again and also maybe show the normalized control to contrast. The test was circe:FixedNormalizationAndRadialInact. Going to run another test to validate results.
+
+Second run reflects previous results, although conclusions about differences of dorsal-control are weaker.
+
+Then runned a version without FixedWalls (circe:FixedNormalizationAndRadialInactRandomWalls). Results are better: still a significant difference between contro and ventra, but a significant difference between control and dorsal and much lower times, comparable to those of the real rats. 
