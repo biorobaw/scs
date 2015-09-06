@@ -1,0 +1,7 @@
+
+Voy a correr calibration dorsal y exec con .04 de dorsal del commit 948392db68f0eec32a43717ee9865f8f89b3dbf0 para ver por que calibrationDorsal esta dando resultados significativos y con exec normal y los mismos parametros no. Las corridas son dorsalSizeCalibration3 y smallDorsalExec3 (why 3, I dont know).
+
+Single run was non statistically important, .3 for ventral-control. Same for calibration, although closer. .08 was definetely statistically significant. No job got cancelled
+
+I am going to try running with exec and .08 of radius, although thats close to what it used to be (.09 something). Experiment: smallDorsalExec4-0.08
+
