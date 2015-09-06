@@ -59,7 +59,7 @@
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>0.0,.5,1</valueConnProbs>
 			<!-- Minimum conjuntive layer cell radius -->
-			<minPCRadius>.08</minPCRadius>
+			<minPCRadius>.04</minPCRadius>
 			<!-- Maximum conjuntive layer cell radius -->
 			<maxPCRadius>.1848</maxPCRadius>
 			<!-- Type of conjunctive cell -->
@@ -85,7 +85,7 @@
 			<!-- Alpha for the learning algorithm -->
 			<alpha>.5</alpha>
 			<!-- Elegibility traces for the learning algorithm -->
-			<tracesDecay>.9</tracesDecay>
+			<tracesDecay>.5</tracesDecay>
 			<!-- Initial value for values and action values -->
 			<initialValue>0</initialValue>
 			<!-- Value associated with a flashing feeder -->
@@ -546,7 +546,7 @@
 				</task>
 				<!-- Add small obstacles -->
 				<task>
-					<name>edu.usf.experiment.task.AddSmallWallsTask</name>
+					<name>edu.usf.experiment.task.AddFixedSmallWallsTask</name>
 				</task>
 				<!-- Place the animat in a given place -->
 				<task>

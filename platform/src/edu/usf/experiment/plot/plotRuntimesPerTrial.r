@@ -39,4 +39,4 @@ ddply(runtimes, .(trial), function(x) plotArrival(x, plotName="runtimes"))
 #TukeyHSD(fit)
 
 wilcox.test(runtimes[runtimes$trial == "DelayedCueObs" & runtimes$group == "Dorsal",]$runtime, runtimes[runtimes$trial == "DelayedCueObs" & runtimes$group == "Control",]$runtime, alternative = "greater")
-wilcox.test(runtimes[runtimes$trial == "DelayedCueObs" & runtimes$group == "Ventral",]$runtime, runtimes[runtimes$trial == "DelayedCueObs" & runtimes$group == "Control",]$runtime, alternative = "greater")`
+wilcox.test(runtimes[runtimes$trial == "DelayedCueObs" & runtimes$group == "Ventral",]$runtime, runtimes[runtimes$trial == "DelayedCueObs" & runtimes$group == "Control",]$runtime, alternative = "greater")

@@ -5,3 +5,5 @@ Single run was non statistically important, .3 for ventral-control. Same for cal
 
 I am going to try running with exec and .08 of radius, although thats close to what it used to be (.09 something). Experiment: smallDorsalExec4-0.08
 
+Same results. I then tried to lower the eleg traces. When the system is able to learn less, ventral becomes more significative, and times resemble the initial results when the plots where consistent. However, dorsal inhibition turns the system better. It could make sense, since the previously learned stuff is no longer valid. Im trying with smaller dorsal, due to the fact that they show more consistent results on dorsalCalib (the first one). 
+
