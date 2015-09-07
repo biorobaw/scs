@@ -16,3 +16,9 @@ Then runned a version without FixedWalls (circe:FixedNormalizationAndRadialInact
 Three more runs showed consistent results for two and larger control for one (FixedNormalizationAndRadialInactRandomWalls2).
 
 Later analysis shows that this tests were done with smaller dorsal radius than normal. 
+
+More uniform wall placement was programmed to avoid all exterior obstacles to be toghether, spreading them out all over the circular field. Dorsal was better and ventral was not significative. (circe: moreUniformWalls*)
+
+Then cells were decreased to linear scaling of known sizes in jung. With fixed walls it showed good behavior but no significance (SmallerLinearFieldsFixedWalls). I am using kruscal wallis and kruscalmc to test.
+
+With random, more uniform walls, it shows good beh and significance (circe:Model090715*). 
