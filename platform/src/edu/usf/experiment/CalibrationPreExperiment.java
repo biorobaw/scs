@@ -29,8 +29,6 @@ public class CalibrationPreExperiment {
 
 		// Change values in model according to individual number
 		List<String> remainingParams = new LinkedList<String>(paramsToCalibrate.keySet());
-		// Sort remaining params to keep folder names fixed
-		Collections.sort(remainingParams);
 		initializeAllExperiments(remainingParams, new HashMap<String, String>(),
 				paramsToCalibrate, experimentFile, logPath);
 

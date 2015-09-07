@@ -1,13 +1,12 @@
 package edu.usf.experiment.utils;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class ElementWrapper {
@@ -102,7 +101,7 @@ public class ElementWrapper {
 
 	public Map<String, List<String>> getCalibrationList(
 			ElementWrapper calibrationRoot) {
-		Map<String, List<String>> result = new HashMap<String, List<String>>();
+		Map<String, List<String>> result = new LinkedHashMap<String, List<String>>();
 		for (ElementWrapper param : calibrationRoot.getChild("model")
 				.getChildren()) {
 			result.put(param.getName(), new LinkedList<String>());
