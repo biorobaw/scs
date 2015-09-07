@@ -41,8 +41,6 @@ public class PreExperiment extends Experiment implements Runnable {
 		
 		ElementWrapper root = XMLExperimentParser.loadRoot(experimentFile);
 
-		setUniverse(UniverseLoader.getInstance().load(root, logPath));
-
 		System.out.println("[+] Creating directories");
 		File file = new File(logPath);
 		file.mkdirs();
@@ -59,6 +57,8 @@ public class PreExperiment extends Experiment implements Runnable {
 		IOUtils.exec("git log --pretty=format:'%h' -n 1", ".");
 		System.out.println("[+] Saving date");
 		IOUtils.exec("date", ".");
+
+		setUniverse(UniverseLoader.getInstance().load(root, logPath));
 
 		// Load tasks and plotters
 		beforePlotters = PlotterLoader.getInstance().load(

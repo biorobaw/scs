@@ -58,9 +58,9 @@
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>0.0,.5,1</valueConnProbs>
 			<!-- Minimum conjuntive layer cell radius -->
-			<minPCRadius>.0924</minPCRadius>
+			<minPCRadius>.0682</minPCRadius>
 			<!-- Maximum conjuntive layer cell radius -->
-			<maxPCRadius>.1848</maxPCRadius>
+			<maxPCRadius>.1428</maxPCRadius>
 			<!-- Type of conjunctive cell -->
 			<placeCells>wallGoalExponential</placeCells>
 			<!-- Wall cell modulation. How much does a wall modulate the place field. Greater means less activity -->
@@ -545,7 +545,7 @@
 				</task>
 				<!-- Add small obstacles -->
 				<task>
-					<name>edu.usf.experiment.task.AddSmallWallsTask</name>
+					<name>edu.usf.experiment.task.AddFixedSmallWallsTask</name>
 				</task>
 				<!-- Place the animat in a given place -->
 				<task>
