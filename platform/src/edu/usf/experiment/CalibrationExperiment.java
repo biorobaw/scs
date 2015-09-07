@@ -41,6 +41,7 @@ public class CalibrationExperiment {
 					paramIndex % numValues);
 			logPath += param + "-" + value + "--";
 			paramIndex /= numValues;
+			System.out.println("[+] Setting param " + param + " to value " + value);
 			experimentRoot.changeModelParam(param, value, experimentRoot);
 		}
 		logPath += File.separator;
