@@ -1,6 +1,5 @@
 require(ggplot2, quietly = TRUE)
 require(plyr, quietly = TRUE)
-require(pgirmess, quietly = TRUE)
 
 stepsPerSec <- 4
 
@@ -40,6 +39,7 @@ ddply(runtimes, .(trial), function(x) plotArrival(x, plotName="runtimes"))
 #summary(fit)
 #TukeyHSD(fit)
 
+require(pgirmess, quietly = TRUE)
 kruskal.test(runtime~group, runtimes[runtimes$trial == "DelayedCueObs",])
 
 kruskalmc(runtime~group, data=runtimes[runtimes$trial == "DelayedCueObs",], cont='one-tailed')
