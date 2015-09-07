@@ -64,9 +64,9 @@ mazePlot <- function(mazeFile, wantedFeeder = -1){
     dat <- circleFun(c(x,y),2*r,npoints = 100, 0, 2, TRUE)
     if (wantedFeeder == as.numeric(feeder$id) ){
       p <- geom_polygon(data=dat, aes(x,y), color="green", fill="green")
-     } else {
+    } else {
       p <- geom_polygon(data=dat, aes(x,y), color="grey", fill="grey")
-     } 
+    } 
   })
   
   feeders
@@ -92,7 +92,7 @@ ratEndPointPlot <- function (pathData, p){
 }
 
 wallPlot <- function(wallData,p){
-
+  
   if (!is.null(wallData)){
     
     p + geom_segment(data=wallData, aes(x,y,xend=xend,yend=yend),  col="black", cex=2)
@@ -104,19 +104,19 @@ wallPlot <- function(wallData,p){
 plotPlaceCells <- function (preName, name, pcData, wallData, maze){
   # Get the individual components of the plot
   p <- ggplot()
-
+  
   circles <- apply(pcData, 1, function(pc) {
-    circleData <- circleFunSeg(c(as.numeric(pc['x']), as.numeric(pc['y'])), 2*as.numeric(pc['radius']), filled=FALSE, npoints=100)
+    circleData <- circleFunSeg(c(as.numeric(pc['x']), as.numeric(pc['y'])), 2*as.numeric(pc['placeradius']), filled=FALSE, npoints=100)
   })
   
   p <- p + geom_segment(data=ldply(circles), aes(x=x,y=y,xend=xend,yend=yend), color="blue")
   
-#   print(circles)
+  #   print(circles)
   
   p <- p + maze
   
   p <- wallPlot(wallData, p)
-
+  
   # Some aesthetic stuff
   p <- mazePlotTheme(p)
   # Save the plot to an image
@@ -139,7 +139,7 @@ load(placeCellsFile)
 pcData <- data
 load(wallsFile)
 wallData <- data
-splitPCs <- split(pcData, pcData[c('radius')], drop=TRUE)
+splitPCs <- split(pcData, pcData[c('placeradius')], drop=TRUE)
 invisible(llply(
   names(splitPCs), function(x) plotPlaceCells(
-     "", x, splitPCs[[x]], wallData, maze), .parallel = FALSE))
+    "", x, head(splitPCs[[x]], n=100), wallData, maze), .parallel = FALSE))

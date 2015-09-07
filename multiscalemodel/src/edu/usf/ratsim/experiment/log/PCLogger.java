@@ -49,6 +49,7 @@ public class PCLogger extends Logger {
 	@Override
 	public void finalizeLog() {
 		synchronized (PCLogger.class) {
+			System.out.println("[+] Logging cells");
 			PropertyHolder props = PropertyHolder.getInstance();
 			String trialName = props.getProperty("trial");
 			String groupName = props.getProperty("group");
@@ -59,7 +60,8 @@ public class PCLogger extends Logger {
 			int cellNum = 0;
 			for (ExponentialConjCell cell : cells) {
 				writer.println(groupName + '\t' + subName + '\t'
-						+ cell.getPreferredLocation().x + "\t" + cellNum + '\t'
+						+ cellNum + '\t'
+						+ cell.getPreferredLocation().x  + '\t'
 						+ cell.getPreferredLocation().y + '\t'
 						+ cell.getPlaceRadius() + '\t'
 						+ cell.getPreferredDirection() + '\t'

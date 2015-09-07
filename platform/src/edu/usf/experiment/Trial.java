@@ -86,6 +86,8 @@ public class Trial implements Runnable {
 				task.perform(this);
 			for (Logger logger : beforeLoggers)
 				logger.log(this);
+			for (Logger logger : beforeLoggers)
+				logger.finalizeLog();
 			for (Plotter plotter : beforePlotters)
 				plotter.plot();
 
@@ -102,9 +104,6 @@ public class Trial implements Runnable {
 			// Log and finalize
 			for (Logger logger : afterLoggers)
 				logger.log(this);
-			
-			for (Logger logger : beforeLoggers)
-				logger.finalizeLog();
 			for (Logger logger : afterLoggers)
 				logger.finalizeLog(); 
 			// Plot
