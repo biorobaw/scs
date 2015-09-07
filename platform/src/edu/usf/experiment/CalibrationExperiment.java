@@ -10,12 +10,13 @@ import edu.usf.experiment.utils.XMLExperimentParser;
 
 public class CalibrationExperiment {
 
-	public CalibrationExperiment(String calibrationFile, String logPath,
+	public CalibrationExperiment(String logPath,
 			int individualNumber) {
-		logPath = logPath + "/";
+		logPath = logPath + File.separator;
 
+		// Assumes pre calibration put it on the folder
 		ElementWrapper calibrationRoot = XMLExperimentParser
-				.loadRoot(calibrationFile);
+				.loadRoot(logPath + "calibration.xml");
 
 		String experimentFile = calibrationRoot.getChildText("experiment");
 
@@ -52,7 +53,6 @@ public class CalibrationExperiment {
 	}
 
 	public static void main(String[] args) {
-		CalibrationExperiment cexp = new CalibrationExperiment(args[0],
-				args[1], Integer.parseInt(args[2]));
+		CalibrationExperiment cexp = new CalibrationExperiment(args[0],Integer.parseInt(args[1]));
 	}
 }

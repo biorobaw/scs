@@ -12,12 +12,12 @@ import edu.usf.experiment.utils.XMLExperimentParser;
 
 public class CalibrationPostExperiment {
 
-	public CalibrationPostExperiment(String calibrationFile, String logPath,
-			int individualNumber) {
+	public CalibrationPostExperiment(String logPath) {
 		logPath += File.separator;
 
+		// Assumes pre calibration put it on the folder
 		ElementWrapper calibrationRoot = XMLExperimentParser
-				.loadRoot(calibrationFile);
+				.loadRoot(logPath + "calibration.xml");
 
 		String experimentFile = calibrationRoot.getChildText("experiment");
 
@@ -25,7 +25,8 @@ public class CalibrationPostExperiment {
 				.getCalibrationList(calibrationRoot);
 
 		// Change values in model according to individual number
-		List<String> remainingParams = new LinkedList<String>(paramsToCalibrate.keySet());
+		List<String> remainingParams = new LinkedList<String>(
+				paramsToCalibrate.keySet());
 		// Sort remaining params to keep folder names fixed
 		Collections.sort(remainingParams);
 		wrapupAllExperiments(remainingParams, new HashMap<String, String>(),
@@ -48,7 +49,7 @@ public class CalibrationPostExperiment {
 				String config = "";
 				for (String param : newParamValues.keySet())
 					config += param + "-" + newParamValues.get(param) + "--";
-				new PostExperiment(experimentFile, logPath + File.separator
+				new PostExperiment(logPath + File.separator
 						+ config + File.separator).run();
 			} else {
 				wrapupAllExperiments(remainingParams, newParamValues,
@@ -58,7 +59,6 @@ public class CalibrationPostExperiment {
 	}
 
 	public static void main(String[] args) {
-		new CalibrationPostExperiment(args[0],
-				args[1], Integer.parseInt(args[2]));
+		new CalibrationPostExperiment(args[0]);
 	}
 }

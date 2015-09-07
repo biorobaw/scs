@@ -34,11 +34,11 @@ public class PostExperiment extends Experiment implements Runnable {
 	 * @param experimentFile
 	 * @param logPath
 	 */
-	public PostExperiment(String experimentFile, String logPath) {
+	public PostExperiment(String logPath) {
 		logPath = logPath + "/";
 		System.out.println("[+] Wrapping up experiment at " + logPath);
 
-		ElementWrapper root = XMLExperimentParser.loadRoot(experimentFile);
+		ElementWrapper root = XMLExperimentParser.loadRoot("experiment.xml");
 
 		setUniverse(UniverseLoader.getInstance().load(root, logPath));
 
@@ -72,7 +72,7 @@ public class PostExperiment extends Experiment implements Runnable {
 			System.out.println("Usage: java edu.usf.experiment "
 					+ "exprimentLayout");
 
-		PostExperiment e = new PostExperiment(args[0], args[1]);
+		PostExperiment e = new PostExperiment(args[0]);
 		e.run();
 
 		System.exit(0);

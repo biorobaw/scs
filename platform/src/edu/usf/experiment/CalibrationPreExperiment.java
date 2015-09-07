@@ -13,11 +13,10 @@ import edu.usf.experiment.utils.XMLExperimentParser;
 
 public class CalibrationPreExperiment {
 
-	public CalibrationPreExperiment(String calibrationFile, String logPath,
-			int individualNumber) {
+	public CalibrationPreExperiment(String calibrationFile, String logPath) {
 		logPath += File.separator;
 
-		IOUtils.copyFile(calibrationFile, logPath + "/calibration.xml");
+		IOUtils.copyFile(calibrationFile, logPath + "calibration.xml");
 		ElementWrapper calibrationRoot = XMLExperimentParser
 				.loadRoot(calibrationFile);
 
@@ -63,6 +62,6 @@ public class CalibrationPreExperiment {
 
 	public static void main(String[] args) {
 		new CalibrationPreExperiment(args[0],
-				args[1], Integer.parseInt(args[2]));
+				args[1]);
 	}
 }
