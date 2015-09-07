@@ -11,16 +11,13 @@ import org.apache.commons.io.FileUtils;
 public class IOUtils {
 
 	public static void copyFile(String src, String dst) {
-		if (!(new File(dst).exists())){
-			try {
-				FileUtils.copyFile(new File(src), new File(dst));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
- 		}
+		try {
+			FileUtils.copyFile(new File(src), new File(dst));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-		
 	}
 
 	public static void exec(String cmd, String dir) {
