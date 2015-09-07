@@ -14,13 +14,11 @@ public class CalibrationExperiment {
 			int individualNumber) {
 		logPath = logPath + "/";
 
-		IOUtils.copyFile(calibrationFile, logPath + "/calibration.xml");
 		ElementWrapper calibrationRoot = XMLExperimentParser
 				.loadRoot(calibrationFile);
 
 		String experimentFile = calibrationRoot.getChildText("experiment");
 
-		IOUtils.copyFile(experimentFile, logPath + "/experiment.xml");
 		ElementWrapper experimentRoot = XMLExperimentParser
 				.loadRoot(experimentFile);
 
