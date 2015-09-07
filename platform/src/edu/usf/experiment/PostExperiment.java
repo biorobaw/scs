@@ -1,5 +1,6 @@
 package edu.usf.experiment;
 
+import java.io.File;
 import java.util.List;
 import java.util.Random;
 
@@ -35,10 +36,10 @@ public class PostExperiment extends Experiment implements Runnable {
 	 * @param logPath
 	 */
 	public PostExperiment(String logPath) {
-		logPath = logPath + "/";
+		logPath += File.separator;
 		System.out.println("[+] Wrapping up experiment at " + logPath);
 
-		ElementWrapper root = XMLExperimentParser.loadRoot("experiment.xml");
+		ElementWrapper root = XMLExperimentParser.loadRoot(logPath + "experiment.xml");
 
 		setUniverse(UniverseLoader.getInstance().load(root, logPath));
 
