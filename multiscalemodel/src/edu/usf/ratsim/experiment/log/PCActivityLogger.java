@@ -2,6 +2,7 @@ package edu.usf.ratsim.experiment.log;
 
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
@@ -27,7 +28,7 @@ public class PCActivityLogger extends Logger {
 		if (writer == null)
 			writer = getWriter();
 
-		List<float[]> activation = ((MultiScaleArtificialPCSubject) sub)
+		Map<Integer, Float> activation = ((MultiScaleArtificialPCSubject) sub)
 				.getCellActivity();
 		PropertyHolder props = PropertyHolder.getInstance();
 		String trialName = props.getProperty("trial");
@@ -36,16 +37,10 @@ public class PCActivityLogger extends Logger {
 		String episode = props.getProperty("episode");
 		String cycle = props.getProperty("cycle");
 
-		int cellNum = 0;
-		for (float[] layerActivity : activation)
-			for (float cellActivation : layerActivity) {
-				if (cellActivation > 0) {
-					writer.println(trialName + '\t' + groupName + '\t'
-							+ subName + '\t' + episode + '\t' + cycle + '\t'
-							+ cellNum + '\t' + cellActivation);
-				}
-				cellNum++;
-			}
+		for (Integer cell : activation.keySet())
+			writer.println(trialName + '\t' + groupName + '\t' + subName + '\t'
+					+ episode + '\t' + cycle + '\t' + cell + '\t'
+					+ activation.get(cell));
 	}
 
 	@Override
