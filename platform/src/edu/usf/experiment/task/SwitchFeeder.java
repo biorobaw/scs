@@ -33,29 +33,31 @@ public class SwitchFeeder extends Task {
 
 	@Override
 	public void perform(Trial trial) {
-		perform(trial.getSubject(),  trial.getUniverse());
+		perform(trial.getSubject(), trial.getUniverse());
 	}
 
 	@Override
 	public void perform(Episode episode) {
-		perform(episode.getSubject(),  episode.getUniverse());
+		perform(episode.getSubject(), episode.getUniverse());
 	}
-	
+
 	private void perform(Subject s, Universe u) {
-		if(s.hasEaten()){
+		if (s.hasEaten()) {
 			int eatenFeeder = u.getFeedingFeeder();
-			
+
 			// Deactivate the feeding one
 			u.setActiveFeeder(eatenFeeder, false);
-			
+
 			List<Integer> enabled = u.getEnabledFeeders();
 			enabled.remove(new Integer(eatenFeeder));
-			for (Integer f : enabled){
-				u.setActiveFeeder(f, true);
+			// for (Integer f : enabled){
+			// u.setActiveFeeder(f, true);
+			//
+			// }
 
-			}
+			// Activate only one
+			u.setActiveFeeder(enabled.get(random.nextInt(enabled.size())), true);
 		}
 	}
-
 
 }

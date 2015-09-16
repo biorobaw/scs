@@ -16,13 +16,12 @@ import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.Module;
 
 /**
- * Module to generate random actions when the agent hasnt moved (just rotated)
- * for a while
+
  * 
  * @author biorob
  * 
  */
-public class WallTaxic extends Module {
+public class ObstacleEndTaxic extends Module {
 
 	private float[] votes;
 	private Subject sub;
@@ -31,7 +30,7 @@ public class WallTaxic extends Module {
 	private float negReward;
 	private float tooCloseDist;
 
-	public WallTaxic(String name, Subject sub, LocalizableRobot robot,
+	public ObstacleEndTaxic(String name, Subject sub, LocalizableRobot robot,
 			float taxicVal, float negReward, float tooCloseDist) {
 		super(name);
 		votes = new float[sub.getPossibleAffordances().size()];

@@ -32,6 +32,7 @@ public class Debug {
 	public static boolean printSchedulling = print && false;
 	public static boolean printDelta = print && false;
 	public static boolean printSilentSynapses = print && false;
-	public static boolean printValueAfter = print && false;	
+	public static boolean printValueAfter = print && false;
+	public static boolean printAvoidWallValues = print && false;	
 	
 }

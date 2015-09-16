@@ -134,4 +134,10 @@ public class DummyLocalizableRobot extends LocalizableRobot {
 		return 0;
 	}
 
+	@Override
+	public int closeToNoseWalls(float distToConsider) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

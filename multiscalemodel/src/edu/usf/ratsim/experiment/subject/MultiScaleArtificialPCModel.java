@@ -1,6 +1,7 @@
 package edu.usf.ratsim.experiment.subject;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.micronsl.Float1dPort;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
+import edu.usf.ratsim.micronsl.Float1dSparsePortMap;
 import edu.usf.ratsim.micronsl.FloatMatrixPort;
 import edu.usf.ratsim.micronsl.Model;
 import edu.usf.ratsim.micronsl.Module;
@@ -43,11 +45,12 @@ import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalValue;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalAC;
 import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalQL;
+import edu.usf.ratsim.nsl.modules.taxic.AvoidWallTaxic;
 import edu.usf.ratsim.nsl.modules.taxic.FlashingTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.taxic.FlashingTaxicValueSchema;
+import edu.usf.ratsim.nsl.modules.taxic.ObstacleEndTaxic;
 import edu.usf.ratsim.nsl.modules.taxic.TaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.taxic.TaxicValueSchema;
-import edu.usf.ratsim.nsl.modules.taxic.WallTaxic;
 
 public class MultiScaleArtificialPCModel extends Model {
 
@@ -92,6 +95,8 @@ public class MultiScaleArtificialPCModel extends Model {
 		// float wallFollowingVal = params.getChildFloat("wallFollowingVal");
 		float wallTaxicVal = params.getChildFloat("wallTaxicVal");
 		float wallTooCloseDist = params.getChildFloat("wallTooCloseDist");
+		float avoidWallTaxicVal = params.getChildFloat("avoidWallTaxicVal");
+		float avoidWallTaxicDist = params.getChildFloat("avoidWallTaxicDist");
 		int maxAttentionSpan = params.getChildInt("maxAttentionSpan");
 		float wallInhibition = params.getChildFloat("wallInhibition");
 		float explorationHalfLifeVal = params
@@ -142,7 +147,7 @@ public class MultiScaleArtificialPCModel extends Model {
 					+ i, lRobot, radius, minHDRadius, maxHDRadius,
 					numIntentions, numCCCellsPerLayer.get(i), placeCellType,
 					xmin, ymin, xmax, ymax, lRobot.getAllFeeders(),
-					goalCellProportion, layerLengths.get(i),wallInhibition);
+					goalCellProportion, layerLengths.get(i), wallInhibition);
 			ccl.addInPort("intention", intention.getOutPort("intention"));
 			conjCellLayers.add(ccl);
 			conjCellLayersPorts.add(ccl.getOutPort("activation"));
@@ -155,9 +160,10 @@ public class MultiScaleArtificialPCModel extends Model {
 				"Joint PC HD Intention State");
 		jointPCHDIntentionState.addInPorts(conjCellLayersPorts);
 		addModule(jointPCHDIntentionState);
-		
+
 		// Copy last state and votes before recomputing to use in RL algorithm
-		CopyStateModuleSparse stateCopy = new CopyStateModuleSparse("States Before");
+		CopyStateModuleSparse stateCopy = new CopyStateModuleSparse(
+				"States Before");
 		stateCopy.addInPort("toCopy",
 				jointPCHDIntentionState.getOutPort("jointState"), true);
 		addModule(stateCopy);
@@ -177,15 +183,15 @@ public class MultiScaleArtificialPCModel extends Model {
 			rlVotes = new ProportionalVotes("RL votes", numActions);
 		else if (voteType.equals("gradient")) {
 			List<Float> connProbs = params.getChildFloatList("votesConnProbs");
-			rlVotes = new GradientVotes("RL votes", numActions,connProbs, numCCCellsPerLayer);
+			rlVotes = new GradientVotes("RL votes", numActions, connProbs,
+					numCCCellsPerLayer);
 		} else if (voteType.equals("halfAndHalfConnection"))
 			rlVotes = new HalfAndHalfConnectionVotes("RL votes", numActions,
 					cellContribution);
 		else
 			throw new RuntimeException("Vote mechanism not implemented");
 		// RL votes are based on previous state
-		rlVotes.addInPort("states",
-				stateCopy.getOutPort("copy"));
+		rlVotes.addInPort("states", stateCopy.getOutPort("copy"));
 		rlVotes.addInPort("value", valuePort);
 
 		addModule(rlVotes);
@@ -234,11 +240,16 @@ public class MultiScaleArtificialPCModel extends Model {
 		// maxAttentionSpan);
 		// addModule(attExpl);
 		// votesPorts.add((Float1dPort) attExpl.getOutPort("votes"));
-		WallTaxic wallTaxic = new WallTaxic("Wall Taxic", subject, lRobot,
+		ObstacleEndTaxic wallTaxic = new ObstacleEndTaxic("Wall Taxic", subject, lRobot,
 				wallTaxicVal, nonFoodReward, wallTooCloseDist);
 		addModule(wallTaxic);
 		votesPorts.add((Float1dPort) wallTaxic.getOutPort("votes"));
 
+		AvoidWallTaxic avoidWallTaxic = new AvoidWallTaxic("Avoid Wall Taxic", subject, lRobot,
+				avoidWallTaxicVal, avoidWallTaxicDist);
+		addModule(avoidWallTaxic);
+		votesPorts.add((Float1dPort) avoidWallTaxic.getOutPort("votes"));
+		
 		// Joint votes
 		JointStatesManySum jointVotes = new JointStatesManySum("Votes");
 		jointVotes.addInPorts(votesPorts);
@@ -257,7 +268,7 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		Port takenActionPort = actionPerformer.getOutPort("takenAction");
 		// Add the taken action ports to some previous exploration modules
-//		attExpl.addInPort("takenAction", takenActionPort, true);
+		// attExpl.addInPort("takenAction", takenActionPort, true);
 		stillExpl.addInPort("takenAction", takenActionPort, true);
 
 		List<Port> taxicValueEstimationPorts = new LinkedList<Port>();
@@ -300,7 +311,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		else if (voteType.equals("gradient")) {
 			List<Float> connProbs = params.getChildFloatList("valueConnProbs");
 			rlValue = new GradientValue("RL value estimation", numActions,
-					 connProbs, numCCCellsPerLayer);
+					connProbs, numCCCellsPerLayer);
 		} else
 			throw new RuntimeException("Vote mechanism not implemented");
 		rlValue.addInPort("states",
@@ -405,14 +416,16 @@ public class MultiScaleArtificialPCModel extends Model {
 			gs.newTrial();
 	}
 
-	public void deactivatePCLRadial(List<Integer> layersToDeactivate, float constant) {
+	public void deactivatePCLRadial(List<Integer> layersToDeactivate,
+			float constant) {
 		for (Integer layer : layersToDeactivate) {
 			System.out.println("[+] Deactivating layer " + layer);
 			conjCellLayers.get(layer).anesthtizeRadial(constant);
 		}
 	}
-	
-	public void deactivatePCLProportion(List<Integer> layersToDeactivate, float proportion) {
+
+	public void deactivatePCLProportion(List<Integer> layersToDeactivate,
+			float proportion) {
 		for (Integer layer : layersToDeactivate) {
 			System.out.println("[+] Deactivating layer " + layer);
 			conjCellLayers.get(layer).anesthtizeProportion(proportion);
@@ -479,10 +492,11 @@ public class MultiScaleArtificialPCModel extends Model {
 		}
 	}
 
-	public List<float[]> getCellActivation() {
-		List<float[]> activation = new LinkedList<float[]>();
+	public Map<Integer, Float> getCellActivation() {
+		Map<Integer, Float> activation = new LinkedHashMap<Integer, Float>();
 		for (ArtificialConjCellLayer layer : conjCellLayers)
-			activation.add(((Float1dPortArray)layer.getOutPort("activation")).getData());
+			activation.putAll(((Float1dSparsePortMap) layer
+					.getOutPort("activation")).getNonZero());
 		return activation;
 	}
 }

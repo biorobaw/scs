@@ -117,7 +117,7 @@ public class MultiScaleArtificialPCSubject extends Subject {
 		model.remapLayers(indexList);
 	}
 
-	public List<float[]> getCellActivity() {
+	public Map<Integer, Float> getCellActivity() {
 		return model.getCellActivation();
 	}
 	

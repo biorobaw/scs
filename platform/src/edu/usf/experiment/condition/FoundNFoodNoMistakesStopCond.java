@@ -31,15 +31,15 @@ public class FoundNFoodNoMistakesStopCond implements Condition {
 			if (!u.isFeederEnabled(u.getFoundFeeder())) {
 				// Trying to eat from wrong feeder
 				toGo = n;
-			} else if (u.getFoundFeeder() != lastFeeder) {
+			} else if (sub.hasEaten()) {
 				// Eating from an enabled feeder
 				flashing.add(u.isFeederFlashing(u.getFoundFeeder()));
 				toGo--;
 				lastFeeder = u.getFoundFeeder();
-			} else {
-				// If eating from enabled feeder but same as last one, no
-				// penalization
 			}
+			// If eating from enabled feeder but not the active one, no
+			// penalization
+
 		}
 		if (Debug.printFoundNNoMistakes)
 			System.out.println("Feeders to go " + toGo);
