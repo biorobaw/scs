@@ -45,11 +45,12 @@ import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalValue;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalAC;
 import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalQL;
+import edu.usf.ratsim.nsl.modules.taxic.AvoidWallTaxic;
 import edu.usf.ratsim.nsl.modules.taxic.FlashingTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.taxic.FlashingTaxicValueSchema;
+import edu.usf.ratsim.nsl.modules.taxic.ObstacleEndTaxic;
 import edu.usf.ratsim.nsl.modules.taxic.TaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.taxic.TaxicValueSchema;
-import edu.usf.ratsim.nsl.modules.taxic.WallTaxic;
 
 public class MultiScaleArtificialPCModel extends Model {
 
@@ -94,6 +95,8 @@ public class MultiScaleArtificialPCModel extends Model {
 		// float wallFollowingVal = params.getChildFloat("wallFollowingVal");
 		float wallTaxicVal = params.getChildFloat("wallTaxicVal");
 		float wallTooCloseDist = params.getChildFloat("wallTooCloseDist");
+		float avoidWallTaxicVal = params.getChildFloat("avoidWallTaxicVal");
+		float avoidWallTaxicDist = params.getChildFloat("avoidWallTaxicDist");
 		int maxAttentionSpan = params.getChildInt("maxAttentionSpan");
 		float wallInhibition = params.getChildFloat("wallInhibition");
 		float explorationHalfLifeVal = params
@@ -237,11 +240,16 @@ public class MultiScaleArtificialPCModel extends Model {
 		// maxAttentionSpan);
 		// addModule(attExpl);
 		// votesPorts.add((Float1dPort) attExpl.getOutPort("votes"));
-		WallTaxic wallTaxic = new WallTaxic("Wall Taxic", subject, lRobot,
+		ObstacleEndTaxic wallTaxic = new ObstacleEndTaxic("Wall Taxic", subject, lRobot,
 				wallTaxicVal, nonFoodReward, wallTooCloseDist);
 		addModule(wallTaxic);
 		votesPorts.add((Float1dPort) wallTaxic.getOutPort("votes"));
 
+		AvoidWallTaxic avoidWallTaxic = new AvoidWallTaxic("Avoid Wall Taxic", subject, lRobot,
+				avoidWallTaxicVal, avoidWallTaxicDist);
+		addModule(avoidWallTaxic);
+		votesPorts.add((Float1dPort) avoidWallTaxic.getOutPort("votes"));
+		
 		// Joint votes
 		JointStatesManySum jointVotes = new JointStatesManySum("Votes");
 		jointVotes.addInPorts(votesPorts);

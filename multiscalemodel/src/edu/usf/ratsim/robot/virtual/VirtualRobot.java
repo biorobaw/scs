@@ -342,4 +342,9 @@ public class VirtualRobot extends LocalizableRobot {
 		return halfFieldOfView;
 	}
 
+	@Override
+	public int closeToNoseWalls(float distToConsider) {
+		return universe.isWallCloseToSides(ROBOT_LENGTH/2, distToConsider);
+	}
+
 }

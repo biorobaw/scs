@@ -11,9 +11,11 @@ import javax.media.j3d.Locale;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.View;
 import javax.media.j3d.VirtualUniverse;
+import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
+import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
 import org.w3c.dom.Document;
@@ -21,12 +23,10 @@ import org.w3c.dom.Document;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
-import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.Wall;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
-import edu.usf.experiment.utils.IOUtils;
 import edu.usf.ratsim.support.XMLDocReader;
 
 /**
@@ -487,6 +487,64 @@ public class VirtUniverse extends Universe {
 		}
 		// System.out.println(inField + " " + !intersects + " " + closeEnough);
 		return inField && !intersects && closeEnough;
+	}
+	
+	/**
+	 * 
+	 * @param bodyToNoseLength
+	 * @param distToConsider
+	 * @return 0 for no close wall, 1 for left, 2 for right, 3 for both
+	 */
+	public int isWallCloseToSides(float bodyToNoseLength, float distToConsider){
+		// Find the nose
+		Transform3D rPos = new Transform3D(robot.getT());
+		Transform3D toNose = new Transform3D();
+		toNose.setTranslation(new Vector3d(bodyToNoseLength, 0, 0));
+		rPos.mul(toNose);
+		Transform3D nose = rPos;
+		// Find left of nose
+		Transform3D leftOfNose = new Transform3D(nose);
+		Transform3D rotate90 = new Transform3D();
+		rotate90.setRotation(new AxisAngle4f(new Vector3f(0,0,1), (float) (Math.PI/2)));
+		leftOfNose.mul(rotate90);
+		Transform3D lengthToConsider = new Transform3D();
+		lengthToConsider.setTranslation(new Vector3f(distToConsider, 0, 0));
+		leftOfNose.mul(lengthToConsider);
+		// Find rigth of nose
+		Transform3D rightOfNose = new Transform3D(nose);
+		Transform3D rotateminus90 = new Transform3D();
+		rotateminus90.setRotation(new AxisAngle4f(new Vector3f(0,0,1), (float) (-Math.PI/2)));
+		rightOfNose.mul(rotateminus90);
+		rightOfNose.mul(lengthToConsider);		
+		// Intersect with walls
+		Vector3f nosePoint = new Vector3f();
+		nose.get(nosePoint);
+		Coordinate noseCoord = new Coordinate(nosePoint.x, nosePoint.y);
+		Vector3f leftOfNosePoint = new Vector3f();
+		leftOfNose.get(leftOfNosePoint);
+		Coordinate leftOfNoseCoord = new Coordinate(leftOfNosePoint.x, leftOfNosePoint.y);
+		Vector3f rightOfNoisePoint = new Vector3f();
+		rightOfNose.get(rightOfNoisePoint);
+		Coordinate rightOfNoseCoord = new Coordinate(rightOfNoisePoint.x, rightOfNoisePoint.y);
+		
+		boolean intersectsLeft = false;
+		LineSegment leftSeg = new LineSegment(noseCoord, leftOfNoseCoord);
+		for (Wall w : getWalls())
+			intersectsLeft |= w.intersects(leftSeg);
+		
+		boolean intersectsRight = false;
+		LineSegment rightSeg = new LineSegment(noseCoord, rightOfNoseCoord);
+		for (Wall w : getWalls())
+			intersectsRight |= w.intersects(rightSeg);
+		
+		if (!intersectsLeft && !intersectsRight)
+			return 0;
+		else if (!intersectsLeft)
+			return 2;
+		else if (!intersectsRight)
+			return 1;
+		else
+			return 3;
 	}
 
 }

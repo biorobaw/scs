@@ -43,4 +43,6 @@ public abstract class LocalizableRobot extends Robot {
 	public abstract float getDistanceToClosestWall();
 
 	public abstract float getHalfFieldView();
+
+	public abstract int closeToNoseWalls(float distToConsider);
 }
