@@ -681,7 +681,7 @@
 				<plotScript>/edu/usf/experiment/plot/plotTimeouts.r</plotScript>
 			</params>
 		</plotter> -->
-		<plotter> <name>edu.usf.experiment.plot.PlotGatherer</name> </plotter> 
+		<!-- <plotter> <name>edu.usf.experiment.plot.PlotGatherer</name> </plotter> -->
 		<!-- <plotter> <name>edu.usf.experiment.plot.PolicyPlotter</name> </plotter> -->
 	</afterExperimentPlotters>
 </experiment>

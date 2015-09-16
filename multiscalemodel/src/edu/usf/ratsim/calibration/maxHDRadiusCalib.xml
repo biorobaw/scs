@@ -4,15 +4,11 @@
 	<experiment>multiscalemodel/src/edu/usf/ratsim/experiment/xml/multiFeedersTrainRecallSmallObs.xml</experiment>
 	
 	<model>
-		<wallInhibition>
-			<value>.1</value>
-			<value>.2</value>
-			<value>.4</value>
-			<value>.8</value>
-			<value>1.6</value>
-			<value>3.2</value>
-			<value>6.4</value>
-		</wallInhibition>
+		<maxHDRadius>
+			<value>1.57</value>
+			<value>3.14</value>
+			<value>6.28</value>
+		</maxHDRadius>
 	</model>
 	
 </calibration>
