@@ -72,7 +72,7 @@ public class RobotNode extends ExpUniverseNode {
 
 		// Transforms
 		Vector3f robotCameraOffset = new Vector3f(0.1f, 0, CAMERA_HEIGHT);
-		TransformGroup camTG = new TransformGroup();
+		TransformGroup camTG = new TransformGroup(); 
 		Transform3D camT = new Transform3D();
 		camT.setTranslation(robotCameraOffset);
 		Transform3D camRot = new Transform3D();

@@ -64,7 +64,7 @@ public class VirtualRobot extends LocalizableRobot {
 					+ " before Virtual Robot is created");
 
 		r = RandomSingleton.getInstance();
-		
+
 		closestFeederValid = false;
 	}
 
@@ -84,7 +84,7 @@ public class VirtualRobot extends LocalizableRobot {
 		universe.moveRobot(new Vector3f(dist + dist * r.nextFloat() * noise,
 				0f, 0f));
 		universe.rotateRobot((2 * r.nextFloat() - 1) * translationRotationNoise);
-		
+
 		closestFeederValid = false;
 	}
 
@@ -125,7 +125,7 @@ public class VirtualRobot extends LocalizableRobot {
 	public List<Feeder> getVisibleFeeders(int[] except) {
 		List<Feeder> res = new LinkedList<Feeder>();
 		for (Integer i : universe.getFeederNums())
-			if (! in(i, except))
+			if (!in(i, except))
 				if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)) {
 					// Get relative position
 					Point3f relFPos = getRelativePos(universe
@@ -191,26 +191,25 @@ public class VirtualRobot extends LocalizableRobot {
 	@Override
 	public Feeder getClosestFeeder(int lastFeeder) {
 		// If feeder was invalidated - re compute it
-//		if (!closestFeederValid){
-//			previouslyFoundFeeder = getClosestFeederImpl(-1);
-//			closestFeederValid = true;
-//		}
-//		
-//		// No feeder visible at all
-//		if (previouslyFoundFeeder == null)
-//			return null;
-//		
-//		// Optimize to return previously computed if hasnt moved
-//		if (previouslyFoundFeeder.getId() == lastFeeder){
-			return getClosestFeederImpl(lastFeeder);
-//		} else
-//			return previouslyFoundFeeder;
-				
-			
+		// if (!closestFeederValid){
+		// previouslyFoundFeeder = getClosestFeederImpl(-1);
+		// closestFeederValid = true;
+		// }
+		//
+		// // No feeder visible at all
+		// if (previouslyFoundFeeder == null)
+		// return null;
+		//
+		// // Optimize to return previously computed if hasnt moved
+		// if (previouslyFoundFeeder.getId() == lastFeeder){
+		return getClosestFeederImpl(lastFeeder);
+		// } else
+		// return previouslyFoundFeeder;
+
 	}
 
 	private Feeder getClosestFeederImpl(int lastFeeder) {
-		int [] except = {lastFeeder};
+		int[] except = { lastFeeder };
 		List<Feeder> feeders = getVisibleFeeders(except);
 
 		if (feeders.isEmpty())
@@ -223,7 +222,6 @@ public class VirtualRobot extends LocalizableRobot {
 					.distance(zero))
 				closest = feeder;
 
-		
 		return closest;
 	}
 
@@ -256,21 +254,23 @@ public class VirtualRobot extends LocalizableRobot {
 				TurnAffordance ta = (TurnAffordance) af;
 				// Either it can move there, or it cannot move forward and the
 				// other angle is not an option
-				realizable = !universe.canRobotMove(0, ROBOT_LENGTH * lookaheadSteps)
-				// && !canRobotMove(-ta.getAngle(), ROBOT_LENGTH))
-						|| universe.canRobotMove(ta.getAngle(), ROBOT_LENGTH* lookaheadSteps);
+				realizable = !universe.canRobotMove(0, ROBOT_LENGTH
+						* lookaheadSteps)
+						// && !canRobotMove(-ta.getAngle(), ROBOT_LENGTH))
+						|| universe.canRobotMove(ta.getAngle(), ROBOT_LENGTH
+								* lookaheadSteps);
 				// realizable = true;
 			} else if (af instanceof ForwardAffordance)
-				realizable = universe.canRobotMove(0, ROBOT_LENGTH* lookaheadSteps);
-			else if (af instanceof EatAffordance){
+				realizable = universe.canRobotMove(0, ROBOT_LENGTH
+						* lookaheadSteps);
+			else if (af instanceof EatAffordance) {
 				// realizable = hasRobotFoundFood();
 				if (getClosestFeeder() != null)
 					realizable = getClosestFeeder().getPosition().distance(
 							new Point3f()) < closeThrs;
 				else
 					realizable = false;
-			}
-			else
+			} else
 				throw new RuntimeException("Affordance "
 						+ af.getClass().getName() + " not supported by robot");
 
@@ -331,7 +331,7 @@ public class VirtualRobot extends LocalizableRobot {
 		List<Point3f> absoluteWEnds = universe.getVisibleWallEnds(
 				halfFieldOfView, visionDist);
 		List<Point3f> relativeWEnds = new LinkedList<Point3f>();
-		for (Point3f p : absoluteWEnds){
+		for (Point3f p : absoluteWEnds) {
 			relativeWEnds.add(getRelativePos(p));
 		}
 		return relativeWEnds;
@@ -344,7 +344,25 @@ public class VirtualRobot extends LocalizableRobot {
 
 	@Override
 	public int closeToNoseWalls(float distToConsider) {
-		return universe.isWallCloseToSides(ROBOT_LENGTH/2, distToConsider);
+		return universe.isWallCloseToSides(ROBOT_LENGTH / 2, distToConsider);
+	}
+
+	@Override
+	public Feeder getFeederInFront() {
+		int except[] = {};
+		List<Feeder> visFeeders = getVisibleFeeders(except);
+		float angle = Float.MAX_VALUE;
+		Feeder feederInFront = null;
+		for (Feeder f : visFeeders) {
+			float angleToFeeder = GeomUtils.rotToAngle(GeomUtils.angleToPoint(f
+					.getPosition()));
+			if (Math.abs(angleToFeeder)<Math.abs(angle)){
+				angle = angleToFeeder;
+				feederInFront = f;
+			}
+		}
+		
+		return feederInFront;
 	}
 
 }

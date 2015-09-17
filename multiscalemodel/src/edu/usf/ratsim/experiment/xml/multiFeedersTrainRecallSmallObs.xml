@@ -583,7 +583,7 @@
 				<task>
 					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
 					<params>
-						<timeout>150</timeout>
+						<timeout>250</timeout>
 					</params>
 				</task>
 			</afterCycleTasks>
@@ -622,7 +622,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>50000</max>
+						<max>200000</max>
 					</params>
 				</condition>
 				<!-- Has eaten from 15 feeders with no errors and only up to two flashing feeders in the sequence-->

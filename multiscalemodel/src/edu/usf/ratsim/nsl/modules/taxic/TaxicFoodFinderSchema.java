@@ -72,40 +72,40 @@ public class TaxicFoodFinderSchema extends Module {
 			feederToEat = robot.isFeederClose()
 					&& closestFeeder != goalFeeder.get(0)
 					&& closestFeeder != goalFeeder.get(1);
-		else 
+		else
 			feederToEat = robot.isFeederClose();
-		
+
+		Feeder f = robot.getFeederInFront();
+
 		for (Affordance af : affs) {
 			float value = Float.NEGATIVE_INFINITY;
 			if (af.isRealizable()) {
 				if (af instanceof TurnAffordance
 						|| af instanceof ForwardAffordance) {
-					if (!feederToEat){
-						for (Feeder f : robot.getVisibleFeeders(goalFeeder
-								.getData())) {
-							if (!rememberLastTwo || (f.getId() != goalFeeder.get(0)
-									&& f.getId() != goalFeeder.get(1))) {
-								Point3f newPos = GeomUtils.simulate(
-										f.getPosition(), af);
-								Quat4f rotToNewPos = GeomUtils
-										.angleToPoint(newPos);
+					if (!feederToEat) {
+						// for (Feeder f : robot.getVisibleFeeders(goalFeeder
+						// .getData())) {
+						if (f != null) {
+							Point3f newPos = GeomUtils.simulate(
+									f.getPosition(), af);
+							Quat4f rotToNewPos = GeomUtils.angleToPoint(newPos);
 
-								float angleDiff = Math.abs(GeomUtils
-										.rotToAngle(rotToNewPos));
-								float feederVal;
-								if (angleDiff < robot.getHalfFieldView())
-									feederVal = getFeederValue(newPos);
-								else
-									feederVal = -getFeederValue(f.getPosition());
-								if (feederVal > value)
-									value = feederVal;
-							}
+							float angleDiff = Math.abs(GeomUtils
+									.rotToAngle(rotToNewPos));
+							float feederVal;
+							if (angleDiff < robot.getHalfFieldView())
+								feederVal = getFeederValue(newPos);
+							else
+								feederVal = -getFeederValue(f.getPosition());
+							if (feederVal > value)
+								value = feederVal;
 						}
+						// }
 					}
 				} else if (af instanceof EatAffordance) {
 					if (feederToEat) {
-						float feederValue = getFeederValue(robot.getClosestFeeder()
-								.getPosition());
+						float feederValue = getFeederValue(robot
+								.getClosestFeeder().getPosition());
 						if (feederValue > value)
 							value = feederValue;
 						// value += reward;
@@ -127,7 +127,7 @@ public class TaxicFoodFinderSchema extends Module {
 
 	private float getFeederValue(Point3f feederPos) {
 		float steps = GeomUtils.getStepsToFeeder(feederPos, subject);
-		return (float) Math.max(0, (reward + negReward * steps)); 
+		return (float) Math.max(0, (reward + negReward * steps));
 	}
 
 	@Override
