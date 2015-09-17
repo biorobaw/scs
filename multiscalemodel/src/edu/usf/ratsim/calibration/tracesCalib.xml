@@ -4,15 +4,13 @@
 	<experiment>multiscalemodel/src/edu/usf/ratsim/experiment/xml/multiFeedersTrainRecallSmallObs.xml</experiment>
 	
 	<model>
-		<wallInhibition>
+		<tracesDecay>
 			<value>.1</value>
-			<value>.2</value>
-			<value>.4</value>
-			<value>.8</value>
-			<value>1.6</value>
-			<value>3.2</value>
-			<value>6.4</value>
-		</wallInhibition>
+			<value>.3</value>
+			<value>.5</value>
+			<value>.7</value>
+			<value>.9</value>
+		</tracesDecay>
 	</model>
 	
 </calibration>

@@ -7,8 +7,10 @@
 
 logPath=$1
 if [ -z "$SLURM_ARRAY_TASK_ID" ]; then
+  echo Executing individual from parameters: $3
   individual=$3
 else
+  echo Executing individual from slurm array: $SLURM_ARRAY_TASK_ID
   individual=$SLURM_ARRAY_TASK_ID
 fi
 

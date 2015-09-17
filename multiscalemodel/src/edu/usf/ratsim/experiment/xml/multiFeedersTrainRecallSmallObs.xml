@@ -76,7 +76,7 @@
 			<!-- Reward value for food -->
 			<foodReward>1000</foodReward>
 			<!-- Reward value given when it doesnt eat -->
-			<nonFoodReward>-20</nonFoodReward>
+			<nonFoodReward>-15</nonFoodReward>
 			<!-- Lambda discount factor for the taxic module-->
 			<taxicDiscountFactor>1</taxicDiscountFactor>
 			<!-- Lambda discount factor for the learning algorithm -->
@@ -108,7 +108,7 @@
 			<!-- Minimum distance to take wall into account -->
 			<wallTooCloseDist>.05</wallTooCloseDist>			
 			
-			<avoidWallTaxicVal>10</avoidWallTaxicVal>
+			<avoidWallTaxicVal>20</avoidWallTaxicVal>
 			<avoidWallTaxicDist>.1</avoidWallTaxicDist>
 			<!-- Attentional span for still exploration -->
 			<!-- TODO: look at this -->
@@ -684,7 +684,7 @@
 				<plotScript>/edu/usf/experiment/plot/plotTimeouts.r</plotScript>
 			</params>
 		</plotter> -->
-		<plotter> <name>edu.usf.experiment.plot.PlotGatherer</name> </plotter> 
+		<!-- <plotter> <name>edu.usf.experiment.plot.PlotGatherer</name> </plotter> -->
 		<!-- <plotter> <name>edu.usf.experiment.plot.PolicyPlotter</name> </plotter> -->
 	</afterExperimentPlotters>
 </experiment>
