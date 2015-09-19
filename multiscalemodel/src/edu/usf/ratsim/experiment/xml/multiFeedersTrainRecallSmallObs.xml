@@ -9,7 +9,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>false</display>
+			<display>true</display>
 		</params>
 	</universe>
 	
@@ -29,7 +29,7 @@
 			<visionDist>10</visionDist>
 			<!-- How far away can the robot eat food. This should be shorter than the universe
 				threshold -->
-			<closeThrs>.1</closeThrs>
+			<closeThrs>.15</closeThrs>
 		</params>
 	</robot>
 	
@@ -63,7 +63,8 @@
 			<maxPCRadius>.1428</maxPCRadius>
 			<!-- Type of conjunctive cell -->
 			<placeCells>wallGoalExponential</placeCells>
-			<!-- Wall cell modulation. How much does a wall modulate the place field. Greater means less activity -->
+			<!-- Wall cell modulation. How much does a wall modulate the place field. Greater
+				means less activity -->
 			<wallInhibition>1</wallInhibition>
 			<!-- Amount of cells placed near the goal -->
 			<goalCellProportion>0.5</goalCellProportion>
@@ -76,7 +77,7 @@
 			<!-- Reward value for food -->
 			<foodReward>1000</foodReward>
 			<!-- Reward value given when it doesnt eat -->
-			<nonFoodReward>-15</nonFoodReward>
+			<nonFoodReward>-1</nonFoodReward>
 			<!-- Lambda discount factor for the taxic module-->
 			<taxicDiscountFactor>1</taxicDiscountFactor>
 			<!-- Lambda discount factor for the learning algorithm -->
@@ -90,7 +91,7 @@
 			<!-- Value associated with a flashing feeder -->
 			<flashingReward>500</flashingReward>
 			<!-- Value associated with a non flashing feeder -->
-			<nonFlashingReward>50</nonFlashingReward>
+			<nonFlashingReward>20</nonFlashingReward>
 			<!-- Whether the rat can remember last two feeders -->
 			<!-- TODO: take this out -->
 			<rememberLastTwo>false</rememberLastTwo>
@@ -104,9 +105,9 @@
 			<!-- Half life value for decay exploration -->
 			<explorationHalfLifeVal>1</explorationHalfLifeVal>
 			<!-- Value assigned to wall actions for the wall taxic modules -->
-			<wallTaxicVal>25</wallTaxicVal>
+			<wallTaxicVal>100</wallTaxicVal>
 			<!-- Minimum distance to take wall into account -->
-			<wallTooCloseDist>.05</wallTooCloseDist>			
+			<wallTooCloseDist>.05</wallTooCloseDist>
 			
 			<avoidWallTaxicVal>20</avoidWallTaxicVal>
 			<avoidWallTaxicDist>.1</avoidWallTaxicDist>
@@ -151,56 +152,29 @@
 		<tasks>
 		</tasks>
 	</group>
-<!--	
- <group>
-		<name>NegControl</name>
-		<numMembers>64</numMembers>
-		<params>
-		</params>
-		<tasks>
-		</tasks>
-	</group>
-	
-	<group>
-		<name>TimeoutControl</name>
-		<numMembers>64</numMembers>
-		<params>
-		</params>
-		<tasks>
-		</tasks>
-	</group>
--->	
+	<!-- <group> <name>NegControl</name> <numMembers>64</numMembers> <params> </params>
+		<tasks> </tasks> </group> <group> <name>TimeoutControl</name> <numMembers>64</numMembers>
+		<params> </params> <tasks> </tasks> </group> -->
 	<!-- Task to be performed before the eperiment -->
 	<beforeExperimentTasks>
 		<!-- Enable feeders for the to be able to give food -->
 		<task>
 			<name>edu.usf.experiment.task.EnableRandomFeedersTriangle</name>
-			<params>
-			</params>
+
 		</task>
 	</beforeExperimentTasks>
 	
 	<!-- Loggers to be executed before the eperiment -->
 	<beforeExperimentLoggers>
 		<!-- Log walls -->
-		<!--<logger>
-			<name>edu.usf.experiment.log.WallLogger</name>
-			<params>
-			</params>
-		</logger>-->
+		<!--<logger> <name>edu.usf.experiment.log.WallLogger</name> <params> </params> </logger>-->
 		<!-- Log conjunctive cells -->
-		<!--<logger>
-			<name>edu.usf.ratsim.experiment.log.PCLogger</name>
-		</logger>-->
+		<!--<logger> <name>edu.usf.ratsim.experiment.log.PCLogger</name> </logger>-->
 	</beforeExperimentLoggers>
 	<!-- Plots to perform before the experiment -->
 	<beforeExperimentPlotters>
 		<!-- Convert CSV files to rdata files -->
-		<!-- <plotter>
-	
-	
-			<name>edu.usf.experiment.plot.CSVConverter</name>
-		</plotter> --> 
+		<!-- <plotter> <name>edu.usf.experiment.plot.CSVConverter</name> </plotter> -->
 		<!-- <plotter> <name>edu.usf.experiment.plot.PlotGatherer</name> </plotter> -->
 		<!--<plotter> <name>edu.usf.ratsim.experiment.plot.PCPlotter</name> </plotter>-->
 	</beforeExperimentPlotters>
@@ -223,7 +197,7 @@
 			<!-- Number of episodes -->
 			<number>1</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>00</sleep>
+			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Flash one of the feeders -->
@@ -266,6 +240,17 @@
 					<params>
 					</params>
 				</logger>
+				<!--<logger>
+					<name>edu.usf.experiment.log.ValueLogger</name>
+					<params>
+						<circle>false</circle>
+						<interval>.1</interval>
+						<angleInterval>.78</angleInterval>
+						<numIntentions>1</numIntentions>
+					</params>
+				</logger>-->
+				<!-- Log each position estimated value -->
+				
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->
 			<afterEpisodeLoggers>
@@ -275,6 +260,7 @@
 					<params>
 					</params>
 				</logger>
+				
 				<!-- Log each position estimated value -->
 				<!-- <logger> <name>edu.usf.experiment.log.ValueLogger</name> <params> <circle>false</circle>
 					<interval>.1</interval> <angleInterval>.78</angleInterval> <numIntentions>8</numIntentions>
@@ -319,7 +305,8 @@
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
 				<!-- Plot value -->
-				<!-- <plotter> <name>edu.usf.experiment.plot.ValuePlotter</name> </plotter> -->
+				
+				 <!--<plotter> <name>edu.usf.experiment.plot.ValuePlotter</name> </plotter> -->
 				
 			</afterEpisodePlotters>
 		</episodes>
@@ -442,7 +429,8 @@
 						<max>200000</max>
 					</params>
 				</condition>
-				<!-- Has eaten from 15 feeders with no errors and only up to two flashing feeders in the sequence-->
+				<!-- Has eaten from 15 feeders with no errors and only up to two flashing feeders
+					in the sequence-->
 				<condition>
 					<name>edu.usf.experiment.condition.FoundNFoodNoMistakesStopCond</name>
 					<params>
@@ -531,7 +519,7 @@
 			<!-- Number of episodes -->
 			<number>1</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>0</sleep>
+			<sleep>50</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Turn of the flash of all the feeders -->
@@ -625,7 +613,8 @@
 						<max>200000</max>
 					</params>
 				</condition>
-				<!-- Has eaten from 15 feeders with no errors and only up to two flashing feeders in the sequence-->
+				<!-- Has eaten from 15 feeders with no errors and only up to two flashing feeders
+					in the sequence-->
 				<condition>
 					<name>edu.usf.experiment.condition.FoundNFoodNoMistakesStopCond</name>
 					<params>
@@ -678,12 +667,8 @@
 		<plotter>
 			<name>edu.usf.experiment.plot.RuntimePerTrialPlotter</name>
 		</plotter>
-		<!--<plotter>
-			<name>edu.usf.experiment.plot.RPlotter</name>
-			<params>
-				<plotScript>/edu/usf/experiment/plot/plotTimeouts.r</plotScript>
-			</params>
-		</plotter> -->
+		<!--<plotter> <name>edu.usf.experiment.plot.RPlotter</name> <params> <plotScript>/edu/usf/experiment/plot/plotTimeouts.r</plotScript>
+			</params> </plotter> -->
 		<!-- <plotter> <name>edu.usf.experiment.plot.PlotGatherer</name> </plotter> -->
 		<!-- <plotter> <name>edu.usf.experiment.plot.PolicyPlotter</name> </plotter> -->
 	</afterExperimentPlotters>
