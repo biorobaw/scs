@@ -19,6 +19,7 @@ public class ValueLogger extends Logger {
 	private float angleInterval;
 	private float interval;
 	private boolean circle;
+	private PrintWriter writer;
 
 	public ValueLogger(ElementWrapper params, String logPath) {
 		super(params, logPath);
@@ -27,16 +28,17 @@ public class ValueLogger extends Logger {
 		angleInterval = params.getChildFloat("angleInterval");
 		interval = params.getChildFloat("interval");
 		circle = params.getChildBoolean("circle");
+		
+		writer = getWriter();
 	}
 
 	public void log(Universe univ, Subject sub) {
-		PrintWriter writer = getWriter();
-
 		PropertyHolder props = PropertyHolder.getInstance();
 		String trialName = props.getProperty("trial");
 		String groupName = props.getProperty("group");
 		String subName = props.getProperty("subject");
 		String episodeName = props.getProperty("episode");
+		String cycle = props.getProperty("cycle");
 
 		System.out.println("Starting to log value");
 
@@ -61,7 +63,7 @@ public class ValueLogger extends Logger {
 
 						for (Float k : angleVals.keySet())
 							writer.println(trialName + '\t' + groupName + '\t'
-									+ subName + '\t' + episodeName + '\t' + x
+									+ subName + '\t' + episodeName + '\t' + cycle+ "\t" + x
 									+ "\t" + y + "\t" + intention + "\t" + k
 									+ "\t" + angleVals.get(k));
 					}
@@ -89,12 +91,12 @@ public class ValueLogger extends Logger {
 
 	@Override
 	public void finalizeLog() {
-
+		writer.close();
 	}
 
 	@Override
 	public String getHeader() {
-		return "trial\tgroup\tsubject\trepetition\tx\ty\tintention\tangle\tval";
+		return "trial\tgroup\tsubject\trepetition\tcycle\tx\ty\tintention\tangle\tval";
 	}
 
 	@Override
