@@ -216,7 +216,7 @@ public class ArtificialConjCellLayer extends Module {
 	}
 
 	public void clear() {
-		((Float1dPortArray) getOutPort("activation")).set(0);
+		((Float1dSparsePortMap) getOutPort("activation")).clear();
 	}
 
 	public void remap() {
