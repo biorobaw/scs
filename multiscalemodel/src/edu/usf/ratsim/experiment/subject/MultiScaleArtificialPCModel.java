@@ -18,6 +18,7 @@ import edu.usf.ratsim.micronsl.FloatMatrixPort;
 import edu.usf.ratsim.micronsl.Model;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.micronsl.Port;
+import edu.usf.ratsim.nsl.modules.ActiveFeederGoalDecider;
 import edu.usf.ratsim.nsl.modules.ArtificialConjCellLayer;
 import edu.usf.ratsim.nsl.modules.ClosestFeeder;
 import edu.usf.ratsim.nsl.modules.CopyStateModule;
@@ -125,12 +126,16 @@ public class MultiScaleArtificialPCModel extends Model {
 		LastTriedToEatGoalDecider lastTriedToEatGoalDecider = new LastTriedToEatGoalDecider(
 				"Last Tried To Eat Goal Decider");
 		addModule(lastTriedToEatGoalDecider);
+		
+		ActiveFeederGoalDecider activeFeederGoalDecider = new ActiveFeederGoalDecider(
+				"Active Feeder Goal Decider");
+		addModule(activeFeederGoalDecider);
 
 		Module intention;
 		if (numIntentions > 1) {
 			intention = new LastAteIntention("Intention", numIntentions);
 			intention.addInPort("goalFeeder",
-					lastAteGoalDecider.getOutPort("goalFeeder"));
+					activeFeederGoalDecider.getOutPort("goalFeeder"));
 		} else {
 			intention = new NoIntention("Intention", numIntentions);
 		}

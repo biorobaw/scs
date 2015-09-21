@@ -1,18 +1,18 @@
 package edu.usf.ratsim.nsl.modules;
 
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
-import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.ratsim.micronsl.Bool1dPort;
 import edu.usf.ratsim.micronsl.Int0dPort;
 import edu.usf.ratsim.micronsl.Int1dPort;
 import edu.usf.ratsim.micronsl.Module;
 
-public class LastAteGoalDecider extends Module {
+public class ActiveFeederGoalDecider extends Module {
 
 	public int[] goalFeeder;
 	public static int currentGoal;
 
-	public LastAteGoalDecider(String name) {
+	public ActiveFeederGoalDecider(String name) {
 		super(name);
 
 		goalFeeder = new int[1];
@@ -22,18 +22,7 @@ public class LastAteGoalDecider extends Module {
 	}
 
 	public void run() {
-		Bool1dPort subAte = (Bool1dPort) getInPort("subAte");
-		Int0dPort closestFeeder = (Int0dPort) getInPort("closestFeeder");
-		
-		if (subAte.get()) {
-			//currentGoal = closestFeeder.get();
-			int newGoal;
-			do{
-				newGoal = RandomSingleton.getInstance().nextInt(3);
-			} while (newGoal == currentGoal);
-			currentGoal = newGoal;
-				
-		}
+		currentGoal = Universe.getActiveFeeders().get(0);
 
 		goalFeeder[0] = currentGoal;
 		if (Debug.printActiveGoal)

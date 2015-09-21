@@ -1,6 +1,7 @@
 package edu.usf.ratsim.nsl.modules;
 
 import edu.usf.experiment.utils.Debug;
+import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.ratsim.micronsl.Bool1dPort;
 import edu.usf.ratsim.micronsl.Int0dPort;
 import edu.usf.ratsim.micronsl.Int1dPort;
@@ -25,8 +26,13 @@ public class LastTriedToEatGoalDecider extends Module {
 		Int0dPort closestFeeder = (Int0dPort) getInPort("closestFeeder");
 		
 		if (subTriedToEat.get()) {
-			goalFeeder[1] = goalFeeder[0];
-			goalFeeder[0] = closestFeeder.get();
+//			goalFeeder[1] = goalFeeder[0];
+//			goalFeeder[0] = closestFeeder.get();
+			int newGoal;
+			do{
+				newGoal = RandomSingleton.getInstance().nextInt(3);
+			} while (newGoal == goalFeeder[0]);
+			goalFeeder[0] = newGoal;
 		}
 
 		if (Debug.printActiveGoal)
