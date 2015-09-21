@@ -302,10 +302,12 @@ public class VirtualRobot extends LocalizableRobot {
 				sub.setHasEaten(true);
 				if (Debug.printTryingToEat)
 					System.out.println("Ate from a feeder with food");
+				
 			} else {
 				if (Debug.printTryingToEat)
 					System.out.println("Trying to eat from empty feeder");
 			}
+			rotate((float) Math.PI);
 		} else
 			throw new RuntimeException("Affordance " + af.getClass().getName()
 					+ " not supported by robot");
