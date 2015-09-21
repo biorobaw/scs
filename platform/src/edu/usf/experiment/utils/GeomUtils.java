@@ -202,11 +202,11 @@ public class GeomUtils {
 
 		float angleDiff = Math.abs(GeomUtils.rotToAngle(rotToFood)); 
 
-		float rotationSteps = angleDiff / subject.getMinAngle();
+		int rotationSteps = (int) Math.ceil(angleDiff / subject.getMinAngle());
 
 		float dist = GeomUtils.distanceToPoint(feederPos);
 
-		float forwardSteps = dist / subject.getStepLenght();
+		int forwardSteps = (int) Math.ceil(dist / subject.getStepLenght());
 
 		return forwardSteps + rotationSteps;
 	}
