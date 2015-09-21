@@ -13,7 +13,7 @@ import edu.usf.ratsim.nsl.modules.Voter;
 
 public class GradientValue extends Module implements Voter {
 
-	private static final float NORMALIZER = 50f;
+	private static final float NORMALIZER = 20f;
 	public float[] valueEst;
 	private int numActions;
 	private boolean[] connected;
