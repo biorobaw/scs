@@ -28,8 +28,8 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 	private float negReward;
 
 	public FlashingTaxicFoodFinderSchema(String name, Subject subject,
-			LocalizableRobot robot, float reward, float negReward, float lambda,
-			boolean estimateValue) {
+			LocalizableRobot robot, float reward, float negReward,
+			float lambda, boolean estimateValue) {
 		super(name);
 		this.reward = reward;
 		this.negReward = negReward;
@@ -70,21 +70,24 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 				&& robot.seesFlashingFeeder()
 				&& robot.getFlashingFeeder().getId() == robot
 						.getClosestFeeder().getId()
-				&& robot.getFlashingFeeder().getId() != goalFeeder
-						.get();
-//		System.out.println("Feeder to eat: " + feederToEat);
+				&& robot.getFlashingFeeder().getId() != goalFeeder.get();
+		// System.out.println("Feeder to eat: " + feederToEat);
+		float maxValue = 0;
+		int index = -1;
 		for (Affordance af : affs) {
 			float value = 0;
 			if (af.isRealizable()) {
-				if (af instanceof TurnAffordance || af instanceof ForwardAffordance) {
+				if (af instanceof TurnAffordance
+						|| af instanceof ForwardAffordance) {
 					if (robot.seesFlashingFeeder() && !feederToEat) {
 						Feeder f = robot.getFlashingFeeder();
-						Point3f newPos = GeomUtils.simulate(
-								f.getPosition(), af);
+						Point3f newPos = GeomUtils
+								.simulate(f.getPosition(), af);
 						Quat4f rotToNewPos = GeomUtils.angleToPoint(newPos);
 
-						float angleDiff = Math.abs(GeomUtils.rotToAngle(rotToNewPos)); 
-						if(angleDiff < robot.getHalfFieldView())
+						float angleDiff = Math.abs(GeomUtils
+								.rotToAngle(rotToNewPos));
+						if (angleDiff < robot.getHalfFieldView())
 							value += getFeederValue(newPos);
 						else
 							value += -getFeederValue(f.getPosition());
@@ -101,14 +104,22 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 							+ " not supported by robot");
 			}
 
-			votes[voteIndex] = value;
+			if (value > maxValue) {
+				maxValue = value;
+				index = voteIndex;
+			}
 			voteIndex++;
 		}
+		
+		if (index != -1)
+			votes[index] = maxValue;
 	}
 
 	private float getFeederValue(Point3f feederPos) {
 		float steps = GeomUtils.getStepsToFeeder(feederPos, subject);
-		return (float) Math.max(0f,(reward  + negReward * steps)) ; //* Math.pow(lambda, ));
+		return (float) Math.max(0f, (reward + negReward * steps)); // *
+																	// Math.pow(lambda,
+																	// ));
 	}
 
 	@Override

@@ -76,7 +76,8 @@ public class TaxicFoodFinderSchema extends Module {
 			feederToEat = robot.isFeederClose();
 
 		Feeder f = robot.getFeederInFront();
-
+		float maxVal = 0;
+		int maxIndex = -1;
 		for (Affordance af : affs) {
 			float value = Float.NEGATIVE_INFINITY;
 			if (af.isRealizable()) {
@@ -116,12 +117,19 @@ public class TaxicFoodFinderSchema extends Module {
 							+ " not supported by robot");
 			}
 
-			if (value != Float.NEGATIVE_INFINITY)
-				votes[voteIndex] = value;
-			else
-				votes[voteIndex] = 0;
+			if (value > maxVal){
+				maxVal = value;
+				maxIndex = voteIndex;
+			}
+//			if (value != Float.NEGATIVE_INFINITY)
+//				votes[voteIndex] = value;
+//			else
+//				votes[voteIndex] = 0;
 			voteIndex++;
 		}
+		
+		if (maxIndex != -1)
+			votes[maxIndex] = maxVal;
 
 	}
 
