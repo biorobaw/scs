@@ -258,12 +258,12 @@ public class UniverseFrame extends java.awt.Frame {
 
 	// accion asociada al boton de mover izquierda
 	private void leftBtnAction(java.awt.event.ActionEvent evt) {
-		expUniv.moveRobot(new Vector3f(0f, 0f, -0.1f));
+		expUniv.moveRobot(new Vector3f(-.1f, 0f, 0f));
 	}
 
 	// accion asociada al boton de mover derecha
 	private void rightBtnAction(java.awt.event.ActionEvent evt) {
-		expUniv.moveRobot(new Vector3f(0f, 0f, 0.1f));
+		expUniv.moveRobot(new Vector3f(0.1f, 0f, 0f));
 	}
 
 	// accion asociada al boton de retroceder
