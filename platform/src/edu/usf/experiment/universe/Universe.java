@@ -27,7 +27,7 @@ public abstract class Universe {
 	// TODO: get as param
 	private static float CLOSE_TO_FOOD_THRS;
 
-	private List<Feeder> feeders;
+	private static List<Feeder> feeders;
 	private List<Wall> walls;
 	private Rectangle2D.Float boundingRect;
 
@@ -124,7 +124,7 @@ public abstract class Universe {
 		return res;
 	}
 
-	public List<Integer> getActiveFeeders() {
+	public static List<Integer> getActiveFeeders() {
 		List<Integer> res = new LinkedList<Integer>();
 		for (int i = 0; i < feeders.size(); i++)
 			if (feeders.get(i).isActive())
