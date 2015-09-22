@@ -14,11 +14,10 @@ import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
-import edu.usf.ratsim.micronsl.Float1dPort;
-import edu.usf.ratsim.micronsl.IntPort;
+import edu.usf.ratsim.micronsl.Int1dPort;
 import edu.usf.ratsim.micronsl.Module;
 
-public class FlashingTaxicFoodFinderSchema extends Module {
+public class TaxicFoodOneFeederManyActions extends Module {
 
 	public float[] votes;
 	private float reward;
@@ -27,7 +26,7 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 	private LocalizableRobot robot;
 	private float negReward;
 
-	public FlashingTaxicFoodFinderSchema(String name, Subject subject,
+	public TaxicFoodOneFeederManyActions(String name, Subject subject,
 			LocalizableRobot robot, float reward, float negReward,
 			float lambda, boolean estimateValue) {
 		super(name);
@@ -52,8 +51,6 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 	 * goal).
 	 */
 	public void run() {
-		IntPort goalFeeder = (IntPort) getInPort("goalFeeder");
-
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;
 
@@ -61,38 +58,44 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 		List<Affordance> affs = robot.checkAffordances(subject
 				.getPossibleAffordances());
 		int voteIndex = 0;
+		boolean feederToEat = robot.isFeederClose();
+
+		Feeder f = robot.getFeederInFront();
 		
-		boolean feederToEat = robot.isFeederClose()
-				&& robot.seesFlashingFeeder()
-				&& robot.getFlashingFeeder().getId() == robot
-						.getClosestFeeder().getId()
-				&& robot.getFlashingFeeder().getId() == goalFeeder.get();
-		// System.out.println("Feeder to eat: " + feederToEat);
-		float maxValue = 0;
-		int index = -1;
+		float maxVal = 0;
+		int maxIndex = -1;
 		for (Affordance af : affs) {
-			float value = 0;
+			float value = Float.NEGATIVE_INFINITY;
 			if (af.isRealizable()) {
 				if (af instanceof TurnAffordance
 						|| af instanceof ForwardAffordance) {
-					if (robot.seesFlashingFeeder() && !feederToEat) {
-						Feeder f = robot.getFlashingFeeder();
-						Point3f newPos = GeomUtils
-								.simulate(f.getPosition(), af);
-						Quat4f rotToNewPos = GeomUtils.angleToPoint(newPos);
+					if (!feederToEat) {
+						// for (Feeder f : robot.getVisibleFeeders(goalFeeder
+						// .getData())) {
+						if (f != null) {
+							Point3f newPos = GeomUtils.simulate(
+									f.getPosition(), af);
+							Quat4f rotToNewPos = GeomUtils.angleToPoint(newPos);
 
-						float angleDiff = Math.abs(GeomUtils
-								.rotToAngle(rotToNewPos));
-						if (angleDiff < robot.getHalfFieldView())
-							value += getFeederValue(newPos);
-						else
-							value += -getFeederValue(f.getPosition());
+							float angleDiff = Math.abs(GeomUtils
+									.rotToAngle(rotToNewPos));
+							float feederVal;
+							if (angleDiff < robot.getHalfFieldView())
+								feederVal = getFeederValue(newPos);
+							else
+								feederVal = -getFeederValue(f.getPosition());
+							if (feederVal > value)
+								value = feederVal;
+						}
+						// }
 					}
 				} else if (af instanceof EatAffordance) {
 					if (feederToEat) {
-						// value += getFeederValue(robot.getClosestFeeder()
-						// .getPosition());
-						value += reward;
+						float feederValue = getFeederValue(robot
+								.getClosestFeeder().getPosition());
+						if (feederValue > value)
+							value = feederValue;
+						// value += reward;
 					}
 				} else
 					throw new RuntimeException("Affordance "
@@ -100,26 +103,26 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 							+ " not supported by robot");
 			}
 
-			if (value > maxValue) {
-				maxValue = value;
-				index = voteIndex;
-			}
+			if (value != Float.NEGATIVE_INFINITY)
+				votes[voteIndex] = value;
+			else
+				votes[voteIndex] = 0;
 			voteIndex++;
 		}
 		
-		if (index != -1)
-			votes[index] = maxValue;
+		if (maxIndex != -1)
+			votes[maxIndex] = maxVal;
+
 	}
 
 	private float getFeederValue(Point3f feederPos) {
 		float steps = GeomUtils.getStepsToFeeder(feederPos, subject);
-		return (float) Math.max(0f, (reward + negReward * steps)); // *
-																	// Math.pow(lambda,
-																	// ));
+		return (float) Math.max(0, (reward + negReward * steps));
 	}
 
 	@Override
 	public boolean usesRandom() {
 		return false;
 	}
+
 }

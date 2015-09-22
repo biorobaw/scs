@@ -17,7 +17,7 @@ import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.Int1dPort;
 import edu.usf.ratsim.micronsl.Module;
 
-public class TaxicFoodFinderSchema extends Module {
+public class TaxicFoodManyFeedersManyActions extends Module {
 
 	public float[] votes;
 	private float reward;
@@ -25,15 +25,13 @@ public class TaxicFoodFinderSchema extends Module {
 	private Subject subject;
 	private LocalizableRobot robot;
 	private float negReward;
-	private boolean rememberLastTwo;
 
-	public TaxicFoodFinderSchema(String name, Subject subject,
+	public TaxicFoodManyFeedersManyActions(String name, Subject subject,
 			LocalizableRobot robot, float reward, float negReward,
-			float lambda, boolean estimateValue, boolean rememberLastTwo) {
+			float lambda, boolean estimateValue) {
 		super(name);
 		this.reward = reward;
 		this.negReward = negReward;
-		this.rememberLastTwo = rememberLastTwo;
 
 		// Votes for action and value
 		votes = new float[subject.getPossibleAffordances().size()];
@@ -62,20 +60,8 @@ public class TaxicFoodFinderSchema extends Module {
 		List<Affordance> affs = robot.checkAffordances(subject
 				.getPossibleAffordances());
 		int voteIndex = 0;
-		int closestFeeder;
-		if (robot.getClosestFeeder() != null)
-			closestFeeder = robot.getClosestFeeder().getId();
-		else
-			closestFeeder = -1;
-		boolean feederToEat;
-		if (rememberLastTwo)
-			feederToEat = robot.isFeederClose()
-					&& closestFeeder != goalFeeder.get(0)
-					&& closestFeeder != goalFeeder.get(1);
-		else
-			feederToEat = robot.isFeederClose();
+		boolean feederToEat = robot.isFeederClose();
 
-		Feeder f = robot.getFeederInFront();
 		float maxVal = 0;
 		int maxIndex = -1;
 		for (Affordance af : affs) {
@@ -84,24 +70,25 @@ public class TaxicFoodFinderSchema extends Module {
 				if (af instanceof TurnAffordance
 						|| af instanceof ForwardAffordance) {
 					if (!feederToEat) {
-						// for (Feeder f : robot.getVisibleFeeders(goalFeeder
-						// .getData())) {
-						if (f != null) {
-							Point3f newPos = GeomUtils.simulate(
-									f.getPosition(), af);
-							Quat4f rotToNewPos = GeomUtils.angleToPoint(newPos);
+						for (Feeder f : robot.getVisibleFeeders(goalFeeder
+								.getData())) {
+							if (f != null) {
+								Point3f newPos = GeomUtils.simulate(
+										f.getPosition(), af);
+								Quat4f rotToNewPos = GeomUtils
+										.angleToPoint(newPos);
 
-							float angleDiff = Math.abs(GeomUtils
-									.rotToAngle(rotToNewPos));
-							float feederVal;
-							if (angleDiff < robot.getHalfFieldView())
-								feederVal = getFeederValue(newPos);
-							else
-								feederVal = -getFeederValue(f.getPosition());
-							if (feederVal > value)
-								value = feederVal;
+								float angleDiff = Math.abs(GeomUtils
+										.rotToAngle(rotToNewPos));
+								float feederVal;
+								if (angleDiff < robot.getHalfFieldView())
+									feederVal = getFeederValue(newPos);
+								else
+									feederVal = -getFeederValue(f.getPosition());
+								if (feederVal > value)
+									value = feederVal;
+							}
 						}
-						// }
 					}
 				} else if (af instanceof EatAffordance) {
 					if (feederToEat) {
@@ -117,17 +104,17 @@ public class TaxicFoodFinderSchema extends Module {
 							+ " not supported by robot");
 			}
 
-			if (value > maxVal){
+			if (value > maxVal) {
 				maxVal = value;
 				maxIndex = voteIndex;
 			}
-//			if (value != Float.NEGATIVE_INFINITY)
-//				votes[voteIndex] = value;
-//			else
-//				votes[voteIndex] = 0;
+			// if (value != Float.NEGATIVE_INFINITY)
+			// votes[voteIndex] = value;
+			// else
+			// votes[voteIndex] = 0;
 			voteIndex++;
 		}
-		
+
 		if (maxIndex != -1)
 			votes[maxIndex] = maxVal;
 

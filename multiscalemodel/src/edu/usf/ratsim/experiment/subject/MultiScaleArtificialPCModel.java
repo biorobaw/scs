@@ -50,7 +50,8 @@ import edu.usf.ratsim.nsl.modules.taxic.AvoidWallTaxic;
 import edu.usf.ratsim.nsl.modules.taxic.FlashingTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.taxic.FlashingTaxicValueSchema;
 import edu.usf.ratsim.nsl.modules.taxic.ObstacleEndTaxic;
-import edu.usf.ratsim.nsl.modules.taxic.TaxicFoodFinderSchema;
+import edu.usf.ratsim.nsl.modules.taxic.TaxicFoodManyFeedersManyActions;
+import edu.usf.ratsim.nsl.modules.taxic.TaxicFoodOneFeederOneAction;
 import edu.usf.ratsim.nsl.modules.taxic.TaxicValueSchema;
 
 public class MultiScaleArtificialPCModel extends Model {
@@ -88,13 +89,16 @@ public class MultiScaleArtificialPCModel extends Model {
 		float nonFoodReward = params.getChildFloat("nonFoodReward");
 		int numIntentions = params.getChildInt("numIntentions");
 		float flashingReward = params.getChildFloat("flashingReward");
+		float flashingNegReward = params.getChildFloat("flashingNegReward");
 		float nonFlashingReward = params.getChildFloat("nonFlashingReward");
+		float nonFlashingNegReward = params.getChildFloat("nonFlashingNegReward");
 		boolean rememberLastTwo = params.getChildBoolean("rememberLastTwo");
 		boolean estimateValue = params.getChildBoolean("estimateValue");
 		float cellContribution = params.getChildFloat("cellContribution");
 		float explorationReward = params.getChildFloat("explorationReward");
 		// float wallFollowingVal = params.getChildFloat("wallFollowingVal");
 		float wallTaxicVal = params.getChildFloat("wallTaxicVal");
+		float wallNegReward = params.getChildFloat("wallNegReward");
 		float wallTooCloseDist = params.getChildFloat("wallTooCloseDist");
 		float avoidWallTaxicVal = params.getChildFloat("avoidWallTaxicVal");
 		float avoidWallTaxicDist = params.getChildFloat("avoidWallTaxicDist");
@@ -205,10 +209,9 @@ public class MultiScaleArtificialPCModel extends Model {
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
-		TaxicFoodFinderSchema taxicff = new TaxicFoodFinderSchema(
+		TaxicFoodManyFeedersManyActions taxicff = new TaxicFoodManyFeedersManyActions(
 				"Taxic Food Finder", subject, lRobot, nonFlashingReward,
-				nonFoodReward, taxicDiscountFactor, estimateValue,
-				rememberLastTwo);
+				nonFlashingNegReward, taxicDiscountFactor, estimateValue);
 		taxicff.addInPort("goalFeeder",
 				lastTriedToEatGoalDecider.getOutPort("goalFeeder"), true);
 		addModule(taxicff);
@@ -216,9 +219,9 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		FlashingTaxicFoodFinderSchema flashingTaxicFF = new FlashingTaxicFoodFinderSchema(
 				"Flashing Taxic Food Finder", subject, lRobot, flashingReward,
-				nonFoodReward, taxicDiscountFactor, estimateValue);
+				flashingNegReward, taxicDiscountFactor, estimateValue);
 		flashingTaxicFF.addInPort("goalFeeder",
-				lastAteGoalDecider.getOutPort("goalFeeder"), true);
+				activeFeederGoalDecider.getOutPort("goalFeeder"), true);
 		addModule(flashingTaxicFF);
 		votesPorts.add((Float1dPort) flashingTaxicFF.getOutPort("votes"));
 
@@ -246,14 +249,14 @@ public class MultiScaleArtificialPCModel extends Model {
 		// addModule(attExpl);
 		// votesPorts.add((Float1dPort) attExpl.getOutPort("votes"));
 		ObstacleEndTaxic wallTaxic = new ObstacleEndTaxic("Wall Taxic", subject, lRobot,
-				wallTaxicVal, nonFoodReward, wallTooCloseDist);
+				wallTaxicVal, wallNegReward, wallTooCloseDist);
 		addModule(wallTaxic);
 		votesPorts.add((Float1dPort) wallTaxic.getOutPort("votes"));
 
-		AvoidWallTaxic avoidWallTaxic = new AvoidWallTaxic("Avoid Wall Taxic", subject, lRobot,
-				avoidWallTaxicVal, avoidWallTaxicDist);
-		addModule(avoidWallTaxic);
-		votesPorts.add((Float1dPort) avoidWallTaxic.getOutPort("votes"));
+//		AvoidWallTaxic avoidWallTaxic = new AvoidWallTaxic("Avoid Wall Taxic", subject, lRobot,
+//				avoidWallTaxicVal, avoidWallTaxicDist);
+//		addModule(avoidWallTaxic);
+//		votesPorts.add((Float1dPort) avoidWallTaxic.getOutPort("votes"));
 		
 		// Joint votes
 		JointStatesManySum jointVotes = new JointStatesManySum("Votes");

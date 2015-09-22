@@ -5,7 +5,7 @@
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
 			<!-- Distance from which the food is accessible according to the universe -->
-			<closeToFoodThrs>0.1</closeToFoodThrs>
+			<closeToFoodThrs>0.11</closeToFoodThrs>
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
 			<!-- Display de window or run without GUI -->
@@ -90,8 +90,10 @@
 			<initialValue>0</initialValue>
 			<!-- Value associated with a flashing feeder -->
 			<flashingReward>500</flashingReward>
+			<flashingNegReward>-10</flashingNegReward>
 			<!-- Value associated with a non flashing feeder -->
-			<nonFlashingReward>75</nonFlashingReward>
+			<nonFlashingReward>10</nonFlashingReward>
+			<nonFlashingNegReward>-1</nonFlashingNegReward>
 			<!-- Whether the rat can remember last two feeders -->
 			<!-- TODO: take this out -->
 			<rememberLastTwo>false</rememberLastTwo>
@@ -105,7 +107,8 @@
 			<!-- Half life value for decay exploration -->
 			<explorationHalfLifeVal>1</explorationHalfLifeVal>
 			<!-- Value assigned to wall actions for the wall taxic modules -->
-			<wallTaxicVal>100</wallTaxicVal>
+			<wallTaxicVal>10</wallTaxicVal>
+			<wallNegReward>-1</wallNegReward>
 			<!-- Minimum distance to take wall into account -->
 			<wallTooCloseDist>.05</wallTooCloseDist>
 			
@@ -538,9 +541,12 @@
 					<params>
 					</params>
 				</task>
+				<task>
+					<name>edu.usf.experiment.task.DeactivateAllFeeders</name>
+				</task>
 				<!-- Activate all enabled feeders so the rat decides which one to feed from -->
 				<task>
-					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
+					<name>edu.usf.experiment.task.ActivateRandomFeeder</name>
 					<params>
 					</params>
 				</task>
