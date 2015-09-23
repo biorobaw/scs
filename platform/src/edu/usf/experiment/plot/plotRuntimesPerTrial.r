@@ -1,5 +1,7 @@
 require(ggplot2, quietly = TRUE)
+require(grid)
 require(plyr, quietly = TRUE)
+require(dunn.test, quietly = TRUE)
 
 stepsPerSec <- 4
 
@@ -13,33 +15,35 @@ plotArrival <- function(pathData, plotName){
   p <- ggplot(pathData, aes(x=group, y = runtime)) 
   #p <- p + geom_bar(data=summarizedRunTimes, mapping=aes(x=Group, y = mRT), stat='identity')
   p <- p + ylab("Completion time (s)") + xlab("Group") 
-  p <- p + theme(legend.text = element_text(size=16), legend.title = element_text(size=16), text = element_text(size=16)) 
-  p <- p + theme(legend.position = c(1, 1), legend.justification = c(1, 1), legend.background = element_rect(colour = NA, fill = NA))
+  p <- p + scale_fill_discrete(name="Group")
+  p <- p + theme(legend.text = element_text(size=20), legend.title = element_text(size=20), text = element_text(size=20)) 
+  p <- p + theme(legend.key.height = unit(3,"line"), legend.key.width = unit(3,"line"), legend.position = "right", legend.justification = c(1, 1), legend.background = element_rect(colour = NA, fill = NA))
   box <- p + geom_boxplot(aes(fill=group),position=position_dodge(1), notch=TRUE)# + geom_jitter()
   ggsave(plot=box,filename=paste(plotName, "box.", pathData[1,'trial'],".pdf", sep=''), width=10, height=10)
   
-  bar <- ggplot(summarizedRunTimes, aes(x=group, y = mRT)) 
-  bar <- bar + geom_bar(aes(y=mRT,fill=group),position=position_dodge(1), stat="identity")
-  bar <- bar + geom_errorbar(aes(x=group, ymax=mRT+sdRT, ymin=mRT-sdRT, color=group, width = 0.25))
-  bar <- bar + ylab("Completion time (s)") + xlab("Group") 
-  ggsave(plot=bar,filename=paste(plotName, "bar.", pathData[1,'trial'],".pdf", sep=''), width=10, height=10)
+  p <- ggplot(summarizedRunTimes, aes(x=group, y = mRT)) 
+  p <- p + ylab("Completion time (s)") + xlab("Group") 
+  p <- p + theme(legend.text = element_text(size=20), legend.title = element_text(size=20), text = element_text(size=20)) 
+  p <- p + theme(legend.key.height = unit(3,"line"), legend.key.width = unit(3,"line"), legend.position = "right", legend.justification = c(1, 1), legend.background = element_rect(colour = NA, fill = NA))
+  p <- p + geom_bar(aes(y=mRT,fill=group),position=position_dodge(1), stat="identity")
+  p <- p + geom_errorbar(aes(x=group, ymax=mRT+sdRT, ymin=mRT-sdRT, color=group, width = 0.25))
+  p <- p + scale_fill_discrete(name="Group")
+  p <- p + scale_color_discrete(name="Group")
+  ggsave(plot=p,filename=paste(plotName, "bar.", pathData[1,'trial'],".pdf", sep=''), width=10, height=10)
 }
 
 # Plot runtimes per episode
 files <- list.files('.', 'summary.RData', recursive=T)
 runtimeFrames<-lapply(files,function(x) {load(x); summarizedRunTimes['file'] <- x; summarizedRunTimes})
 runtimes<-Reduce(function(x,y) merge (x,y, all=T), runtimeFrames)
-saveRDS(runtimes, "runtimes.RData")
-# names(runtimes)[2] <- "Group"
-#levels(runtimes$Group) <- c("Multi-Scale (3 Layers)", "Small Scale (1 Layer)", "Medium Scale (1 Layer)", "Large Scale (1 Layer)")
-runtimes <- runtimes[runtimes$runtime != 200000,]
+save(runtimes, file="runtimes.RData")
+# load('runtimes.RData')
+# runtimes <- runtimes[runtimes$runtime != 200000,]
 ddply(runtimes, .(trial), function(x) plotArrival(x, plotName="runtimes"))
 
-#fit <- aov (runtime ~ group, runtimes[runtimes$trial == "DelayedCueObs",])
-#summary(fit)
-#TukeyHSD(fit)
-
-require(pgirmess, quietly = TRUE)
-kruskal.test(runtime~group, runtimes[runtimes$trial == "DelayedCueObs",])
-
-kruskalmc(runtime~group, data=runtimes[runtimes$trial == "DelayedCueObs",], cont='one-tailed')
+c <- runtimes[runtimes$trial == "DelayedCueObs" & runtimes$group == "Control", "runtime"]
+d <- runtimes[runtimes$trial == "DelayedCueObs" & runtimes$group == "Dorsal", "runtime"]
+v <- runtimes[runtimes$trial == "DelayedCueObs" & runtimes$group == "Ventral", "runtime"]
+x <- c(c, d, v)
+g <- factor(rep(1:3, c(length(c), length(d), length(v))), labels=c("Control", "Dorsal", "Ventral"))
+dunn.test(x,g)
