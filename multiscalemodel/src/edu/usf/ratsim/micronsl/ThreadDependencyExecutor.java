@@ -117,6 +117,12 @@ public class ThreadDependencyExecutor extends ThreadPoolExecutor {
 
 		synchronized (this) {
 			numTasksToExecute--;
+			if (Debug.printSchedulling){
+				System.out.println("To Execute: " + numTasksToExecute);
+				for (Runnable task : getQueue())
+					System.out.println("Waiting for: " + ((Module)task).getName());
+			}
+				
 			notify();
 		}
 

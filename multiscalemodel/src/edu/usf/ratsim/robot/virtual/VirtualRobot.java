@@ -47,6 +47,10 @@ public class VirtualRobot extends LocalizableRobot {
 
 	private Feeder previouslyFoundFeeder;
 
+	private int lastAteFeeder;
+
+	private int lastTriedToEat;
+
 	public VirtualRobot(ElementWrapper params) {
 		super(params);
 
@@ -66,6 +70,8 @@ public class VirtualRobot extends LocalizableRobot {
 		r = RandomSingleton.getInstance();
 
 		closestFeederValid = false;
+		lastAteFeeder = -1;	
+		lastTriedToEat = -1;
 	}
 
 	public void rotate(float grados) {
@@ -217,10 +223,16 @@ public class VirtualRobot extends LocalizableRobot {
 
 		Feeder closest = feeders.get(0);
 		Point3f zero = new Point3f(0, 0, 0);
-		for (Feeder feeder : feeders)
+//		System.out.println("Searching for closest feeder");
+		for (Feeder feeder : feeders) {
+//			System.out.println("Feeder " + feeder.getId() + " at dist "
+//					+ feeder.getPosition().distance(zero));
+
 			if (feeder.getPosition().distance(zero) < closest.getPosition()
 					.distance(zero))
 				closest = feeder;
+		}
+//		System.out.println("Closest " + closest.getId());
 
 		return closest;
 	}
@@ -300,14 +312,16 @@ public class VirtualRobot extends LocalizableRobot {
 			if (getClosestFeeder().hasFood()) {
 				eat();
 				sub.setHasEaten(true);
+				lastAteFeeder = getClosestFeeder().getId();
 				if (Debug.printTryingToEat)
 					System.out.println("Ate from a feeder with food");
-				
+
 			} else {
 				if (Debug.printTryingToEat)
 					System.out.println("Trying to eat from empty feeder");
 			}
-			rotate((float) Math.PI);
+			lastTriedToEat = getClosestFeeder().getId();
+//			rotate((float) Math.PI);
 		} else
 			throw new RuntimeException("Affordance " + af.getClass().getName()
 					+ " not supported by robot");
@@ -358,13 +372,23 @@ public class VirtualRobot extends LocalizableRobot {
 		for (Feeder f : visFeeders) {
 			float angleToFeeder = GeomUtils.rotToAngle(GeomUtils.angleToPoint(f
 					.getPosition()));
-			if (Math.abs(angleToFeeder)<Math.abs(angle)){
+			if (Math.abs(angleToFeeder) < Math.abs(angle)) {
 				angle = angleToFeeder;
 				feederInFront = f;
 			}
 		}
-		
+
 		return feederInFront;
+	}
+
+	@Override
+	public int getLastAteFeeder() {
+		return lastAteFeeder;
+	}
+
+	@Override
+	public int getLastTriedToEatFeeder() {
+		return lastTriedToEat;
 	}
 
 }

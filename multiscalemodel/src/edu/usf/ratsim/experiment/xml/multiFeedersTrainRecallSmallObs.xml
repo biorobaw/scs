@@ -69,7 +69,7 @@
 			<!-- Amount of cells placed near the goal -->
 			<goalCellProportion>0.5</goalCellProportion>
 			<!-- Minimum angular radius of conjuntive cells -->
-			<minHDRadius>.195</minHDRadius>
+			<minHDRadius>0.195</minHDRadius>
 			<!-- Maximum angular radius of conjuntive cells -->
 			<maxHDRadius>1.57</maxHDRadius>
 			<!-- Number of intentions or maps -->
@@ -77,7 +77,7 @@
 			<!-- Reward value for food -->
 			<foodReward>1000</foodReward>
 			<!-- Reward value given when it doesnt eat -->
-			<nonFoodReward>-20</nonFoodReward>
+			<nonFoodReward>-10</nonFoodReward>
 			<!-- Lambda discount factor for the taxic module-->
 			<taxicDiscountFactor>1</taxicDiscountFactor>
 			<!-- Lambda discount factor for the learning algorithm -->
@@ -90,10 +90,10 @@
 			<initialValue>0</initialValue>
 			<!-- Value associated with a flashing feeder -->
 			<flashingReward>500</flashingReward>
-			<flashingNegReward>-10</flashingNegReward>
+			<flashingNegReward>-20</flashingNegReward>
 			<!-- Value associated with a non flashing feeder -->
-			<nonFlashingReward>10</nonFlashingReward>
-			<nonFlashingNegReward>-1</nonFlashingNegReward>
+			<nonFlashingReward>100</nonFlashingReward>
+			<nonFlashingNegReward>-20</nonFlashingNegReward>
 			<!-- Whether the rat can remember last two feeders -->
 			<!-- TODO: take this out -->
 			<rememberLastTwo>false</rememberLastTwo>
@@ -112,7 +112,7 @@
 			<!-- Minimum distance to take wall into account -->
 			<wallTooCloseDist>.05</wallTooCloseDist>
 			
-			<avoidWallTaxicVal>5</avoidWallTaxicVal>
+			<avoidWallTaxicVal>20</avoidWallTaxicVal>
 			<avoidWallTaxicDist>.1</avoidWallTaxicDist>
 			<!-- Attentional span for still exploration -->
 			<!-- TODO: look at this -->
@@ -349,7 +349,7 @@
 			<!-- Number of episodes -->
 			<number>1</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>00</sleep>
+			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Turn of the flash of all the feeders -->

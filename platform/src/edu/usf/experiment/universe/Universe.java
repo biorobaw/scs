@@ -257,7 +257,7 @@ public abstract class Universe {
 		return -1;
 	}
 
-	public List<Integer> getEnabledFeeders() {
+	public static List<Integer> getEnabledFeeders() {
 		List<Integer> res = new LinkedList<Integer>();
 		for (Feeder f : feeders)
 			if (f.isEnabled())

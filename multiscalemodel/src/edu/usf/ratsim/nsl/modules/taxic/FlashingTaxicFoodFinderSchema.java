@@ -52,8 +52,6 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 	 * goal).
 	 */
 	public void run() {
-		IntPort goalFeeder = (IntPort) getInPort("goalFeeder");
-
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;
 
@@ -65,8 +63,7 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 		boolean feederToEat = robot.isFeederClose()
 				&& robot.seesFlashingFeeder()
 				&& robot.getFlashingFeeder().getId() == robot
-						.getClosestFeeder().getId()
-				&& robot.getFlashingFeeder().getId() == goalFeeder.get();
+						.getClosestFeeder().getId();
 		// System.out.println("Feeder to eat: " + feederToEat);
 		float maxValue = 0;
 		int index = -1;

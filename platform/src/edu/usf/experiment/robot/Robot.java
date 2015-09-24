@@ -99,4 +99,8 @@ public abstract class Robot {
 			points.add(f.getPosition());
 		return points;
 	}
+
+	public abstract int getLastAteFeeder();
+
+	public abstract int getLastTriedToEatFeeder() ;
 }

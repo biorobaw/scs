@@ -32,6 +32,7 @@ import edu.usf.ratsim.nsl.modules.LastAteGoalDecider;
 import edu.usf.ratsim.nsl.modules.LastAteIntention;
 import edu.usf.ratsim.nsl.modules.LastTriedToEatGoalDecider;
 import edu.usf.ratsim.nsl.modules.NoIntention;
+import edu.usf.ratsim.nsl.modules.OneThenTheOtherGoalDecider;
 import edu.usf.ratsim.nsl.modules.StillExplorer;
 import edu.usf.ratsim.nsl.modules.SubjectAte;
 import edu.usf.ratsim.nsl.modules.SubjectTriedToEat;
@@ -91,7 +92,8 @@ public class MultiScaleArtificialPCModel extends Model {
 		float flashingReward = params.getChildFloat("flashingReward");
 		float flashingNegReward = params.getChildFloat("flashingNegReward");
 		float nonFlashingReward = params.getChildFloat("nonFlashingReward");
-		float nonFlashingNegReward = params.getChildFloat("nonFlashingNegReward");
+		float nonFlashingNegReward = params
+				.getChildFloat("nonFlashingNegReward");
 		boolean rememberLastTwo = params.getChildBoolean("rememberLastTwo");
 		boolean estimateValue = params.getChildBoolean("estimateValue");
 		float cellContribution = params.getChildFloat("cellContribution");
@@ -123,23 +125,27 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		// beforeActiveGoalDecider = new ActiveGoalDecider(
 		// BEFORE_ACTIVE_GOAL_DECIDER_STR, this);
-		LastAteGoalDecider lastAteGoalDecider = new LastAteGoalDecider(
-				"Last Ate Goal Decider");
-		addModule(lastAteGoalDecider);
+//		LastAteGoalDecider lastAteGoalDecider = new LastAteGoalDecider(
+//				"Last Ate Goal Decider");
+//		addModule(lastAteGoalDecider);
 
 		LastTriedToEatGoalDecider lastTriedToEatGoalDecider = new LastTriedToEatGoalDecider(
 				"Last Tried To Eat Goal Decider");
 		addModule(lastTriedToEatGoalDecider);
-		
-		ActiveFeederGoalDecider activeFeederGoalDecider = new ActiveFeederGoalDecider(
-				"Active Feeder Goal Decider");
-		addModule(activeFeederGoalDecider);
+//
+//		ActiveFeederGoalDecider activeFeederGoalDecider = new ActiveFeederGoalDecider(
+//				"Active Feeder Goal Decider");
+//		addModule(activeFeederGoalDecider);
+
+		OneThenTheOtherGoalDecider oneThenTheOtherGoalDecider = new OneThenTheOtherGoalDecider(
+				"One Then The Other Goal Decider",lRobot);
+		addModule(oneThenTheOtherGoalDecider);
 
 		Module intention;
 		if (numIntentions > 1) {
 			intention = new LastAteIntention("Intention", numIntentions);
 			intention.addInPort("goalFeeder",
-					activeFeederGoalDecider.getOutPort("goalFeeder"));
+					oneThenTheOtherGoalDecider.getOutPort("goalFeeder"));
 		} else {
 			intention = new NoIntention("Intention", numIntentions);
 		}
@@ -220,8 +226,6 @@ public class MultiScaleArtificialPCModel extends Model {
 		FlashingTaxicFoodFinderSchema flashingTaxicFF = new FlashingTaxicFoodFinderSchema(
 				"Flashing Taxic Food Finder", subject, lRobot, flashingReward,
 				flashingNegReward, taxicDiscountFactor, estimateValue);
-		flashingTaxicFF.addInPort("goalFeeder",
-				activeFeederGoalDecider.getOutPort("goalFeeder"), true);
 		addModule(flashingTaxicFF);
 		votesPorts.add((Float1dPort) flashingTaxicFF.getOutPort("votes"));
 
@@ -248,16 +252,17 @@ public class MultiScaleArtificialPCModel extends Model {
 		// maxAttentionSpan);
 		// addModule(attExpl);
 		// votesPorts.add((Float1dPort) attExpl.getOutPort("votes"));
-		ObstacleEndTaxic wallTaxic = new ObstacleEndTaxic("Wall Taxic", subject, lRobot,
-				wallTaxicVal, wallNegReward, wallTooCloseDist);
+		ObstacleEndTaxic wallTaxic = new ObstacleEndTaxic("Wall Taxic",
+				subject, lRobot, wallTaxicVal, wallNegReward, wallTooCloseDist);
 		addModule(wallTaxic);
 		votesPorts.add((Float1dPort) wallTaxic.getOutPort("votes"));
 
-//		AvoidWallTaxic avoidWallTaxic = new AvoidWallTaxic("Avoid Wall Taxic", subject, lRobot,
-//				avoidWallTaxicVal, avoidWallTaxicDist);
-//		addModule(avoidWallTaxic);
-//		votesPorts.add((Float1dPort) avoidWallTaxic.getOutPort("votes"));
-		
+		// AvoidWallTaxic avoidWallTaxic = new
+		// AvoidWallTaxic("Avoid Wall Taxic", subject, lRobot,
+		// avoidWallTaxicVal, avoidWallTaxicDist);
+		// addModule(avoidWallTaxic);
+		// votesPorts.add((Float1dPort) avoidWallTaxic.getOutPort("votes"));
+
 		// Joint votes
 		JointStatesManySum jointVotes = new JointStatesManySum("Votes");
 		jointVotes.addInPorts(votesPorts);
@@ -294,7 +299,7 @@ public class MultiScaleArtificialPCModel extends Model {
 				flashingReward, nonFoodReward, taxicDiscountFactor,
 				estimateValue);
 		flashTaxVal.addInPort("goalFeeder",
-				lastAteGoalDecider.getOutPort("goalFeeder"));
+				oneThenTheOtherGoalDecider.getOutPort("goalFeeder"));
 		flashTaxVal.addInPort("takenAction", takenActionPort); // just for
 																// dependency
 		taxicValueEstimationPorts.add(flashTaxVal.getOutPort("value"));
@@ -350,14 +355,19 @@ public class MultiScaleArtificialPCModel extends Model {
 		closestFeeder.addInPort("takenAction", takenActionPort);
 		addModule(closestFeeder);
 
-		lastAteGoalDecider.addInPort("subAte", subAte.getOutPort("subAte"));
-		lastAteGoalDecider.addInPort("closestFeeder",
-				closestFeeder.getOutPort("closestFeeder"));
+//		lastAteGoalDecider.addInPort("subAte", subAte.getOutPort("subAte"));
+//		lastAteGoalDecider.addInPort("closestFeeder",
+//				closestFeeder.getOutPort("closestFeeder"));
 		lastTriedToEatGoalDecider.addInPort("subTriedToEat",
 				subTriedToEat.getOutPort("subTriedToEat"));
 		lastTriedToEatGoalDecider.addInPort("closestFeeder",
 				closestFeeder.getOutPort("closestFeeder"));
-
+		oneThenTheOtherGoalDecider.addInPort("subAte", subAte.getOutPort("subAte"));
+		oneThenTheOtherGoalDecider.addInPort("closestFeeder",
+				closestFeeder.getOutPort("closestFeeder"));
+		oneThenTheOtherGoalDecider.addInPort("subTriedToEat",
+				subTriedToEat.getOutPort("subTriedToEat"));
+		
 		Reward reward = new Reward("Reward", foodReward, nonFoodReward);
 		reward.addInPort("subAte", subAte.getOutPort("subAte"));
 		addModule(reward);
