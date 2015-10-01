@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH -p development
+#SBATCH -p development,circe
 #SBATCH --time=2:00:00
 #SBATCH --mem=5000
 #SBATCH --cpus-per-task 2
