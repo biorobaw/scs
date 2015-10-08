@@ -33,8 +33,10 @@ public class DeactivateAllFeeders extends Task {
 	}
 	
 	private void perform(Universe u){
-		for (Integer f : u.getEnabledFeeders())
+		for (Integer f : u.getEnabledFeeders()){
 			u.setActiveFeeder(f, false);
+			u.clearFoodFromFeeder(f);
+		}
 	}
 
 }
