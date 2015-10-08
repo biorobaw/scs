@@ -47,6 +47,6 @@ public class LastTriedToEatGoalDecider extends Module {
 
 	@Override
 	public boolean usesRandom() {
-		return false;
+		return true;
 	}
 }
