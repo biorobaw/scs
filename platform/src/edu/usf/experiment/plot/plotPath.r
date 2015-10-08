@@ -110,7 +110,7 @@ wallPlot <- function(wallData,p){
 
   if (!is.null(wallData)){
     
-    p + geom_segment(data=wallData, aes(x,y,xend=xend,yend=yend),  col="black", cex=2)
+    p + geom_segment(data=wallData, aes(x,y,xend=xend,yend=yend),  col="black", cex=8)
   } else {
     p
   }

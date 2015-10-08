@@ -22,7 +22,7 @@ import edu.usf.experiment.utils.XMLDocReader;
 
 public abstract class Universe {
 
-	private static final int WALLS_PER_POOL = 16;
+	private static final int WALLS_PER_POOL = 8;
 
 	// TODO: get as param
 	private static float CLOSE_TO_FOOD_THRS;
@@ -73,11 +73,11 @@ public abstract class Universe {
 			float r = pool.getChildFloat("r");
 			float x = pool.getChildFloat("x");
 			float y = pool.getChildFloat("y");
-			float currentAngle = 0;
+			float currentAngle = (float) (Math.PI / WALLS_PER_POOL);
 			for (int i = 0; i < WALLS_PER_POOL; i++) {
 				float x1 = (float) (x + r * Math.sin(currentAngle));
 				float y1 = (float) (y + r * Math.cos(currentAngle));
-				float nextAngle = (float) ((currentAngle + (2 * Math.PI / WALLS_PER_POOL)));
+				float nextAngle = (float) (currentAngle + (2 * Math.PI / WALLS_PER_POOL) % (2*Math.PI));
 				float x2 = (float) (r * Math.sin(nextAngle));
 				float y2 = (float) (r * Math.cos(nextAngle));
 				
@@ -386,6 +386,10 @@ public abstract class Universe {
 	public void revertWalls() {
 		for (Wall w : wallsToRevert)
 			walls.remove(w);
+	}
+
+	public void clearFoodFromFeeder(Integer f) {
+		feeders.get(f).clearFood();
 	}
 
 }

@@ -39,6 +39,7 @@ import edu.usf.ratsim.support.XMLDocReader;
 public class VirtUniverse extends Universe {
 
 	private static final float OPEN_END_THRS = 0.1f;
+	private static final double MIN_DISTANCE_TO_WALLS = 0.025;
 	private static VirtUniverse instance = null;
 	private View topView;
 	private RobotNode robotNode;
@@ -317,7 +318,7 @@ public class VirtUniverse extends Universe {
 		LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
 		for (Wall wall : getWalls()) {
 			intesectsWall = intesectsWall
-					|| (path.intersection(wall.s) != null);
+					|| (path.intersection(wall.s) != null) || (path.distance(wall.s) < MIN_DISTANCE_TO_WALLS);
 		}
 
 		return !intesectsWall;
