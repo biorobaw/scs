@@ -5,7 +5,7 @@
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
 			<!-- Distance from which the food is accessible according to the universe -->
-			<closeToFoodThrs>0.11</closeToFoodThrs>
+			<closeToFoodThrs>0.05</closeToFoodThrs>
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
 			<!-- Display de window or run without GUI -->
@@ -22,14 +22,14 @@
 			<!-- Rotation noise added after translation -->
 			<translationRotationNoise>.195</translationRotationNoise>
 			<!-- How many steps are projected for obstacle avoidance purpose -->
-			<lookaheadSteps>1.5</lookaheadSteps>
+			<lookaheadSteps>1</lookaheadSteps>
 			<!-- Half the field of view of the rat -->
 			<halfFieldOfView>1.83</halfFieldOfView>
 			<!-- How long can the rat see in meters -->
 			<visionDist>10</visionDist>
 			<!-- How far away can the robot eat food. This should be shorter than the universe
 				threshold -->
-			<closeThrs>.1</closeThrs>
+			<closeThrs>.05</closeThrs>
 		</params>
 	</robot>
 	
