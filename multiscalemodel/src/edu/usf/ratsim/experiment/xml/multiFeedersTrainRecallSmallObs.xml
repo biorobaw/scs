@@ -63,9 +63,11 @@
 			<maxPCRadius>.1428</maxPCRadius>
 			<!-- Type of conjunctive cell -->
 			<placeCells>wallGoalExponential</placeCells>
+			<votesNormalizer>20</votesNormalizer>
+			<valueNormalizer>20</valueNormalizer>
 			<!-- Wall cell modulation. How much does a wall modulate the place field. Greater
 				means less activity -->
-			<wallInhibition>1</wallInhibition>
+			<wallInhibition>0.1</wallInhibition>
 			<!-- Amount of cells placed near the goal -->
 			<goalCellProportion>0.5</goalCellProportion>
 			<!-- Minimum angular radius of conjuntive cells -->

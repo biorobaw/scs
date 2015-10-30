@@ -81,6 +81,8 @@ public class MultiScaleArtificialPCModel extends Model {
 		float maxHDRadius = params.getChildFloat("maxHDRadius");
 		String placeCellType = params.getChildText("placeCells");
 		float goalCellProportion = params.getChildFloat("goalCellProportion");
+		float votesNormalizer = params.getChildFloat("votesNormalizer");
+		float valueNormalizer = params.getChildFloat("valueNormalizer");
 		float rlDiscountFactor = params.getChildFloat("rlDiscountFactor");
 		float taxicDiscountFactor = params.getChildFloat("taxicDiscountFactor");
 		float alpha = params.getChildFloat("alpha");
@@ -199,7 +201,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		else if (voteType.equals("gradient")) {
 			List<Float> connProbs = params.getChildFloatList("votesConnProbs");
 			rlVotes = new GradientVotes("RL votes", numActions, connProbs,
-					numCCCellsPerLayer);
+					numCCCellsPerLayer, votesNormalizer);
 		} else if (voteType.equals("halfAndHalfConnection"))
 			rlVotes = new HalfAndHalfConnectionVotes("RL votes", numActions,
 					cellContribution);
@@ -324,7 +326,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		else if (voteType.equals("gradient")) {
 			List<Float> connProbs = params.getChildFloatList("valueConnProbs");
 			rlValue = new GradientValue("RL value estimation", numActions,
-					connProbs, numCCCellsPerLayer);
+					connProbs, numCCCellsPerLayer, valueNormalizer);
 		} else
 			throw new RuntimeException("Vote mechanism not implemented");
 		rlValue.addInPort("states",

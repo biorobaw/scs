@@ -13,12 +13,13 @@ import edu.usf.ratsim.nsl.modules.Voter;
 
 public class GradientVotes extends Module implements Voter {
 
-	private static final float NORMALIZER = 20f;
+	private float normalizer;
 	public float[] actionVote;
 	private int numActions;
 	private boolean[] connected;
 
-	public GradientVotes(String name, int numActions, List<Float> connProbs, List<Integer> statesPerLayer) {
+	public GradientVotes(String name, int numActions, List<Float> connProbs,
+			List<Integer> statesPerLayer, float normalizer) {
 		super(name);
 
 		actionVote = new float[numActions];
@@ -41,6 +42,8 @@ public class GradientVotes extends Module implements Voter {
 			}
 			layer++;
 		}
+		
+		this.normalizer = normalizer;
 	}
 
 	public void run() {
@@ -66,9 +69,9 @@ public class GradientVotes extends Module implements Voter {
 		}
 
 		// Normalize
-			for (int action = 0; action < numActions; action++)
-				// Normalize with real value and revert previous normalization
-				actionVote[action] = (float) (actionVote[action] / NORMALIZER);
+		for (int action = 0; action < numActions; action++)
+			// Normalize with real value and revert previous normalization
+			actionVote[action] = (float) (actionVote[action] / normalizer);
 
 		if (Debug.printValues) {
 			System.out.println("RL votes");

@@ -38,7 +38,7 @@ public class ExponentialWallConjCell extends ExponentialConjCell {
 				return (float) (activation * (1 / (Math.exp(-10
 						* (dAcross - wallInhibition)) + 1)));
 			}
-
+//			return activation;
 		} else
 			return 0;
 		

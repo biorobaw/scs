@@ -13,13 +13,13 @@ import edu.usf.ratsim.nsl.modules.Voter;
 
 public class GradientValue extends Module implements Voter {
 
-	private static final float NORMALIZER = 20f;
+	private float normalizer;
 	public float[] valueEst;
 	private int numActions;
 	private boolean[] connected;
 
 	public GradientValue(String name, int numActions, List<Float> connProbs,
-			List<Integer> statesPerLayer) {
+			List<Integer> statesPerLayer, float normalizer) {
 		super(name);
 
 		valueEst = new float[1];
@@ -42,6 +42,8 @@ public class GradientValue extends Module implements Voter {
 			}
 			layer++;
 		}
+		
+		this.normalizer = normalizer;
 	}
 
 	public void run() {
@@ -59,6 +61,7 @@ public class GradientValue extends Module implements Voter {
 					if (actionVal != 0)
 						valueEst[0] = valueEst[0] + stateVal * actionVal;
 					if (Float.isInfinite(valueEst[0]) || Float.isNaN(valueEst[0])) {
+						System.out.println(actionVal);
 						System.out.println("Numeric Error in Gradient value");
 						System.exit(1);
 					}
@@ -67,7 +70,7 @@ public class GradientValue extends Module implements Voter {
 		}
 
 		// Normalize
-		valueEst[0] = (float) (valueEst[0] / NORMALIZER);
+		valueEst[0] = (float) (valueEst[0] / normalizer);
 		
 		if (Float.isInfinite(valueEst[0]) || Float.isNaN(valueEst[0])) {
 			System.out.println("Numeric Error in Gradient value");

@@ -54,24 +54,37 @@ public class AddFixedSmallWallsTask extends Task {
 	}
 
 	private void perform(Universe univ, Subject sub) {
-		addOuterWall(Math.PI/8, false, univ);
-		addOuterWall(3*Math.PI/8, true, univ);
-		addOuterWall(7*Math.PI/8, false, univ);
-		addOuterWall(11*Math.PI/8, true, univ);
-		addOuterWall(13*Math.PI/8, false, univ);
-		addOuterWall(15*Math.PI/8, true, univ);
+//		addOuterWall(Math.PI/8, false, univ);
+//		addOuterWall(3*Math.PI/8, true, univ);
+//		addOuterWall(7*Math.PI/8, false, univ);
+//		addOuterWall(11*Math.PI/8, true, univ);
+//		addOuterWall(13*Math.PI/8, false, univ);
+//		addOuterWall(15*Math.PI/8, true, univ);
+//		
+//		addInnerWall(-.25,.25, Math.PI/8, univ);
+//		addInnerWall(-.1,.2, 12*Math.PI/8, univ);
+//		addInnerWall(0.05,0.05, 3*Math.PI/8, univ);
+//		addInnerWall(-.3,-.1, 5*Math.PI/8, univ);
+//		addInnerWall(-.1,-.2, 0*Math.PI/8, univ);
+//		addInnerWall(.25,.05, 0*Math.PI/8, univ);
+//		addInnerWall(-.25,-.1, Math.PI/8, univ);
+//		addInnerWall(.25,-.3, 6*Math.PI/16, univ);
+//		addInnerWall(.2,.25,30*Math.PI/16, univ);
+//		addInnerWall(.0,.3, 0*Math.PI/8, univ);
 		
-		addInnerWall(-.25,.25, Math.PI/8, univ);
-		addInnerWall(-.1,.2, 12*Math.PI/8, univ);
-		addInnerWall(0.05,0.05, 3*Math.PI/8, univ);
-		addInnerWall(-.3,-.1, 5*Math.PI/8, univ);
-		addInnerWall(-.1,-.2, 0*Math.PI/8, univ);
-		addInnerWall(.25,.05, 0*Math.PI/8, univ);
-		addInnerWall(-.25,-.1, Math.PI/8, univ);
-		addInnerWall(.25,-.3, 6*Math.PI/16, univ);
-		addInnerWall(.2,.25,30*Math.PI/16, univ);
-		addInnerWall(.0,.3, 0*Math.PI/8, univ);
-		
+		univ.addWall(-0.19134194f,0.4619397f,0.19134143f,0.46193987f);
+		univ.addWall(-0.088414215f,0.43102545f,-0.06329654f,0.30857503f);
+		univ.addWall(-0.15002857f,-0.413632f,-0.06478506f,-0.17861381f);
+		univ.addWall(0.4105273f,0.1583267f,0.17727314f,0.068368345f);
+		univ.addWall(0.43567467f,-0.06154343f,0.31190345f,-0.0440595f);
+		univ.addWall(0.0909464f,0.43049827f,0.06510935f,0.30819762f);
+		univ.addWall(-0.38670117f,0.20991f,-0.16698459f,0.09064296f);
+		univ.addWall(0.19369878f,-0.3950706f,0.083642654f,-0.17059867f);
+		univ.addWall(-0.17237598f,-0.123725295f,-0.13085988f,-0.005821039f);
+		univ.addWall(0.059495747f,0.075841784f,0.038606096f,0.19908391f);
+		univ.addWall(0.1622448f,-0.08624524f,0.25793806f,-0.16666788f);
+		univ.addWall(-0.2710842f,0.00835216f,-0.29687265f,-0.11395874f);
+		univ.addWall(-0.043139875f,0.07127708f,-0.08298153f,0.18975765f);
 	}
 
 	private void addInnerWall(double x, double y, double angle, Universe univ) {
