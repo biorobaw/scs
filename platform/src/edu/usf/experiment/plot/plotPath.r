@@ -60,11 +60,11 @@ ratPathPlot <- function(pathData, p){
   pathSegs <- pathData[1:nrow(pathData)-1,]
   # Add two new columns with shifted data
   pathSegs[c('nX', 'nY')] <- pathData[-1,c('x','y')]
-  p + geom_segment(data=pathSegs[c('x','y','nX','nY','random')], aes(x,y,xend=nX,yend=nY,color = random)) + scale_color_manual(values=c(true="red", false="blue")) 
+  p + geom_segment(data=pathSegs[c('x','y','nX','nY','random')], aes(x,y,xend=nX,yend=nY,color = random), cex=.05) + scale_color_manual(values=c(true="red", false="blue")) 
 }
 
 ratPathPointsPlot <- function(pathData, p){
-  p + geom_point(data=pathData, aes(x,y),  col="green", bg="red",cex=1)
+  p + geom_point(data=pathData, aes(x,y),  col="green", bg="red",cex=.1)
 }
 
 ratStartPointPlot <- function (pathData, p){
@@ -72,7 +72,7 @@ ratStartPointPlot <- function (pathData, p){
 }
 
 ratEndPointPlot <- function (pathData, p){
-  p + geom_point(data=tail(pathData, n=1),aes(x,y), col="blue", bg="blue", cex=4)
+  p + geom_point(data=tail(pathData, n=1),aes(x,y), col="blue", bg="blue", cex=1)
 }
 
 stopPointsPlot <- function (pathData) {
@@ -80,7 +80,7 @@ stopPointsPlot <- function (pathData) {
   pathDataNext <- pathData[c(interval:nrow(pathData),seq(1,interval-1)),]
   stopPoints <- pathData[pathData$x == pathDataNext$x & pathData$y == pathDataNext$y,]
   if (nrow(stopPoints)>0)
-    geom_point(data=stopPoints, aes(x,y), col="green", bg="green", cex=4)
+    geom_point(data=stopPoints, aes(x,y), col="green", bg="green", cex=1)
   else
     list()
 }
@@ -89,7 +89,7 @@ atePointsPlot <- function (pathData) {
   pathData$ate <- as.logical(pathData$ate)
   atePoints <- pathData[pathData$ate,]
   if (nrow(atePoints)>0)
-    atePlot <- geom_point(data=atePoints, aes(x,y), col="green", bg="green", cex=4)
+    atePlot <- geom_point(data=atePoints, aes(x,y), col="green", bg="green", cex=1)
   else
     list()
 }
@@ -99,7 +99,7 @@ triedToEatPointsPlot <- function (pathData) {
   pathData$triedToEat <- as.logical(pathData$triedToEat)
   triedToEatPoints <- pathData[pathData$triedToEat & !pathData$ate,]
   if (nrow(triedToEatPoints)>0)
-    atePlot <- geom_point(data=triedToEatPoints, aes(x,y), col="red", bg="red", cex=4)
+    atePlot <- geom_point(data=triedToEatPoints, aes(x,y), col="red", bg="red", cex=1)
   else
     list()
 }
@@ -108,18 +108,24 @@ triedToEatPointsPlot <- function (pathData) {
 
 wallPlot <- function(wallData,p){
 
-  if (!is.null(wallData)){
-    
-    p + geom_segment(data=wallData, aes(x,y,xend=xend,yend=yend),  col="black", cex=8)
-  } else {
-    p
+  if(!is.null(wallData)){
+    attach(wallData)
+    thinWalls <- wallData[sqrt(x^2 + y^2) > .45 & sqrt(xend^2 + yend^2) > .45, ]
+    thickWalls <- wallData[!(sqrt(x^2 + y^2) > .45 & sqrt(xend^2 + yend^2) > .45), ]
+    detach(wallData)
+    if (nrow(thickWalls) > 0){
+      p <- p + geom_segment(data=thickWalls, aes(x,y,xend=xend,yend=yend),  col="black", cex=3)
+    }
+    if (nrow(thinWalls) > 0){
+      p <- p + geom_segment(data=thinWalls, aes(x,y,xend=xend,yend=yend),  col="black", cex=1)
+    }
   }
+  p
 }
 
 plotPathOnMaze <- function (preName, name, pathData, wallData, maze){
   # Get the individual components of the plot
   p <- ggplot()
-  p <- p + maze
   p <- ratPathPlot(pathData, p)
   #  p <- ratPathPointsPlot(pathData, p)
   #p <- ratStartPointPlot(pathData, p)
@@ -131,6 +137,7 @@ plotPathOnMaze <- function (preName, name, pathData, wallData, maze){
   p <- p + triedToEatPointsPlot(pathData)
   
   p <- wallPlot(wallData, p)
+  p <- p + maze
 
   # Some aesthetic stuff
   p <- mazePlotTheme(p)
@@ -143,7 +150,7 @@ plotPathOnMaze <- function (preName, name, pathData, wallData, maze){
     print(p)  
   else
     ggsave(plot=p,filename=paste("plots/path/path",preName,name,
-                                 ".pdf", sep=''), width=10, height=10)
+                                 ".pdf", sep=''), width=3, height=3)
   
   #   saveRDS(p, paste("plots/path/",name,".obj", sep=''))
 }
