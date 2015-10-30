@@ -85,7 +85,7 @@
 			<!-- Alpha for the learning algorithm -->
 			<alpha>.5</alpha>
 			<!-- Elegibility traces for the learning algorithm -->
-			<tracesDecay>.9</tracesDecay>
+			<tracesDecay>.85</tracesDecay>
 			<!-- Initial value for values and action values -->
 			<initialValue>0</initialValue>
 			<!-- Value associated with a flashing feeder -->
