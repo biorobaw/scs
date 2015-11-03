@@ -30,24 +30,16 @@ circleFun <- function(center=c(0,0), diameter=1, npoints=100, start=0, end=2, fi
   return(df)
 }
 
-mazePlot <- function(mazeFile, wantedFeeder = -1){
-  # Same as xmlParse()
-  doc <- xmlParseDoc(mazeFile)
-  root <- xmlRoot(doc)
-  floor <-  xmlToList(getNodeSet(doc, "/world//floor")[[1]])
-  r <- as.numeric(floor$r)
-  x <- as.numeric(floor$x)
-  y <- as.numeric(floor$y)
-  
-  ns <- getNodeSet(doc, "/world//feeder")
-  feeders <- llply(ns, function (f) {
-    feeder <- xmlToList(f)
-    r <- as.numeric(feeder$r)
-    x <- as.numeric(feeder$x)
-    y <- as.numeric(feeder$y)
+mazePlot <- function(feedersData, wantedFeeder = -1){
+  feeders <- apply(feedersData,1, function (feeder) {
+    r <- .01
+    x <- as.numeric(feeder[4])
+    y <- as.numeric(feeder[5])
+    id <- as.numeric(feeder[3])
+    enabled <- feeder[6] == "true"
     dat <- circleFun(c(x,y),2*r,npoints = 100, 0, 2, TRUE)
-    if (wantedFeeder == as.numeric(feeder$id) ){
-      p <- geom_polygon(data=dat, aes(x,y), color="green", fill="green")
+    if (enabled){
+      p <- geom_polygon(data=dat, aes(x,y), color="orange", fill="orange")
      } else {
       p <- geom_polygon(data=dat, aes(x,y), color="grey", fill="grey")
      } 
@@ -157,15 +149,20 @@ plotPathOnMaze <- function (preName, name, pathData, wallData, maze){
 
 pathFile <- 'subjposition.RData'
 wallsFile <- 'walls.RData'
-mazeFile <- 'maze.xml'
+feedersFile <- 'feeders.RData'
 
 invisible(dir.create("plots"))
 invisible(dir.create("plots/path/"))
-maze <- mazePlot(mazeFile)
+
 load(pathFile)
 pathData <- data
 load(wallsFile)
 wallData <- data
+load(feedersFile)
+feedersData <- data
+
+maze <- mazePlot(feedersData)
+
 splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 splitWalls <- split(wallData, wallData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 invisible(llply(

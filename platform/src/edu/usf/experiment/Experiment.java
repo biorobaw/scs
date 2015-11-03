@@ -12,6 +12,7 @@ import edu.usf.experiment.task.Task;
 import edu.usf.experiment.task.TaskLoader;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.UniverseLoader;
+import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.IOUtils;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -135,6 +136,13 @@ public class Experiment implements Runnable {
 		for (Task task : beforeTasks)
 			task.perform(this);
 
+		if (Debug.sleepBeforeStart)
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		// Run each trial in order
 		for (Trial t : trials)
 			t.run();

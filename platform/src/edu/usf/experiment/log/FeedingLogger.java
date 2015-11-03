@@ -29,9 +29,11 @@ public class FeedingLogger extends Logger {
 
 	private void log(Subject subject, Universe universe) {
 		if (subject.hasTriedToEat()) {
+			PropertyHolder props = PropertyHolder.getInstance();
+			String cycle = props.getProperty("cycle");
 			int feeder = universe.getFoundFeeder();
-			FeedingLog fl = new FeedingLog(feeder, subject.hasEaten(),
-					universe.isFeederFlashing(feeder));
+			FeedingLog fl = new FeedingLog(feeder, cycle, subject.hasEaten(),
+					universe.isFeederFlashing(feeder), universe.isFeederEnabled(feeder));
 			feederLogs.add(fl);
 		}
 
@@ -55,19 +57,27 @@ public class FeedingLogger extends Logger {
 		String subName = props.getProperty("subject");
 		String episode = props.getProperty("episode");
 
+
 		synchronized (PositionLogger.class) {
 			PrintWriter writer = getWriter();
-			for (FeedingLog fl : feederLogs)
+			int prevFeeder = -1;
+			for (FeedingLog fl : feederLogs){
+				// Error when eating from a non enabled feeder for the first time
+				// If eating from an enabled, does not count as error
+				// If eating from the same feeder twice, the second does not count as error	
+				boolean error = !fl.wasEnabled && fl.feederId != prevFeeder;
+				prevFeeder = fl.feederId;
 				writer.println(trialName + '\t' + groupName + '\t' + subName
-						+ '\t' + episode + '\t' + fl.feederId + "\t" + fl.ate
-						+ "\t" + fl.wasFlashing);
+						+ '\t' + episode + '\t' + fl.cycle + '\t' + fl.feederId + "\t" + fl.ate
+						+ "\t" + fl.wasFlashing + '\t' + fl.wasEnabled + '\t' + error);
+			}
 			feederLogs.clear();
 		}
 	}
 
 	@Override
 	public String getHeader() {
-		return "trial\tgroup\tsubject\trepetition\tfeeder\tate\tflashing";
+		return "trial\tgroup\tsubject\trepetition\tcycle\tfeeder\tate\tflashing\tenabled\terror";
 	}
 
 	@Override
