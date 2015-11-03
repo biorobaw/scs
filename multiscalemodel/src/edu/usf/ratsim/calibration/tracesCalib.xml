@@ -5,11 +5,11 @@
 	
 	<model>
 		<tracesDecay>
-			<value>.75</value>
-			<value>.8</value>
-			<value>.85</value>
 			<value>.9</value>
-			<value>.95</value>
+			<value>.8</value>
+			<value>.7</value>
+			<value>.6</value>
+			<value>.5</value>
 		</tracesDecay>
 	</model>
 	
