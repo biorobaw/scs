@@ -66,10 +66,12 @@ public class FeedingLogger extends Logger {
 				// If eating from an enabled, does not count as error
 				// If eating from the same feeder twice, the second does not count as error	
 				boolean error = !fl.wasEnabled && fl.feederId != prevFeeder;
+				// Correct feeder when is enabled and different from previous
+				boolean correct = fl.wasEnabled && fl.feederId != prevFeeder;
 				prevFeeder = fl.feederId;
 				writer.println(trialName + '\t' + groupName + '\t' + subName
 						+ '\t' + episode + '\t' + fl.cycle + '\t' + fl.feederId + "\t" + fl.ate
-						+ "\t" + fl.wasFlashing + '\t' + fl.wasEnabled + '\t' + error);
+						+ "\t" + correct + '\t' + fl.wasFlashing + '\t' + fl.wasEnabled + '\t' + error);
 			}
 			feederLogs.clear();
 		}
@@ -77,7 +79,7 @@ public class FeedingLogger extends Logger {
 
 	@Override
 	public String getHeader() {
-		return "trial\tgroup\tsubject\trepetition\tcycle\tfeeder\tate\tflashing\tenabled\terror";
+		return "trial\tgroup\tsubject\trepetition\tcycle\tfeeder\tate\tcorrect\tflashing\tenabled\terror";
 	}
 
 	@Override
