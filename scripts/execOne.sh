@@ -2,7 +2,7 @@
 
 #SBATCH -p development,circe
 #SBATCH --time=1:00:00
-#SBATCH --mem=1000
+#SBATCH --mem=4000
 #SBATCH --cpus-per-task 2
 
 logPath=$1
