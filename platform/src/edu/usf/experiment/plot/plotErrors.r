@@ -1,4 +1,5 @@
 require(ggplot2, quietly = TRUE)
+require(grid, quietly = TRUE)
 
 stepsPerSec <- 4
 
@@ -35,7 +36,7 @@ p <- p + theme_bw() + scale_color_discrete(guide = guide_legend(title = "Group")
 p <- p + ylab("Cummulative Errors") + xlab("Time (s)")
 p <- p + theme(legend.text = element_text(size=20), legend.title = element_text(size=20), text = element_text(size=20)) 
 p <- p + theme(legend.key.height = unit(2,"line"), legend.key.width = unit(2,"line"), legend.position = "right", legend.justification = c(1, 1), legend.background = element_rect(colour = NA, fill = NA))
-p
+#p
 ggsave(filename = "errors.pdf", plot = p,width=10, height=6)
 
 p <- ggplot(data = feedingData[feedingData$correct,], aes(x=rewardNum, y = timeToReach/stepsPerSec, color=group))
@@ -45,7 +46,7 @@ p <- p + theme_bw() + scale_color_discrete(guide = guide_legend(title = "Group")
 p <- p + ylab("Time to reach enabled feeder") + xlab("Reward Number")
 p <- p + theme(legend.text = element_text(size=20), legend.title = element_text(size=20), text = element_text(size=20)) 
 p <- p + theme(legend.key.height = unit(2,"line"), legend.key.width = unit(2,"line"), legend.position = "right", legend.justification = c(1, 1), legend.background = element_rect(colour = NA, fill = NA))
-p
+#p
 ggsave(filename = "timeToReach.pdf", plot = p,width=10, height=6)
 
 

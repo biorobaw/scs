@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH -p development,circe
-#SBATCH --time=2:00:00
-#SBATCH --mem=5000
+#SBATCH --time=1:00:00
+#SBATCH --mem=1000
 #SBATCH --cpus-per-task 2
 
 logPath=$1
