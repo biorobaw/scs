@@ -39,7 +39,7 @@ public class CalibrationExperiment {
 			int numValues = paramsToCalibrate.get(param).size();
 			String value = paramsToCalibrate.get(param).get(
 					paramIndex % numValues);
-			logPath = param + "-" + value + "--" + logPath;
+			logPath += param + "-" + value + "--";
 			paramIndex /= numValues;
 			System.out.println("[+] Setting param " + param + " to value " + value);
 			experimentRoot.changeModelParam(param, value, experimentRoot);
