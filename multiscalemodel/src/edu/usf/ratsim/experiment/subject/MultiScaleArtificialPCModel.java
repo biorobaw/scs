@@ -120,6 +120,7 @@ public class MultiScaleArtificialPCModel extends Model {
 				.getChildInt("maxActionsSinceForward");
 		float stillExplorationVal = params.getChildFloat("stillExplorationVal");
 
+				
 		int numActions = subject.getPossibleAffordances().size();
 
 		// qLActionSel = new LinkedList<WTAVotes>();

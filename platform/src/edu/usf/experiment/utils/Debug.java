@@ -8,6 +8,7 @@ public class Debug {
 	
 	public static boolean print = true;
 	
+	
 	public static boolean printValues = print && false;
 	public static boolean printEndCycle = print && false;
 	public static boolean printAnyGoal = print && false;
