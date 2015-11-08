@@ -5,12 +5,13 @@ logPath=$2
 fromIndiv=$3
 toIndiv=$4
 
-./scripts/compile.sh
+idMessage=`sbatch ./scripts/compile.sh`
+compileId=`echo $idMessage | cut -d " " -f 4`
 
-mkdir -p $logPath
+idMessage=`sbatch --dependency=afterok:$compileId scripts/preProcess.sh $experimentFile $logPath`
+preprocId=`echo $idMessage | cut -d " " -f 4`
 
-/usr/bin/java -cp "./platform/src/:./multiscalemodel/src/:./bin/:./deps/*:./deps/j3dport/*" edu.usf.experiment.PreExperiment $experimentFile $logPath > $logPath/preProc.txt 2>&1
-idMessage=`sbatch -a $fromIndiv-$toIndiv ./scripts/execOne.sh $logPath`
-slurmId=`echo $idMessage | cut -d " " -f 4`
-sbatch --dependency=afterok:$slurmId scripts/postProcess.sh $logPath
+idMessage=`sbatch --dependency=afterok:$preprocId -a $fromIndiv-$toIndiv ./scripts/execOne.sh $logPath`
+ratsId=`echo $idMessage | cut -d " " -f 4`
+sbatch --dependency=afterok:$ratsId scripts/postProcess.sh $logPath
 
