@@ -64,6 +64,8 @@ public class MultiScaleArtificialPCModel extends Model {
 	private Intention intentionGetter;
 	private Module rlValue;
 	private List<ArtificialConjCellLayer> conjCellLayers;
+	private float[][] value;
+	private int numActions;
 
 	public MultiScaleArtificialPCModel() {
 	}
@@ -121,7 +123,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		float stillExplorationVal = params.getChildFloat("stillExplorationVal");
 
 				
-		int numActions = subject.getPossibleAffordances().size();
+		numActions = subject.getPossibleAffordances().size();
 
 		// qLActionSel = new LinkedList<WTAVotes>();
 		exploration = new LinkedList<DecayingExplorationSchema>();
@@ -189,7 +191,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		// Create value matrix
 		int numStates = ((Float1dPort) jointPCHDIntentionState
 				.getOutPort("jointState")).getSize();
-		float[][] value = new float[numStates][numActions + 1];
+		value = new float[numStates][numActions + 1];
 		// for (int i = 0; i < numStates; i++)
 		// value[i][numActions] = .5f;
 		FloatMatrixPort valuePort = new FloatMatrixPort((Module) null, value);
@@ -519,5 +521,12 @@ public class MultiScaleArtificialPCModel extends Model {
 			activation.putAll(((Float1dSparsePortMap) layer
 					.getOutPort("activation")).getNonZero());
 		return activation;
+	}
+
+	public float getValueEntropy() {
+		float entropy = 0;
+		for (int i = 0; i < value.length; i++)
+			entropy += Math.abs(value[i][numActions]);
+		return entropy;
 	}
 }
