@@ -3,6 +3,7 @@ package edu.usf.experiment;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class CalibrationPostExperiment {
 		remainingParams.remove(0);
 
 		for (String value : paramsToCalibrate.get(currentParam)) {
-			Map<String, String> newParamValues = new HashMap<String, String>(
+			Map<String, String> newParamValues = new LinkedHashMap<String, String>(
 					currentParamValues);
 			newParamValues.put(currentParam, value);
 			if (remainingParams.isEmpty()) {
