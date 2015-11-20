@@ -115,4 +115,6 @@ public abstract class Subject {
 	public abstract Map<Float, Float> getValue(Point3f point3f, int intention, float angleInterval, float distToWall);
 
 	public abstract void remapLayers(LinkedList<Integer> indexList);
+
+	public abstract float getValueEntropy();
 }

@@ -32,14 +32,14 @@ public class ValueEntropyLogger extends Logger {
 		String episodeName = props.getProperty("episode");
 		String cycle = props.getProperty("cycle");
 
-		System.out.println("Starting to log value");
+//		System.out.println("Starting to log value");
 		
-		float valueEntropy = 0;
+		float valueEntropy = sub.getValueEntropy();
 
 		writer.println(trialName + '\t' + groupName + '\t' + subName + '\t'
 				+ episodeName + '\t' + cycle + "\t" + valueEntropy);
 
-		System.out.println("Finished loggin value");
+//		System.out.println("Finished loggin value");
 	}
 
 	@Override

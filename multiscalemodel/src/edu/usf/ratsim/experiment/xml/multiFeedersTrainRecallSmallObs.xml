@@ -69,7 +69,7 @@
 				means less activity -->
 			<wallInhibition>0.1</wallInhibition>
 			<!-- Amount of cells placed near the goal -->
-			<goalCellProportion>0.5</goalCellProportion>
+			<goalCellProportion>0</goalCellProportion>
 			<!-- Minimum angular radius of conjuntive cells -->
 			<minHDRadius>0.195</minHDRadius>
 			<!-- Maximum angular radius of conjuntive cells -->
@@ -247,6 +247,9 @@
 					<params>
 					</params>
 				</logger>
+				<logger>
+					<name>edu.usf.ratsim.experiment.log.ValueEntropyLogger</name>
+				</logger>
 				<!--<logger> <name>edu.usf.experiment.log.ValueLogger</name> <params> <circle>false</circle>
 					<interval>.1</interval> <angleInterval>.78</angleInterval> <numIntentions>1</numIntentions>
 					</params> </logger>-->
@@ -264,6 +267,7 @@
 				<logger>
 					<name>edu.usf.experiment.log.FeederLogger</name>
 				</logger>
+
 				
 				<!-- Log each position estimated value -->
 				<!--<logger> <name>edu.usf.experiment.log.ValueLogger</name> <params> <circle>false</circle>
@@ -409,6 +413,9 @@
 				<!-- Log feeding events -->
 				<logger>
 					<name>edu.usf.experiment.log.FeedingLogger</name>
+				</logger>
+				<logger>
+					<name>edu.usf.ratsim.experiment.log.ValueEntropyLogger</name>
 				</logger>
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->
@@ -599,6 +606,9 @@
 				<!-- Log feeding events -->
 				<logger>
 					<name>edu.usf.experiment.log.FeedingLogger</name>
+				</logger>
+				<logger>
+					<name>edu.usf.ratsim.experiment.log.ValueEntropyLogger</name>
 				</logger>
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->

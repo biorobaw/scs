@@ -120,6 +120,11 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	public Map<Integer, Float> getCellActivity() {
 		return model.getCellActivation();
 	}
+
+	@Override
+	public float getValueEntropy() {
+		return model.getValueEntropy();
+	}
 	
 
 }
