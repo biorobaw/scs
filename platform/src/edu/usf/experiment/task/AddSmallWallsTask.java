@@ -68,7 +68,7 @@ public class AddSmallWallsTask extends Task {
 		System.out.println("[+] Small walls added");
 	}
 
-	private boolean perform(Universe univ, Subject sub) {
+	public boolean perform(Universe univ, Subject sub) {
 		Random random = RandomSingleton.getInstance();
 		List<LineSegment> outerWalls = new LinkedList<LineSegment>();
 		watchDogCount = 0;
