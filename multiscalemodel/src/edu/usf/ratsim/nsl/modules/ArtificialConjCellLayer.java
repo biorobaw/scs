@@ -230,4 +230,10 @@ public class ArtificialConjCellLayer extends Module {
 		}
 	}
 
+	public void reactivate() {
+		for (ExponentialConjCell cell : cells){
+			cell.setBupiModulation(1);
+		}
+	}
+
 }

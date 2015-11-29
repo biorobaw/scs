@@ -46,7 +46,6 @@ public class CalibrationPostExperiment {
 			newParamValues.put(currentParam, value);
 			if (remainingParams.isEmpty()) {
 				String config = ""; 
-				System.out.println("aaa");
 				for (String param : newParamValues.keySet())
 					config += param + "-" + newParamValues.get(param) + "--";
 				new PostExperiment(logPath + File.separator

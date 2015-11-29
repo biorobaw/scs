@@ -117,4 +117,6 @@ public abstract class Subject {
 	public abstract void remapLayers(LinkedList<Integer> indexList);
 
 	public abstract float getValueEntropy();
+
+	public abstract void reactivateHPCLayers(LinkedList<Integer> indexList);
 }

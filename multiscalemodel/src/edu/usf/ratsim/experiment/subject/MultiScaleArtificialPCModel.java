@@ -529,4 +529,11 @@ public class MultiScaleArtificialPCModel extends Model {
 			entropy += Math.abs(value[i][numActions]);
 		return entropy;
 	}
+
+	public void reactivatePCL(LinkedList<Integer> indexList) {
+		for (Integer layer : indexList) {
+			System.out.println("[+] Reactivating layer " + layer);
+			conjCellLayers.get(layer).reactivate();
+		}
+	}
 }
