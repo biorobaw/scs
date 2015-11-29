@@ -125,6 +125,11 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	public float getValueEntropy() {
 		return model.getValueEntropy();
 	}
+
+	@Override
+	public void reactivateHPCLayers(LinkedList<Integer> indexList) {
+		model.reactivatePCL(indexList);
+	}
 	
 
 }
