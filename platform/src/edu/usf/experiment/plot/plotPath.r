@@ -101,15 +101,8 @@ triedToEatPointsPlot <- function (pathData) {
 wallPlot <- function(wallData,p){
 
   if(!is.null(wallData)){
-    attach(wallData)
-    thinWalls <- wallData[sqrt(x^2 + y^2) > .45 & sqrt(xend^2 + yend^2) > .45, ]
-    thickWalls <- wallData[!(sqrt(x^2 + y^2) > .45 & sqrt(xend^2 + yend^2) > .45), ]
-    detach(wallData)
-    if (nrow(thickWalls) > 0){
-      p <- p + geom_segment(data=thickWalls, aes(x,y,xend=xend,yend=yend),  col="black", cex=3)
-    }
-    if (nrow(thinWalls) > 0){
-      p <- p + geom_segment(data=thinWalls, aes(x,y,xend=xend,yend=yend),  col="black", cex=1)
+    if (nrow(wallData) > 0){
+      p <- p + geom_segment(data=wallData, aes(x,y,xend=xend,yend=yend),  col="black", cex=3)
     }
   }
   p

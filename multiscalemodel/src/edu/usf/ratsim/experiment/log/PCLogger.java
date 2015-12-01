@@ -10,26 +10,26 @@ import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject;
+import edu.usf.ratsim.experiment.subject.TSPSubject;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCell;
 import edu.usf.ratsim.nsl.modules.ExponentialConjCell;
 
 public class PCLogger extends Logger {
 
-	private List<ExponentialConjCell> cells;
+	private List<ArtificialPlaceCell> cells;
 
 	public PCLogger(ElementWrapper params, String logPath) {
 		super(params, logPath);
 	}
 
 	public void log(Subject sub) {
-		if (!(sub instanceof MultiScaleArtificialPCSubject))
+		if (!(sub instanceof TSPSubject))
 			throw new IllegalArgumentException(
-					"PC logger can only be used with MultiScaleArtificialPCSubjects");
+					"PC logger can only be used with TSPModel");
 
-		MultiScaleArtificialPCSubject msapcs = (MultiScaleArtificialPCSubject) sub;
+		TSPSubject tspSub = (TSPSubject) sub;
 
-		cells = msapcs.getPlaceCells();
+		cells = tspSub.getPlaceCells();
 	}
 
 	@Override
@@ -58,15 +58,12 @@ public class PCLogger extends Logger {
 
 			PrintWriter writer = getWriter();
 			int cellNum = 0;
-			for (ExponentialConjCell cell : cells) {
+			for (ArtificialPlaceCell cell : cells) {
 				writer.println(groupName + '\t' + subName + '\t'
 						+ cellNum + '\t'
-						+ cell.getPreferredLocation().x  + '\t'
-						+ cell.getPreferredLocation().y + '\t'
-						+ cell.getPlaceRadius() + '\t'
-						+ cell.getPreferredDirection() + '\t'
-						+ cell.getAngleRadius() + '\t'
-						+ cell.getPreferredIntention());
+						+ cell.getCenter().x  + '\t'
+						+ cell.getCenter().y + '\t'
+						+ cell.getRadius());
 				cellNum++;
 			}
 
@@ -76,7 +73,7 @@ public class PCLogger extends Logger {
 
 	@Override
 	public String getHeader() {
-		return "tgroup\tsubject\tcellNum\tx\ty\tplaceradius\ttheta\tthetaRadius\tmap";
+		return "tgroup\tsubject\tcellNum\tx\ty\tplaceradius";
 	}
 
 	@Override

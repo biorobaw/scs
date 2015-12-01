@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="us-ascii"?>
+
+<world>
+	<boundingRect>
+		<x>0</x>
+		<y>0</y>
+		<w>2</w>
+		<h>2</h>
+	</boundingRect>
+	
+	<floor>
+		<r>4</r>
+		<h>0</h>
+		<cr>0</cr>
+		<cg>0</cg>
+		<cb>0</cb>
+		<x>1</x>
+		<y>1</y>
+		<z>-.075</z>
+	</floor>
+	
+	<feeder>
+		<id>0</id>
+		<r>0.025</r>
+		<h>0</h>
+		<cr>1</cr>
+		<cg>1</cg>
+		<cb>0</cb>
+		<x>1.5</x>
+		<y>.3</y>
+		<z>0.0</z>
+	</feeder>
+
+	<feeder>
+		<id>1</id>
+		<r>0.025</r>
+		<h>0</h>
+		<cr>1</cr>
+		<cg>1</cg>
+		<cb>0</cb>
+		<x>.3</x>
+		<y>.8</y>
+		<z>0.0</z>
+	</feeder>
+
+	<feeder>
+		<id>2</id>
+		<r>0.025</r>
+		<h>0</h>
+		<cr>1</cr>
+		<cg>1</cg>
+		<cb>0</cb>
+		<x>.8</x>
+		<y>1.8</y>
+		<z>0.0</z>
+	</feeder>
+
+	<feeder>
+		<id>3</id>
+		<r>0.025</r>
+		<h>0</h>
+		<cr>1</cr>
+		<cg>1</cg>
+		<cb>0</cb>
+		<x>1</x>
+		<y>1</y>
+		<z>0.0</z>
+	</feeder>
+
+	<feeder>
+		<id>4</id>
+		<r>0.025</r>
+		<h>0</h>
+		<cr>1</cr>
+		<cg>1</cg>
+		<cb>0</cb>
+		<x>1.8</x>
+		<y>.2</y>
+		<z>0.0</z>
+	</feeder>							
+
+	
+	<!-- Exterior walls -->
+	<wall>
+		<x1>0</x1>
+		<y1>0</y1>
+		<z1>0</z1>
+		<x2>0</x2>
+		<y2>2</y2>
+		<z2>0</z2>
+	</wall>
+	<wall>
+		<x1>0</x1>
+		<y1>2</y1>
+		<z1>0</z1>
+		<x2>2</x2>
+		<y2>2</y2>
+		<z2>0</z2>
+	</wall>
+	<wall>
+		<x1>2</x1>
+		<y1>2</y1>
+		<z1>0</z1>
+		<x2>2</x2>
+		<y2>0</y2>
+		<z2>0</z2>
+	</wall>
+	<wall>
+		<x1>2</x1>
+		<y1>0</y1>
+		<z1>0</z1>
+		<x2>0</x2>
+		<y2>0</y2>
+		<z2>0</z2>
+	</wall>
+	
+	<!-- Views -->
+	<topview>
+		<x>1</x>
+		<y>1</y>
+		<z>4</z>
+	</topview>
+	<thirdview>
+		<x>2.1</x>
+		<y>2.5</y>
+		<z>2.1</z>
+	</thirdview>
+	<robotview>
+		<x>1</x>
+		<y>.1</y>
+		<z>0</z>
+		<theta>1.57</theta>
+	</robotview>
+	
+</world>
+

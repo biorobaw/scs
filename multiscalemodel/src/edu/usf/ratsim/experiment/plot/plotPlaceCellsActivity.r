@@ -101,15 +101,19 @@ wallPlot <- function(wallData,p){
   }
 }
 
-plotPlaceCells <- function (preName, name, pcData, wallData, maze){
+plotPlaceCellActivity <- function (preName, name, pcData, activity, cycle, wallData, maze){
   # Get the individual components of the plot
   p <- ggplot()
   
-  circles <- apply(pcData, 1, function(pc) {
+  active <- activity[activity$cycle == cycle, c('cellNum', 'activation')]
+  circles <- apply(pcData[pcData$cellNum %in% active$cellNum,], 1, function(pc) {
     circleData <- circleFunSeg(c(as.numeric(pc['x']), as.numeric(pc['y'])), 2*as.numeric(pc['placeradius']), filled=FALSE, npoints=100)
+    circleData$id <- as.numeric(pc['cellNum'])
+    circleData$activation <- active[active$cellNum == as.numeric(pc['cellNum']), 'activation']
+    circleData
   })
-  
-  p <- p + geom_segment(data=ldply(circles), aes(x=x,y=y,xend=xend,yend=yend), color="blue")
+  # print(head(ldply(circles)))
+  p <- p + geom_segment(data=ldply(circles), aes(x=x,y=y,xend=xend,yend=yend, alpha=activation), color="blue", )
   
   #   print(circles)
   
@@ -120,26 +124,36 @@ plotPlaceCells <- function (preName, name, pcData, wallData, maze){
   # Some aesthetic stuff
   p <- mazePlotTheme(p)
   # Save the plot to an image
-  if (name == '')
-    print(p)  
-  else
-    ggsave(plot=p,filename=paste("plots/placecells/pc",preName,name,
+
+  ggsave(plot=p,filename=paste("plots/placecellactivity/pcact",preName,name,
                                  ".pdf", sep=''), width=10, height=10)
   
+  #print(p)
 }
 
 placeCellsFile <- 'placecells.RData'
+placeCellActivityFile <- 'cellactivity.RData'
 wallsFile <- 'walls.RData'
 mazeFile <- 'maze.xml'
 
 invisible(dir.create("plots"))
-invisible(dir.create("plots/placecells/"))
+invisible(dir.create("plots/placecellactivity/"))
 maze <- mazePlot(mazeFile)
 load(placeCellsFile)
 pcData <- data
 load(wallsFile)
 wallData <- data
-splitPCs <- split(pcData, pcData[c('placeradius')], drop=TRUE)
-invisible(llply(
-  names(splitPCs), function(x) plotPlaceCells(
-    "", x, splitPCs[[x]], wallData, maze), .parallel = FALSE))
+load(placeCellActivityFile)
+activity <- data
+
+#plotPlaceCellActivity("",20, pcData, activity, 20, wallData, maze)
+createMov <- function () { 
+  for (i in 0:max(activity$cycle)){
+    plotPlaceCellActivity("",i, pcData, activity, i, wallData, maze)
+  }
+    
+}
+
+createMov()
+
+
