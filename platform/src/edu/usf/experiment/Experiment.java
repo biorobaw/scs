@@ -155,7 +155,7 @@ public class Experiment implements Runnable {
 	public static void main(String[] args) {
 		if (args.length < 4)
 			System.out.println("Usage: java edu.usf.experiment "
-					+ "exprimentLayout logPath individual group");
+					+ "exprimentLayout logPath group individual");
 
 		Experiment e = new Experiment(args[0], args[1] + "/", args[2], args[3]);
 		e.run();

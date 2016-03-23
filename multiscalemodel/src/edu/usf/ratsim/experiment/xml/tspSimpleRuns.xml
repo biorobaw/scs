@@ -11,7 +11,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/tspSimpleRuns.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>false</display>
+			<display>true</display>
 		</params>
 	</universe>
 	
@@ -58,6 +58,9 @@
 			<ymin>0</ymin>
 			<xmax>2</xmax>
 			<ymax>2</ymax>
+			
+			<!-- Order in which feeders are visited -->
+			<feederOrder>14,12,18,17,1</feederOrder>
 		</params>
 	</model>
 	
@@ -74,8 +77,176 @@
 	<beforeExperimentTasks>
 		<!-- Enable feeders all feeders -->
 		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>1</id>
+				<x>0.528333333333333</x>
+				<y>-0.41625</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>2</id>
+				<x>0.095</x>
+				<y>-0.662916666666667</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>3</id>
+				<x>-0.398333333333333</x>
+				<y>-0.542916666666667</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>4</id>
+				<x>-0.671666666666667</x>
+				<y>-0.0929166666666667</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>5</id>
+				<x>-0.538333333333333</x>
+				<y>0.41375</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>6</id>
+				<x>-0.0883333333333333</x>
+				<y>0.67375</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>7</id>
+				<x>0.415</x>
+				<y>0.537083333333333</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>8</id>
+				<x>0.658333333333333</x>
+				<y>0.0904166666666667</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>9</id>
+				<x>0.535</x>
+				<y>-0.142916666666667</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>10</id>
+				<x>0.291666666666667</x>
+				<y>-0.462916666666667</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>11</id>
+				<x>-0.118333333333333</x>
+				<y>-0.522916666666667</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>12</id>
+				<x>-0.475</x>
+				<y>-0.289583333333333</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>13</id>
+				<x>-0.548333333333333</x>
+				<y>0.117083333333333</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>14</id>
+				<x>-0.275</x>
+				<y>0.477083333333333</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>15</id>
+				<x>0.135</x>
+				<y>0.537083333333333</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>16</id>
+				<x>0.495</x>
+				<y>0.277083333333333</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>17</id>
+				<x>0.241666666666667</x>
+				<y>-0.169583333333333</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>18</id>
+				<x>-0.175</x>
+				<y>-0.229583333333333</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>19</id>
+				<x>-0.251666666666667</x>
+				<y>0.17375</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>20</id>
+				<x>0.188333333333333</x>
+				<y>0.250416666666667</y>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>21</id>
+				<x>0.00833333333333333</x>
+				<y>0.0104166666666667</y>
+			</params>
+		</task>
+		
+		<task>
 			<name>edu.usf.experiment.task.EnableAllFeeders</name>
-			
 		</task>
 	</beforeExperimentTasks>
 	
@@ -109,7 +280,7 @@
 			<!-- Number of episodes -->
 			<number>1</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>00</sleep>
+			<sleep>100</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<task>
@@ -120,8 +291,8 @@
 					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
 					<params>
 						<point>
-							<x>1</x>
-							<y>.2</y>
+							<x>-0.2</x>
+							<y>-0.4</y>
 							<theta>1.57</theta>
 						</point>
 					</params>
@@ -175,7 +346,7 @@
 						<max>100000</max>
 					</params>
 				</condition>
-				<!-- Has eaten from 100 feeders -->
+				<!-- Has eaten from 5 feeders -->
 				<condition>
 					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
 					<params>

@@ -33,6 +33,7 @@ public class TSPModel extends Model {
 		float ymin = params.getChildFloat("ymin");
 		float xmax = params.getChildFloat("xmax");
 		float ymax = params.getChildFloat("ymax");
+		List<Integer> order = params.getChildIntList("feederOrder");
 
 		numActions = subject.getPossibleAffordances().size();
 
@@ -43,7 +44,7 @@ public class TSPModel extends Model {
 		addModule(placeCells);
 		
 		// Module that navigates the feeders
-		feederTraveler = new FeederTraveler("Traveler", subject, lRobot);
+		feederTraveler = new FeederTraveler("Traveler", order, subject, lRobot);
 		// Add in port for dependency
 		feederTraveler.addInPort("pc", placeCells.getOutPort("activation"));
 		addModule(feederTraveler);

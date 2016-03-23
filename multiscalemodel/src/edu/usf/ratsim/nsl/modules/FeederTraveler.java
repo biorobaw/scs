@@ -1,10 +1,7 @@
 package edu.usf.ratsim.nsl.modules;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.StringTokenizer;
 
-import sun.util.locale.StringTokenIterator;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
@@ -21,18 +18,13 @@ public class FeederTraveler extends Module {
 	private Subject sub;
 	private List<Integer> feedersToVisit;
 
-	public FeederTraveler(String name, Subject sub, LocalizableRobot lRobot) {
+	public FeederTraveler(String name, List<Integer> feederOrder, Subject sub, LocalizableRobot lRobot) {
 		super(name);
 
 		this.lRobot = lRobot;
 		this.sub = sub;
 		
-		PropertyHolder props = PropertyHolder.getInstance();
-//		String feederListString = props.getProperty("feeder.order");
-		StringTokenizer stringToken = new StringTokenizer("4,0,1,3,2", ",");
-		feedersToVisit = new LinkedList<Integer>();
-		while(stringToken.hasMoreElements())
-			feedersToVisit.add(new Integer(stringToken.nextToken()));
+		feedersToVisit = feederOrder;
 	}
 
 	@Override
