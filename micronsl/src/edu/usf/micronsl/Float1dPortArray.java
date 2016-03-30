@@ -1,4 +1,4 @@
-package edu.usf.ratsim.micronsl;
+package edu.usf.micronsl;
 
 public class Float1dPortArray extends Float1dPort {
 
@@ -23,8 +23,8 @@ public class Float1dPortArray extends Float1dPort {
 	public float[] getData() {
 		return data;
 	}
-	
-	public void getData(float[] buf){
+
+	public void getData(float[] buf) {
 		System.arraycopy(data, 0, buf, 0, data.length);
 	}
 

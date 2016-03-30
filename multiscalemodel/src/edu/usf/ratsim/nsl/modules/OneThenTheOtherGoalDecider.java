@@ -6,10 +6,10 @@ import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
-import edu.usf.ratsim.micronsl.Bool1dPort;
-import edu.usf.ratsim.micronsl.Int0dPort;
-import edu.usf.ratsim.micronsl.Int1dPort;
-import edu.usf.ratsim.micronsl.Module;
+import edu.usf.micronsl.Bool1dPort;
+import edu.usf.micronsl.Int0dPort;
+import edu.usf.micronsl.Int1dPort;
+import edu.usf.micronsl.Module;
 
 public class OneThenTheOtherGoalDecider extends Module {
 

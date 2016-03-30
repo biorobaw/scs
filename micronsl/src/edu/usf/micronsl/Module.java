@@ -1,6 +1,5 @@
-package edu.usf.ratsim.micronsl;
+package edu.usf.micronsl;
 
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;

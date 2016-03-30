@@ -1,8 +1,8 @@
 package edu.usf.ratsim.nsl.modules.qlearning;
 
-import edu.usf.ratsim.micronsl.Bool1dPort;
-import edu.usf.ratsim.micronsl.Float1dPortArray;
-import edu.usf.ratsim.micronsl.Module;
+import edu.usf.micronsl.Bool1dPort;
+import edu.usf.micronsl.Float1dPortArray;
+import edu.usf.micronsl.Module;
 
 public class Reward extends Module {
 

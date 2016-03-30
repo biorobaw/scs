@@ -14,9 +14,9 @@ import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.experiment.utils.RandomSingleton;
-import edu.usf.ratsim.micronsl.Float1dPortArray;
-import edu.usf.ratsim.micronsl.IntPort;
-import edu.usf.ratsim.micronsl.Module;
+import edu.usf.micronsl.Float1dPortArray;
+import edu.usf.micronsl.IntPort;
+import edu.usf.micronsl.Module;
 
 /**
  * Module to generate random actions when the agent hasnt moved (just rotated)

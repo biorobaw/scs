@@ -10,12 +10,12 @@ import java.util.HashSet;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
-import edu.usf.ratsim.micronsl.Float1dPort;
-import edu.usf.ratsim.micronsl.Float1dPortArray;
-import edu.usf.ratsim.micronsl.Float1dSparsePort;
-import edu.usf.ratsim.micronsl.FloatMatrixPort;
-import edu.usf.ratsim.micronsl.Int1dPort;
-import edu.usf.ratsim.micronsl.Module;
+import edu.usf.micronsl.Float1dPort;
+import edu.usf.micronsl.Float1dPortArray;
+import edu.usf.micronsl.Float1dSparsePort;
+import edu.usf.micronsl.FloatMatrixPort;
+import edu.usf.micronsl.Int1dPort;
+import edu.usf.micronsl.Module;
 import edu.usf.ratsim.support.Configuration;
 
 public class MultiStateProportionalAC extends Module implements QLAlgorithm {

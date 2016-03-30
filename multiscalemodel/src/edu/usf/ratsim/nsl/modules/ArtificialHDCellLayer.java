@@ -6,8 +6,8 @@ import java.util.Random;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.utils.RandomSingleton;
-import edu.usf.ratsim.micronsl.Float1dPortArray;
-import edu.usf.ratsim.micronsl.Module;
+import edu.usf.micronsl.Float1dPortArray;
+import edu.usf.micronsl.Module;
 
 public class ArtificialHDCellLayer extends Module {
 

@@ -1,4 +1,4 @@
-package edu.usf.ratsim.micronsl;
+package edu.usf.micronsl;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -10,8 +10,6 @@ import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import edu.usf.experiment.utils.Debug;
-
 public class Model {
 
 	private Map<String, Module> modules;
@@ -22,16 +20,14 @@ public class Model {
 
 	public Model() {
 		modules = new LinkedHashMap<String, Module>();
-		pool = new ThreadDependencyExecutor(10, 10, 0, TimeUnit.SECONDS,
-				new ArrayBlockingQueue<Runnable>(20));
+		pool = new ThreadDependencyExecutor(10, 10, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(20));
 		modulesChanged = false;
 		moduleList = new LinkedList<Module>();
 	}
 
 	public void addModule(Module m) {
 		if (modules.containsKey(m.getName()))
-			throw new RuntimeException("Module " + m.getName()
-					+ " already exists");
+			throw new RuntimeException("Module " + m.getName() + " already exists");
 		modules.put(m.getName(), m);
 		moduleList.add(m);
 		modulesChanged = true;
@@ -43,31 +39,26 @@ public class Model {
 
 	public void simRun() {
 		if (modulesChanged) {
-			if (DependencyRunnable
-					.hasCycles((List<DependencyRunnable>) (List<?>) moduleList))
-				throw new RuntimeException(
-						"There are cycles in the modules requirements");
+			if (DependencyRunnable.hasCycles((List<DependencyRunnable>) (List<?>) moduleList))
+				throw new RuntimeException("There are cycles in the modules requirements");
 
 			runOrder = addRandomUseDeps(moduleList);
 
-			if (Debug.printSchedulling){
+			if (Debug.printSchedulling) {
 				System.out.println("Printing run order");
 				for (Module m : runOrder)
 					System.out.println(m.getName());
 			}
-//			 Module last = null;
-//			 for( Module m : runOrder){
-//			 if (last != null){
-//			 m.addPreReq(last);
-//			 }
-//			 last = m;
-//			 }
+			// Module last = null;
+			// for( Module m : runOrder){
+			// if (last != null){
+			// m.addPreReq(last);
+			// }
+			// last = m;
+			// }
 
-			if (DependencyRunnable
-					.hasCycles((Collection<DependencyRunnable>) (Collection<?>) modules
-							.values()))
-				throw new RuntimeException(
-						"There are cycles in the modules requirements");
+			if (DependencyRunnable.hasCycles((Collection<DependencyRunnable>) (Collection<?>) modules.values()))
+				throw new RuntimeException("There are cycles in the modules requirements");
 			modulesChanged = false;
 		}
 
@@ -84,7 +75,7 @@ public class Model {
 			e.printStackTrace();
 		}
 
-//		System.out.println("************ Finished executing");
+		// System.out.println("************ Finished executing");
 	}
 
 	/**
@@ -107,8 +98,8 @@ public class Model {
 				if (lastUsingRandom != null) {
 					m.addPreReq(lastUsingRandom);
 					if (Debug.printExecutionOrder)
-						System.out.println("Adding random dep from "
-								+ lastUsingRandom.getName() + " to " + m.getName());
+						System.out
+								.println("Adding random dep from " + lastUsingRandom.getName() + " to " + m.getName());
 				}
 				lastUsingRandom = m;
 			}
@@ -117,8 +108,7 @@ public class Model {
 		return order;
 	}
 
-	private static boolean addRandomUseDeps(Module m, Set<Module> visited,
-			Set<Module> processed, List<Module> order) {
+	private static boolean addRandomUseDeps(Module m, Set<Module> visited, Set<Module> processed, List<Module> order) {
 		if (processed.contains(m))
 			return false;
 		if (visited.contains(m)) {
@@ -129,8 +119,7 @@ public class Model {
 
 		boolean cycles = false;
 		for (DependencyRunnable pr : m.getPreReqs())
-			cycles = cycles
-					|| addRandomUseDeps((Module) pr, visited, processed, order);
+			cycles = cycles || addRandomUseDeps((Module) pr, visited, processed, order);
 
 		processed.add(m);
 		order.add(m);

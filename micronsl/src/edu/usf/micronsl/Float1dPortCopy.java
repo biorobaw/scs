@@ -1,4 +1,4 @@
-package edu.usf.ratsim.micronsl;
+package edu.usf.micronsl;
 
 public class Float1dPortCopy extends Float1dPort {
 
@@ -24,8 +24,8 @@ public class Float1dPortCopy extends Float1dPort {
 	}
 
 	public void copy() {
-//		for (int i = 0; i < toCopy.getSize(); i++)
-//			data[i] = toCopy.get(i);
+		// for (int i = 0; i < toCopy.getSize(); i++)
+		// data[i] = toCopy.get(i);
 		toCopy.getData(data);
 	}
 

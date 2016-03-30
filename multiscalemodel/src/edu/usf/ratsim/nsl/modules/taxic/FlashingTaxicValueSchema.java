@@ -5,8 +5,8 @@ import javax.vecmath.Point3f;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.GeomUtils;
-import edu.usf.ratsim.micronsl.Float1dPortArray;
-import edu.usf.ratsim.micronsl.Module;
+import edu.usf.micronsl.Float1dPortArray;
+import edu.usf.micronsl.Module;
 
 public class FlashingTaxicValueSchema extends Module {
 

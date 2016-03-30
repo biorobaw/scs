@@ -13,9 +13,9 @@ import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.GeomUtils;
-import edu.usf.ratsim.micronsl.Float1dPortArray;
-import edu.usf.ratsim.micronsl.Int1dPort;
-import edu.usf.ratsim.micronsl.Module;
+import edu.usf.micronsl.Float1dPortArray;
+import edu.usf.micronsl.Int1dPort;
+import edu.usf.micronsl.Module;
 
 public class TaxicFoodOneFeederManyActions extends Module {
 

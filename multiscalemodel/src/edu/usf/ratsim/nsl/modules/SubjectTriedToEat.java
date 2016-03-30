@@ -1,8 +1,8 @@
 package edu.usf.ratsim.nsl.modules;
 
 import edu.usf.experiment.subject.Subject;
-import edu.usf.ratsim.micronsl.Bool1dPort;
-import edu.usf.ratsim.micronsl.Module;
+import edu.usf.micronsl.Bool1dPort;
+import edu.usf.micronsl.Module;
 
 
 public class SubjectTriedToEat extends Module {

@@ -1,11 +1,9 @@
-package edu.usf.ratsim.micronsl;
+package edu.usf.micronsl;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class Float1dPortSparseConcatenate extends Float1dSparsePort {
 
@@ -24,9 +22,9 @@ public class Float1dPortSparseConcatenate extends Float1dSparsePort {
 			size += state.getSize();
 			sparseness += state.getSparseness();
 		}
-		sparseness = (sparseness/states.size());
-		
-		nonZero = new HashMap<Integer, Float>(Math.round(size/sparseness));
+		sparseness = (sparseness / states.size());
+
+		nonZero = new HashMap<Integer, Float>(Math.round(size / sparseness));
 	}
 
 	@Override
@@ -55,12 +53,12 @@ public class Float1dPortSparseConcatenate extends Float1dSparsePort {
 	public void getData(float[] data) {
 		throw new NotImplementedException();
 	}
-	
-	public Map<Integer,Float> getNonZero(){
+
+	public Map<Integer, Float> getNonZero() {
 		int previousSizes = 0;
 		nonZero.clear();
 		for (Float1dSparsePortMap state : states) {
-			for (Entry<Integer, Float> entry : state.getNonZero().entrySet()){
+			for (Entry<Integer, Float> entry : state.getNonZero().entrySet()) {
 				nonZero.put(entry.getKey() + previousSizes, entry.getValue());
 			}
 			previousSizes += state.getSize();

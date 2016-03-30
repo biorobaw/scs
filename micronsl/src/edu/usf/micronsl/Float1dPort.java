@@ -1,4 +1,4 @@
-package edu.usf.ratsim.micronsl;
+package edu.usf.micronsl;
 
 public abstract class Float1dPort extends Port {
 
@@ -13,7 +13,7 @@ public abstract class Float1dPort extends Port {
 	public float get() {
 		return get(0);
 	}
-	
+
 	public abstract float[] getData();
 
 	public abstract void getData(float[] data);

@@ -1,4 +1,4 @@
-package edu.usf.ratsim.micronsl;
+package edu.usf.micronsl;
 
 public class Bool2dPort extends BoolPort {
 
@@ -8,7 +8,7 @@ public class Bool2dPort extends BoolPort {
 		super(owner);
 		this.data = data;
 	}
-	
+
 	public Bool2dPort(Module owner, int size) {
 		super(owner);
 		this.data = new boolean[size];
@@ -23,8 +23,8 @@ public class Bool2dPort extends BoolPort {
 	public boolean get(int index) {
 		return data[index];
 	}
-	
-	public boolean[] getData(){
+
+	public boolean[] getData() {
 		return data;
 	}
 

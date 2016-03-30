@@ -4,10 +4,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import edu.usf.ratsim.micronsl.Float1dPortSparseConcatenate;
-import edu.usf.ratsim.micronsl.Float1dSparsePortMap;
-import edu.usf.ratsim.micronsl.Module;
-import edu.usf.ratsim.micronsl.Port;
+import edu.usf.micronsl.Float1dPortSparseConcatenate;
+import edu.usf.micronsl.Float1dSparsePortMap;
+import edu.usf.micronsl.Module;
+import edu.usf.micronsl.Port;
 
 public class JointStatesManySparseConcatenate extends Module {
 

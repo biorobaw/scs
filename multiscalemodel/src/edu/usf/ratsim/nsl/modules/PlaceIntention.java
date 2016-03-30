@@ -1,9 +1,9 @@
 package edu.usf.ratsim.nsl.modules;
 
-import edu.usf.ratsim.micronsl.Float1dPortArray;
-import edu.usf.ratsim.micronsl.Float1dPort;
-import edu.usf.ratsim.micronsl.IntPort;
-import edu.usf.ratsim.micronsl.Module;
+import edu.usf.micronsl.Float1dPort;
+import edu.usf.micronsl.Float1dPortArray;
+import edu.usf.micronsl.IntPort;
+import edu.usf.micronsl.Module;
 
 public class PlaceIntention extends Module {
 

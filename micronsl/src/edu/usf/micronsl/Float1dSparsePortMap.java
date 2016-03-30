@@ -1,9 +1,7 @@
-package edu.usf.ratsim.micronsl;
+package edu.usf.micronsl;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class Float1dSparsePortMap extends Float1dSparsePort {
 
@@ -15,7 +13,7 @@ public class Float1dSparsePortMap extends Float1dSparsePort {
 		super(owner);
 		this.maxSize = maxSize;
 		this.sparseness = sparseness;
-		this.nonZero = new HashMap<Integer, Float>(maxSize/sparseness);
+		this.nonZero = new HashMap<Integer, Float>(maxSize / sparseness);
 	}
 
 	@Override
@@ -27,7 +25,7 @@ public class Float1dSparsePortMap extends Float1dSparsePort {
 	public float get(int index) {
 		if (nonZero.containsKey(index))
 			return nonZero.get(index);
-		else 
+		else
 			throw new IllegalArgumentException();
 	}
 
@@ -38,10 +36,10 @@ public class Float1dSparsePortMap extends Float1dSparsePort {
 
 	@Override
 	public void getData(float[] data) {
-		throw new NotImplementedException();		
+		throw new NotImplementedException();
 	}
 
-	public Map<Integer,Float> getNonZero(){
+	public Map<Integer, Float> getNonZero() {
 		return nonZero;
 	}
 

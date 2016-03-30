@@ -1,4 +1,4 @@
-package edu.usf.ratsim.micronsl;
+package edu.usf.micronsl;
 
 import java.util.List;
 
@@ -15,13 +15,13 @@ public class Float1dPortConcatenate extends Float1dPort {
 
 		size = 0;
 		int maxSize = 0;
-		for (Float1dPort state : states){
+		for (Float1dPort state : states) {
 			size += state.getSize();
 			if (state.getSize() > maxSize)
 				maxSize = state.getSize();
 		}
 		tmpData = new float[maxSize];
-		
+
 	}
 
 	@Override
@@ -43,9 +43,9 @@ public class Float1dPortConcatenate extends Float1dPort {
 
 	@Override
 	public synchronized float[] getData() {
-		float [] res = new float[size];
+		float[] res = new float[size];
 		int i = 0;
-		for (Float1dPort state : states){
+		for (Float1dPort state : states) {
 			int stateSize = state.getSize();
 			for (int j = 0; j < stateSize; j++)
 				tmpData[j] = 0;
@@ -53,14 +53,14 @@ public class Float1dPortConcatenate extends Float1dPort {
 			System.arraycopy(tmpData, 0, res, i, stateSize);
 			i += stateSize;
 		}
-			
+
 		return res;
 	}
 
 	@Override
 	public synchronized void getData(float[] res) {
 		int i = 0;
-		for (Float1dPort state : states){
+		for (Float1dPort state : states) {
 			int stateSize = state.getSize();
 			for (int j = 0; j < stateSize; j++)
 				tmpData[j] = 0;

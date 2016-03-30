@@ -1,4 +1,4 @@
-package edu.usf.ratsim.micronsl;
+package edu.usf.micronsl;
 
 import java.util.List;
 
@@ -10,16 +10,14 @@ public class Float1dPortSum extends Float1dPort {
 		super(owner);
 
 		if (states.isEmpty())
-			throw new IllegalArgumentException(
-					"Cannot use an empty list of states");
+			throw new IllegalArgumentException("Cannot use an empty list of states");
 
 		boolean allSameSize = true;
 		int sizeFirst = states.get(0).getSize();
 		for (Float1dPort state : states)
 			allSameSize = sizeFirst == state.getSize();
 		if (!allSameSize)
-			throw new IllegalArgumentException(
-					"All states should be the same size");
+			throw new IllegalArgumentException("All states should be the same size");
 
 		this.states = states;
 	}
@@ -34,15 +32,15 @@ public class Float1dPortSum extends Float1dPort {
 		float sum = 0;
 		for (Float1dPort state : states)
 			sum += state.get(index);
-//		if (Math.abs(sum) > 1)
-//			sum = Math.signum(sum);
-		
+		// if (Math.abs(sum) > 1)
+		// sum = Math.signum(sum);
+
 		return sum;
 	}
 
 	@Override
 	public float[] getData() {
-		float [] data = new float[getSize()];
+		float[] data = new float[getSize()];
 		for (int i = 0; i < getSize(); i++)
 			data[i] = get(i);
 		return data;

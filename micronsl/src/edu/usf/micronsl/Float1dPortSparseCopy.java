@@ -1,9 +1,7 @@
-package edu.usf.ratsim.micronsl;
+package edu.usf.micronsl;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class Float1dPortSparseCopy extends Float1dSparsePort {
 

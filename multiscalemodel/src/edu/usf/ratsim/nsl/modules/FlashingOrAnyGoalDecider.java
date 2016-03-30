@@ -6,8 +6,8 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
-import edu.usf.ratsim.micronsl.Int1dPort;
-import edu.usf.ratsim.micronsl.Module;
+import edu.usf.micronsl.Int1dPort;
+import edu.usf.micronsl.Module;
 
 /**
  * Sets the goal to be the flashing feeder (if any) or any feeder if there is

@@ -10,9 +10,9 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
-import edu.usf.ratsim.micronsl.Float1dPort;
-import edu.usf.ratsim.micronsl.Int1dPort;
-import edu.usf.ratsim.micronsl.Module;
+import edu.usf.micronsl.Float1dPort;
+import edu.usf.micronsl.Int1dPort;
+import edu.usf.micronsl.Module;
 
 public class NoExploration extends Module {
 

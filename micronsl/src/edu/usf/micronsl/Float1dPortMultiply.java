@@ -1,9 +1,7 @@
-package edu.usf.ratsim.micronsl;
+package edu.usf.micronsl;
 
 import java.util.List;
 import java.util.Stack;
-
-import edu.usf.experiment.utils.Debug;
 
 public class Float1dPortMultiply extends Float1dPort {
 
@@ -75,7 +73,7 @@ public class Float1dPortMultiply extends Float1dPort {
 
 		if (Float.isNaN(jointActivation))
 			System.out.println("Numeric Error");
-		
+
 		return jointActivation;
 	}
 
@@ -110,10 +108,10 @@ public class Float1dPortMultiply extends Float1dPort {
 
 			// System.out.println(listNum + " " + index + " " + currVal);
 			// If not the last list
-//			System.out.println(currVal);
-//			System.out.println(states.get(listNum).get(index));
+			// System.out.println(currVal);
+			// System.out.println(states.get(listNum).get(index));
 			currVal *= states.get(listNum).get(index);
-			if (Float.isNaN(currVal)){
+			if (Float.isNaN(currVal)) {
 				System.out.println("Numeric Error");
 				System.exit(1);
 			}
@@ -132,7 +130,7 @@ public class Float1dPortMultiply extends Float1dPort {
 					}
 				} else {
 					data[element] = currVal;
-					
+
 					element++;
 				}
 			}

@@ -1,4 +1,4 @@
-package edu.usf.ratsim.micronsl;
+package edu.usf.micronsl;
 
 public class FloatMatrixPort extends Float2dPort {
 
@@ -35,7 +35,7 @@ public class FloatMatrixPort extends Float2dPort {
 	public int getNCols() {
 		if (data.length == 0)
 			return 0;
-		else 
+		else
 			return data[0].length;
 	}
 }

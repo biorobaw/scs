@@ -4,10 +4,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import edu.usf.ratsim.micronsl.Float1dPort;
-import edu.usf.ratsim.micronsl.Float1dPortMultiply;
-import edu.usf.ratsim.micronsl.Module;
-import edu.usf.ratsim.micronsl.Port;
+import edu.usf.micronsl.Float1dPort;
+import edu.usf.micronsl.Float1dPortMultiply;
+import edu.usf.micronsl.Module;
+import edu.usf.micronsl.Port;
 
 public class JointStatesManyMultiply extends Module {
 
