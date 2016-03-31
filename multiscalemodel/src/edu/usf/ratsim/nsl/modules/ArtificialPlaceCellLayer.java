@@ -9,8 +9,8 @@ import javax.vecmath.Point3f;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.RandomSingleton;
-import edu.usf.micronsl.Float1dPortArray;
 import edu.usf.micronsl.Module;
+import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 
 public class ArtificialPlaceCellLayer extends Module {
 
@@ -145,7 +145,7 @@ public class ArtificialPlaceCellLayer extends Module {
 	}
 
 	public void clear() {
-		((Float1dPortArray)getOutPort("activation")).set(0);
+		((Float1dPortArray)getOutPort("activation")).clear();
 	}
 
 }

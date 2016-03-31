@@ -1,4 +1,6 @@
-package edu.usf.micronsl;
+package edu.usf.micronsl.test;
+
+import edu.usf.micronsl.Module;
 
 public class DummyModule extends Module {
 

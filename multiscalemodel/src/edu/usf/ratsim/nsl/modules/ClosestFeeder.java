@@ -2,8 +2,8 @@ package edu.usf.ratsim.nsl.modules;
 
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Feeder;
-import edu.usf.micronsl.Int0dPort;
 import edu.usf.micronsl.Module;
+import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 public class ClosestFeeder extends Module {
 

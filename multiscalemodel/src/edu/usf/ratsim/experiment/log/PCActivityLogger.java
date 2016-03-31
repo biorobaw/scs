@@ -1,17 +1,13 @@
 package edu.usf.ratsim.experiment.log;
 
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.Map;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
-import edu.usf.experiment.log.FeedingLog;
 import edu.usf.experiment.log.Logger;
-import edu.usf.experiment.log.Pose;
-import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject;

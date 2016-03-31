@@ -5,10 +5,7 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineSegment;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.Polygon;
 
 import edu.usf.experiment.universe.Wall;
 import edu.usf.experiment.utils.ElementWrapper;

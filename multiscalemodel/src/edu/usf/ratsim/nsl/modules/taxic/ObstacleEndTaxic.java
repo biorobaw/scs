@@ -12,8 +12,8 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.GeomUtils;
-import edu.usf.micronsl.Float1dPortArray;
 import edu.usf.micronsl.Module;
+import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 
 /**
 

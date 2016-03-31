@@ -7,9 +7,9 @@ import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.Bool1dPort;
-import edu.usf.micronsl.Int0dPort;
-import edu.usf.micronsl.Int1dPort;
 import edu.usf.micronsl.Module;
+import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
+import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 public class OneThenTheOtherGoalDecider extends Module {
 
@@ -22,7 +22,7 @@ public class OneThenTheOtherGoalDecider extends Module {
 		super(name);
 
 		goalFeeder = new int[1];
-		addOutPort("goalFeeder", new Int1dPort(this, goalFeeder));
+		addOutPort("goalFeeder", new Int1dPortArray(this, goalFeeder));
 
 		lastAte = -1;
 		currentGoal = -1;

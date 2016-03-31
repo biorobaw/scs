@@ -1,7 +1,7 @@
 package edu.usf.ratsim.nsl.modules;
 
-import edu.usf.micronsl.Float1dPortArray;
 import edu.usf.micronsl.Module;
+import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 
 /**
  * Dummy intention module that always sets the same intention

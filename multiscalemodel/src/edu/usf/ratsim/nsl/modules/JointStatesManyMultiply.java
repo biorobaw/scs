@@ -4,10 +4,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import edu.usf.micronsl.Float1dPort;
-import edu.usf.micronsl.Float1dPortMultiply;
 import edu.usf.micronsl.Module;
-import edu.usf.micronsl.Port;
+import edu.usf.micronsl.port.Port;
+import edu.usf.micronsl.port.onedimensional.Float1dPort;
+import edu.usf.micronsl.port.onedimensional.cartesian.Float1dPortCartesian;
 
 public class JointStatesManyMultiply extends Module {
 
@@ -22,14 +22,14 @@ public class JointStatesManyMultiply extends Module {
 		// All is done in the multiply port
 		
 		// Clear optimization cache
-		((Float1dPortMultiply)getOutPort("jointState")).clearOptimizationCache();
+		((Float1dPortCartesian)getOutPort("jointState")).clearOptimizationCache();
 	}
 
 	@Override
 	public void addInPorts(List<Port> ports) {
 		super.addInPorts(ports);
 
-		addOutPort("jointState", new Float1dPortMultiply(this,
+		addOutPort("jointState", new Float1dPortCartesian(this,
 				(List<Float1dPort>) (List<?>) ports, EPS));
 	}
 

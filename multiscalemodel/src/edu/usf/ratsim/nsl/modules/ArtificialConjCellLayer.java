@@ -10,10 +10,9 @@ import javax.vecmath.Point3f;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.RandomSingleton;
-import edu.usf.micronsl.Float1dPort;
-import edu.usf.micronsl.Float1dPortArray;
-import edu.usf.micronsl.Float1dSparsePortMap;
 import edu.usf.micronsl.Module;
+import edu.usf.micronsl.port.onedimensional.Float1dPort;
+import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 
 public class ArtificialConjCellLayer extends Module {
 

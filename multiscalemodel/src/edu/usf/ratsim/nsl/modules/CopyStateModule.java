@@ -1,9 +1,9 @@
 package edu.usf.ratsim.nsl.modules;
 
-import edu.usf.micronsl.Float1dPort;
-import edu.usf.micronsl.Float1dPortCopy;
 import edu.usf.micronsl.Module;
-import edu.usf.micronsl.Port;
+import edu.usf.micronsl.port.Port;
+import edu.usf.micronsl.port.onedimensional.Float1dPort;
+import edu.usf.micronsl.port.onedimensional.copy.Float1dPortCopy;
 
 public class CopyStateModule extends Module {
 

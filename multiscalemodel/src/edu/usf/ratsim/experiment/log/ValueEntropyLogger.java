@@ -1,9 +1,6 @@
 package edu.usf.ratsim.experiment.log;
 
 import java.io.PrintWriter;
-import java.util.Map;
-
-import javax.vecmath.Point3f;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;

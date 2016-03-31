@@ -3,16 +3,14 @@ package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.utils.Debug;
-import edu.usf.experiment.utils.RandomSingleton;
-import edu.usf.micronsl.Float1dPort;
-import edu.usf.micronsl.Int1dPort;
 import edu.usf.micronsl.Module;
+import edu.usf.micronsl.port.onedimensional.Float1dPort;
+import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
 
 public class NoExploration extends Module {
 
@@ -29,7 +27,7 @@ public class NoExploration extends Module {
 		super(name);
 
 		takenAction = new int[1];
-		addOutPort("takenAction", new Int1dPort(this, takenAction));
+		addOutPort("takenAction", new Int1dPortArray(this, takenAction));
 
 		lastRot = false;
 		robot = sub.getRobot();

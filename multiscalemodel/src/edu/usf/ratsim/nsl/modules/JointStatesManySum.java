@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Set;
 
 import edu.usf.experiment.utils.Debug;
-import edu.usf.micronsl.Float1dPort;
-import edu.usf.micronsl.Float1dPortSum;
 import edu.usf.micronsl.Module;
-import edu.usf.micronsl.Port;
+import edu.usf.micronsl.port.Port;
+import edu.usf.micronsl.port.onedimensional.Float1dPort;
+import edu.usf.micronsl.port.onedimensional.sum.Float1dPortSum;
 
 public class JointStatesManySum extends Module {
 

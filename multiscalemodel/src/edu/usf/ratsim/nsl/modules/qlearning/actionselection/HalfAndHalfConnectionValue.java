@@ -1,11 +1,10 @@
 package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 
 import edu.usf.experiment.utils.Debug;
-import edu.usf.micronsl.Float1dPort;
-import edu.usf.micronsl.Float1dPortArray;
-import edu.usf.micronsl.FloatMatrixPort;
 import edu.usf.micronsl.Module;
-import edu.usf.micronsl.Port;
+import edu.usf.micronsl.port.onedimensional.Float1dPort;
+import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
+import edu.usf.micronsl.twodimensional.FloatMatrixPort;
 import edu.usf.ratsim.nsl.modules.Voter;
 
 public class HalfAndHalfConnectionValue extends Module implements Voter {

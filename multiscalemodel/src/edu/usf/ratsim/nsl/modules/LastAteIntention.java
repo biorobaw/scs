@@ -1,9 +1,8 @@
 package edu.usf.ratsim.nsl.modules;
 
 import edu.usf.experiment.utils.Debug;
-import edu.usf.micronsl.Float1dPortArray;
-import edu.usf.micronsl.IntPort;
 import edu.usf.micronsl.Module;
+import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 
 public class LastAteIntention extends Module implements Intention {
 

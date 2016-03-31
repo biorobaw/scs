@@ -1,9 +1,12 @@
-package edu.usf.micronsl;
+package edu.usf.micronsl.test;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
+
+import edu.usf.micronsl.DependencyRunnable;
+import edu.usf.micronsl.ThreadDependencyExecutor;
 
 public class ThreadDependencyExecutorTest {
 

@@ -13,9 +13,9 @@ import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.GeomUtils;
-import edu.usf.micronsl.Float1dPortArray;
-import edu.usf.micronsl.Int1dPort;
 import edu.usf.micronsl.Module;
+import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
+import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
 
 public class TaxicFoodOneFeederOneAction extends Module {
 
@@ -51,7 +51,7 @@ public class TaxicFoodOneFeederOneAction extends Module {
 	 * goal).
 	 */
 	public void run() {
-		Int1dPort goalFeeder = (Int1dPort) getInPort("goalFeeder");
+		Int1dPortArray goalFeeder = (Int1dPortArray) getInPort("goalFeeder");
 
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;

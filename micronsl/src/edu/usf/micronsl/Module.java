@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.usf.micronsl.port.Port;
+
 public abstract class Module extends DependencyRunnable {
 
 	private Map<String, Port> outPorts;

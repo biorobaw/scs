@@ -10,12 +10,12 @@ import java.util.HashSet;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
-import edu.usf.micronsl.Float1dPort;
-import edu.usf.micronsl.Float1dPortArray;
-import edu.usf.micronsl.Float1dSparsePort;
-import edu.usf.micronsl.FloatMatrixPort;
-import edu.usf.micronsl.Int1dPort;
 import edu.usf.micronsl.Module;
+import edu.usf.micronsl.port.onedimensional.Float1dPort;
+import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
+import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
+import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
+import edu.usf.micronsl.twodimensional.FloatMatrixPort;
 import edu.usf.ratsim.support.Configuration;
 
 public class MultiStateProportionalAC extends Module implements QLAlgorithm {
@@ -76,7 +76,7 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 		// Updates may be disabled for data log reasons
 		if (update) {
 			Float1dPortArray reward = (Float1dPortArray) getInPort("reward");
-			Int1dPort takenAction = (Int1dPort) getInPort("takenAction");
+			Int1dPortArray takenAction = (Int1dPortArray) getInPort("takenAction");
 			Float1dSparsePort statesBefore = (Float1dSparsePort) getInPort("statesBefore");
 			Float1dPort statesAfter = (Float1dPort) getInPort("statesAfter");
 			Float1dPort taxicValueEstBefore = (Float1dPort) getInPort("taxicValueEstimationBefore");

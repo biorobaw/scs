@@ -5,10 +5,10 @@ import java.util.Random;
 
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
-import edu.usf.micronsl.Float1dPortArray;
-import edu.usf.micronsl.Float1dSparsePort;
-import edu.usf.micronsl.FloatMatrixPort;
 import edu.usf.micronsl.Module;
+import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
+import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
+import edu.usf.micronsl.twodimensional.FloatMatrixPort;
 import edu.usf.ratsim.nsl.modules.Voter;
 
 public class GradientVotes extends Module implements Voter {

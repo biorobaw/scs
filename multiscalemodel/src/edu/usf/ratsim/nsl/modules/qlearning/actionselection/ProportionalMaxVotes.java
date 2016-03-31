@@ -1,8 +1,8 @@
 package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 
-import edu.usf.micronsl.Float1dPortArray;
-import edu.usf.micronsl.FloatMatrixPort;
 import edu.usf.micronsl.Module;
+import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
+import edu.usf.micronsl.twodimensional.FloatMatrixPort;
 
 public class ProportionalMaxVotes extends Module {
 

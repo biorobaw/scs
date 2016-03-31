@@ -1,14 +1,12 @@
 package edu.usf.ratsim.nsl.modules;
 
 import java.util.List;
-import java.util.Random;
 
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
-import edu.usf.experiment.utils.RandomSingleton;
-import edu.usf.micronsl.Float1dPortArray;
 import edu.usf.micronsl.Module;
+import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 
 /**
  * Sets the dopaminergic votes for both a flashing feeder and a non flashing

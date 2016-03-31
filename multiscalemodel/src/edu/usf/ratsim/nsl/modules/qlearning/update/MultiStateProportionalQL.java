@@ -1,21 +1,17 @@
 package edu.usf.ratsim.nsl.modules.qlearning.update;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
-import edu.usf.micronsl.Float1dPortArray;
-import edu.usf.micronsl.FloatMatrixPort;
-import edu.usf.micronsl.Int1dPort;
 import edu.usf.micronsl.Module;
+import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
+import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
+import edu.usf.micronsl.twodimensional.FloatMatrixPort;
 import edu.usf.ratsim.support.Configuration;
 
 public class MultiStateProportionalQL extends Module implements QLAlgorithm {
@@ -84,7 +80,7 @@ public class MultiStateProportionalQL extends Module implements QLAlgorithm {
 		// Updates may be disabled for data log reasons
 		if (update) {
 			Float1dPortArray reward = (Float1dPortArray) getInPort("reward");
-			Int1dPort takenAction = (Int1dPort) getInPort("takenAction");
+			Int1dPortArray takenAction = (Int1dPortArray) getInPort("takenAction");
 			Float1dPortArray statesBefore = (Float1dPortArray) getInPort("statesBefore");
 			Float1dPortArray statesAfter = (Float1dPortArray) getInPort("statesAfter");
 			Float1dPortArray votesBefore = (Float1dPortArray) getInPort("votesBefore");

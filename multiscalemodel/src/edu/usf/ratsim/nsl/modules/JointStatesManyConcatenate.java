@@ -4,10 +4,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import edu.usf.micronsl.Float1dPort;
-import edu.usf.micronsl.Float1dPortConcatenate;
 import edu.usf.micronsl.Module;
-import edu.usf.micronsl.Port;
+import edu.usf.micronsl.port.Port;
+import edu.usf.micronsl.port.onedimensional.Float1dPort;
+import edu.usf.micronsl.port.onedimensional.concat.Float1dPortConcatenate;
 
 public class JointStatesManyConcatenate extends Module {
 
