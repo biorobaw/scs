@@ -121,7 +121,7 @@ public class ElementWrapper {
 				.getChild(param).setText(value);
 	}
 
-	private void setText(String text) {
+	public void setText(String text) {
 		e.setTextContent(text);
 	}
 }

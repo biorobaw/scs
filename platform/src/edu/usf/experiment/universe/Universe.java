@@ -2,8 +2,10 @@ package edu.usf.experiment.universe;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
@@ -14,20 +16,20 @@ import org.w3c.dom.Document;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.universe.element.MazeElement;
+import edu.usf.experiment.universe.element.MazeElementLoader;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.experiment.utils.IOUtils;
 import edu.usf.experiment.utils.XMLDocReader;
 
 public abstract class Universe {
 
-	private static final int WALLS_PER_POOL = 8;
+	
 
 	// TODO: get as param
 	private static float CLOSE_TO_FOOD_THRS;
 
-	private static List<Feeder> feeders;
+	private static Map<Integer, Feeder> feeders;
 	private List<Wall> walls;
 	private Rectangle2D.Float boundingRect;
 
@@ -42,7 +44,7 @@ public abstract class Universe {
 		CLOSE_TO_FOOD_THRS = params.getChildFloat("closeToFoodThrs");
 
 		walls = new LinkedList<Wall>();
-		feeders = new LinkedList<Feeder>();
+		feeders = new HashMap<Integer, Feeder>();
 
 		// Assumes maze is already copied by pre-experiment or experiment
 		String mazeFile = logPath + "maze.xml";
@@ -68,30 +70,41 @@ public abstract class Universe {
 			walls.add(w);
 		}
 		
-		ElementWrapper pool = maze.getChild("pool");
-		if (pool != null){
-			float r = pool.getChildFloat("r");
-			float x = pool.getChildFloat("x");
-			float y = pool.getChildFloat("y");
-			float currentAngle = (float) (Math.PI / WALLS_PER_POOL);
-			for (int i = 0; i < WALLS_PER_POOL; i++) {
-				float x1 = (float) (x + r * Math.sin(currentAngle));
-				float y1 = (float) (y + r * Math.cos(currentAngle));
-				float nextAngle = (float) (currentAngle + (2 * Math.PI / WALLS_PER_POOL) % (2*Math.PI));
-				float x2 = (float) (r * Math.sin(nextAngle));
-				float y2 = (float) (r * Math.cos(nextAngle));
-				
-				walls.add(new Wall(x1, y1, x2, y2));
-				
-				currentAngle = nextAngle;
+		MazeElementLoader meloader = MazeElementLoader.getInstance();
+		list = maze.getChildren("mazeElement");
+		for (ElementWrapper element : list){
+			MazeElement e = meloader.load(element);
+			for (Wall w : e.walls){
+				walls.add(w);
 			}
+			
+			
 		}
+		
+//		ElementWrapper pool = maze.getChild("pool");
+//		if (pool != null){
+//			float r = pool.getChildFloat("r");
+//			float x = pool.getChildFloat("x");
+//			float y = pool.getChildFloat("y");
+//			float currentAngle = (float) (Math.PI / WALLS_PER_POOL);
+//			for (int i = 0; i < WALLS_PER_POOL; i++) {
+//				float x1 = (float) (x + r * Math.sin(currentAngle));
+//				float y1 = (float) (y + r * Math.cos(currentAngle));
+//				float nextAngle = (float) (currentAngle + (2 * Math.PI / WALLS_PER_POOL) % (2*Math.PI));
+//				float x2 = (float) (r * Math.sin(nextAngle));
+//				float y2 = (float) (r * Math.cos(nextAngle));
+//				
+//				walls.add(new Wall(x1, y1, x2, y2));
+//				
+//				currentAngle = nextAngle;
+//			}
+//		}
 		
 		list = maze.getChildren("feeder");
 		int i = 0;
 		for(ElementWrapper feeder : list){
-			Feeder f = new Feeder(i, new Point3f(feeder.getChildFloat("x"),feeder.getChildFloat("y"),feeder.getChildFloat("z")));
-			feeders.add(f);
+			Feeder f = new Feeder(feeder.getChildInt("id"), new Point3f(feeder.getChildFloat("x"),feeder.getChildFloat("y"),feeder.getChildFloat("z")));
+			feeders.put(f.getId(), f);
 			i++;
 		}
 		
@@ -117,18 +130,18 @@ public abstract class Universe {
 
 	public List<Integer> getFlashingFeeders() {
 		List<Integer> res = new LinkedList<Integer>();
-		for (int i = 0; i < feeders.size(); i++)
-			if (feeders.get(i).isFlashing())
-				res.add(i);
+		for (Feeder f : feeders.values())
+			if (f.isFlashing())
+				res.add(f.getId());
 
 		return res;
 	}
 
 	public static List<Integer> getActiveFeeders() {
 		List<Integer> res = new LinkedList<Integer>();
-		for (int i = 0; i < feeders.size(); i++)
-			if (feeders.get(i).isActive())
-				res.add(i);
+		for (Feeder f : feeders.values())
+			if (f.isActive())
+				res.add(f.getId());
 
 		return res;
 	}
@@ -146,15 +159,11 @@ public abstract class Universe {
 	}
 
 	public List<Integer> getFeederNums() {
-		List<Integer> res = new LinkedList<Integer>();
-		for (int i = 0; i < feeders.size(); i++)
-			res.add(i);
-
-		return res;
+		return new LinkedList<Integer>(feeders.keySet());
 	}
 	
 	public List<Feeder> getFeeders(){
-		return feeders;
+		return new LinkedList<Feeder>(feeders.values());
 	}
 	
 	public Feeder getFeeder(int i){
@@ -180,7 +189,7 @@ public abstract class Universe {
 	// Involving position and food
 	public boolean hasRobotFoundFood() {
 		Point3f robot = getRobotPosition();
-		for (Feeder f : feeders) {
+		for (Feeder f : feeders.values()) {
 			if (f.isActive() && f.hasFood()
 					&& robot.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS)
 				return true;
@@ -193,10 +202,10 @@ public abstract class Universe {
 		int feedingFeeder = -1;
 
 		Point3f robotPos = getRobotPosition();
-		for (int i = 0; i < feeders.size(); i++) {
-			if (robotPos.distance(feeders.get(i).getPosition()) < CLOSE_TO_FOOD_THRS)
-				if (feeders.get(i).hasFood())
-					feedingFeeder = i;
+		for (Feeder f : feeders.values()) {
+			if (robotPos.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS)
+				if (f.hasFood())
+					feedingFeeder = f.getId();
 		}
 
 		if (feedingFeeder != -1){
@@ -221,10 +230,10 @@ public abstract class Universe {
 
 	public int getFeedingFeeder() {
 		Point3f robotPos = getRobotPosition();
-		for (int i = 0; i < feeders.size(); i++) {
-			if (feeders.get(i).isActive())
-				if (robotPos.distance(feeders.get(i).getPosition()) < CLOSE_TO_FOOD_THRS)
-					return i;
+		for (Feeder f : feeders.values()) {
+			if (f.isActive())
+				if (robotPos.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS)
+					return f.getId();
 		}
 
 		return -1;
@@ -238,7 +247,7 @@ public abstract class Universe {
 
 	public boolean isRobotCloseToAFeeder() {
 		Point3f robot = getRobotPosition();
-		for (Feeder f : feeders)
+		for (Feeder f : feeders.values())
 			if (robot.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS)
 				return true;
 		return false;
@@ -250,18 +259,18 @@ public abstract class Universe {
 
 	public int getFoundFeeder() {
 		Point3f robot = getRobotPosition();
-		for (Feeder f : feeders)
+		for (Feeder f : feeders.values())
 			if (robot.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS)
-				return feeders.indexOf(f);
+				return f.getId();
 
 		return -1;
 	}
 
 	public static List<Integer> getEnabledFeeders() {
 		List<Integer> res = new LinkedList<Integer>();
-		for (Feeder f : feeders)
+		for (Feeder f : feeders.values())
 			if (f.isEnabled())
-				res.add(feeders.indexOf(f));
+				res.add(f.getId());
 		return res;
 	}
 
@@ -295,7 +304,7 @@ public abstract class Universe {
 
 	public float wallDistanceToFeeders(LineSegment wall) {
 		float minDist = Float.MAX_VALUE;
-		for (Feeder fn : feeders) {
+		for (Feeder fn : feeders.values()) {
 			Point3f pos = fn.getPosition();
 			Coordinate c = new Coordinate(pos.x, pos.y);
 			if (wall.distance(c) < minDist)
@@ -323,7 +332,7 @@ public abstract class Universe {
 	public float shortestDistanceToFeeders(Point2f x) {
 		float minDist = Float.MAX_VALUE;
 		Coordinate p = new Coordinate(x.x, x.y);
-		for (Feeder fn : feeders) {
+		for (Feeder fn : feeders.values()) {
 			Point3f pos = fn.getPosition();
 			Coordinate c = new Coordinate(pos.x, pos.y);
 			if (p.distance(c) < minDist)
@@ -367,7 +376,7 @@ public abstract class Universe {
 
 	public float shortestDistanceToFeeders(LineSegment wall) {
 		double distance = Float.MAX_VALUE;
-		for (Feeder f : feeders){
+		for (Feeder f : feeders.values()){
 			Coordinate p = new Coordinate(f.getPosition().x, f.getPosition().y);
 			if (wall.distance(p) < distance)
 				distance = wall.distance(p);
@@ -390,6 +399,10 @@ public abstract class Universe {
 
 	public void clearFoodFromFeeder(Integer f) {
 		feeders.get(f).clearFood();
+	}
+
+	public void addFeeder(int id, float x, float y) {
+		feeders.put(id, new Feeder(id, new Point3f(x, y, 0)));
 	}
 
 }

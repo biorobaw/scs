@@ -31,6 +31,7 @@ public class FeederNode extends ExpUniverseNode {
 	private boolean terminated;
 	private Thread flashThread;
 	private boolean hasFood;
+	private int id;
 
 	class FlashThread implements Runnable {
 
@@ -83,6 +84,34 @@ public class FeederNode extends ExpUniverseNode {
 		float zp = params.getChildFloat("z");
 		float r = params.getChildFloat("r");
 		float h = params.getChildFloat("h");
+		id = params.getChildInt("id");
+		app = new Appearance();
+		app.setColoringAttributes(new ColoringAttributes(normalColor, 1));
+		app.setCapability(Appearance.ALLOW_COLORING_ATTRIBUTES_WRITE);
+		Primitive vol = new Cylinder(r, h, app);
+		addVolume(null, vol, xp, yp, zp);
+
+		position = new Point3f(xp, yp, zp);
+
+		flashThread = new Thread(new FlashThread());
+		flashThread.start();
+	}
+	
+	public FeederNode(int id, float x, float y) {
+		active = false;
+		flashing = false;
+		wanted = false;
+		hasFood = false;
+		
+
+		normalColor = new Color3f(1f, 0, 0);
+		flashingColor = new Color3f(1f, 1f, 1f);
+		activeColor = new Color3f(1f, .4f, 0f);
+		float xp = x;
+		float yp = y;
+		float zp = 0;
+		float r = .03f;
+		float h = 0;
 
 		app = new Appearance();
 		app.setColoringAttributes(new ColoringAttributes(normalColor, 1));
@@ -155,5 +184,9 @@ public class FeederNode extends ExpUniverseNode {
 
 	public boolean hasFood() {
 		return hasFood;
+	}
+
+	public int getId() {
+		return id;
 	}
 }

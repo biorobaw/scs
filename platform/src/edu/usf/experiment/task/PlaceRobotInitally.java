@@ -6,6 +6,7 @@ import javax.vecmath.Point4f;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -17,7 +18,13 @@ public class PlaceRobotInitally extends Task{
 
 	public PlaceRobotInitally(ElementWrapper params) {
 		super(params);
-		initPos = XMLUtils.parsePoint(params.getChild("point"));
+		Globals g = Globals.getInstace();
+		if(g.get("startPosition")==null)
+			initPos = XMLUtils.parsePoint(params.getChild("point"));
+		else{
+			String[] pos = ((String)g.get("startPosition")).split(",");
+			initPos = new Point4f(Float.parseFloat(pos[0]),Float.parseFloat(pos[1]),0,Float.parseFloat(pos[2]));
+		}
 	}
 
 	@Override

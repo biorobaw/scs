@@ -131,7 +131,7 @@ public class VirtualRobot extends LocalizableRobot {
 	public List<Feeder> getVisibleFeeders(int[] except) {
 		List<Feeder> res = new LinkedList<Feeder>();
 		for (Integer i : universe.getFeederNums())
-			if (!in(i, except))
+			if (except == null || !in(i, except))
 				if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)) {
 					// Get relative position
 					Point3f relFPos = getRelativePos(universe

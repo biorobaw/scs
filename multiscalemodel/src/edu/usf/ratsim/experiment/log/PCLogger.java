@@ -11,6 +11,7 @@ import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject;
+import edu.usf.ratsim.nsl.modules.ArtificialPlaceCell;
 import edu.usf.ratsim.nsl.modules.ExponentialConjCell;
 
 public class PCLogger extends Logger {
@@ -24,11 +25,11 @@ public class PCLogger extends Logger {
 	public void log(Subject sub) {
 		if (!(sub instanceof MultiScaleArtificialPCSubject))
 			throw new IllegalArgumentException(
-					"PC logger can only be used with MultiScaleArtificialPCSubjects");
+					"PC logger can only be used with TSPModel");
 
-		MultiScaleArtificialPCSubject msapcs = (MultiScaleArtificialPCSubject) sub;
+		MultiScaleArtificialPCSubject msSub = (MultiScaleArtificialPCSubject) sub;
 
-		cells = msapcs.getPlaceCells();
+		cells = msSub.getPlaceCells();
 	}
 
 	@Override
@@ -62,10 +63,7 @@ public class PCLogger extends Logger {
 						+ cellNum + '\t'
 						+ cell.getPreferredLocation().x  + '\t'
 						+ cell.getPreferredLocation().y + '\t'
-						+ cell.getPlaceRadius() + '\t'
-						+ cell.getPreferredDirection() + '\t'
-						+ cell.getAngleRadius() + '\t'
-						+ cell.getPreferredIntention());
+						+ cell.getPlaceRadius());
 				cellNum++;
 			}
 
@@ -75,7 +73,7 @@ public class PCLogger extends Logger {
 
 	@Override
 	public String getHeader() {
-		return "tgroup\tsubject\tcellNum\tx\ty\tplaceradius\ttheta\tthetaRadius\tmap";
+		return "tgroup\tsubject\tcellNum\tx\ty\tplaceradius";
 	}
 
 	@Override

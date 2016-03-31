@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.9" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
+  <class id="1" language="java" name="edu.usf.ratsim.nsl.modules.taxic.AvoidWallTaxic" project="rat_simulator" 
+    file="/rat_simulator/src/edu/usf/ratsim/nsl/modules/taxic/AvoidWallTaxic.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="274" y="317"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="2" language="java" name="edu.usf.ratsim.nsl.modules.taxic.ObstacleEndTaxic" project="rat_simulator" 
+    file="/rat_simulator/src/edu/usf/ratsim/nsl/modules/taxic/ObstacleEndTaxic.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1125" y="335"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="edu.usf.ratsim.nsl.modules.taxic.FlashingTaxicFoodFinderSchema" 
+    project="rat_simulator" 
+    file="/rat_simulator/src/edu/usf/ratsim/nsl/modules/taxic/FlashingTaxicFoodFinderSchema.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="690" y="326"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="edu.usf.ratsim.nsl.modules.taxic.TaxicFoodOneFeederOneAction" 
+    project="rat_simulator" file="/rat_simulator/src/edu/usf/ratsim/nsl/modules/taxic/TaxicFoodOneFeederOneAction.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="237" y="610"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="5" language="java" name="edu.usf.ratsim.nsl.modules.taxic.TaxicValueSchema" project="rat_simulator" 
+    file="/rat_simulator/src/edu/usf/ratsim/nsl/modules/taxic/TaxicValueSchema.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1155" y="628"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="6" language="java" name="edu.usf.ratsim.nsl.modules.taxic.FlashingTaxicValueSchema" project="rat_simulator" 
+    file="/rat_simulator/src/edu/usf/ratsim/nsl/modules/taxic/FlashingTaxicValueSchema.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="712" y="628"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="7" language="java" name="edu.usf.ratsim.nsl.modules.taxic.TaxicFoodManyFeedersManyActions" 
+    project="rat_simulator" 
+    file="/rat_simulator/src/edu/usf/ratsim/nsl/modules/taxic/TaxicFoodManyFeedersManyActions.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="409" y="918"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="8" language="java" name="edu.usf.ratsim.nsl.modules.taxic.TaxicFoodOneFeederManyActions" 
+    project="rat_simulator" 
+    file="/rat_simulator/src/edu/usf/ratsim/nsl/modules/taxic/TaxicFoodOneFeederManyActions.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="913" y="918"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    sort-features="false" accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

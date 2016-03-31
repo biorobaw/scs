@@ -1,8 +1,10 @@
 package edu.usf.ratsim.experiment.universe.virtual;
 
 import java.awt.geom.Point2D;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
@@ -44,7 +46,7 @@ public class VirtUniverse extends Universe {
 	private View topView;
 	private RobotNode robotNode;
 	private Robot robot;
-	private List<FeederNode> feederNodes;
+	private Map<Integer, FeederNode> feederNodes;
 
 	private BranchGroup bg;
 
@@ -95,10 +97,10 @@ public class VirtUniverse extends Universe {
 			}
 
 			list = maze.getChildren("feeder");
-			feederNodes = new LinkedList<FeederNode>();
+			feederNodes = new HashMap<Integer, FeederNode>();
 			for (ElementWrapper fn : list) {
 				FeederNode feeder = new FeederNode(fn);
-				feederNodes.add(feeder);
+				feederNodes.put(feeder.getId(), feeder);
 				bg.addChild(feeder);
 			}
 
@@ -134,6 +136,15 @@ public class VirtUniverse extends Universe {
 		instance = this;
 		
 		wallsToRevert = new LinkedList<WallNode>();
+	}
+
+	@Override
+	public void addFeeder(int id, float x, float y) {
+		super.addFeeder(id, x, y);
+		
+		FeederNode feeder = new FeederNode(id, x, y);
+		feederNodes.put(id, feeder);
+		bg.addChild(feeder);
 	}
 
 	public void addWall(float x1, float y1, float x2, float y2) {
@@ -339,7 +350,7 @@ public class VirtUniverse extends Universe {
 	}
 
 	public void clearWantedFeeders() {
-		for (FeederNode f : feederNodes)
+		for (FeederNode f : feederNodes.values())
 			f.setWanted(false);
 	}
 
@@ -360,7 +371,7 @@ public class VirtUniverse extends Universe {
 	// }
 
 	public void dispose() {
-		for (FeederNode f : feederNodes)
+		for (FeederNode f : feederNodes.values())
 			f.terminate();
 	}
 

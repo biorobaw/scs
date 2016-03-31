@@ -48,7 +48,7 @@
 			<!-- Size of each layer in millimeters -->
 			<layerLengths>3,3,3</layerLengths>
 			<!-- Number of cells per layer -->
-			<numCCCellsPerLayer>200000,120000,80000</numCCCellsPerLayer>
+			<numCCCellsPerSide>16</numCCCellsPerSide>
 			<!-- Type of learning -->
 			<rlType>actorCritic</rlType>
 			<!-- Type of conjunctive layer -> learning connection -->

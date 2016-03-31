@@ -10,7 +10,7 @@ import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject;
+import edu.usf.ratsim.experiment.subject.TSPSubject;
 
 public class PCActivityLogger extends Logger {
 
@@ -24,7 +24,7 @@ public class PCActivityLogger extends Logger {
 		if (writer == null)
 			writer = getWriter();
 
-		Map<Integer, Float> activation = ((MultiScaleArtificialPCSubject) sub)
+		Map<Integer, Float> activation = ((TSPSubject) sub)
 				.getCellActivity();
 		PropertyHolder props = PropertyHolder.getInstance();
 		String trialName = props.getProperty("trial");

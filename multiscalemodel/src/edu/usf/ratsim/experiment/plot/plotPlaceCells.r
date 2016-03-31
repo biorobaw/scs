@@ -142,4 +142,4 @@ wallData <- data
 splitPCs <- split(pcData, pcData[c('placeradius')], drop=TRUE)
 invisible(llply(
   names(splitPCs), function(x) plotPlaceCells(
-    "", x, head(splitPCs[[x]], n=100), wallData, maze), .parallel = FALSE))
+    "", x, splitPCs[[x]], wallData, maze), .parallel = FALSE))

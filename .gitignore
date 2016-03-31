@@ -1,6 +1,8 @@
+multiscalemodel/logs
+multiscalemodel/target
 .settings
-.project
-.classpath
+*.project
+*.classpath
 slurm-*
 hs_err*
 logs/
@@ -17,5 +19,5 @@ rat_sim.*
 *.pdf
 *.gif
 *.Rhistory
-bin/
+*bin/
 *.swp
