@@ -191,6 +191,7 @@ public class Experiment implements Runnable {
 		
 		//Save globals to a file:
 		try {
+			new File(args[1]+"/globals.txt").createNewFile();
 			BufferedWriter bw = new BufferedWriter(new FileWriter(args[1]+"/globals.txt"));
 			for(String key : g.global.keySet()){
 				bw.write(key + " "  + g.get(key));
