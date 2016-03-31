@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
@@ -16,6 +15,7 @@ import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCell;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class TSPSubject extends Subject {
 

@@ -3,6 +3,7 @@ package edu.usf.ratsim.nsl.modules;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.micronsl.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
+import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 public class LastAteIntention extends Module implements Intention {
 
@@ -15,7 +16,7 @@ public class LastAteIntention extends Module implements Intention {
 	}
 
 	public void run() {
-		IntPort goalFeeder = (IntPort) getInPort("goalFeeder");
+		Int0dPort goalFeeder = (Int0dPort) getInPort("goalFeeder");
 
 		for (int i = 0; i < intention.length; i++)
 			intention[i] = 0;

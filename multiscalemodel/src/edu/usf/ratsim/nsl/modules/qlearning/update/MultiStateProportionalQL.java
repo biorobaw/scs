@@ -10,7 +10,8 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.micronsl.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
-import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
+import edu.usf.micronsl.port.singlevalue.Float0dPort;
+import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.micronsl.twodimensional.FloatMatrixPort;
 import edu.usf.ratsim.support.Configuration;
 
@@ -79,8 +80,8 @@ public class MultiStateProportionalQL extends Module implements QLAlgorithm {
 	public void run() {
 		// Updates may be disabled for data log reasons
 		if (update) {
-			Float1dPortArray reward = (Float1dPortArray) getInPort("reward");
-			Int1dPortArray takenAction = (Int1dPortArray) getInPort("takenAction");
+			Float0dPort reward = (Float0dPort) getInPort("reward");
+			Int0dPort takenAction = (Int0dPort) getInPort("takenAction");
 			Float1dPortArray statesBefore = (Float1dPortArray) getInPort("statesBefore");
 			Float1dPortArray statesAfter = (Float1dPortArray) getInPort("statesAfter");
 			Float1dPortArray votesBefore = (Float1dPortArray) getInPort("votesBefore");
@@ -106,7 +107,7 @@ public class MultiStateProportionalQL extends Module implements QLAlgorithm {
 	}
 
 	private void updateLastAction(int sBefore, int a, float maxERNextState,
-			Float1dPortArray reward, Float1dPortArray statesBefore,
+			Float0dPort reward, Float1dPortArray statesBefore,
 			Float1dPortArray statesAfter, Float1dPortArray votesBefore,
 			FloatMatrixPort value) {
 

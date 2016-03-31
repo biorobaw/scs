@@ -3,14 +3,15 @@ package edu.usf.ratsim.nsl.modules;
 import edu.usf.micronsl.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
+import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 public class PlaceIntention extends Module {
 
 	private float[] states;
 	private Float1dPort places;
-	private IntPort goalFeeder;
+	private Int0dPort goalFeeder;
 
-	public PlaceIntention(String name, Float1dPort places, IntPort goalFeeder) {
+	public PlaceIntention(String name, Float1dPort places, Int0dPort goalFeeder) {
 		super(name);
 		this.goalFeeder = goalFeeder;
 		this.places = places;

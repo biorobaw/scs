@@ -2,7 +2,6 @@ package edu.usf.ratsim.nsl.modules;
 
 import java.util.List;
 
-import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.EatAffordance;
@@ -10,7 +9,7 @@ import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.GeomUtils;
-import edu.usf.ratsim.micronsl.Module;
+import edu.usf.micronsl.Module;
 
 public class FeederTraveler extends Module {
 

@@ -3,16 +3,13 @@ package edu.usf.ratsim.nsl.modules;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.universe.Feeder;
-import edu.usf.experiment.utils.RandomSingleton;
-import edu.usf.ratsim.micronsl.Float1dPortArray;
-import edu.usf.ratsim.micronsl.Float1dSparsePortMap;
-import edu.usf.ratsim.micronsl.Module;
+import edu.usf.micronsl.Module;
+import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
+import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 
 public class ArtificialTesselatedPlaceCellLayer extends Module {
 
@@ -125,7 +122,7 @@ public class ArtificialTesselatedPlaceCellLayer extends Module {
 	}
 
 	public void clear() {
-		((Float1dPortArray)getOutPort("activation")).set(0);
+		((Float1dPortArray)getOutPort("activation")).clear();
 	}
 
 }

@@ -2,9 +2,9 @@ package edu.usf.ratsim.nsl.modules;
 
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
-import edu.usf.micronsl.Bool1dPort;
 import edu.usf.micronsl.Module;
 import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
+import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 public class LastTriedToEatGoalDecider extends Module {
@@ -22,7 +22,7 @@ public class LastTriedToEatGoalDecider extends Module {
 	}
 
 	public void run() {
-		Bool1dPort subTriedToEat = (Bool1dPort) getInPort("subTriedToEat");
+		Bool0dPort subTriedToEat = (Bool0dPort) getInPort("subTriedToEat");
 		Int0dPort closestFeeder = (Int0dPort) getInPort("closestFeeder");
 		
 		if (subTriedToEat.get()) {

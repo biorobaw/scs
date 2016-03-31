@@ -12,6 +12,7 @@ import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
+import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 /**
  * Module to generate random actions when the agent hasnt moved (just rotated)
@@ -50,7 +51,7 @@ public class StillExplorer extends Module {
 	}
 
 	public void run() {
-		IntPort takenAction = (IntPort) getInPort("takenAction");
+		Int0dPort takenAction = (Int0dPort) getInPort("takenAction");
 
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;

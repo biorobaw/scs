@@ -11,7 +11,6 @@ import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject;
-import edu.usf.ratsim.nsl.modules.ArtificialPlaceCell;
 import edu.usf.ratsim.nsl.modules.ExponentialConjCell;
 
 public class PCLogger extends Logger {

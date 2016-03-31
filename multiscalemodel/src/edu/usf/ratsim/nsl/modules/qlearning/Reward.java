@@ -1,8 +1,8 @@
 package edu.usf.ratsim.nsl.modules.qlearning;
 
-import edu.usf.micronsl.Bool1dPort;
 import edu.usf.micronsl.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
+import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 
 public class Reward extends Module {
 
@@ -21,7 +21,7 @@ public class Reward extends Module {
 	}
 
 	public void run() {
-		Bool1dPort subAte = (Bool1dPort) getInPort("subAte");
+		Bool0dPort subAte = (Bool0dPort) getInPort("subAte");
 		if (subAte.get()) {
 			reward[0] = foodReward;
 //			System.out.println("Rewarding");

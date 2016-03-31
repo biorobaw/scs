@@ -91,6 +91,22 @@ public class Float1dPortCartesian extends Float1dPort {
 		validOptimization = false;
 		this.optimize = optimize;
 	}
+	
+	/**
+	 * Constructor that sets optimizations to true by default
+	 * @param owner
+	 *            The owner module
+	 * @param sources
+	 *            The set of source ports. The sources that are more likely to
+	 *            be 0 should be placed at the end of the list to improve
+	 *            running time.
+	 * @param eps
+	 *            The minimum value upon which the number is considered to be
+	 *            zero
+	 */
+	public Float1dPortCartesian(Module owner, List<Float1dPort> sources, float eps){
+		this(owner, sources, eps, true);
+	}
 
 	@Override
 	public int getSize() {

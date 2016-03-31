@@ -13,8 +13,9 @@ import edu.usf.experiment.utils.Debug;
 import edu.usf.micronsl.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
-import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
+import edu.usf.micronsl.port.singlevalue.Float0dPort;
+import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.micronsl.twodimensional.FloatMatrixPort;
 import edu.usf.ratsim.support.Configuration;
 
@@ -75,8 +76,8 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 	public void run() {
 		// Updates may be disabled for data log reasons
 		if (update) {
-			Float1dPortArray reward = (Float1dPortArray) getInPort("reward");
-			Int1dPortArray takenAction = (Int1dPortArray) getInPort("takenAction");
+			Float0dPort reward = (Float0dPort) getInPort("reward");
+			Int0dPort takenAction = (Int0dPort) getInPort("takenAction");
 			Float1dSparsePort statesBefore = (Float1dSparsePort) getInPort("statesBefore");
 			Float1dPort statesAfter = (Float1dPort) getInPort("statesAfter");
 			Float1dPort taxicValueEstBefore = (Float1dPort) getInPort("taxicValueEstimationBefore");
@@ -126,7 +127,7 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 	}
 
 	private void updateLastAction(int sBefore, int a, Float1dSparsePort statesBefore,
-			FloatMatrixPort value, Float1dPort reward,
+			FloatMatrixPort value, Float0dPort reward,
 			Float1dPort taxicValueEstBefore, Float1dPort taxicValueEstAfter,
 			Float1dPort rlValueEstBefore, Float1dPort rlValueEstAfter,
 			float[] stateTraces, float[][] actionTraces) {

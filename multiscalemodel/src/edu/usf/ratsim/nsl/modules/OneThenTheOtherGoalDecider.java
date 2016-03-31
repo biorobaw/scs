@@ -6,9 +6,10 @@ import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
-import edu.usf.micronsl.Bool1dPort;
 import edu.usf.micronsl.Module;
+import edu.usf.micronsl.port.onedimensional.Bool1dPort;
 import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
+import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 public class OneThenTheOtherGoalDecider extends Module {
@@ -31,8 +32,8 @@ public class OneThenTheOtherGoalDecider extends Module {
 	}
 
 	public void run() {
-		Bool1dPort subAte = (Bool1dPort) getInPort("subAte");
-		Bool1dPort subTriedToEat = (Bool1dPort) getInPort("subTriedToEat");
+		Bool0dPort subAte = (Bool0dPort) getInPort("subAte");
+		Bool0dPort subTriedToEat = (Bool0dPort) getInPort("subTriedToEat");
 		Int0dPort closestFeeder = (Int0dPort) getInPort("closestFeeder");
 
 		// Flashing switches map to current flashing one
