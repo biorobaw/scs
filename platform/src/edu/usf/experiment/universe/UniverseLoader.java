@@ -15,7 +15,6 @@ import edu.usf.experiment.utils.ElementWrapper;
 public class UniverseLoader {
 
 	private static UniverseLoader instance;
-	private Map<String, Class<?>> classBySimpleName;
 
 	public static UniverseLoader getInstance() {
 		if (instance == null)

@@ -1,6 +1,9 @@
 package edu.usf.experiment;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
@@ -80,6 +83,9 @@ public class Experiment implements Runnable {
 
 	private void setup(ElementWrapper root, String logPath, String groupName,
 			String subjectName) {
+		//Get globals:
+		Globals g = Globals.getInstace();
+		
 		// System.out.println(System.getProperty("java.class.path"));
 		System.out.println("[+] Starting group " + groupName + " individual "
 				+ " in log " + logPath);
@@ -110,6 +116,10 @@ public class Experiment implements Runnable {
 		System.out.println("[+] Using seed " + seed);
 
 		// Load the subject using reflection and assign name and group
+		//previously, if feederOrder is defined, set the property in the xml:
+		if (g.get("feederOrder")!=null)
+				root.getChild("model").getChild("params").
+					 getChild("feederOrder").setText((String)g.get("feederOrder"));
 		subject = SubjectLoader.getInstance().load(subjectName, groupName,
 				root.getChild("model"), robot);
 
@@ -154,10 +164,46 @@ public class Experiment implements Runnable {
 
 	public static void main(String[] args) {
 		if (args.length < 4)
+		{
 			System.out.println("Usage: java edu.usf.experiment "
-					+ "exprimentLayout logPath group individual");
+					+ "exprimentLayout logPath group individual [ARGNAME ARGVAL]*");
+			
+			System.out.println();
+			System.out.println("Possible ARGNAMES and ARGVALS:");
+			System.out.println("feederFile file - file of `x y` coordinates indicating feeder position");
+			System.out.println("nFoodStopCondition int - experiment end after eating 'int' times");
+			System.out.println("feederOrder x1,x2,... - indicates order in which feeders are visited");
+			System.out.println("startPosition x,y,theta - indicates rat's starting position");
+			
+		}
 
-		Experiment e = new Experiment(args[0], args[1] + "/", args[2], args[3]);
+		//set global variables:
+		Globals g = Globals.getInstace();
+		g.put("logPath",args[1] + "/");
+		g.put("groupName", args[2]);
+		g.put("subName", args[3]);
+		
+		int nextVar = 4;
+		for(int i =0; i < (args.length-4)/2;i++){
+			g.put(args[nextVar], args[nextVar+1]);
+			nextVar+=2;
+		}
+		
+		//Save globals to a file:
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(args[1]+"/globals.txt"));
+			for(String key : g.global.keySet()){
+				bw.write(key + " "  + g.get(key));
+				bw.newLine();
+			}
+			bw.close();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+			
+		
+		Experiment e = new Experiment(args[0],args[1] + "/" , args[2], args[3]);
 		e.run();
 
 		System.exit(0);

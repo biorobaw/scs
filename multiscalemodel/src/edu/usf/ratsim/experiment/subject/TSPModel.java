@@ -9,7 +9,6 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.micronsl.Float1dSparsePortMap;
 import edu.usf.ratsim.micronsl.Model;
-import edu.usf.ratsim.nsl.modules.ArtificialConjCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCell;
 import edu.usf.ratsim.nsl.modules.ArtificialTesselatedPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.FeederTraveler;
