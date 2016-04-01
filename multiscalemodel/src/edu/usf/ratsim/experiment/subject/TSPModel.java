@@ -9,9 +9,9 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
-import edu.usf.ratsim.nsl.modules.ArtificialPlaceCell;
-import edu.usf.ratsim.nsl.modules.ArtificialTesselatedPlaceCellLayer;
-import edu.usf.ratsim.nsl.modules.FeederTraveler;
+import edu.usf.ratsim.nsl.modules.actionselection.FeederTraveler;
+import edu.usf.ratsim.nsl.modules.cell.ArtificialPlaceCell;
+import edu.usf.ratsim.nsl.modules.celllayer.ArtificialTesselatedPlaceCellLayer;
 
 public class TSPModel extends Model {
 

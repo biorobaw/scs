@@ -5,8 +5,8 @@ import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import edu.usf.micronsl.DependencyRunnable;
-import edu.usf.micronsl.ThreadDependencyExecutor;
+import edu.usf.micronsl.exec.DependencyRunnable;
+import edu.usf.micronsl.exec.ThreadDependencyExecutor;
 
 public class ThreadDependencyExecutorTest {
 

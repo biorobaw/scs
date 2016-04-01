@@ -1,6 +1,6 @@
 package edu.usf.micronsl.port.onedimensional.copy;
 
-import edu.usf.micronsl.Module;
+import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.PortCopier;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 

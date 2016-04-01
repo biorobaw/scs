@@ -1,6 +1,6 @@
 package edu.usf.micronsl.port.twodimensional;
 
-import edu.usf.micronsl.Module;
+import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.Port;
 
 /**

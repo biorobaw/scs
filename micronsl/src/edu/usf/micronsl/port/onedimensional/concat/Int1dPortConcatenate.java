@@ -2,7 +2,7 @@ package edu.usf.micronsl.port.onedimensional.concat;
 
 import java.util.List;
 
-import edu.usf.micronsl.Module;
+import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Int1dPort;
 
 /**

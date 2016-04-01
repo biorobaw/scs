@@ -3,7 +3,7 @@ package edu.usf.micronsl.port.onedimensional.sparse;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.usf.micronsl.Module;
+import edu.usf.micronsl.module.Module;
 
 /**
  * A sparse 1d float port implemented by a Map from integer index to non-zero

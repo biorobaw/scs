@@ -4,8 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
-import edu.usf.micronsl.Debug;
-import edu.usf.micronsl.Module;
+import edu.usf.micronsl.exec.Debug;
+import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 
 /**

@@ -1,6 +1,6 @@
 package edu.usf.micronsl.port;
 
-import edu.usf.micronsl.Module;
+import edu.usf.micronsl.module.Module;
 
 /**
  * Ports are used to exchange information between modules.

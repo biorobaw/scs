@@ -3,7 +3,7 @@ package edu.usf.ratsim.support;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import edu.usf.micronsl.Module;
+import edu.usf.micronsl.module.Module;
 
 public class ReflexionLoader {
 

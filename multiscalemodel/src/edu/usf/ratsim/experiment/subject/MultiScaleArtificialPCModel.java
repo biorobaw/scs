@@ -12,51 +12,51 @@ import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
-import edu.usf.micronsl.Module;
+import edu.usf.micronsl.module.Module;
+import edu.usf.micronsl.modules.concat.Float1dSparseConcatModule;
+import edu.usf.micronsl.modules.copy.Float1dCopyModule;
+import edu.usf.micronsl.modules.copy.Float1dSparseCopyModule;
+import edu.usf.micronsl.modules.sum.Float1dSumModule;
 import edu.usf.micronsl.port.Port;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
-import edu.usf.micronsl.twodimensional.FloatMatrixPort;
-import edu.usf.ratsim.nsl.modules.ArtificialConjCellLayer;
-import edu.usf.ratsim.nsl.modules.ClosestFeeder;
-import edu.usf.ratsim.nsl.modules.CopyStateModule;
-import edu.usf.ratsim.nsl.modules.CopyStateModuleSparse;
-import edu.usf.ratsim.nsl.modules.DecayingExplorationSchema;
-import edu.usf.ratsim.nsl.modules.ExponentialConjCell;
-import edu.usf.ratsim.nsl.modules.Intention;
-import edu.usf.ratsim.nsl.modules.JointStatesManySparseConcatenate;
-import edu.usf.ratsim.nsl.modules.JointStatesManySum;
-import edu.usf.ratsim.nsl.modules.LastAteIntention;
-import edu.usf.ratsim.nsl.modules.LastTriedToEatGoalDecider;
-import edu.usf.ratsim.nsl.modules.NoIntention;
-import edu.usf.ratsim.nsl.modules.OneThenTheOtherGoalDecider;
-import edu.usf.ratsim.nsl.modules.StillExplorer;
-import edu.usf.ratsim.nsl.modules.SubjectAte;
-import edu.usf.ratsim.nsl.modules.SubjectTriedToEat;
-import edu.usf.ratsim.nsl.modules.Voter;
+import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
+import edu.usf.ratsim.nsl.modules.actionselection.DecayingExplorationSchema;
+import edu.usf.ratsim.nsl.modules.actionselection.GradientValue;
+import edu.usf.ratsim.nsl.modules.actionselection.GradientVotes;
+import edu.usf.ratsim.nsl.modules.actionselection.HalfAndHalfConnectionValue;
+import edu.usf.ratsim.nsl.modules.actionselection.HalfAndHalfConnectionVotes;
+import edu.usf.ratsim.nsl.modules.actionselection.NoExploration;
+import edu.usf.ratsim.nsl.modules.actionselection.ProportionalValue;
+import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
+import edu.usf.ratsim.nsl.modules.actionselection.StillExplorer;
+import edu.usf.ratsim.nsl.modules.actionselection.Voter;
+import edu.usf.ratsim.nsl.modules.actionselection.taxic.FlashingTaxicFoodFinderSchema;
+import edu.usf.ratsim.nsl.modules.actionselection.taxic.FlashingTaxicValueSchema;
+import edu.usf.ratsim.nsl.modules.actionselection.taxic.ObstacleEndTaxic;
+import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicFoodManyFeedersManyActions;
+import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicValueSchema;
+import edu.usf.ratsim.nsl.modules.cell.ExponentialConjCell;
+import edu.usf.ratsim.nsl.modules.celllayer.ArtificialConjCellLayer;
+import edu.usf.ratsim.nsl.modules.goaldecider.LastTriedToEatGoalDecider;
+import edu.usf.ratsim.nsl.modules.goaldecider.OneThenTheOtherGoalDecider;
+import edu.usf.ratsim.nsl.modules.input.ClosestFeeder;
+import edu.usf.ratsim.nsl.modules.input.SubjectAte;
+import edu.usf.ratsim.nsl.modules.input.SubjectTriedToEat;
+import edu.usf.ratsim.nsl.modules.intention.Intention;
+import edu.usf.ratsim.nsl.modules.intention.LastAteIntention;
+import edu.usf.ratsim.nsl.modules.intention.NoIntention;
+import edu.usf.ratsim.nsl.modules.qlearning.MultiStateProportionalAC;
+import edu.usf.ratsim.nsl.modules.qlearning.MultiStateProportionalQL;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.GradientValue;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.GradientVotes;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.HalfAndHalfConnectionValue;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.HalfAndHalfConnectionVotes;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.NoExploration;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalValue;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalVotes;
-import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalAC;
-import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalQL;
-import edu.usf.ratsim.nsl.modules.taxic.FlashingTaxicFoodFinderSchema;
-import edu.usf.ratsim.nsl.modules.taxic.FlashingTaxicValueSchema;
-import edu.usf.ratsim.nsl.modules.taxic.ObstacleEndTaxic;
-import edu.usf.ratsim.nsl.modules.taxic.TaxicFoodManyFeedersManyActions;
-import edu.usf.ratsim.nsl.modules.taxic.TaxicValueSchema;
 
 public class MultiScaleArtificialPCModel extends Model {
 
 	// private ProportionalExplorer actionPerformerVote;
 	// private List<WTAVotes> qLActionSel;
 	private List<DecayingExplorationSchema> exploration;
-	private JointStatesManySparseConcatenate jointPCHDIntentionState;
+	private Float1dSparseConcatModule jointPCHDIntentionState;
 	private Intention intentionGetter;
 	private Module rlValue;
 	private List<ArtificialConjCellLayer> conjCellLayers;
@@ -172,13 +172,13 @@ public class MultiScaleArtificialPCModel extends Model {
 		}
 
 		// Concatenate all layers
-		jointPCHDIntentionState = new JointStatesManySparseConcatenate(
+		jointPCHDIntentionState = new Float1dSparseConcatModule(
 				"Joint PC HD Intention State");
 		jointPCHDIntentionState.addInPorts(conjCellLayersPorts);
 		addModule(jointPCHDIntentionState);
 
 		// Copy last state and votes before recomputing to use in RL algorithm
-		CopyStateModuleSparse stateCopy = new CopyStateModuleSparse(
+		Float1dSparseCopyModule stateCopy = new Float1dSparseCopyModule(
 				"States Before");
 		stateCopy.addInPort("toCopy",
 				jointPCHDIntentionState.getOutPort("jointState"), true);
@@ -265,7 +265,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		// votesPorts.add((Float1dPort) avoidWallTaxic.getOutPort("votes"));
 
 		// Joint votes
-		JointStatesManySum jointVotes = new JointStatesManySum("Votes");
+		Float1dSumModule jointVotes = new Float1dSumModule("Votes");
 		jointVotes.addInPorts(votesPorts);
 		addModule(jointVotes);
 
@@ -306,12 +306,12 @@ public class MultiScaleArtificialPCModel extends Model {
 		taxicValueEstimationPorts.add(flashTaxVal.getOutPort("value"));
 		addModule(flashTaxVal);
 
-		JointStatesManySum sumTaxicValue = new JointStatesManySum(
+		Float1dSumModule sumTaxicValue = new Float1dSumModule(
 				"Taxic joint value estimation");
 		sumTaxicValue.addInPorts(taxicValueEstimationPorts);
 		addModule(sumTaxicValue);
 
-		CopyStateModule taxicValueCopy = new CopyStateModule(
+		Float1dCopyModule taxicValueCopy = new Float1dCopyModule(
 				"Taxic Value Estimation Before");
 		taxicValueCopy.addInPort("toCopy",
 				(Float1dPort) sumTaxicValue.getOutPort("jointState"), true);
@@ -335,7 +335,7 @@ public class MultiScaleArtificialPCModel extends Model {
 															// dependency
 		addModule(rlValue);
 
-		CopyStateModule rlValueCopy = new CopyStateModule(
+		Float1dCopyModule rlValueCopy = new Float1dCopyModule(
 				"RL Value Estimation Before");
 		rlValueCopy.addInPort("toCopy",
 				(Float1dPort) rlValue.getOutPort("valueEst"), true);

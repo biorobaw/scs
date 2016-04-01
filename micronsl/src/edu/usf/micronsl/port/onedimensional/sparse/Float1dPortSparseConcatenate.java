@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import edu.usf.micronsl.Module;
+import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 
 /**
