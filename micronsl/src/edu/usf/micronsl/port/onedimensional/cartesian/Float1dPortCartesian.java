@@ -85,7 +85,7 @@ public class Float1dPortCartesian extends Float1dPort {
 		}
 
 		if (size == 0)
-			throw new RuntimeException("Empty input to Multiply port");
+			throw new RuntimeException("Empty input to Cartesian port");
 
 		// No initial optimization
 		validOptimization = false;
@@ -228,7 +228,7 @@ public class Float1dPortCartesian extends Float1dPort {
 
 	@Override
 	public void set(int i, float x) {
-		throw new RuntimeException("Cannot set the value of a multiply port");
+		throw new RuntimeException("Cannot set the value of a Cartesian port");
 	}
 
 	@Override

@@ -15,7 +15,7 @@ import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCell;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 
 public class TSPSubject extends Subject {
 
