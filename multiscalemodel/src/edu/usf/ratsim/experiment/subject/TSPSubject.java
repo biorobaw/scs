@@ -14,7 +14,7 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.ratsim.nsl.modules.cell.ArtificialPlaceCell;
+import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 
 
 public class TSPSubject extends Subject {
@@ -102,7 +102,7 @@ public class TSPSubject extends Subject {
 		throw new NotImplementedException();
 	}
 
-	public List<ArtificialPlaceCell> getPlaceCells() {
+	public List<PlaceCell> getPlaceCells() {
 		return model.getPlaceCells();
 	}
 

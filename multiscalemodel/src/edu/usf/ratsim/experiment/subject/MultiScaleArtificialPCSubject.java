@@ -14,7 +14,7 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.ratsim.nsl.modules.cell.ExponentialConjCell;
+import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 
 public class MultiScaleArtificialPCSubject extends Subject {
 
@@ -102,7 +102,7 @@ public class MultiScaleArtificialPCSubject extends Subject {
 		return model.getValue(point, intention, angleInterval, distToWall);
 	}
 
-	public List<ExponentialConjCell> getPlaceCells() {
+	public List<ConjCell> getPlaceCells() {
 		return model.getPlaceCells();
 	}
 

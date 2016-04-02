@@ -12,12 +12,12 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject;
 import edu.usf.ratsim.experiment.subject.TSPSubject;
-import edu.usf.ratsim.nsl.modules.cell.ArtificialPlaceCell;
+import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialConjCell;
 
 public class PCLogger extends Logger {
 
-	private List<ArtificialPlaceCell> cells;
+	private List<PlaceCell> cells;
 
 	public PCLogger(ElementWrapper params, String logPath) {
 		super(params, logPath);
@@ -59,12 +59,12 @@ public class PCLogger extends Logger {
 
 			PrintWriter writer = getWriter();
 			int cellNum = 0;
-			for (ArtificialPlaceCell cell : cells) {
+			for (PlaceCell cell : cells) {
 				writer.println(groupName + '\t' + subName + '\t'
 						+ cellNum + '\t'
-						+ cell.getCenter().x  + '\t'
-						+ cell.getCenter().y + '\t'
-						+ cell.getRadius());
+						+ cell.getPreferredLocation().x  + '\t'
+						+ cell.getPreferredLocation().y + '\t'
+						+ cell.getPlaceRadius());
 				cellNum++;
 			}
 

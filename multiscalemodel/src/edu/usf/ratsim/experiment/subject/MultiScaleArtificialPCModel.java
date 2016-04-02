@@ -37,8 +37,8 @@ import edu.usf.ratsim.nsl.modules.actionselection.taxic.FlashingTaxicValueSchema
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.ObstacleEndTaxic;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicFoodManyFeedersManyActions;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicValueSchema;
-import edu.usf.ratsim.nsl.modules.cell.ExponentialConjCell;
-import edu.usf.ratsim.nsl.modules.celllayer.ArtificialConjCellLayer;
+import edu.usf.ratsim.nsl.modules.cell.ConjCell;
+import edu.usf.ratsim.nsl.modules.celllayer.RndConjCellLayer;
 import edu.usf.ratsim.nsl.modules.goaldecider.LastTriedToEatGoalDecider;
 import edu.usf.ratsim.nsl.modules.goaldecider.OneThenTheOtherGoalDecider;
 import edu.usf.ratsim.nsl.modules.input.ClosestFeeder;
@@ -59,7 +59,7 @@ public class MultiScaleArtificialPCModel extends Model {
 	private Float1dSparseConcatModule jointPCHDIntentionState;
 	private Intention intentionGetter;
 	private Module rlValue;
-	private List<ArtificialConjCellLayer> conjCellLayers;
+	private List<RndConjCellLayer> conjCellLayers;
 	private float[][] value;
 	private int numActions;
 
@@ -155,11 +155,11 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		// Create the layers
 		float radius = minPCRadius;
-		conjCellLayers = new LinkedList<ArtificialConjCellLayer>();
+		conjCellLayers = new LinkedList<RndConjCellLayer>();
 		List<Port> conjCellLayersPorts = new LinkedList<Port>();
 		// For each layer
 		for (int i = 0; i < numCCLayers; i++) {
-			ArtificialConjCellLayer ccl = new ArtificialConjCellLayer("CCL "
+			RndConjCellLayer ccl = new RndConjCellLayer("CCL "
 					+ i, lRobot, radius, minHDRadius, maxHDRadius,
 					numIntentions, numCCCellsPerLayer.get(i), placeCellType,
 					xmin, ymin, xmax, ymax, lRobot.getAllFeeders(),
@@ -276,7 +276,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		actionPerformer.addInPort("votes", jointVotes.getOutPort("jointState"));
 		addModule(actionPerformer);
 		// State calculation should be done after movement
-		for (ArtificialConjCellLayer ccl : conjCellLayers)
+		for (RndConjCellLayer ccl : conjCellLayers)
 			ccl.addPreReq(actionPerformer);
 		intention.addPreReq(actionPerformer);
 
@@ -422,7 +422,7 @@ public class MultiScaleArtificialPCModel extends Model {
 			throw new RuntimeException("RL mechanism not implemented");
 	}
 
-	public List<ArtificialConjCellLayer> getPCLLayers() {
+	public List<RndConjCellLayer> getPCLLayers() {
 		return conjCellLayers;
 	}
 
@@ -478,8 +478,8 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		Map<Float, Float> angleValue = new HashMap<Float, Float>();
 		for (float angle = 0; angle <= 2 * Math.PI; angle += angleInterval) {
-			for (ArtificialConjCellLayer ccl : conjCellLayers)
-				ccl.simRun(point, angle, inte, false, distToWall);
+			for (RndConjCellLayer ccl : conjCellLayers)
+				ccl.run(point, angle, inte, distToWall);
 
 			jointPCHDIntentionState.run();
 
@@ -489,15 +489,15 @@ public class MultiScaleArtificialPCModel extends Model {
 			angleValue.put(angle, votes[0]);
 		}
 
-		for (ArtificialConjCellLayer ccl : conjCellLayers)
+		for (RndConjCellLayer ccl : conjCellLayers)
 			ccl.clear();
 
 		return angleValue;
 	}
 
-	public List<ExponentialConjCell> getPlaceCells() {
-		List<ExponentialConjCell> res = new LinkedList<ExponentialConjCell>();
-		for (ArtificialConjCellLayer ccl : conjCellLayers) {
+	public List<ConjCell> getPlaceCells() {
+		List<ConjCell> res = new LinkedList<ConjCell>();
+		for (RndConjCellLayer ccl : conjCellLayers) {
 			res.addAll(ccl.getCells());
 		}
 
@@ -513,7 +513,7 @@ public class MultiScaleArtificialPCModel extends Model {
 
 	public Map<Integer, Float> getCellActivation() {
 		Map<Integer, Float> activation = new LinkedHashMap<Integer, Float>();
-		for (ArtificialConjCellLayer layer : conjCellLayers)
+		for (RndConjCellLayer layer : conjCellLayers)
 			activation.putAll(((Float1dSparsePortMap) layer
 					.getOutPort("activation")).getNonZero());
 		return activation;

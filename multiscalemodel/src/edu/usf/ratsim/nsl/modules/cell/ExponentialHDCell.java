@@ -2,8 +2,14 @@ package edu.usf.ratsim.nsl.modules.cell;
 
 import edu.usf.experiment.utils.GeomUtils;
 
-public class ArtificialHDCell {
+/**
+ * Head direction cell are modulated only by the animat's current orientation.
+ * @author Martin Llofriu
+ *
+ */
+public class ExponentialHDCell {
 
+	
 	private static final double RADIUS_THRS = .2;
 
 	private float preferredOrientation;
@@ -11,7 +17,7 @@ public class ArtificialHDCell {
 
 	private boolean agnostic;
 
-	public ArtificialHDCell(float preferredOrientation, float radius) {
+	public ExponentialHDCell(float preferredOrientation, float radius) {
 		super();
 		this.preferredOrientation = preferredOrientation;
 		// System.out.println(radius);
@@ -39,7 +45,7 @@ public class ArtificialHDCell {
 	
 
 	public static void main(String[] args) {
-		ArtificialHDCell hdc = new ArtificialHDCell(1, 1);
+		ExponentialHDCell hdc = new ExponentialHDCell(1, 1);
 		System.out.println(GeomUtils.angleDistance((float) (Math.PI / 2), 0f));
 		System.out.println(GeomUtils.angleDistance(0, 0f));
 		System.out.println(GeomUtils.angleDistance((float) (Math.PI),

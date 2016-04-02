@@ -10,13 +10,13 @@ import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.ratsim.nsl.modules.actionselection.FeederTraveler;
-import edu.usf.ratsim.nsl.modules.cell.ArtificialPlaceCell;
-import edu.usf.ratsim.nsl.modules.celllayer.ArtificialTesselatedPlaceCellLayer;
+import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
+import edu.usf.ratsim.nsl.modules.celllayer.TesselatedPlaceCellLayer;
 
 public class TSPModel extends Model {
 
 	private int numActions;
-	private ArtificialTesselatedPlaceCellLayer placeCells;
+	private TesselatedPlaceCellLayer placeCells;
 	private FeederTraveler feederTraveler;
 
 	public TSPModel() {
@@ -37,7 +37,7 @@ public class TSPModel extends Model {
 		numActions = subject.getPossibleAffordances().size();
 
 		// Create the layers
-		placeCells = new ArtificialTesselatedPlaceCellLayer(
+		placeCells = new TesselatedPlaceCellLayer(
 				"PCLayer", lRobot, PCRadius, numCCCellsPerSide, placeCellType,
 				xmin, ymin, xmax, ymax);
 		addModule(placeCells);
@@ -53,7 +53,7 @@ public class TSPModel extends Model {
 	public void newTrial() {
 	}
 
-	public List<ArtificialPlaceCell> getPlaceCells() {
+	public List<PlaceCell> getPlaceCells() {
 		return placeCells.getCells();
 	}
 

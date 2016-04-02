@@ -8,25 +8,25 @@ import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
-import edu.usf.ratsim.nsl.modules.cell.ArtificialHDCell;
+import edu.usf.ratsim.nsl.modules.cell.ExponentialHDCell;
 
-public class ArtificialHDCellLayer extends Module {
+public class HDCellLayer extends Module {
 
 	public float activation[];
 
-	private List<ArtificialHDCell> cells;
+	private List<ExponentialHDCell> cells;
 
 	private LocalizableRobot robot;
 
-	public ArtificialHDCellLayer(String name, int numCells, float radius,
+	public HDCellLayer(String name, int numCells, float radius,
 			LocalizableRobot robot) {
 		super(name);
 		
 		Random r = RandomSingleton.getInstance();
-		cells = new LinkedList<ArtificialHDCell>();
+		cells = new LinkedList<ExponentialHDCell>();
 		for (int i = 0; i < numCells; i++) {
 			// Add a cell with center x,y
-			cells.add(new ArtificialHDCell((float) (r.nextFloat() * 2 * Math.PI), radius));
+			cells.add(new ExponentialHDCell((float) (r.nextFloat() * 2 * Math.PI), radius));
 		}
 
 		activation = new float[cells.size()];
@@ -47,7 +47,7 @@ public class ArtificialHDCellLayer extends Module {
 	public void simRun(float theta) {
 		int i = 0;
 
-		for (ArtificialHDCell pCell : cells) {
+		for (ExponentialHDCell pCell : cells) {
 			activation[i] = pCell.getActivation(theta);
 			// System.out.print(pCell.getActivation(angle) + " ");
 			i++;

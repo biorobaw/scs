@@ -5,8 +5,8 @@ import java.util.Random;
 import javax.vecmath.Point3f;
 
 /**
- * Exponential wall conjunctive cells add a factor of modulation to their
- * superclass ExponentialConjCell. These cells can be one of two different
+ * Exponential wall cells add a factor of modulation to their
+ * superclass ExponentialCell. These cells can be one of two different
  * types: - Possitively modulated by the presence of walls (wall cells) -
  * Negatively modulated by the presence of walls (non wall cells) The type of
  * cell is decided at build time.
@@ -24,37 +24,37 @@ import javax.vecmath.Point3f;
  * @author Martin Llofriu
  *
  */
-public class ExponentialWallConjCell extends ExponentialConjCell {
+public class WallExponentialPlaceCell extends
+		ExponentialPlaceCell {
 
 	private boolean wallCell;
-	private float wallInhibition;
 
-	public ExponentialWallConjCell(Point3f preferredLocation, float preferredDirection, float placeRadius,
-			float angleRadius, int preferredIntention, float wallInhibition, Random r) {
-		super(preferredLocation, preferredDirection, placeRadius, angleRadius, preferredIntention);
+	public WallExponentialPlaceCell(Point3f center, float radius,
+			Random r) {
+		super(center, radius);
+
 		wallCell = r.nextBoolean();
-		this.wallInhibition = wallInhibition;
 	}
 
-	@Override
-	public float getActivation(Point3f currLocation, float currAngle, int currIntention, float distanceToWall) {
-		float activation = super.getActivation(currLocation, currAngle, currIntention, distanceToWall);
+	public float getActivation(Point3f currLocation, float distanceToWall) {
+		float activation = super.getActivation(currLocation);
 		if (activation != 0) {
 			float d = distanceToWall / (getPlaceRadius());
-			float dAcross = Math.max(0, (d - getPreferredLocation().distance(currLocation) / getPlaceRadius()));
+			float dAcross = Math.max(0, (d - getPreferredLocation().distance(currLocation)
+					/ getPlaceRadius()));
 			if (wallCell) {
 				// If it is a wall cell, it activates more near walls but no
 				// across also
-				return (float) (activation * (1 - 1 / (Math.exp(-10 * (d - wallInhibition)) + 1))
-						* (1 / (Math.exp(-10 * (dAcross - .01)) + 1)));
+				return (float) (activation
+						* (1 - 1 / (Math.exp(-10 * (d - .7)) + 1)) * (1 / (Math
+						.exp(-10 * (dAcross - .2)) + 1)));
 			} else {
 				// If it is not a wall cell, it should activate less near walls
-				return (float) (activation * (1 / (Math.exp(-10 * (dAcross - wallInhibition)) + 1)));
+				return (float) (activation * (1 / (Math.exp(-10
+						* (dAcross - .2)) + 1)));
 			}
-			// return activation;
+
 		} else
 			return 0;
-
 	}
-
 }

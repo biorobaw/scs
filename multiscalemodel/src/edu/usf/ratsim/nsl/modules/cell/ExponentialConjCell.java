@@ -4,17 +4,55 @@ import javax.vecmath.Point3f;
 
 import edu.usf.experiment.utils.GeomUtils;
 
-public class ExponentialConjCell {
+/**
+ * Exponential conjunctive cells are exponentially modulated by place and head direction.  
+ * @author Martin Llofriu
+ *
+ */
+public class ExponentialConjCell implements ConjCell {
 
+	/**
+	 * The minimum distance to the center for the cell to fire. Below this value, firing rates are set to 0.
+	 */
 	private static final double RADIUS_THRS = .2;
+	/**
+	 * The cell's preferred location
+	 */
 	private Point3f preferredLocation;
+	/**
+	 * The cell's preferred direction
+	 */
 	private float preferredDirection;
+	/**
+	 * The dispersion parameter for the gaussian function that modulates the firing rate according to the current place.
+	 * This parameter is kept for performance sake.
+	 */
 	private float placeDispersion;
+	/**
+	 * The dispersion parameter for the gaussian function that modulates the firing rate according to the current orientation
+	 * This parameter is kept for performance sake.
+	 */
 	private float angleDispersion;
+	/**
+	 * The cell's preferred intention
+	 */
 	private int preferredIntention;
+	/**
+	 * The place radius. If the distance from the current position and the preferred one is greater than this value, the firing is set to 0.
+	 * Additionally, the gaussian modulation is tuned to be RADIUS_THRS when the distance is exactly equal to this radius.
+	 */
 	private float placeRadius;
+	/**
+	 * The angular radius. If the difference between current and preferred heading is greater thant this value, the firing is set to 0.
+	 */
 	private float angleRadius;
-	private float modulation;
+	/**
+	 * Current bupivacaine modulation
+	 */
+	private float bupiModulation;
+	/**
+	 * A parameter kept for peformance sake.
+	 */
 	private float placeRadiusSquared;
 
 	public ExponentialConjCell(Point3f preferredLocation,
@@ -31,18 +69,27 @@ public class ExponentialConjCell {
 		this.angleDispersion = (float) (-Math.pow(angleRadius, 2) / Math
 				.log(RADIUS_THRS));
 		this.preferredIntention = preferredIntention;
-		this.modulation = 1;
+		this.bupiModulation = 1;
 	}
 
+	/**
+	 * Returns the activation value given all modulation factors.
+	 * First, common (0) cases are checked. If the activation is not 0, it is computed using
+	 *  - The bupivacaine modulation
+	 *  - The place gaussian modulation
+	 *  - The direction gaussian modulation
+	 * The intention is not used, because it just would multiply by 1.
+	 * These cells make no use of the wall distance factor.
+	 */
 	public float getActivation(Point3f currLocation, float currAngle,
 			int currIntention, float distanceToWall) {
-		if (modulation == 0
+		if (bupiModulation == 0
 				|| currIntention != preferredIntention
 				|| preferredLocation.distanceSquared(currLocation) > placeRadiusSquared
 				|| GeomUtils.angleDistance(currAngle, preferredDirection) > angleRadius)
 			return 0;
 		else
-			return (float) (modulation * Math.exp(-Math.pow(
+			return (float) (bupiModulation * Math.exp(-Math.pow(
 					preferredLocation.distance(currLocation), 2)
 					/ placeDispersion) * Math.exp(-Math.pow(
 					GeomUtils.angleDistance(currAngle, preferredDirection), 2)
@@ -81,7 +128,7 @@ public class ExponentialConjCell {
 		this.placeRadius = placeRadius;
 	}
 
-	public float getAngleRadius() {
+	public float getDirectionRadius() {
 		return angleRadius;
 	}
 
@@ -90,7 +137,7 @@ public class ExponentialConjCell {
 	}
 
 	public void setBupiModulation(float modulation) {
-		this.modulation = modulation;
+		this.bupiModulation = modulation;
 	}
 
 }
