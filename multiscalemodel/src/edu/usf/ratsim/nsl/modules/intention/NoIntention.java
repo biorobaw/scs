@@ -4,7 +4,7 @@ import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 
 /**
- * Dummy intention module that always sets the same intention
+ * Dummy intention module that always sets the same intention.
  * 
  * @author biorob
  *
@@ -26,12 +26,13 @@ public class NoIntention extends Module implements Intention {
 		intention[0] = 1;
 	}
 
-	public void simRun(int inte) {
-		run();
-	}
-
 	@Override
 	public boolean usesRandom() {
 		return false;
+	}
+
+	@Override
+	public void run(int inte) {
+		run();
 	}
 }

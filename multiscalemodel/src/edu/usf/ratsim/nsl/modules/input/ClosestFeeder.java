@@ -5,6 +5,11 @@ import edu.usf.experiment.universe.Feeder;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
+/**
+ * Provides an output port with the identifier of the closes feeder
+ * @author Martin Llofriu
+ *
+ */
 public class ClosestFeeder extends Module {
 
 	private Subject sub;

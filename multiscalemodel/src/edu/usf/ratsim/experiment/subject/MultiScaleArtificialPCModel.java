@@ -396,9 +396,8 @@ public class MultiScaleArtificialPCModel extends Model {
 			addModule(mspql);
 		} else if (rlType.equals("actorCritic")) {
 			MultiStateProportionalAC mspac = new MultiStateProportionalAC(
-					"RL Module", subject, numActions, numStates,
-					taxicDiscountFactor, rlDiscountFactor, alpha, tracesDecay,
-					initialValue);
+					"RL Module",numActions, numStates,
+					taxicDiscountFactor, rlDiscountFactor, alpha, tracesDecay);
 			mspac.addInPort("reward",
 					(Float1dPortArray) reward.getOutPort("reward"));
 			mspac.addInPort("takenAction", takenActionPort);
@@ -474,7 +473,7 @@ public class MultiScaleArtificialPCModel extends Model {
 
 	public Map<Float, Float> getValue(Point3f point, int inte,
 			float angleInterval, float distToWall) {
-		intentionGetter.simRun(inte);
+		intentionGetter.run(inte);
 
 		Map<Float, Float> angleValue = new HashMap<Float, Float>();
 		for (float angle = 0; angle <= 2 * Math.PI; angle += angleInterval) {

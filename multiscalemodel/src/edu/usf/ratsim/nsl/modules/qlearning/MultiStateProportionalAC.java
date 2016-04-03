@@ -1,14 +1,7 @@
 package edu.usf.ratsim.nsl.modules.qlearning;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.util.HashSet;
 
-import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
@@ -16,43 +9,116 @@ import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
-import edu.usf.ratsim.support.Configuration;
 
-public class MultiStateProportionalAC extends Module implements QLAlgorithm {
+/**
+ * This class implements the Actor Critic learning algorithm over multiple
+ * states (e.g. place cell output).
+ * 
+ * It uses a 2D port as its main data source, were it keeps the action-value for
+ * each action-state combination. This array also stores the value for each
+ * state in the last column of each row.
+ * 
+ * Eligibility traces are also implemented. A set of active states is kept to
+ * avoid iterating over all possible states. A sparse port is also used for the
+ * state activation. Then, the only the non-zero states are added to the set of
+ * active states in each cycle.
+ * 
+ * All active states and state-action combination are decreased by a factor of
+ * tracesDecay. The activeStates that reach a 0 value after the decrement are
+ * taken out of the list.
+ * 
+ * Finally, for each active state, the state value estimation is updated using
+ * the actor critic update equation.
+ * 
+ * Besides comparing the reward + estimated value vs previous estimated value,
+ * value information from other moduels is considered as well. A "taxic" value
+ * estimation for the before and after states is inputed to the algorithm. This
+ * corresponds to the value estimated from sensorial information, such as
+ * observing a feeder or a flashing light. By incorporating taxic information,
+ * negative outcomes can be learned due to the prescence of a expected return
+ * derived from the visual scene.
+ * 
+ * @author Martin Llofriu
+ *
+ */
+public class MultiStateProportionalAC extends Module {
 
-	private static final String DUMP_FILENAME = "policy.txt";
-
+	/**
+	 * The minimum value to consider a state no longer active
+	 */
 	private static final float EPS = .01f;
 
-	private static PrintWriter writer;
-
+	/**
+	 * Learning rate
+	 */
 	private float alpha;
-	private float discountFactor;
 
+	/**
+	 * Whether to apply the update or not in each cycle
+	 */
 	private boolean update;
 
-	private Subject subject;
-
+	/**
+	 * The number of possible actions
+	 */
 	private int numActions;
 
+	/**
+	 * The discount factor for the RL (non-taxic) part of the equation
+	 */
 	private float rlDiscountFactor;
 
+	/**
+	 * Discount factor for the taxic part of the equation
+	 */
 	private float taxicDiscountFactor;
 
+	/**
+	 * The rate of decay for eligibility traces. O means no eligibility traces
+	 * use.
+	 */
 	private float tracesDecay;
 
+	/**
+	 * The eligibility traces for states
+	 */
 	private float[] stateTraces;
 
+	/**
+	 * Eligibility traces for action-state combinations
+	 */
 	private float[][] actionTraces;
 
+	/**
+	 * The set of active states
+	 */
 	private HashSet<Integer> activeStates;
 
+	/**
+	 * States to be removed from the active states. TODO: remove as a field?
+	 */
 	private HashSet<Integer> toRemove;
 
-	public MultiStateProportionalAC(String name, Subject subject,
-			int numActions, int numStates, float taxicDiscountFactor,
-			float rlDiscountFactor, float alpha, float tracesDecay,
-			float initialValue) {
+	/**
+	 * Create the multiscale actor critic
+	 * 
+	 * @param name
+	 *            The module's name
+	 * @param numActions
+	 *            The number of possible actions
+	 * @param numStates
+	 *            The number of possible states
+	 * @param taxicDiscountFactor
+	 *            The taxic discount factor
+	 * @param rlDiscountFactor
+	 *            The RL discount factor
+	 * @param alpha
+	 *            The learning rate
+	 * @param tracesDecay
+	 *            The rate of decay for eligibility traces
+	 */
+	public MultiStateProportionalAC(String name, int numActions, int numStates, float taxicDiscountFactor,
+			float rlDiscountFactor, float alpha, float tracesDecay) {
 		super(name);
 		this.alpha = alpha;
 		this.rlDiscountFactor = rlDiscountFactor;
@@ -62,7 +128,6 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 			actionTraces = new float[numStates][numActions];
 		}
 		this.taxicDiscountFactor = taxicDiscountFactor;
-		this.subject = subject;
 
 		this.numActions = numActions;
 
@@ -72,13 +137,39 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 		toRemove = new HashSet<Integer>(100);
 	}
 
+	/**
+	 * All input ports are obtained, eligibility traces computed and then each active state is updated.
+	 * 
+	 * @param reward
+	 *            Represents the last reward obtained
+	 * @param takenAction
+	 *            The last take action index
+	 * @param statesBefore
+	 *            The activation value for all states before movement
+	 * @param taxicValueEstAfter
+	 *            The taxic value estimation of the location reached before
+	 *            movement. See modules TaxicValueSchema and
+	 *            FlashingTaxicValueSchema in actionselection.taxic
+	 * @param taxicValueEstAfter
+	 *            The taxic value estimation of the location reached after
+	 *            movement. See modules TaxicValueSchema and
+	 *            FlashingTaxicValueSchema in actionselection.taxic
+	 * @param rlValueEstBefore
+	 *            The value estimation of the location reached before movement
+	 *            using the value table. See modules ProportionalValue
+	 *            HalfAndHalfConnectionValue and GradientValue in action
+	 *            selection
+	 * @param value
+	 *            The value table. Each row corresponds to a state, each column
+	 *            to an action. it contains action-state values (q table) and
+	 *            the state value function V (last column).
+	 */
 	public void run() {
 		// Updates may be disabled for data log reasons
 		if (update) {
 			Float0dPort reward = (Float0dPort) getInPort("reward");
 			Int0dPort takenAction = (Int0dPort) getInPort("takenAction");
 			Float1dSparsePort statesBefore = (Float1dSparsePort) getInPort("statesBefore");
-			Float1dPort statesAfter = (Float1dPort) getInPort("statesAfter");
 			Float1dPort taxicValueEstBefore = (Float1dPort) getInPort("taxicValueEstimationBefore");
 			Float1dPort taxicValueEstAfter = (Float1dPort) getInPort("taxicValueEstimationAfter");
 			Float1dPort rlValueEstBefore = (Float1dPort) getInPort("rlValueEstimationBefore");
@@ -90,34 +181,27 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 			if (Debug.printValueAfter)
 				System.out.println("Value after: " + rlValueEstAfter.get(0));
 
-			activeStates.addAll(statesBefore.getNonZero()
-					.keySet());
+			activeStates.addAll(statesBefore.getNonZero().keySet());
 			toRemove.clear();
 			for (Integer state : activeStates) {
 				boolean stillActive = false;
 				stateTraces[state] *= tracesDecay;
 				// Replacing states
 				if (statesBefore.getNonZero().containsKey(state))
-					stateTraces[state] = Math
-							.max(statesBefore.get(state),
-									stateTraces[state]);
+					stateTraces[state] = Math.max(statesBefore.get(state), stateTraces[state]);
 				stillActive = stillActive || stateTraces[state] > EPS;
 				for (int i = 0; i < numActions; i++) {
 					actionTraces[state][i] *= tracesDecay;
 					stillActive = stillActive || actionTraces[state][i] > EPS;
 				}
 				if (a != -1 && statesBefore.getNonZero().containsKey(state)) {
-					actionTraces[state][a] = Math.max(
-							statesBefore.get(state),
-							actionTraces[state][a]);
+					actionTraces[state][a] = Math.max(statesBefore.get(state), actionTraces[state][a]);
 					stillActive = stillActive || actionTraces[state][a] > EPS;
 				}
 
 				if (stillActive && a != -1)
-					updateLastAction(state, a, statesBefore, value,
-							reward, taxicValueEstBefore, taxicValueEstAfter,
-							rlValueEstBefore, rlValueEstAfter, stateTraces,
-							actionTraces);
+					updateLastAction(state, a, statesBefore, value, reward, taxicValueEstBefore, taxicValueEstAfter,
+							rlValueEstBefore, rlValueEstAfter, stateTraces, actionTraces);
 				else if (!stillActive)
 					toRemove.add(state);
 			}
@@ -125,19 +209,30 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 		}
 	}
 
-	private void updateLastAction(int sBefore, int a, Float1dSparsePort statesBefore,
-			FloatMatrixPort value, Float0dPort reward,
-			Float1dPort taxicValueEstBefore, Float1dPort taxicValueEstAfter,
-			Float1dPort rlValueEstBefore, Float1dPort rlValueEstAfter,
-			float[] stateTraces, float[][] actionTraces) {
+	/**
+	 * Updates a given active state
+	 * 
+	 * @param sBefore The index of the state
+	 * @param a The taken action
+	 * @param statesBefore The set of state activations before movement
+	 * @param value The value table
+	 * @param reward The last obtained reward
+	 * @param taxicValueEstBefore The taxic value estimation before 
+	 * @param taxicValueEstAfter The taxic value estimation after
+	 * @param rlValueEstBefore The rl value estimation before
+	 * @param rlValueEstAfter The rl value estimation after
+	 * @param stateTraces The eligibility traces activation for the states
+	 * @param actionTraces The eligiblity traces activation for the state-action pairs
+	 */ 
+	private void updateLastAction(int sBefore, int a, Float1dSparsePort statesBefore, FloatMatrixPort value,
+			Float0dPort reward, Float1dPort taxicValueEstBefore, Float1dPort taxicValueEstAfter,
+			Float1dPort rlValueEstBefore, Float1dPort rlValueEstAfter, float[] stateTraces, float[][] actionTraces) {
 		// Error in estimation
 		// float delta = reward.get() + lambda * valueEstAfter.get(0)
 		// - valueEstBefore.get(0);
 
-		float valueDelta = reward.get() + taxicDiscountFactor
-				* taxicValueEstAfter.get(0) + rlDiscountFactor
-				* rlValueEstAfter.get(0)
-				- (taxicValueEstBefore.get(0) + rlValueEstBefore.get(0));
+		float valueDelta = reward.get() + taxicDiscountFactor * taxicValueEstAfter.get(0)
+				+ rlDiscountFactor * rlValueEstAfter.get(0) - (taxicValueEstBefore.get(0) + rlValueEstBefore.get(0));
 
 		// Update value
 		float currValue = value.get(sBefore, numActions);
@@ -154,21 +249,18 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 		value.set(sBefore, numActions, newValue);
 
 		for (int updateAction = 0; updateAction < numActions; updateAction++) {
-			float actionDelta = reward.get() + taxicDiscountFactor
-					* taxicValueEstAfter.get(0) + rlDiscountFactor
-					* rlValueEstAfter.get(0)
+			float actionDelta = reward.get() + taxicDiscountFactor * taxicValueEstAfter.get(0)
+					+ rlDiscountFactor * rlValueEstAfter.get(0)
 					- (taxicValueEstBefore.get(0) + rlValueEstBefore.get(0));
 			float actionVal = value.get(sBefore, updateAction);
 			if (tracesDecay == 0)
 				activation = statesBefore.get(sBefore);
 			else
 				activation = actionTraces[sBefore][updateAction];
-			float newActionValue = actionVal + alpha * activation
-					* (actionDelta);
+			float newActionValue = actionVal + alpha * activation * (actionDelta);
 
 			if (Debug.printDelta)
-				System.out.println("State: " + (float) sBefore
-						/ statesBefore.getSize() + " V Delta: " + valueDelta
+				System.out.println("State: " + (float) sBefore / statesBefore.getSize() + " V Delta: " + valueDelta
 						+ " A Delta: " + actionDelta);
 
 			if (Float.isInfinite(newActionValue) || Float.isNaN(newActionValue)) {
@@ -177,129 +269,6 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 			}
 			value.set(sBefore, updateAction, newActionValue);
 		}
-
-		// } else {
-		// // value.set(sBefore, numActions, -3);
-		// if (Debug.printSilentSynapses)
-		// System.out.println("Not updating because synapse is silent");
-		// }
-	}
-
-	/**
-	 * Dumps the qlearning policy with a certain intention to a file. The
-	 * alignment between pcl cells and ql states is assumed for efficiency
-	 * purposes.
-	 * 
-	 * @param rep
-	 * @param subName
-	 * @param trial
-	 * @param rep
-	 * 
-	 * @param writer
-	 * @param pcl
-	 */
-	public void dumpPolicy(String trial, String groupName, String subName,
-			String rep, int numIntentions, Universe univ, Subject sub) {
-		// TODO: get dumppolicy back
-		// synchronized (MultiStateProportionalQL.class) {
-		// // Deactivate updates
-		// sub.setPassiveMode(true);
-		// PrintWriter writer = MultiStateProportionalQL.getWriter();
-		//
-		// for (int intention = 0; intention < numIntentions; intention++) {
-		// for (float xInc = MARGIN; xInc
-		// - (univ.getBoundingRectangle().getWidth() - MARGIN / 2) < 1e-8; xInc
-		// += INTERVAL) {
-		// for (float yInc = MARGIN; yInc
-		// - (univ.getBoundingRectangle().getHeight() - MARGIN / 2) < 1e-8; yInc
-		// += INTERVAL) {
-		// float x = (float) (univ.getBoundingRectangle()
-		// .getMinX() + xInc);
-		// float y = (float) (univ.getBoundingRectangle()
-		// .getMinY() + yInc);
-		//
-		// // List<Float> preferredAngles = new
-		// // LinkedList<Float>();
-		// float maxVal = Float.NEGATIVE_INFINITY;
-		// float bestAngle = 0;
-		// for (float angle = 0; angle <= 2 * Math.PI; angle += ANGLE_INTERVAL)
-		// {
-		// univ.setRobotPosition(new Point2D.Float(x, y),
-		// angle);
-		// rat.stepCycle();
-		// // // float forwardVal =
-		// // ((MultiScaleMultiIntentionCooperativeModel) rat
-		// // //
-		// //
-		// .getModel()).getQLVotes().getVotes().get(Utiles.discretizeAction(0));
-		// // if( forwardVal > maxVal){
-		// // maxVal = forwardVal;
-		// // bestAngle = angle;
-		// // }
-		// for (int action = 0; action < subject.getNumActions(); action++) {
-		// float angleVal = ((MultiScaleMultiIntentionCooperativeModel) rat
-		// .getModel()).getQLVotes().getVotes()
-		// .get(action);
-		// if (angleVal > maxVal) {
-		// maxVal = angleVal;
-		// bestAngle = angle;
-		// }
-		// }
-		//
-		// // If goes forward, it is the preferred angle
-		// }
-		//
-		// String preferredAngleString = new Float(bestAngle)
-		// .toString();
-		//
-		// writer.println(trial + '\t' + groupName + '\t'
-		// + subName + '\t' + rep + '\t' + x + "\t" + y
-		// + "\t" + intention + "\t"
-		// + preferredAngleString + "\t" + maxVal);
-		//
-		// }
-		// }
-		// }
-		// // Re enable updates
-		// ((RLRatModel) rat.getModel()).setPassiveMode(false);
-		// univ.clearRobotAte();
-		//
-		// }
-	}
-
-	private static PrintWriter getWriter() {
-		if (writer == null) {
-			try {
-				writer = new PrintWriter(new OutputStreamWriter(
-						new FileOutputStream(new File(Configuration
-								.getString("Log.DIRECTORY") + DUMP_FILENAME))),
-						true);
-				writer.println("trial\tgroup\tsubject\trepetition\tx\ty\tintention\theading\tval");
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		return writer;
-	}
-
-	public void setUpdatesEnabled(boolean enabled) {
-		update = enabled;
-	}
-
-	@Override
-	public void savePolicy() {
-		// FileOutputStream fout;
-		// try {
-		// fout = new FileOutputStream("policy.obj");
-		// ObjectOutputStream oos = new ObjectOutputStream(fout);
-		// oos.writeObject(value.getData());
-		// } catch (FileNotFoundException e) {
-		// e.printStackTrace();
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
 
 	}
 

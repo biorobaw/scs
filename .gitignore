@@ -1,3 +1,4 @@
+*.RData
 javadocs/*
 multiscalemodel/logs
 multiscalemodel/target

@@ -4,7 +4,11 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 
-
+/**
+ * Provides an output port stating whether the subject just ate
+ * @author Martin Llofriu
+ *
+ */
 public class SubjectAte extends Module {
 
 	private Subject sub;
