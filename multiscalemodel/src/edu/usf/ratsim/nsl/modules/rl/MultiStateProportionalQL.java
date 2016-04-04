@@ -1,4 +1,4 @@
-package edu.usf.ratsim.nsl.modules.qlearning;
+package edu.usf.ratsim.nsl.modules.rl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -243,19 +243,10 @@ public class MultiStateProportionalQL extends Module implements QLAlgorithm {
 		update = enabled;
 	}
 
-	@Override
-	public void savePolicy() {
-		// FileOutputStream fout;
-		// try {
-		// fout = new FileOutputStream("policy.obj");
-		// ObjectOutputStream oos = new ObjectOutputStream(fout);
-		// oos.writeObject(value.getData());
-		// } catch (FileNotFoundException e) {
-		// e.printStackTrace();
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
 
+	@Override
+	public void newEpisode() {
+		
 	}
 
 	@Override

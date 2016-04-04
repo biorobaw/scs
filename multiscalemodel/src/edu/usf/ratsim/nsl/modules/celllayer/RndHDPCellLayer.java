@@ -15,10 +15,12 @@ import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialConjCell;
+import edu.usf.ratsim.nsl.modules.cell.ExponentialHDCell;
+import edu.usf.ratsim.nsl.modules.cell.ExponentialHDPC;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialWallConjCell;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 
-public class RndConjCellLayer extends Module {
+public class RndHDPCellLayer extends Module {
 
 	/**
 	 * The layer's cells current activation
@@ -82,8 +84,6 @@ public class RndConjCellLayer extends Module {
 	 *            The minimum radius for head direction modulation
 	 * @param maxDirectionRadius
 	 *            The maximum radius for head direction modulation
-	 * @param numIntentions
-	 *            The number of intention
 	 * @param numCells
 	 *            The number of cells in the layer
 	 * @param placeCellType
@@ -114,12 +114,12 @@ public class RndConjCellLayer extends Module {
 	 *            A parameter passed to wall modulated cells
 	 *            (WallExponentialConjCell).
 	 */
-	public RndConjCellLayer(String name, LocalizableRobot robot, float placeRadius, float minDirectionRadius,
-			float maxDirectionRadius, int numIntentions, int numCells, String placeCellType, float xmin, float ymin,
-			float xmax, float ymax, List<Feeder> goals, float nearGoalProb, float layerLength, float wallInhibition) {
+	public RndHDPCellLayer(String name, LocalizableRobot robot, float placeRadius, float minDirectionRadius,
+			float maxDirectionRadius, int numCells, String placeCellType, float xmin, float ymin,
+			float xmax, float ymax, List<Feeder> goals, float nearGoalProb, float layerLength) {
 		super(name);
 
-		if (!(placeCellType.equals("ExponentialConjCell") || placeCellType.equals("ExponentialWallConjCell"))) {
+		if (!(placeCellType.equals("ExponentialHDPC"))) {
 			System.err.println("Place cell type not implemented");
 			System.exit(1);
 		}
@@ -139,7 +139,6 @@ public class RndConjCellLayer extends Module {
 			Point3f prefLocation;
 			float preferredDirection;
 			float directionRadius;
-			int preferredIntention;
 
 			// All cells have a preferred location
 			prefLocation = createrPreferredLocation(nearGoalProb, goals, xmin, xmax, ymin, ymax);
@@ -152,15 +151,10 @@ public class RndConjCellLayer extends Module {
 			float s = random.nextFloat();
 			directionRadius = (float) Math.exp(s / k + Math.log(minDirectionRadius));
 			
-			preferredIntention = random.nextInt(numIntentions);
 
-			if (placeCellType.equals("ExponentialConjCell")) {
-				cells.add(new ExponentialConjCell(prefLocation, preferredDirection, placeRadius, directionRadius,
-						preferredIntention));
-			} else if (placeCellType.equals("ExponentialWallConjCell")) {
-				cells.add(new ExponentialWallConjCell(prefLocation, preferredDirection, placeRadius, directionRadius,
-						preferredIntention, wallInhibition, random));
-			}
+			if (placeCellType.equals("ExponentialHDPC")) {
+				cells.add(new ExponentialHDPC(prefLocation, preferredDirection, placeRadius, directionRadius));
+			} 
 
 			i++;
 		} while (i < numCells);
@@ -215,17 +209,7 @@ public class RndConjCellLayer extends Module {
 	 * Computes the current activation of all cells
 	 */
 	public void run() {
-		// Find the intention
-		Float1dPort intention = (Float1dPort) getInPort("intention");
-		int intentionNum = -1;
-		int i = 0;
-		while (intentionNum == -1 && i < intention.getSize()) {
-			if (intention.get(i) == 1)
-				intentionNum = i;
-			i++;
-		}
-
-		run(robot.getPosition(), robot.getOrientationAngle(), intentionNum, robot.getDistanceToClosestWall());
+		run(robot.getPosition(), robot.getOrientationAngle(), robot.getDistanceToClosestWall());
 	}
 
 	/**
@@ -236,18 +220,16 @@ public class RndConjCellLayer extends Module {
 	 *            The current location of the animat
 	 * @param angle
 	 *            The current heading of the animat
-	 * @param inte
-	 *            The current intention of the animat
 	 * @param distToWall
 	 *            The distance to the closest wall
 	 */
-	public void run(Point3f point, float angle, int inte, float distToWall) {
+	public void run(Point3f point, float angle, float distToWall) {
 		int i = 0;
 		float total = 0;
 		Map<Integer, Float> nonZero = activationPort.getNonZero();
 		nonZero.clear();
 		for (ConjCell pCell : cells) {
-			float val = pCell.getActivation(point, angle, inte, distToWall);
+			float val = pCell.getActivation(point, angle, 0, distToWall);
 			if (val != 0)
 				nonZero.put(i, val);
 			total += val;

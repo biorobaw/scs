@@ -10,7 +10,7 @@ import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
-import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
+import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 public class NoExploration extends Module {
 
@@ -21,13 +21,13 @@ public class NoExploration extends Module {
 
 	private boolean lastRot;
 	private Subject sub;
-	private int[] takenAction;
+	private Int0dPort takenAction;
 
 	public NoExploration(String name, Subject sub) {
 		super(name);
 
-		takenAction = new int[1];
-		addOutPort("takenAction", new Int1dPortArray(this, takenAction));
+		takenAction = new Int0dPort(this);
+		addOutPort("takenAction", takenAction);
 
 		lastRot = false;
 		robot = sub.getRobot();
@@ -54,15 +54,15 @@ public class NoExploration extends Module {
 		selectedAction = sortedAff.get(aff.size() - 1);
 
 		// Publish the taken action
-		if (selectedAction.getValue() > 0) {
-			takenAction[0] = aff.indexOf(selectedAction);
+//		if (selectedAction.getValue() > 0) {
+			takenAction.set(aff.indexOf(selectedAction));
 			if (Debug.printSelectedValues)
 				System.out.println(selectedAction.toString());
 
 			robot.executeAffordance(selectedAction, sub);
-		} else {
-			takenAction[0] = -1;
-		}
+//		} else {
+//			takenAction.set(-1);
+//		}
 
 		// TODO: get the rotation -> forward back
 		// // System.out.println(takenAction.get());

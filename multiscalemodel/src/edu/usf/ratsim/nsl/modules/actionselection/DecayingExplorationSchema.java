@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules.actionselection;
 
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -9,7 +9,6 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
-import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
@@ -26,8 +25,7 @@ public class DecayingExplorationSchema extends Module {
 	private int episodeCount;
 	private Affordance lastPicked;
 
-	public DecayingExplorationSchema(String name, Subject subject,
-			LocalizableRobot robot, float maxReward,
+	public DecayingExplorationSchema(String name, Subject subject, LocalizableRobot robot, float maxReward,
 			float explorationHalfLifeVal) {
 		super(name);
 		this.maxReward = maxReward;
@@ -50,57 +48,41 @@ public class DecayingExplorationSchema extends Module {
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;
 
-		// Flashing feeder prevents exploration
-		// if (!robot.seesFlashingFeeder()){
-		double explorationValue = maxReward
-				* Math.exp(-(episodeCount - 1) * alpha);
-		List<Affordance> affs = robot.checkAffordances(subject
-				.getPossibleAffordances());
+		double explorationValue = maxReward * Math.exp(-(episodeCount - 1) * alpha);
+		List<Affordance> affs = robot.checkAffordances(subject.getPossibleAffordances());
 
-		// Avoid alternating rotations as exploration
-		// if (lastPicked != null && lastPicked instanceof TurnAffordance &&
-		// turnRealizable(affs, (TurnAffordance)lastPicked))
-		// affs = removeOtherTurns(affs, (TurnAffordance) lastPicked);
+		List<Affordance> performableAffs = new LinkedList<Affordance>();
+		for (Affordance a : affs)
+			if (a.isRealizable())
+				performableAffs.add(a);
 
-		Affordance pickedAffordance;
-		do {
-			if (containForward(affs) && r.nextBoolean())
-				pickedAffordance = getForward(affs);
-			pickedAffordance = affs.get(r.nextInt(affs.size()));
-		} while (!pickedAffordance.isRealizable()
-				|| (pickedAffordance instanceof EatAffordance));
+		if (!performableAffs.isEmpty()) {
+			Affordance pickedAffordance;
+			if (containsEat(performableAffs))
+				pickedAffordance = getEat(performableAffs);
+			else
+				pickedAffordance = performableAffs.get(r.nextInt(performableAffs.size()));
 
-		votes[pickedAffordance.getIndex()] = (float) explorationValue;
+			votes[pickedAffordance.getIndex()] = (float) explorationValue;
 
-		lastPicked = pickedAffordance;
-		// }
-	}
-
-	private Affordance getForward(List<Affordance> affs) {
-		for (Affordance aff : affs)
-			if (aff instanceof ForwardAffordance)
-				return aff;
-
-		return null;
-	}
-
-	private boolean containForward(List<Affordance> affs) {
-		boolean contain = false;
-		for (Affordance aff : affs)
-			contain = contain || aff instanceof ForwardAffordance;
-		return contain;
-	}
-
-	private List<Affordance> removeOtherTurns(List<Affordance> affs,
-			TurnAffordance turn) {
-		for (Iterator<Affordance> iter = affs.iterator(); iter.hasNext();) {
-			Affordance aff = iter.next();
-			if (aff instanceof TurnAffordance
-					&& ((TurnAffordance) aff).getAngle() != turn.getAngle())
-				iter.remove();
+			lastPicked = pickedAffordance;
 		}
+	}
 
-		return affs;
+	private boolean containsEat(List<Affordance> affs) {
+		for(Affordance aff : affs)
+			if (aff instanceof EatAffordance)
+				return true;
+		
+		return false;
+	}
+	
+	private Affordance getEat(List<Affordance> affs) {
+		for(Affordance aff : affs)
+			if (aff instanceof EatAffordance)
+				return aff;
+		
+		return null;
 	}
 
 	public void newEpisode() {

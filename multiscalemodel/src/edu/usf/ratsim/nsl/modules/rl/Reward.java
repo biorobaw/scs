@@ -1,20 +1,21 @@
-package edu.usf.ratsim.nsl.modules.qlearning;
+package edu.usf.ratsim.nsl.modules.rl;
 
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
+import edu.usf.micronsl.port.singlevalue.Float0dPort;
 
 public class Reward extends Module {
 
-	private float[] reward;
+	private Float0dPort reward;
 	private float nonFoodReward;
 	private float foodReward;
 
 	public Reward(String name, float foodReward,
 			float nonFoodReward) {
 		super(name);
-		reward = new float[1];
-		addOutPort("reward", new Float1dPortArray(this, reward));
+		reward =  new Float0dPort(this);
+		addOutPort("reward",reward);
 
 		this.foodReward = foodReward;
 		this.nonFoodReward = nonFoodReward;
@@ -23,10 +24,10 @@ public class Reward extends Module {
 	public void run() {
 		Bool0dPort subAte = (Bool0dPort) getInPort("subAte");
 		if (subAte.get()) {
-			reward[0] = foodReward;
+			reward.set(foodReward);
 //			System.out.println("Rewarding");
 		} else {
-			reward[0] = nonFoodReward;
+			reward.set(nonFoodReward);
 		}
 
 	}

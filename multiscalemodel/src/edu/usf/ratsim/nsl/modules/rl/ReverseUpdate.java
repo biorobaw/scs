@@ -1,4 +1,4 @@
-package edu.usf.ratsim.nsl.modules.qlearning;
+package edu.usf.ratsim.nsl.modules.rl;
 //package edu.usf.ratsim.nsl.modules.qlearning.update;
 //
 //import nslj.src.lang.NslModule;

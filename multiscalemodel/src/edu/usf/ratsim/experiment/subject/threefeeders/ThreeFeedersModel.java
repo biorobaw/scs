@@ -1,4 +1,4 @@
-package edu.usf.ratsim.experiment.subject;
+package edu.usf.ratsim.experiment.subject.threefeeders;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -52,7 +52,7 @@ import edu.usf.ratsim.nsl.modules.rl.MultiStateProportionalQL;
 import edu.usf.ratsim.nsl.modules.rl.QLAlgorithm;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
 
-public class MultiScaleArtificialPCModel extends Model {
+public class ThreeFeedersModel extends Model {
 
 	// private ProportionalExplorer actionPerformerVote;
 	// private List<WTAVotes> qLActionSel;
@@ -65,10 +65,10 @@ public class MultiScaleArtificialPCModel extends Model {
 	private int numActions;
 	private QLAlgorithm rlAlg;
 
-	public MultiScaleArtificialPCModel() {
+	public ThreeFeedersModel() {
 	}
 
-	public MultiScaleArtificialPCModel(ElementWrapper params, Subject subject,
+	public ThreeFeedersModel(ElementWrapper params, Subject subject,
 			LocalizableRobot lRobot) {
 		// Get some configuration values for place cells + qlearning
 		float minPCRadius = params.getChildFloat("minPCRadius");

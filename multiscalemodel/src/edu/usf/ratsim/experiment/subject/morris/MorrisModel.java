@@ -1,4 +1,4 @@
-package edu.usf.ratsim.experiment.subject;
+package edu.usf.ratsim.experiment.subject.morris;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -32,43 +32,32 @@ import edu.usf.ratsim.nsl.modules.actionselection.ProportionalValue;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.actionselection.StillExplorer;
 import edu.usf.ratsim.nsl.modules.actionselection.Voter;
-import edu.usf.ratsim.nsl.modules.actionselection.taxic.FlashingTaxicFoodFinderSchema;
-import edu.usf.ratsim.nsl.modules.actionselection.taxic.FlashingTaxicValueSchema;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.ObstacleEndTaxic;
-import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicFoodManyFeedersManyActions;
-import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicValueSchema;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
-import edu.usf.ratsim.nsl.modules.celllayer.RndConjCellLayer;
-import edu.usf.ratsim.nsl.modules.goaldecider.LastTriedToEatGoalDecider;
-import edu.usf.ratsim.nsl.modules.goaldecider.OneThenTheOtherGoalDecider;
+import edu.usf.ratsim.nsl.modules.celllayer.RndHDPCellLayer;
 import edu.usf.ratsim.nsl.modules.input.ClosestFeeder;
 import edu.usf.ratsim.nsl.modules.input.SubjectAte;
 import edu.usf.ratsim.nsl.modules.input.SubjectTriedToEat;
-import edu.usf.ratsim.nsl.modules.intention.Intention;
-import edu.usf.ratsim.nsl.modules.intention.LastAteIntention;
-import edu.usf.ratsim.nsl.modules.intention.NoIntention;
-import edu.usf.ratsim.nsl.modules.rl.MultiStateACTaxic;
-import edu.usf.ratsim.nsl.modules.rl.MultiStateProportionalQL;
+import edu.usf.ratsim.nsl.modules.rl.MultiStateAC;
 import edu.usf.ratsim.nsl.modules.rl.QLAlgorithm;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
 
-public class MultiScaleArtificialPCModel extends Model {
+public class MorrisModel extends Model {
 
 	// private ProportionalExplorer actionPerformerVote;
 	// private List<WTAVotes> qLActionSel;
 	private List<DecayingExplorationSchema> exploration;
 	private Float1dSparseConcatModule jointPCHDIntentionState;
-	private Intention intentionGetter;
 	private Module rlValue;
-	private List<RndConjCellLayer> conjCellLayers;
+	private List<RndHDPCellLayer> conjCellLayers;
 	private float[][] value;
 	private int numActions;
 	private QLAlgorithm rlAlg;
 
-	public MultiScaleArtificialPCModel() {
+	public MorrisModel() {
 	}
 
-	public MultiScaleArtificialPCModel(ElementWrapper params, Subject subject,
+	public MorrisModel(ElementWrapper params, Subject subject,
 			LocalizableRobot lRobot) {
 		// Get some configuration values for place cells + qlearning
 		float minPCRadius = params.getChildFloat("minPCRadius");
@@ -82,26 +71,13 @@ public class MultiScaleArtificialPCModel extends Model {
 		String placeCellType = params.getChildText("placeCells");
 		float goalCellProportion = params.getChildFloat("goalCellProportion");
 		float rlDiscountFactor = params.getChildFloat("rlDiscountFactor");
-		float taxicDiscountFactor = params.getChildFloat("taxicDiscountFactor");
 		float alpha = params.getChildFloat("alpha");
 		float tracesDecay = params.getChildFloat("tracesDecay");
-		float initialValue = params.getChildFloat("initialValue");
 		float foodReward = params.getChildFloat("foodReward");
 		float nonFoodReward = params.getChildFloat("nonFoodReward");
-		int numIntentions = params.getChildInt("numIntentions");
-		float flashingReward = params.getChildFloat("flashingReward");
-		float flashingNegReward = params.getChildFloat("flashingNegReward");
-		float nonFlashingReward = params.getChildFloat("nonFlashingReward");
-		float nonFlashingNegReward = params
-				.getChildFloat("nonFlashingNegReward");
-		boolean estimateValue = params.getChildBoolean("estimateValue");
 		float cellContribution = params.getChildFloat("cellContribution");
 		float explorationReward = params.getChildFloat("explorationReward");
 		// float wallFollowingVal = params.getChildFloat("wallFollowingVal");
-		float wallTaxicVal = params.getChildFloat("wallTaxicVal");
-		float wallNegReward = params.getChildFloat("wallNegReward");
-		float wallTooCloseDist = params.getChildFloat("wallTooCloseDist");
-		float wallInhibition = params.getChildFloat("wallInhibition");
 		float explorationHalfLifeVal = params
 				.getChildFloat("explorationHalfLifeVal");
 		float xmin = params.getChildFloat("xmin");
@@ -110,57 +86,24 @@ public class MultiScaleArtificialPCModel extends Model {
 		float ymax = params.getChildFloat("ymax");
 		String rlType = params.getChildText("rlType");
 		String voteType = params.getChildText("voteType");
-		int maxActionsSinceForward = params
-				.getChildInt("maxActionsSinceForward");
-		float stillExplorationVal = params.getChildFloat("stillExplorationVal");
-
 				
 		numActions = subject.getPossibleAffordances().size();
 
 		// qLActionSel = new LinkedList<WTAVotes>();
 		exploration = new LinkedList<DecayingExplorationSchema>();
 
-		// beforeActiveGoalDecider = new ActiveGoalDecider(
-		// BEFORE_ACTIVE_GOAL_DECIDER_STR, this);
-//		LastAteGoalDecider lastAteGoalDecider = new LastAteGoalDecider(
-//				"Last Ate Goal Decider");
-//		addModule(lastAteGoalDecider);
-
-		LastTriedToEatGoalDecider lastTriedToEatGoalDecider = new LastTriedToEatGoalDecider(
-				"Last Tried To Eat Goal Decider");
-		addModule(lastTriedToEatGoalDecider);
-//
-//		ActiveFeederGoalDecider activeFeederGoalDecider = new ActiveFeederGoalDecider(
-//				"Active Feeder Goal Decider");
-//		addModule(activeFeederGoalDecider);
-
-		OneThenTheOtherGoalDecider oneThenTheOtherGoalDecider = new OneThenTheOtherGoalDecider(
-				"One Then The Other Goal Decider",lRobot);
-		addModule(oneThenTheOtherGoalDecider);
-
-		Module intention;
-		if (numIntentions > 1) {
-			intention = new LastAteIntention("Intention", numIntentions);
-			intention.addInPort("goalFeeder",
-					oneThenTheOtherGoalDecider.getOutPort("goalFeeder"));
-		} else {
-			intention = new NoIntention("Intention", numIntentions);
-		}
-		addModule(intention);
-		intentionGetter = (Intention) intention;
 
 		// Create the layers
 		float radius = minPCRadius;
-		conjCellLayers = new LinkedList<RndConjCellLayer>();
+		conjCellLayers = new LinkedList<RndHDPCellLayer>();
 		List<Port> conjCellLayersPorts = new LinkedList<Port>();
 		// For each layer
 		for (int i = 0; i < numCCLayers; i++) {
-			RndConjCellLayer ccl = new RndConjCellLayer("CCL "
+			RndHDPCellLayer ccl = new RndHDPCellLayer("CCL "
 					+ i, lRobot, radius, minHDRadius, maxHDRadius,
-					numIntentions, numCCCellsPerLayer.get(i), placeCellType,
+					numCCCellsPerLayer.get(i), placeCellType,
 					xmin, ymin, xmax, ymax, lRobot.getAllFeeders(),
-					goalCellProportion, layerLengths.get(i), wallInhibition);
-			ccl.addInPort("intention", intention.getOutPort("intention"));
+					goalCellProportion, layerLengths.get(i));
 			conjCellLayers.add(ccl);
 			conjCellLayersPorts.add(ccl.getOutPort("activation"));
 			addModule(ccl);
@@ -206,26 +149,9 @@ public class MultiScaleArtificialPCModel extends Model {
 		// RL votes are based on previous state
 		rlVotes.addInPort("states", stateCopy.getOutPort("copy"));
 		rlVotes.addInPort("value", valuePort);
-
 		addModule(rlVotes);
+		
 		votesPorts.add((Float1dPort) rlVotes.getOutPort("votes"));
-
-		// Create taxic driver
-		// new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
-		// universe, numActions, flashingReward, nonFlashingReward);
-		TaxicFoodManyFeedersManyActions taxicff = new TaxicFoodManyFeedersManyActions(
-				"Taxic Food Finder", subject, lRobot, nonFlashingReward,
-				nonFlashingNegReward, taxicDiscountFactor, estimateValue);
-		taxicff.addInPort("goalFeeder",
-				lastTriedToEatGoalDecider.getOutPort("goalFeeder"), true);
-		addModule(taxicff);
-		votesPorts.add((Float1dPort) taxicff.getOutPort("votes"));
-
-		FlashingTaxicFoodFinderSchema flashingTaxicFF = new FlashingTaxicFoodFinderSchema(
-				"Flashing Taxic Food Finder", subject, lRobot, flashingReward,
-				flashingNegReward, taxicDiscountFactor, estimateValue);
-		addModule(flashingTaxicFF);
-		votesPorts.add((Float1dPort) flashingTaxicFF.getOutPort("votes"));
 
 		DecayingExplorationSchema decayExpl = new DecayingExplorationSchema(
 				"Decay Explorer", subject, lRobot, explorationReward,
@@ -233,33 +159,6 @@ public class MultiScaleArtificialPCModel extends Model {
 		exploration.add(decayExpl);
 		addModule(decayExpl);
 		votesPorts.add((Float1dPort) decayExpl.getOutPort("votes"));
-
-		StillExplorer stillExpl = new StillExplorer("Still Explorer",
-				maxActionsSinceForward, subject, stillExplorationVal);
-		addModule(stillExpl);
-		votesPorts.add((Float1dPort) stillExpl.getOutPort("votes"));
-		// Wall following for obst. avoidance
-		// new WallAvoider(BEFORE_WALLAVOID_STR, this, subject,
-		// wallFollowingVal,
-		// numActions);
-		// new TaxicWallOpeningsSchema(BEFORE_WALLFOLLOW_STR, this, subject,
-		// lRobot, wallFollowingVal);
-
-		// AttentionalExplorer attExpl = new AttentionalExplorer(
-		// "Attentional Explorer", subject, attentionExploringVal,
-		// maxAttentionSpan);
-		// addModule(attExpl);
-		// votesPorts.add((Float1dPort) attExpl.getOutPort("votes"));
-		ObstacleEndTaxic wallTaxic = new ObstacleEndTaxic("Wall Taxic",
-				subject, lRobot, wallTaxicVal, wallNegReward, wallTooCloseDist);
-		addModule(wallTaxic);
-		votesPorts.add((Float1dPort) wallTaxic.getOutPort("votes"));
-
-		// AvoidWallTaxic avoidWallTaxic = new
-		// AvoidWallTaxic("Avoid Wall Taxic", subject, lRobot,
-		// avoidWallTaxicVal, avoidWallTaxicDist);
-		// addModule(avoidWallTaxic);
-		// votesPorts.add((Float1dPort) avoidWallTaxic.getOutPort("votes"));
 
 		// Joint votes
 		Float1dSumModule jointVotes = new Float1dSumModule("Votes");
@@ -273,46 +172,10 @@ public class MultiScaleArtificialPCModel extends Model {
 		actionPerformer.addInPort("votes", jointVotes.getOutPort("jointState"));
 		addModule(actionPerformer);
 		// State calculation should be done after movement
-		for (RndConjCellLayer ccl : conjCellLayers)
+		for (RndHDPCellLayer ccl : conjCellLayers)
 			ccl.addPreReq(actionPerformer);
-		intention.addPreReq(actionPerformer);
 
 		Port takenActionPort = actionPerformer.getOutPort("takenAction");
-		// Add the taken action ports to some previous exploration modules
-		// attExpl.addInPort("takenAction", takenActionPort, true);
-		stillExpl.addInPort("takenAction", takenActionPort, true);
-
-		List<Port> taxicValueEstimationPorts = new LinkedList<Port>();
-		TaxicValueSchema taxVal = new TaxicValueSchema("Taxic Value Estimator",
-				subject, lRobot, nonFlashingReward, nonFoodReward,
-				taxicDiscountFactor, estimateValue);
-		taxVal.addInPort("goalFeeder",
-				lastTriedToEatGoalDecider.getOutPort("goalFeeder"));
-		taxVal.addInPort("takenAction", takenActionPort); // just for dependency
-		taxicValueEstimationPorts.add(taxVal.getOutPort("value"));
-		addModule(taxVal);
-
-		FlashingTaxicValueSchema flashTaxVal = new FlashingTaxicValueSchema(
-				"Flashing Taxic Value Estimator", subject, lRobot,
-				flashingReward, nonFoodReward, taxicDiscountFactor,
-				estimateValue);
-		flashTaxVal.addInPort("goalFeeder",
-				oneThenTheOtherGoalDecider.getOutPort("goalFeeder"));
-		flashTaxVal.addInPort("takenAction", takenActionPort); // just for
-																// dependency
-		taxicValueEstimationPorts.add(flashTaxVal.getOutPort("value"));
-		addModule(flashTaxVal);
-
-		Float1dSumModule sumTaxicValue = new Float1dSumModule(
-				"Taxic joint value estimation");
-		sumTaxicValue.addInPorts(taxicValueEstimationPorts);
-		addModule(sumTaxicValue);
-
-		Float1dCopyModule taxicValueCopy = new Float1dCopyModule(
-				"Taxic Value Estimation Before");
-		taxicValueCopy.addInPort("toCopy",
-				(Float1dPort) sumTaxicValue.getOutPort("jointState"), true);
-		addModule(taxicValueCopy);
 
 		if (voteType.equals("halfAndHalfConnection"))
 			rlValue = new HalfAndHalfConnectionValue("RL value estimation",
@@ -354,73 +217,34 @@ public class MultiScaleArtificialPCModel extends Model {
 		closestFeeder.addInPort("takenAction", takenActionPort);
 		addModule(closestFeeder);
 
-//		lastAteGoalDecider.addInPort("subAte", subAte.getOutPort("subAte"));
-//		lastAteGoalDecider.addInPort("closestFeeder",
-//				closestFeeder.getOutPort("closestFeeder"));
-		lastTriedToEatGoalDecider.addInPort("subTriedToEat",
-				subTriedToEat.getOutPort("subTriedToEat"));
-		lastTriedToEatGoalDecider.addInPort("closestFeeder",
-				closestFeeder.getOutPort("closestFeeder"));
-		oneThenTheOtherGoalDecider.addInPort("subAte", subAte.getOutPort("subAte"));
-		oneThenTheOtherGoalDecider.addInPort("closestFeeder",
-				closestFeeder.getOutPort("closestFeeder"));
-		oneThenTheOtherGoalDecider.addInPort("subTriedToEat",
-				subTriedToEat.getOutPort("subTriedToEat"));
-		
 		Reward reward = new Reward("Reward", foodReward, nonFoodReward);
 		reward.addInPort("subAte", subAte.getOutPort("subAte"));
 		addModule(reward);
 
-		if (rlType.equals("proportionalQl")) {
-			// MultiStateProportionalQLReplay mspql = new
-			// MultiStateProportionalQLReplay(
-			// QL_STR, this, subject, bAll.getSize(), numActions,
-			// discountFactor, alpha, initialValue);
-			MultiStateProportionalQL mspql = new MultiStateProportionalQL(
-					"RL Module", subject, numActions, taxicDiscountFactor,
-					rlDiscountFactor, alpha, initialValue);
+		if (rlType.equals("MultiStateAC")) {
+			MultiStateAC msac = new MultiStateAC(
+					"RL Module", numActions, numStates,
+					rlDiscountFactor, alpha, tracesDecay);
 
-			mspql.addInPort("reward",
-					(Float1dPortArray) reward.getOutPort("reward"));
-			mspql.addInPort("takenAction", takenActionPort);
-			mspql.addInPort("statesBefore", getModule("States Before")
+		
+			msac.addInPort("reward", reward.getOutPort("reward"));
+			msac.addInPort("takenAction", takenActionPort);
+			msac.addInPort("statesBefore", getModule("States Before")
 					.getOutPort("copy"));
-			mspql.addInPort("statesAfter",
+			msac.addInPort("statesAfter",
 					jointPCHDIntentionState.getOutPort("jointState"));
-			mspql.addInPort("value", valuePort);
-			mspql.addInPort("votesBefore", getModule("Votes Before")
-					.getOutPort("copy"));
-			mspql.addInPort("votesAfter", jointVotes.getOutPort("jointState"));
-			addModule(mspql);
-			rlAlg = mspql;
-		} else if (rlType.equals("actorCritic")) {
-			MultiStateACTaxic mspac = new MultiStateACTaxic(
-					"RL Module",numActions, numStates,
-					taxicDiscountFactor, rlDiscountFactor, alpha, tracesDecay);
-			mspac.addInPort("reward", reward.getOutPort("reward"));
-			mspac.addInPort("takenAction", takenActionPort);
-			mspac.addInPort("statesBefore", getModule("States Before")
-					.getOutPort("copy"));
-			mspac.addInPort("statesAfter",
-					jointPCHDIntentionState.getOutPort("jointState"));
-			mspac.addInPort("value", valuePort);
-			mspac.addInPort("taxicValueEstimationAfter",
-					sumTaxicValue.getOutPort("jointState"));
-			mspac.addInPort(
-					"taxicValueEstimationBefore",
-					getModule("Taxic Value Estimation Before").getOutPort(
-							"copy"));
-			mspac.addInPort("rlValueEstimationAfter",
+			msac.addInPort("value", valuePort);
+			msac.addInPort("rlValueEstimationAfter",
 					rlValue.getOutPort("valueEst"));
-			mspac.addInPort("rlValueEstimationBefore",
+			msac.addInPort("rlValueEstimationBefore",
 					getModule("RL Value Estimation Before").getOutPort("copy"));
-			addModule(mspac);
-			rlAlg = mspac;
+			addModule(msac);
+			rlAlg = msac;
 		} else
 			throw new RuntimeException("RL mechanism not implemented");
 	}
 
-	public List<RndConjCellLayer> getPCLLayers() {
+	public List<RndHDPCellLayer> getPCLLayers() {
 		return conjCellLayers;
 	}
 
@@ -474,12 +298,11 @@ public class MultiScaleArtificialPCModel extends Model {
 
 	public Map<Float, Float> getValue(Point3f point, int inte,
 			float angleInterval, float distToWall) {
-		intentionGetter.run(inte);
 
 		Map<Float, Float> angleValue = new HashMap<Float, Float>();
 		for (float angle = 0; angle <= 2 * Math.PI; angle += angleInterval) {
-			for (RndConjCellLayer ccl : conjCellLayers)
-				ccl.run(point, angle, inte, distToWall);
+			for (RndHDPCellLayer ccl : conjCellLayers)
+				ccl.run(point, angle, distToWall);
 
 			jointPCHDIntentionState.run();
 
@@ -489,7 +312,7 @@ public class MultiScaleArtificialPCModel extends Model {
 			angleValue.put(angle, votes[0]);
 		}
 
-		for (RndConjCellLayer ccl : conjCellLayers)
+		for (RndHDPCellLayer ccl : conjCellLayers)
 			ccl.clear();
 
 		return angleValue;
@@ -497,7 +320,7 @@ public class MultiScaleArtificialPCModel extends Model {
 
 	public List<ConjCell> getPlaceCells() {
 		List<ConjCell> res = new LinkedList<ConjCell>();
-		for (RndConjCellLayer ccl : conjCellLayers) {
+		for (RndHDPCellLayer ccl : conjCellLayers) {
 			res.addAll(ccl.getCells());
 		}
 
@@ -513,7 +336,7 @@ public class MultiScaleArtificialPCModel extends Model {
 
 	public Map<Integer, Float> getCellActivation() {
 		Map<Integer, Float> activation = new LinkedHashMap<Integer, Float>();
-		for (RndConjCellLayer layer : conjCellLayers)
+		for (RndHDPCellLayer layer : conjCellLayers)
 			activation.putAll(((Float1dSparsePortMap) layer
 					.getOutPort("activation")).getNonZero());
 		return activation;

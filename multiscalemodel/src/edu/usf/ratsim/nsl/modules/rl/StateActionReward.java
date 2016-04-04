@@ -1,4 +1,4 @@
-package edu.usf.ratsim.nsl.modules.qlearning;
+package edu.usf.ratsim.nsl.modules.rl;
 
 public final class StateActionReward {
 	private int state;

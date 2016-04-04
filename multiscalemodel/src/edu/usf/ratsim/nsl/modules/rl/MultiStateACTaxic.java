@@ -1,4 +1,4 @@
-package edu.usf.ratsim.nsl.modules.qlearning;
+package edu.usf.ratsim.nsl.modules.rl;
 
 import java.util.HashSet;
 
@@ -41,7 +41,7 @@ import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
  * @author Martin Llofriu
  *
  */
-public class MultiStateProportionalAC extends Module {
+public class MultiStateACTaxic extends Module implements QLAlgorithm {
 
 	/**
 	 * The minimum value to consider a state no longer active
@@ -117,7 +117,7 @@ public class MultiStateProportionalAC extends Module {
 	 * @param tracesDecay
 	 *            The rate of decay for eligibility traces
 	 */
-	public MultiStateProportionalAC(String name, int numActions, int numStates, float taxicDiscountFactor,
+	public MultiStateACTaxic(String name, int numActions, int numStates, float taxicDiscountFactor,
 			float rlDiscountFactor, float alpha, float tracesDecay) {
 		super(name);
 		this.alpha = alpha;
@@ -275,6 +275,18 @@ public class MultiStateProportionalAC extends Module {
 	@Override
 	public boolean usesRandom() {
 		return false;
+	}
+
+	@Override
+	public void newEpisode() {
+		for (Integer state : activeStates) {
+			stateTraces[state] = 0;
+			// Replacing states
+			for (int i = 0; i < numActions; i++) {
+				actionTraces[state][i] = 0;
+			}
+		}
+		activeStates.clear();
 	}
 
 }

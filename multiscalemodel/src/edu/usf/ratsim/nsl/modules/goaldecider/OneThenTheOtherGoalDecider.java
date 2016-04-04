@@ -7,13 +7,12 @@ import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 public class OneThenTheOtherGoalDecider extends Module {
 
-	public int[] goalFeeder;
+	public Int0dPort goalFeeder;
 	private int currentGoal;
 	private Robot robot;
 	public static int lastAte;
@@ -21,8 +20,8 @@ public class OneThenTheOtherGoalDecider extends Module {
 	public OneThenTheOtherGoalDecider(String name, Robot r) {
 		super(name);
 
-		goalFeeder = new int[1];
-		addOutPort("goalFeeder", new Int1dPortArray(this, goalFeeder));
+		goalFeeder = new Int0dPort(this);
+		addOutPort("goalFeeder", goalFeeder);
 
 		lastAte = -1;
 		currentGoal = -1;
@@ -64,13 +63,13 @@ public class OneThenTheOtherGoalDecider extends Module {
 						+ " to goal " + currentGoal);
 		}
 
-		goalFeeder[0] = currentGoal;
+		goalFeeder.set(currentGoal);
 	}
 
 	public void newTrial() {
 		lastAte = -1;
 		currentGoal = -1;
-		goalFeeder[0] = currentGoal;
+		goalFeeder.set(currentGoal);
 	}
 
 	@Override
