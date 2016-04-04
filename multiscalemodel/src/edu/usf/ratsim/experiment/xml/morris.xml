@@ -9,7 +9,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/MorrisMaze.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>true</display>
+			<display>false</display>
 		</params>
 	</universe>
 	
@@ -44,19 +44,19 @@
 			<!-- Right rotation amount in radians -->
 			<rightAngle>-0.195</rightAngle>
 			<!-- Number of conjunctive cell layers -->
-			<numCCLayers>3</numCCLayers>
+			<numCCLayers>1</numCCLayers>
 			<!-- Size of each layer in millimeters -->
-			<layerLengths>3,3,3</layerLengths>
+			<layerLengths>1</layerLengths>
 			<!-- Number of cells per layer -->
-			<numCCCellsPerLayer>200000,100000,50000</numCCCellsPerLayer>
+			<numCCCellsPerLayer>10000</numCCCellsPerLayer>
 			<!-- Type of learning -->
 			<rlType>MultiStateAC</rlType>
 			<!-- Type of conjunctive layer -> learning connection -->
 			<voteType>gradient</voteType>
 			<!-- Layer connection probabilities to action selection for gradient connections -->
-			<votesConnProbs>1,0.5, 0</votesConnProbs>
+			<votesConnProbs>1</votesConnProbs>
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
-			<valueConnProbs>0.0,.5,1</valueConnProbs>
+			<valueConnProbs>1</valueConnProbs>
 			<!-- Minimum conjuntive layer cell radius -->
 			<minPCRadius>.0682</minPCRadius>
 			<!-- Maximum conjuntive layer cell radius -->
@@ -79,15 +79,15 @@
 			<!-- Reward value for food -->
 			<foodReward>1000</foodReward>
 			<!-- Reward value given when it doesnt eat -->
-			<nonFoodReward>0</nonFoodReward>
+			<nonFoodReward>-10</nonFoodReward>
 			<!-- Lambda discount factor for the taxic module-->
 			<taxicDiscountFactor>1</taxicDiscountFactor>
 			<!-- Lambda discount factor for the learning algorithm -->
-			<rlDiscountFactor>.5</rlDiscountFactor>
+			<rlDiscountFactor>1</rlDiscountFactor>
 			<!-- Alpha for the learning algorithm -->
 			<alpha>.5</alpha>
 			<!-- Elegibility traces for the learning algorithm -->
-			<tracesDecay>.9</tracesDecay>
+			<tracesDecay>0.9</tracesDecay>
 			<!-- Cell contribution when not using normalization -->
 			<!-- TODO: take out -->
 			<cellContribution>1</cellContribution>
@@ -173,7 +173,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>100</number>
+			<number>10</number>
 			<!-- Sleep between cycles for visualization -->
 			<sleep>00</sleep>
 			<!-- Tasks to perform before each episode -->
@@ -211,7 +211,16 @@
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->
 			<afterEpisodeLoggers>
-				
+				<logger>
+					<name>edu.usf.experiment.log.WallLogger</name>
+					<params>
+					</params>
+				</logger>
+				<logger>
+					<name>edu.usf.experiment.log.FeederLogger</name>
+					<params>
+					</params>
+				</logger>
 				<!-- Log each position estimated value -->
 				<!-- <logger> <name>edu.usf.experiment.log.ValueLogger</name> <params> <circle>false</circle>
 					<interval>.1</interval> <angleInterval>.78</angleInterval> <numIntentions>8</numIntentions>
@@ -239,7 +248,22 @@
 			</stopConditions>
 			<!-- Plotters to execute after each episode -->
 			<afterEpisodePlotters>
-				
+				<!-- Copy the maze file to the episode folder -->
+				<plotter>
+					<name>edu.usf.experiment.plot.CopyMazeFile</name>
+				</plotter>
+				<!-- Convert csv to rdata -->
+				<plotter>
+					<name>edu.usf.experiment.plot.CSVConverter</name>
+				</plotter>
+				<!-- Get time info from position information -->
+				<plotter>
+					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
+				</plotter>
+				<!-- Plot path for each episode -->
+				<plotter>
+					<name>edu.usf.experiment.plot.PathPlotter</name>
+				</plotter>
 				
 			</afterEpisodePlotters>
 		</episodes>
@@ -255,6 +279,11 @@
 				<params>
 				</params>
 			</logger>
+			<logger>
+				<name>edu.usf.experiment.log.FeederLogger</name>
+				<params>
+				</params>
+			</logger>
 		</afterTrialLoggers>
 		<!-- Plotters to execute after the trial has ended -->
 		<afterTrialPlotters>
@@ -266,16 +295,9 @@
 			<plotter>
 				<name>edu.usf.experiment.plot.CSVConverter</name>
 			</plotter>
-			<!-- Get time info from position information -->
 			<plotter>
-				<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
+				<name>edu.usf.experiment.plot.RuntimePerTrialPlotter</name>
 			</plotter>
-			<!-- Plot path for each episode -->
-			<plotter>
-				<name>edu.usf.experiment.plot.PathPlotter</name>
-			</plotter>
-			<!-- Plot value -->
-			<!-- <plotter> <name>edu.usf.experiment.plot.ValuePlotter</name> </plotter> -->
 		</afterTrialPlotters>
 	</trial>
 	
