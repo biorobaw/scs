@@ -253,8 +253,8 @@ public class MorrisModel extends Model {
 		// for(GoalTaxicFoodFinderSchema gs : taxic)
 		// gs.newTrial();
 
-		for (DecayingExplorationSchema gs : exploration)
-			gs.newTrial();
+//		for (DecayingExplorationSchema gs : exploration)
+//			gs.newTrial();
 	}
 
 	public void deactivatePCLRadial(List<Integer> layersToDeactivate,
