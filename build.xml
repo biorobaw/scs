@@ -5,6 +5,7 @@
           <!-- set global properties for this build -->
   <property name="platformsrc" location="platform/src"/>
   <property name="modelsrc" location="multiscalemodel/src"/>
+  <property name="micronslsrc" location="micronsl/src"/>
   <property name="build" location="bin"/>
 
   <target name="init">
@@ -19,6 +20,14 @@
               <!-- Compile the java code from ${src} into ${build} -->
     
     <javac srcdir="${platformsrc}" destdir="${build}">
+    <classpath>
+       <fileset dir="deps/">
+            <include name="**/*.jar" />                       
+            <include name="*.jar" />                       
+       </fileset>
+    </classpath>
+    </javac>
+    <javac srcdir="${micronslsrc}" destdir="${build}">
     <classpath>
        <fileset dir="deps/">
             <include name="**/*.jar" />                       

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#SBATCH -p development,circe
 
 experimentFile=$1
 logPath=$2

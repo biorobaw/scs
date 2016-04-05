@@ -1,9 +1,7 @@
 #!/bin/bash
 
-#SBATCH -p development,circe
 #SBATCH --time=1:00:00
-#SBATCH --mem=4000
-#SBATCH --cpus-per-task 2
+#SBATCH --cpus-per-task 8
 
 logPath=$1
 if [ -z "$SLURM_ARRAY_TASK_ID" ]; then

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#SBATCH -p development,circe
 
 logPath=$1
 
