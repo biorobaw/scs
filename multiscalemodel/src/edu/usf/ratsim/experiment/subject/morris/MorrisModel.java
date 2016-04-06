@@ -59,32 +59,84 @@ public class MorrisModel extends Model {
 
 	public MorrisModel(ElementWrapper params, Subject subject,
 			LocalizableRobot lRobot) {
-		// Get some configuration values for place cells + qlearning
+		/**
+		 * Place cell radius range
+		 */
 		float minPCRadius = params.getChildFloat("minPCRadius");
 		float maxPCRadius = params.getChildFloat("maxPCRadius");
+		/**
+		 * Number of cell layers, each layer uses the same parameters for each cell 
+		 */
 		int numCCLayers = params.getChildInt("numCCLayers");
+		/**
+		 * Lengths of the layers for bupi modulation purposes
+		 */
 		List<Integer> layerLengths = params.getChildIntList("layerLengths");
+		/**
+		 * Numbers of cells per layer
+		 */
 		List<Integer> numCCCellsPerLayer = params
 				.getChildIntList("numCCCellsPerLayer");
+		/**
+		 * Radius for head direction modulation
+		 */
 		float minHDRadius = params.getChildFloat("minHDRadius");
 		float maxHDRadius = params.getChildFloat("maxHDRadius");
+		/**
+		 * Type of place cells to use
+		 */
 		String placeCellType = params.getChildText("placeCells");
+		/**
+		 * Proportion of cells to initialize near the goals
+		 */
 		float goalCellProportion = params.getChildFloat("goalCellProportion");
+		/**
+		 * Reinforcement learning discount factor
+		 */
 		float rlDiscountFactor = params.getChildFloat("rlDiscountFactor");
+		/**
+		 * Learning rate
+		 */
 		float alpha = params.getChildFloat("alpha");
+		/**
+		 * Eligibility traces decay 
+		 */
 		float tracesDecay = params.getChildFloat("tracesDecay");
+		/**
+		 * Reward given upon eating
+		 */
 		float foodReward = params.getChildFloat("foodReward");
+		/**
+		 * Reward given in non-food obtaining steps
+		 */
 		float nonFoodReward = params.getChildFloat("nonFoodReward");
+		/**
+		 * Cell contribution for each synapse - used in some voting/value modules
+		 */
 		float cellContribution = params.getChildFloat("cellContribution");
+		/**
+		 * The action-value applied to exploration actions (should be called explorationActionValue)
+		 */
 		float explorationReward = params.getChildFloat("explorationReward");
-		// float wallFollowingVal = params.getChildFloat("wallFollowingVal");
+		/**
+		 * Half life parameter for the decaying exploration
+		 */
 		float explorationHalfLifeVal = params
 				.getChildFloat("explorationHalfLifeVal");
+		/**
+		 * Bounding box for place cell locations
+		 */
 		float xmin = params.getChildFloat("xmin");
 		float ymin = params.getChildFloat("ymin");
 		float xmax = params.getChildFloat("xmax");
 		float ymax = params.getChildFloat("ymax");
+		/**
+		 * Reinforcement learning type used
+		 */
 		String rlType = params.getChildText("rlType");
+		/**
+		 * Types of rl votes used
+		 */
 		String voteType = params.getChildText("voteType");
 				
 		numActions = subject.getPossibleAffordances().size();
@@ -127,13 +179,11 @@ public class MorrisModel extends Model {
 		int numStates = ((Float1dPort) jointPCHDIntentionState
 				.getOutPort("jointState")).getSize();
 		value = new float[numStates][numActions + 1];
-		// for (int i = 0; i < numStates; i++)
-		// value[i][numActions] = .5f;
 		FloatMatrixPort valuePort = new FloatMatrixPort((Module) null, value);
 
+		// Take the value of each state and vote for an action
 		List<Port> votesPorts = new LinkedList<Port>();
 		Module rlVotes;
-		// Take the value of each state and vote for an action
 		if (voteType.equals("proportional"))
 			rlVotes = new ProportionalVotes("RL votes", numActions);
 		else if (voteType.equals("gradient")) {
@@ -150,9 +200,9 @@ public class MorrisModel extends Model {
 		rlVotes.addInPort("states", stateCopy.getOutPort("copy"));
 		rlVotes.addInPort("value", valuePort);
 		addModule(rlVotes);
-		
 		votesPorts.add((Float1dPort) rlVotes.getOutPort("votes"));
 
+		// Exploration module
 		DecayingExplorationSchema decayExpl = new DecayingExplorationSchema(
 				"Decay Explorer", subject, lRobot, explorationReward,
 				explorationHalfLifeVal);
@@ -177,6 +227,7 @@ public class MorrisModel extends Model {
 
 		Port takenActionPort = actionPerformer.getOutPort("takenAction");
 
+		// RL votes to consolidate cell activity and action-value to votes
 		if (voteType.equals("halfAndHalfConnection"))
 			rlValue = new HalfAndHalfConnectionValue("RL value estimation",
 					numActions, cellContribution);
@@ -196,31 +247,37 @@ public class MorrisModel extends Model {
 															// dependency
 		addModule(rlValue);
 
+		// Copy the previous estimation of rl value
 		Float1dCopyModule rlValueCopy = new Float1dCopyModule(
 				"RL Value Estimation Before");
 		rlValueCopy.addInPort("toCopy",
 				(Float1dPort) rlValue.getOutPort("valueEst"), true);
 		addModule(rlValueCopy);
 
+		// Did the subject ate last cycle
 		SubjectAte subAte = new SubjectAte("Subject Ate", subject);
 		subAte.addInPort("takenAction", takenActionPort); // just for dependency
 		addModule(subAte);
 
+		// Did the subject tried to eat
 		SubjectTriedToEat subTriedToEat = new SubjectTriedToEat(
 				"Subject Tried To Eat", subject);
 		subTriedToEat.addInPort("takenAction", takenActionPort); // just for
 																	// dependency
 		addModule(subTriedToEat);
 
+		// The closest available feeder
 		ClosestFeeder closestFeeder = new ClosestFeeder(
 				"Closest Feeder After Move", subject);
 		closestFeeder.addInPort("takenAction", takenActionPort);
 		addModule(closestFeeder);
 
+		// The obtained reward last cycle
 		Reward reward = new Reward("Reward", foodReward, nonFoodReward);
 		reward.addInPort("subAte", subAte.getOutPort("subAte"));
 		addModule(reward);
 
+		// Reinforcement learning initialization
 		if (rlType.equals("MultiStateAC")) {
 			MultiStateAC msac = new MultiStateAC(
 					"RL Module", numActions, numStates,
@@ -249,10 +306,6 @@ public class MorrisModel extends Model {
 	}
 
 	public void newTrial() {
-		// anyGoalDecider.newTrial();
-		// for(GoalTaxicFoodFinderSchema gs : taxic)
-		// gs.newTrial();
-
 //		for (DecayingExplorationSchema gs : exploration)
 //			gs.newTrial();
 	}
@@ -272,16 +325,6 @@ public class MorrisModel extends Model {
 			conjCellLayers.get(layer).anesthtizeProportion(proportion);
 		}
 	}
-
-	// protected void finalize() {
-	// super.finalize();
-	//
-	// // System.out.println("NsL model being finalized");
-	// }
-
-	// public Voter getQLVotes() {
-	// return rlVotes;
-	// }
 
 	public void newEpisode() {
 		for (DecayingExplorationSchema gs : exploration)

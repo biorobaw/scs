@@ -12,29 +12,47 @@ import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
+/**
+ * This module receives the action votes as an input port and performs the
+ * action that is realizable and has the most votes.
+ * 
+ * @author Martin Llofriu
+ * 
+ */
 public class NoExploration extends Module {
 
-	private static final float FORWARD_EPS = 0.00001f;
-	private static final float ANGLE_EPS = 1e-6f;
-
+	/**
+	 * The robot interface used to perform actions
+	 */
 	private Robot robot;
-
-	private boolean lastRot;
+	/**
+	 * The subject, used to get all possible affordances
+	 */
 	private Subject sub;
+	/**
+	 * The output port describing the action taken by the module
+	 */
 	private Int0dPort takenAction;
 
+	/**
+	 * Create the module
+	 * @param name The module's name
+	 * @param sub The subject to use
+	 */
 	public NoExploration(String name, Subject sub) {
 		super(name);
 
 		takenAction = new Int0dPort(this);
 		addOutPort("takenAction", takenAction);
 
-		lastRot = false;
 		robot = sub.getRobot();
 
 		this.sub = sub;
 	}
 
+	/**
+	 * Gets the votes input port, assigns the value to each affordance
+	 */
 	public void run() {
 		Float1dPort votes = (Float1dPort) getInPort("votes");
 
@@ -42,10 +60,11 @@ public class NoExploration extends Module {
 		List<Affordance> aff = robot.checkAffordances(sub
 				.getPossibleAffordances());
 
-		for (int action = 0; action < aff.size(); action++){
+		for (int action = 0; action < aff.size(); action++) {
 			aff.get(action).setValue(votes.get(action));
 			if (Debug.printSelectedValues)
-				System.out.println("votes for aff " + action + ": " + votes.get(action));
+				System.out.println("votes for aff " + action + ": "
+						+ votes.get(action));
 		}
 
 		// Select best action
@@ -54,15 +73,15 @@ public class NoExploration extends Module {
 		selectedAction = sortedAff.get(aff.size() - 1);
 
 		// Publish the taken action
-//		if (selectedAction.getValue() > 0) {
-			takenAction.set(aff.indexOf(selectedAction));
-			if (Debug.printSelectedValues)
-				System.out.println(selectedAction.toString());
+		// if (selectedAction.getValue() > 0) {
+		takenAction.set(aff.indexOf(selectedAction));
+		if (Debug.printSelectedValues)
+			System.out.println(selectedAction.toString());
 
-			robot.executeAffordance(selectedAction, sub);
-//		} else {
-//			takenAction.set(-1);
-//		}
+		robot.executeAffordance(selectedAction, sub);
+		// } else {
+		// takenAction.set(-1);
+		// }
 
 		// TODO: get the rotation -> forward back
 		// // System.out.println(takenAction.get());

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --time=1:00:00
-#SBATCH --cpus-per-task 8
+#SBATCH --cpus-per-task 1 
 
 logPath=$1
 if [ -z "$SLURM_ARRAY_TASK_ID" ]; then

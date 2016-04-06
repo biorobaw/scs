@@ -150,6 +150,7 @@ public class MultiStateAC extends Module implements QLAlgorithm {
 			Float1dPort rlValueEstBefore = (Float1dPort) getInPort("rlValueEstimationBefore");
 			Float1dPort rlValueEstAfter = (Float1dPort) getInPort("rlValueEstimationAfter");
 			FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
+			
 			// Gets the active state as computed at the beginning of the cycle
 			int a = takenAction.get();
 
@@ -212,6 +213,8 @@ public class MultiStateAC extends Module implements QLAlgorithm {
 		// Error in estimation
 		// float delta = reward.get() + lambda * valueEstAfter.get(0)
 		// - valueEstBefore.get(0);
+		
+		// TODO: Should we use added value estimation or only the value[s][numactions] entry??
 
 		float valueDelta = reward.get() + 
 				+ rlDiscountFactor * rlValueEstAfter.get(0) - rlValueEstBefore.get(0);
