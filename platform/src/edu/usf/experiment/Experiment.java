@@ -191,8 +191,9 @@ public class Experiment implements Runnable {
 		
 		//Save globals to a file:
 		try {
-			new File(args[1]+"/globals.txt").createNewFile();
-			BufferedWriter bw = new BufferedWriter(new FileWriter(args[1]+"/globals.txt"));
+			File f = new File(args[1]+"/globals.txt");
+			f.getParentFile().mkdirs();
+			BufferedWriter bw = new BufferedWriter(new FileWriter(f));
 			for(String key : g.global.keySet()){
 				bw.write(key + " "  + g.get(key));
 				bw.newLine();
@@ -200,6 +201,7 @@ public class Experiment implements Runnable {
 			bw.close();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
+			System.out.println("ERROR ESTA ACA");
 			e1.printStackTrace();
 		}
 			
