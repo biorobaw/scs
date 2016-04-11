@@ -1,0 +1,154 @@
+	INTSTRUCTIONS TO CREATE A BATTERY FILE:
+		
+	SHORT INSTRUCTIONS:
+Define columns, one per input parameter to the simulator:
+	[constant | variable | calculated] COLUMN_NAME
+	VAL1
+	...
+	VALN
+	
+constant only accepts one val, variable accepts many.
+calculated only accepts one which must be an expression from the other columns (see the possible expressions)
+Make sure all obligatory columns are defined
+
+Define how the variable columns are combined:
+	combine [allXall | oneXone]
+when using oneXone all variable columns must have the same number of rows.
+
+If needed, define the curent working dir:
+	work_dir PATH
+if not define work_dir defaults to '.'
+
+To run the battery execute:
+	./batteryTesting file1 file2 ... fileN
+
+file1, ... , fileN are used as if they were a single battery file
+
+	
+	
+	
+	LONG INSTRUCTIONS:	
+		
+
+	SIMULATION EXECUTION COMMAND		
+	
+Before explaining the battery file we explain how to execute the program so that it can be better understood the different options 
+when defining the battery file
+
+The simulator is executed using the following command:
+ 	java -cp SOURCE_FOLDERS ARGUMENTS
+
+	OBLIGATORY TAGS EXPLANATION: 
+	
+SOURCE_FOLDERS 	= "./platform/src/:./multiscalemodel/src/:./bin/./deps/*:./deps/j3dport/*"
+	indicates the paths to be added for running the java program
+	this should be constant and therefore there's no need to specify it in the battery file		
+ 
+ARGUMENTS	= EXPERIMENT_XML LOG_FOLDER GROUP RAT_NUMBER [PARAM_NAME PARAM_VAL]*
+	The first four parameters must be provided to the program
+	All other parameters are optional
+	
+EXPERIMENT_XML 	= Indicates the path to the xml file which defines the experiment
+	example: "./multiscalemodel/src/edu/usf/ratsim/experiment/xml/tspSimpleRuns.xml"
+	
+LOG_FOLDER 	= Indicates the folder in which to save the results
+	example: logs/Experiment/
+
+GROUP		= Indicates the tag id of the rats being tested
+	example: control or test or etc
+
+RAT_NUMBER	= Indicates a rat belonging to the group defined by the parameter GROUP
+
+	OPTIONAL TAGS EXPLANATION:
+
+Optional properties are provided to the program given both a tag and a value.
+When a value is a list, each value should be separated by commas whithout leaving white space between the commas and the values.
+Available options:  (Format: OPTION_NAME ARG_TYPE)
+feederFile 		FILE 	 	- file of `x y` coordinates indicating feeder position
+nFoodStopCondition 	INT 	 	- indicates the experiment end after eating INT times
+feederOrder 		INT_LIST    	- indicates order in which feeders are visited
+startPosition 		INT,INT,INT 	- indicates the rat's x,y,theta initial coordinates respectively
+
+
+	BATTERY FILES - EXECUTION
+		
+In order to execute multiple runs of the simulator, the contents of a battery file are used to create a table of arguments 
+where each row represents an execution.
+
+To allow reusability we allow battery files to be defined accross multiple files.
+To execute a battery file the following command should be used
+	python batterySimulation BAT1 ... BATN
+All files BAT1 ... BATN represent one battery set all together
+
+	BATTERY FILES - DEFINITION
+	
+A battery file defines a set of columns, its values and how do their values get combined.
+Columns are divided into variable columns, constant columns, and calculated columns.
+For each variable and constant column we must define which values it takes.
+For each calculated column we must define how to calculate its value using the other columns.
+
+
+To define a cloumns and its values we use the following syntax:
+[constant|variable|calculated] COLUMN
+VAL1
+...
+VALN
+
+For constant columns only 1 val should be defined
+For calculated columns only 1 values should be defined. 
+That value should be an expression indicating how to be calculated from the other columns.
+At this point, we don't consider dependencies between calculated columns, so calculated columns should only depend on constant or variable columns. In the future this might be changed. In the definition of the calculated column, it is allowed to use columns that have not yet being defined
+
+	ALLOWED EXPRESSIONS:
+		
+lenList COLUMN
+	This is used to count the number of elements in columns that represent lists. 
+	
+row
+	This is used to asing a cell the its row number
+
+	COMBINING THE COLUMNS INTO A TABLE
+	
+There are several ways of combining the columns into a table.
+Here we only provide 2 methods. The battery should have a line defining which one is being used:
+combine KEYWORD
+The possible KEYWORD are:
+allXall
+	In this method all variable columns are multiplied together.
+	eg:
+		variable c1
+		1
+		2
+		3
+		variable c2
+		4
+		5
+	results in the table:
+		c1	c2
+		1	4
+		1	5
+		2	4
+		2	5
+		3	4	
+		3	5
+oneXone
+	In this method we combine the variable columns by row. All variable columns should have the same number of rows.
+	eg:
+		variable c1
+		1
+		2
+		variable c2
+		3
+		4
+	results in the table:
+		c1	c2
+		1 	3
+		2	4
+		
+	
+
+
+
+
+
+

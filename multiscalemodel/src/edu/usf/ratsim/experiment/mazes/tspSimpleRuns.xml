@@ -22,7 +22,7 @@
 		</params>
 	</mazeElement>
 	
-	<mazeElement>
+	<!--<mazeElement>
 		<name>Pool</name>
 		<params>
 			<r>0.2</r>
@@ -34,7 +34,7 @@
 			<y>0</y>
 			<z>0</z>
 		</params>
-	</mazeElement>
+	</mazeElement>-->
 	
 	
 	<floor>

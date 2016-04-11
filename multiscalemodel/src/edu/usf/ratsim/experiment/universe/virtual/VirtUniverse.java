@@ -142,9 +142,11 @@ public class VirtUniverse extends Universe {
 	public void addFeeder(int id, float x, float y) {
 		super.addFeeder(id, x, y);
 		
-		FeederNode feeder = new FeederNode(id, x, y);
-		feederNodes.put(id, feeder);
-		bg.addChild(feeder);
+		if (display) {
+			FeederNode feeder = new FeederNode(id, x, y);
+			feederNodes.put(id, feeder);
+			bg.addChild(feeder);
+		}
 	}
 
 	public void addWall(float x1, float y1, float x2, float y2) {

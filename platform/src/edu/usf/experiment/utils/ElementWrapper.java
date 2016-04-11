@@ -5,9 +5,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import edu.usf.experiment.Globals;
 
 public class ElementWrapper {
 
@@ -52,11 +56,24 @@ public class ElementWrapper {
 	}
 
 	public String getChildText(String name) {
+		Globals g = Globals.getInstace();
 		NodeList elems = e.getElementsByTagName(name);
 		for (int i = 0; i < elems.getLength(); i++)
 			// Only return direct sibling
 			if (elems.item(i).getParentNode() == e)
-				return elems.item(i).getTextContent();
+			{
+				Pattern regex = Pattern.compile("\\$\\(.*\\)");
+				StringBuffer resultString = new StringBuffer();
+		        Matcher regexMatcher = regex.matcher(elems.item(i).getTextContent());
+		        while (regexMatcher.find()) {
+		        	String var = regexMatcher.group();
+		        	var = var.substring(2, var.length()-1);
+		            regexMatcher.appendReplacement(resultString, (String)g.get(var));
+		        }
+		        regexMatcher.appendTail(resultString);
+	
+		        return resultString.toString();
+			}
 
 		return null;
 	}
@@ -70,7 +87,20 @@ public class ElementWrapper {
 	}
 
 	public String getText() {
-		return e.getTextContent();
+		Globals g = Globals.getInstace();
+		Pattern regex = Pattern.compile("\\$\\(.*\\)");
+		StringBuffer resultString = new StringBuffer();
+        Matcher regexMatcher = regex.matcher(e.getTextContent());
+        while (regexMatcher.find()) {
+        	String var = regexMatcher.group();
+        	var = var.substring(2, var.length()-1);
+        	System.out.println(var);
+        	System.out.println((String)g.get(var));
+            regexMatcher.appendReplacement(resultString, (String)g.get(var));
+        }
+        regexMatcher.appendTail(resultString);
+
+        return resultString.toString();
 	}
 
 	public boolean getChildBoolean(String name) {

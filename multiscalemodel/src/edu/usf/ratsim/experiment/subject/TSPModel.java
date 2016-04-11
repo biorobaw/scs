@@ -42,11 +42,11 @@ public class TSPModel extends Model {
 				xmin, ymin, xmax, ymax);
 		addModule(placeCells);
 		
-		// Module that navigates the feeders
-		feederTraveler = new FeederTraveler("Traveler", order, subject, lRobot);
-		// Add in port for dependency
-		feederTraveler.addInPort("pc", placeCells.getOutPort("activation"));
-		addModule(feederTraveler);
+//		// Module that navigates the feeders
+//		feederTraveler = new FeederTraveler("Traveler", order, subject, lRobot);
+//		// Add in port for dependency
+//		feederTraveler.addInPort("pc", placeCells.getOutPort("activation"));
+//		addModule(feederTraveler);
 
 	}
 

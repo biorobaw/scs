@@ -124,17 +124,18 @@
 				<task>
 					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
 				</task>
-				<!-- Place the animat in a given place -->
+				<!-- Place the animat in a given place 
 				<task>
 					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
 					<params>
 						<point>
-							<x>-0.2</x>
+							<x>$(x)</x>
 							<y>-0.4</y>
 							<theta>1.57</theta>
 						</point>
 					</params>
 				</task>
+				-->
 			</beforeEpisodeTasks>
 			<!-- Tasks to performe before each cycle -->
 			<beforeCycleTasks>
@@ -143,6 +144,12 @@
 			<afterCycleTasks>
 				<task>
 					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.PlaceRobotFile</name>
+					<params>
+						<filename>$(ratpath)</filename>
+					</params> 
 				</task>
 			</afterCycleTasks>
 			<!-- Loggers to execute after each cycle -->
@@ -189,6 +196,12 @@
 					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
 					<params>
 						<n>5</n>
+					</params>
+				</condition>
+				<!-- Somebody sets done flag condition -->
+				<condition>
+					<name>edu.usf.experiment.condition.DoneCondition</name>
+					<params>
 					</params>
 				</condition>
 			</stopConditions>
