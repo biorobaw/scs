@@ -32,6 +32,11 @@ public class TSPModel extends Model {
 		float ymin = params.getChildFloat("ymin");
 		float xmax = params.getChildFloat("xmax");
 		float ymax = params.getChildFloat("ymax");
+		String sFeederOrder = params.getChildText("feederOrder");
+		if(sFeederOrder.equals(".")){
+			System.err.println("ERROR: feeder order defined as `.`, exiting program");
+			System.exit(-1);
+		}
 		List<Integer> order = params.getChildIntList("feederOrder");
 
 		numActions = subject.getPossibleAffordances().size();
@@ -42,11 +47,11 @@ public class TSPModel extends Model {
 				xmin, ymin, xmax, ymax);
 		addModule(placeCells);
 		
-//		// Module that navigates the feeders
-//		feederTraveler = new FeederTraveler("Traveler", order, subject, lRobot);
-//		// Add in port for dependency
-//		feederTraveler.addInPort("pc", placeCells.getOutPort("activation"));
-//		addModule(feederTraveler);
+		// Module that navigates the feeders
+		feederTraveler = new FeederTraveler("Traveler", order, subject, lRobot);
+		// Add in port for dependency
+		feederTraveler.addInPort("pc", placeCells.getOutPort("activation"));
+		addModule(feederTraveler);
 
 	}
 

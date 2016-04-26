@@ -56,7 +56,7 @@ public class ElementWrapper {
 	}
 
 	public String getChildText(String name) {
-		Globals g = Globals.getInstace();
+		Globals g = Globals.getInstance();
 		NodeList elems = e.getElementsByTagName(name);
 		for (int i = 0; i < elems.getLength(); i++)
 			// Only return direct sibling
@@ -87,15 +87,13 @@ public class ElementWrapper {
 	}
 
 	public String getText() {
-		Globals g = Globals.getInstace();
+		Globals g = Globals.getInstance();
 		Pattern regex = Pattern.compile("\\$\\(.*\\)");
 		StringBuffer resultString = new StringBuffer();
         Matcher regexMatcher = regex.matcher(e.getTextContent());
         while (regexMatcher.find()) {
         	String var = regexMatcher.group();
         	var = var.substring(2, var.length()-1);
-        	System.out.println(var);
-        	System.out.println((String)g.get(var));
             regexMatcher.appendReplacement(resultString, (String)g.get(var));
         }
         regexMatcher.appendTail(resultString);

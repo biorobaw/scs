@@ -9,9 +9,9 @@
 			<!-- Distance from which the food is accessible according to the universe -->
 			<closeToFoodThrs>0.1</closeToFoodThrs>
 			<!-- Map file -->
-			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/tspSimpleRuns.xml</maze>
+			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/multipleT.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>false</display>
+			<display>true</display>
 		</params>
 	</universe>
 	
@@ -129,14 +129,14 @@
 				<task>
 					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
 					<params>
-						<!--<filename>$(ratpath)</filename>-->
+						<filename>$(ratpath)</filename>
 						<!--<pointXYW>$(startPosition)</pointXYW> -->
 						
-						<point>
+						<!--<point>
 							<x>-0.2</x>
 							<y>-0.4</y>
 							<theta>1.57</theta>
-						</point>
+						</point>-->
 						
 					</params>
 				</task>

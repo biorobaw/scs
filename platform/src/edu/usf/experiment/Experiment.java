@@ -84,7 +84,7 @@ public class Experiment implements Runnable {
 	private void setup(ElementWrapper root, String logPath, String groupName,
 			String subjectName) {
 		//Get globals:
-		Globals g = Globals.getInstace();
+		Globals g = Globals.getInstance();
 		
 		// System.out.println(System.getProperty("java.class.path"));
 		System.out.println("[+] Starting group " + groupName + " individual "
@@ -178,7 +178,7 @@ public class Experiment implements Runnable {
 		}
 
 		//set global variables:
-		Globals g = Globals.getInstace();
+		Globals g = Globals.getInstance();
 		g.put("logPath",args[1] + "/");
 		g.put("groupName", args[2]);
 		g.put("subName", args[3]);
@@ -201,7 +201,6 @@ public class Experiment implements Runnable {
 			bw.close();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
-			System.out.println("ERROR ESTA ACA");
 			e1.printStackTrace();
 		}
 			

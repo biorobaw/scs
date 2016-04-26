@@ -15,6 +15,7 @@ if __name__=='__main__':
 	columnValues = []
 	combinationType = None
 	workDir = './'
+	batFolder = None
 	
 	obligatoryColumns = {'SOURCE_FOLDERS':-1,'MAIN_CLASS':-1,'EXPERIMENT_XML':-1,'LOG_FOLDER':-1,'GROUP':-1,'RAT_NUMBER':-1}
 	
@@ -25,6 +26,7 @@ if __name__=='__main__':
 	
 	def processFile(fileName):
 		global columnNames,columnTypes,columnValues,combinationType,obligatoryColumns,optionalArguments,readingColumn,workDir
+		global batFolder
 		f = open(fileName)
 		i=0
 		for l in f:
@@ -53,6 +55,9 @@ if __name__=='__main__':
 				readingColumn = None
 			elif line[0] == 'work_dir':
 				workDir  = line[1]
+				readingColumn = None
+			elif line[0] == 'battery_folder':
+				batFolder = line[1]
 				readingColumn = None
 			else:
 				if readingColumn == None:
@@ -190,7 +195,10 @@ if __name__=='__main__':
 	for i in range(0,totalEntries):
 		for j in range(0,len(obligatoryColumns)):
 			if columnNames[order[j]] == 'LOG_FOLDER':
-				commands[i] += 'logs/Experiment/bat'
+				if batFolder != None:
+					commands[i] += 'logs/Experiment/'+batFolder+"/bat"
+				else:
+					commands[i] += 'logs/Experiment/bat'
 			commands[i] += str(resultTable[order[j]][i]) + ' '
 		for j in range(len(obligatoryColumns),len(order)):
 			if columnNames[order[j]] in possibleColumns:
@@ -198,7 +206,6 @@ if __name__=='__main__':
 				
 	executionCommand = "java -cp "
 	os.chdir(workDir)
-	print os.getcwd()
 	for i in range(0,totalEntries):
 		print 'Executing:'
 		print executionCommand + commands[i]

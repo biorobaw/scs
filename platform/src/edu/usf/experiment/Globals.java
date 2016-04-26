@@ -12,7 +12,7 @@ public class Globals {
 		global = new LinkedHashMap<String,Object>();
 	}
 	
-	public static Globals getInstace(){
+	public static Globals getInstance(){
 		if(instance==null) {
 			instance = new Globals();
 		}

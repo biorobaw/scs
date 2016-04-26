@@ -6,7 +6,7 @@ import edu.usf.experiment.utils.ElementWrapper;
 
 public class DoneCondition implements Condition {
 
-	Globals  g = Globals.getInstace();
+	Globals  g = Globals.getInstance();
 	
 	public DoneCondition(ElementWrapper params) {
 		// TODO Auto-generated constructor stub

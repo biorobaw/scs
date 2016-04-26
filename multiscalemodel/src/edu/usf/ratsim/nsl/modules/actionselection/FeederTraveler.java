@@ -36,7 +36,14 @@ public class FeederTraveler extends Module {
 		}
 
 		if (next == null){
-			System.out.println("Next feeder not found");
+			System.out.println("Next feeder not found: " + feedersToVisit.get(0));
+			String listOfFeeders = "List of feeders: ";
+			for(Feeder f : allFeeders){
+				listOfFeeders += f.getId() + ", ";
+				if (f.getId() == feedersToVisit.get(0))
+					next = f;
+			}
+			System.out.println(listOfFeeders);
 			return;
 		}
 		

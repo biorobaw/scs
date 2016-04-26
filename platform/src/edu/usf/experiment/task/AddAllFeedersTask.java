@@ -16,20 +16,14 @@ import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.IOUtils;
 
 public class AddAllFeedersTask extends Task{
-	public Globals global = Globals.getInstace();
+	public Globals global = Globals.getInstance();
 	public String feedersFile;
 
 	public AddAllFeedersTask(ElementWrapper params) {
 		super(params);
 		// TODO Auto-generated constructor stub
 		
-		//Search feeders file in globals
-		feedersFile= (String)global.get("feederFile");
-		
-		//if not in globals, search in params
-		if(feedersFile==null){
-			feedersFile = params.getChildText("feederFile");			
-		}
+		feedersFile = params.getChildText("feederFile");			
 		
 		//if not in globals
 		if(feedersFile==null){

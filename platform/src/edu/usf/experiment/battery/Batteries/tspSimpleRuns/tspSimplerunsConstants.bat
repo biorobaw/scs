@@ -16,8 +16,9 @@ Control
 constant RAT_NUMBER
 1
 
-#calculated nFoodStopCondition
-#lenList feederOrder 
+calculated nFoodStopCondition
+lenList feederOrder 
 
-combine allXall
+combine oneXone
 work_dir ../../../../../../
+battery_folder tspSimplePathOurStarts

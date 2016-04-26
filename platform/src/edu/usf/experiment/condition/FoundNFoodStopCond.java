@@ -9,11 +9,7 @@ public class FoundNFoodStopCond implements Condition {
 	private int n;
 
 	public FoundNFoodStopCond(ElementWrapper condParams) {
-		Globals g = Globals.getInstace();
-		if (g.get("nFoodStopCondition")==null)
-			this.n = condParams.getChildInt("n");
-		else
-			this.n = Integer.parseInt((String)g.get("nFoodStopCondition"));
+		this.n = condParams.getChildInt("n");
 	}
 
 	@Override

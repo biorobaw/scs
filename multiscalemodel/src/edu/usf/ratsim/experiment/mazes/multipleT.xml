@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="us-ascii"?>
 
 <world>
+	
+	<mazeElement>
+		<name>MultipleT</name>
+		<params>
+			<x>-0.1</x>
+			<y>0</y>
+			<width>0.2</width>
+			<length>0.6</length>
+			<right>
+				<right>
+					<left>
+					</left>
+				</right>
+			</right>
+		</params>
+	</mazeElement>
+	
+	
 	<boundingRect>
 		<x>0</x>
 		<y>0</y>
 		<w>2</w>
 		<h>2</h>
 	</boundingRect>
-	
-	<mazeElement>
-		<name>Pool</name>
-		<params>
-			<r>0.9</r>
-			<h>.025</h>
-			<cr>1</cr>
-			<cg>0</cg>
-			<cb>0</cb>
-			<x>0</x>
-			<y>0</y>
-			<z>0</z>
-		</params>
-	</mazeElement>
 	
 	
 	<floor>
@@ -34,12 +38,16 @@
 		<z>-.075</z>
 	</floor>
 
+
+
+
+
 	
 	<!-- Views -->
 	<topview>
-		<x>0</x>
-		<y>0</y>
-		<z>4</z>
+		<x>0.2</x>
+		<y>1.2</y>
+		<z>6</z>
 	</topview>
 	<thirdview>
 		<x>2.1</x>
