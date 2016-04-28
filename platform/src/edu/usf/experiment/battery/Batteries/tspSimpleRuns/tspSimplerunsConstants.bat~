@@ -5,7 +5,7 @@ constant MAIN_CLASS
 edu.usf.experiment.Experiment
 
 constant EXPERIMENT_XML
-"./multiscalemodel/src/edu/usf/ratsim/experiment/xml/tspSimpleRuns.xml"
+"./multiscalemodel/src/edu/usf/ratsim/experiment/xml/tspSimpleRunsOurs.xml"
 
 calculated LOG_FOLDER 
 row
@@ -19,6 +19,6 @@ constant RAT_NUMBER
 calculated nFoodStopCondition
 lenList feederOrder 
 
-combine allXall
+combine oneXone
 work_dir ../../../../../../
-battery_folder tspSimplePath
+battery_folder tspSimplePaths

@@ -24,7 +24,7 @@ public class AddAllFeedersTask extends Task{
 		// TODO Auto-generated constructor stub
 		
 		feedersFile = params.getChildText("feederFile");			
-		
+			
 		//if not in globals
 		if(feedersFile==null){
 			System.err.println("WARNING: no feeder file");
@@ -56,7 +56,7 @@ public class AddAllFeedersTask extends Task{
 		//parse feederfile and create feeders
 		if (feedersFile==null) return;
 		
-		String[][] feederData = CSVReader.loadCSV(feedersFile, " ","feedersFile");
+		String[][] feederData = CSVReader.loadCSV(feedersFile, ",","feedersFile");
 		if (feederData!=null){
 			IOUtils.copyFile(feedersFile, global.get("logPath") + "feeders.txt");
 			

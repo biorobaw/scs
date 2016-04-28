@@ -30,6 +30,8 @@ public class FeederTraveler extends Module {
 	public void run() {
 		List<Feeder> allFeeders = lRobot.getVisibleFeeders(null);
 		Feeder next = null;
+		if (feedersToVisit.size() == 0)
+			return;
 		for (Feeder f : allFeeders){
 			if (f.getId() == feedersToVisit.get(0))
 				next = f;

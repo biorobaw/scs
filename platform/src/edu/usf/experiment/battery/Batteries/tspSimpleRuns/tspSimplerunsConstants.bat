@@ -21,4 +21,4 @@ lenList feederOrder
 
 combine oneXone
 work_dir ../../../../../../
-battery_folder tspSimplePathOurStarts
+battery_folder tspSimplePaths

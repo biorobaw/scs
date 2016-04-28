@@ -13,6 +13,7 @@ public class CSVReader {
 		}
 		String[][] result = null;
 		try {
+			//System.out.println("filename "+filename);
 			Scanner scanner = new Scanner(new File(filename));
 			String entireFileText = scanner.useDelimiter("\\A").next();
 			scanner.close();

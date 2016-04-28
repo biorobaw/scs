@@ -116,10 +116,10 @@ public class Experiment implements Runnable {
 		System.out.println("[+] Using seed " + seed);
 
 		// Load the subject using reflection and assign name and group
-		//previously, if feederOrder is defined, set the property in the xml:
-		if (g.get("feederOrder")!=null)
-				root.getChild("model").getChild("params").
-					 getChild("feederOrder").setText((String)g.get("feederOrder"));
+//		//previously, if feederOrder is defined, set the property in the xml:
+//		if (g.get("feederOrder")!=null)
+//				root.getChild("model").getChild("params").
+//					 getChild("feederOrder").setText((String)g.get("feederOrder"));
 		subject = SubjectLoader.getInstance().load(subjectName, groupName,
 				root.getChild("model"), robot);
 
