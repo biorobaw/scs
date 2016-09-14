@@ -15,8 +15,8 @@ import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialConjCell;
+import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceIntentionCell;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialWallConjCell;
-import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 
 public class RndConjCellLayer extends Module {
 
@@ -156,6 +156,9 @@ public class RndConjCellLayer extends Module {
 
 			if (placeCellType.equals("ExponentialConjCell")) {
 				cells.add(new ExponentialConjCell(prefLocation, preferredDirection, placeRadius, directionRadius,
+						preferredIntention));
+			} else if (placeCellType.equals("ExponentialPlaceIntentionCell")) {
+				cells.add(new ExponentialPlaceIntentionCell(prefLocation,placeRadius,
 						preferredIntention));
 			} else if (placeCellType.equals("ExponentialWallConjCell")) {
 				cells.add(new ExponentialWallConjCell(prefLocation, preferredDirection, placeRadius, directionRadius,
