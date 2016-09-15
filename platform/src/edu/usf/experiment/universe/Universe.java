@@ -203,7 +203,7 @@ public abstract class Universe {
 
 		Point3f robotPos = getRobotPosition();
 		for (Feeder f : feeders.values()) {
-			if (robotPos.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS)
+			if (robotPos.distance(f.getPosition()) <= CLOSE_TO_FOOD_THRS)
 				if (f.hasFood())
 					feedingFeeder = f.getId();
 		}
@@ -403,6 +403,10 @@ public abstract class Universe {
 
 	public void addFeeder(int id, float x, float y) {
 		feeders.put(id, new Feeder(id, new Point3f(x, y, 0)));
+	}
+
+	public void addFeeder(Feeder f) {
+		feeders.put(f.getId(), f);
 	}
 
 }
