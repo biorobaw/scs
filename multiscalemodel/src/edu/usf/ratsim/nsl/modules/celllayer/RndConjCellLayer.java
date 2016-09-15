@@ -114,12 +114,17 @@ public class RndConjCellLayer extends Module {
 	 *            A parameter passed to wall modulated cells
 	 *            (WallExponentialConjCell).
 	 */
-	public RndConjCellLayer(String name, LocalizableRobot robot, float placeRadius, float minDirectionRadius,
-			float maxDirectionRadius, int numIntentions, int numCells, String placeCellType, float xmin, float ymin,
-			float xmax, float ymax, List<Feeder> goals, float nearGoalProb, float layerLength, float wallInhibition) {
+	public RndConjCellLayer(String name, LocalizableRobot robot,
+			float placeRadius, float minDirectionRadius,
+			float maxDirectionRadius, int numIntentions, int numCells,
+			String placeCellType, float xmin, float ymin, float xmax,
+			float ymax, List<Feeder> goals, float nearGoalProb,
+			float layerLength, float wallInhibition) {
 		super(name);
 
-		if (!(placeCellType.equals("ExponentialConjCell") || placeCellType.equals("ExponentialWallConjCell"))) {
+		if (!(placeCellType.equals("ExponentialPlaceIntentionCell")
+				|| placeCellType.equals("ExponentialConjCell") || placeCellType
+					.equals("ExponentialWallConjCell"))) {
 			System.err.println("Place cell type not implemented");
 			System.exit(1);
 		}
@@ -142,33 +147,38 @@ public class RndConjCellLayer extends Module {
 			int preferredIntention;
 
 			// All cells have a preferred location
-			prefLocation = createrPreferredLocation(nearGoalProb, goals, xmin, xmax, ymin, ymax);
+			prefLocation = createrPreferredLocation(nearGoalProb, goals, xmin,
+					xmax, ymin, ymax);
 			preferredDirection = (float) (random.nextFloat() * Math.PI * 2);
 			// Using Inverse transform sampling to sample from k/x between
 			// min and max
 			// https://en.wikipedia.org/wiki/Inverse_transform_sampling. k =
 			// 1/(ln (max) - ln(min)) due to normalization
-			float k = (float) (1 / (Math.log(maxDirectionRadius) - Math.log(minDirectionRadius)));
+			float k = (float) (1 / (Math.log(maxDirectionRadius) - Math
+					.log(minDirectionRadius)));
 			float s = random.nextFloat();
-			directionRadius = (float) Math.exp(s / k + Math.log(minDirectionRadius));
-			
+			directionRadius = (float) Math.exp(s / k
+					+ Math.log(minDirectionRadius));
+
 			preferredIntention = random.nextInt(numIntentions);
 
 			if (placeCellType.equals("ExponentialConjCell")) {
-				cells.add(new ExponentialConjCell(prefLocation, preferredDirection, placeRadius, directionRadius,
+				cells.add(new ExponentialConjCell(prefLocation,
+						preferredDirection, placeRadius, directionRadius,
 						preferredIntention));
 			} else if (placeCellType.equals("ExponentialPlaceIntentionCell")) {
-				cells.add(new ExponentialPlaceIntentionCell(prefLocation,placeRadius,
-						preferredIntention));
+				cells.add(new ExponentialPlaceIntentionCell(prefLocation,
+						placeRadius, preferredIntention));
 			} else if (placeCellType.equals("ExponentialWallConjCell")) {
-				cells.add(new ExponentialWallConjCell(prefLocation, preferredDirection, placeRadius, directionRadius,
+				cells.add(new ExponentialWallConjCell(prefLocation,
+						preferredDirection, placeRadius, directionRadius,
 						preferredIntention, wallInhibition, random));
 			}
 
 			i++;
 		} while (i < numCells);
 
-		activationPort = new Float1dSparsePortMap(this, cells.size(), 1f/4000);
+		activationPort = new Float1dSparsePortMap(this, cells.size(), 1f / 4000);
 		addOutPort("activation", activationPort);
 
 		this.robot = robot;
@@ -198,8 +208,8 @@ public class RndConjCellLayer extends Module {
 	 *            located
 	 * @return The location of the new cell.
 	 */
-	private Point3f createrPreferredLocation(float nearGoalProb, List<Feeder> goals, float xmin, float xmax, float ymin,
-			float ymax) {
+	private Point3f createrPreferredLocation(float nearGoalProb,
+			List<Feeder> goals, float xmin, float xmax, float ymin, float ymax) {
 		float x, y;
 		if (random.nextFloat() < nearGoalProb) {
 			int fIndex = random.nextInt(goals.size());
@@ -228,7 +238,8 @@ public class RndConjCellLayer extends Module {
 			i++;
 		}
 
-		run(robot.getPosition(), robot.getOrientationAngle(), intentionNum, robot.getDistanceToClosestWall());
+		run(robot.getPosition(), robot.getOrientationAngle(), intentionNum,
+				robot.getDistanceToClosestWall());
 	}
 
 	/**
@@ -271,14 +282,16 @@ public class RndConjCellLayer extends Module {
 	 * efficiency inversely proportional to the cube of the distance to the
 	 * point of injection (based on the volume of the sphere)
 	 * 
-	 * @param constant A constant multiplying the modulation 
+	 * @param constant
+	 *            A constant multiplying the modulation
 	 */
 	public void anesthtizeRadial(float constant) {
 		// active = false;
 		for (ConjCell cell : cells) {
 			float distanceFromInj = random.nextFloat() * layerLength / 2;
 			float deact;
-			float volume = (float) (3. / 4 * Math.PI * Math.pow(distanceFromInj, 3));
+			float volume = (float) (3. / 4 * Math.PI * Math.pow(
+					distanceFromInj, 3));
 			if (volume != 0)
 				deact = (float) Math.min(1, constant / volume);
 			else
@@ -290,7 +303,9 @@ public class RndConjCellLayer extends Module {
 
 	/**
 	 * A proportion of the cell are fully deactivated
-	 * @param proportion The proportion of cells to be deactivated
+	 * 
+	 * @param proportion
+	 *            The proportion of cells to be deactivated
 	 */
 	public void anesthtizeProportion(float proportion) {
 		// active = false;
@@ -315,7 +330,8 @@ public class RndConjCellLayer extends Module {
 	 */
 	public void remap() {
 		for (ConjCell cell : cells) {
-			Point3f prefLocation = createrPreferredLocation(nearGoalProb, goals, xmin, xmax, ymin, ymax);
+			Point3f prefLocation = createrPreferredLocation(nearGoalProb,
+					goals, xmin, xmax, ymin, ymax);
 			float preferredDirection = (float) (random.nextFloat() * Math.PI * 2);
 			cell.setPreferredLocation(prefLocation);
 			cell.setPreferredDirection(preferredDirection);
