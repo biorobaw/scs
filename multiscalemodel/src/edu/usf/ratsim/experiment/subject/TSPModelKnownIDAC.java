@@ -1,40 +1,35 @@
 package edu.usf.ratsim.experiment.subject;
 
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.module.concat.Float1dSparseConcatModule;
 import edu.usf.micronsl.module.copy.Float1dSparseCopyModule;
 import edu.usf.micronsl.port.Port;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
-import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
-import edu.usf.ratsim.nsl.modules.actionselection.FeederTraveler;
+import edu.usf.ratsim.nsl.modules.actionselection.GoToFeeder;
+import edu.usf.ratsim.nsl.modules.actionselection.GoToFeedersSequentially;
 import edu.usf.ratsim.nsl.modules.actionselection.GradientVotes;
-import edu.usf.ratsim.nsl.modules.actionselection.HalfAndHalfConnectionVotes;
-import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
-import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.nsl.modules.celllayer.RndConjCellLayer;
-import edu.usf.ratsim.nsl.modules.celllayer.RndPlaceCellLayer;
-import edu.usf.ratsim.nsl.modules.celllayer.TesselatedPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.goaldecider.LastTriedToEatGoalDecider;
-import edu.usf.ratsim.nsl.modules.goaldecider.OneThenTheOtherGoalDecider;
-import edu.usf.ratsim.nsl.modules.intention.Intention;
+import edu.usf.ratsim.nsl.modules.input.ClosestFeeder;
+import edu.usf.ratsim.nsl.modules.input.SubjectTriedToEat;
 import edu.usf.ratsim.nsl.modules.intention.LastAteIntention;
 import edu.usf.ratsim.nsl.modules.intention.NoIntention;
 
 public class TSPModelKnownIDAC extends Model {
 
-	// One action and 'intention' per feeder
+	// One action per feeder
 	private int numActions = 5;
-	private int numIntentions = 5;
+	// One intention per feeder (last eaten) + one initial intention
+	private int numIntentions = 6;
 	// Value table for actions and state-values (Actor Critic)
 	private float[][] value;
 
@@ -83,10 +78,9 @@ public class TSPModelKnownIDAC extends Model {
 		// For each layer
 		for (int i = 0; i < numCCLayers; i++) {
 			RndConjCellLayer ccl = new RndConjCellLayer("CCL " + i, lRobot,
-					radius, 0, 0, numIntentions,
-					numCCCellsPerLayer.get(i), "ExponentialPlaceIntentionCell", xmin, ymin, xmax,
-					ymax, lRobot.getAllFeeders(), 0,
-					layerLengths.get(i), 0);
+					radius, 0, 0, numIntentions, numCCCellsPerLayer.get(i),
+					"ExponentialPlaceIntentionCell", xmin, ymin, xmax, ymax,
+					lRobot.getAllFeeders(), 0, layerLengths.get(i), 0);
 			ccl.addInPort("intention", intention.getOutPort("intention"));
 			conjCellLayers.add(ccl);
 			conjCellLayersPorts.add(ccl.getOutPort("activation"));
@@ -114,7 +108,6 @@ public class TSPModelKnownIDAC extends Model {
 		FloatMatrixPort valuePort = new FloatMatrixPort((Module) null, value);
 
 		// Voting mechanism for action selection
-		List<Port> votesPorts = new LinkedList<Port>();
 		Module rlVotes = new GradientVotes("RL votes", numActions, connProbs,
 				numCCCellsPerLayer, votesNormalizer);
 		rlVotes.addInPort("states", stateCopy.getOutPort("copy"));
@@ -122,28 +115,36 @@ public class TSPModelKnownIDAC extends Model {
 		addModule(rlVotes);
 
 		// Add in port for dependency
-		feederTraveler.addInPort("pc", placeCells.getOutPort("activation"));
-		addModule(feederTraveler);
+//		GoToFeeder gotofeeder = new GoToFeeder("Go To Feeder", subject,
+//				RandomSingleton.getInstance());
+		GoToFeedersSequentially gotofeeder = new GoToFeedersSequentially("Go To Feeder", subject,
+				RandomSingleton.getInstance());
+		gotofeeder.addInPort("votes", rlVotes.getOutPort("votes"));
+		Port takenActionPort = gotofeeder.getOutPort("takenAction");
+		addModule(gotofeeder);
+
+		// Information to lastAteGoalDecider about the step
+		SubjectTriedToEat subTriedToEat = new SubjectTriedToEat(
+				"Subject Tried To Eat", subject);
+		subTriedToEat.addInPort("takenAction", takenActionPort);
+		addModule(subTriedToEat);
+		ClosestFeeder closestFeeder = new ClosestFeeder(
+				"Closest Feeder After Move", subject);
+		closestFeeder.addInPort("takenAction", takenActionPort);
+		addModule(closestFeeder);
+		lastTriedToEatGoalDecider.addInPort("subTriedToEat",
+				subTriedToEat.getOutPort("subTriedToEat"));
+		lastTriedToEatGoalDecider.addInPort("closestFeeder",
+				closestFeeder.getOutPort("closestFeeder"));
 
 	}
 
 	public void newTrial() {
 	}
 
-	public List<PlaceCell> getPlaceCells() {
-		return placeCells.getCells();
-	}
-
 	public void newEpisode() {
 		// TODO Auto-generated method stub
 
-	}
-
-	public Map<Integer, Float> getCellActivation() {
-		Map<Integer, Float> activation = new LinkedHashMap<Integer, Float>();
-		activation.putAll(((Float1dSparsePortMap) placeCells
-				.getOutPort("activation")).getNonZero());
-		return activation;
 	}
 
 }

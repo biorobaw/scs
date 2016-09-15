@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-	<seed>-59875563504154406</seed>
+	
 	
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
@@ -37,20 +37,45 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.experiment.subject.TSPSubject</name>
+		<name>edu.usf.ratsim.experiment.subject.TSPSubjectKnownIDAC</name>
 		<params>
+			<!-- Number of conjunctive cell layers -->
+			<numCCLayers>3</numCCLayers>
+			<!-- Size of each layer in millimeters -->
+			<layerLengths>3,3,3</layerLengths>
+			<!-- Number of cells per layer -->
+			<numCCCellsPerLayer>200000,120000,80000</numCCCellsPerLayer>
+			<!-- Layer connection probabilities to action selection for gradient connections -->
+			<votesConnProbs>1,0.5,0</votesConnProbs>
+			<!-- Layer connection probabilities to value estimation for gradient connections -->
+			<valueConnProbs>0.0,.5,1</valueConnProbs>
+			<!-- Minimum conjuntive layer cell radius -->
+			<minPCRadius>.0682</minPCRadius>
+			<!-- Maximum conjuntive layer cell radius -->
+			<maxPCRadius>.1428</maxPCRadius>
+			<!-- Type of conjunctive cell -->
+			<placeCells>wallGoalExponential</placeCells>
+			<votesNormalizer>20</votesNormalizer>
+			<valueNormalizer>20</valueNormalizer>
+			<!-- Reward value for food -->
+			<foodReward>1000</foodReward>
+			<!-- Reward value given when it doesnt eat -->
+			<nonFoodReward>-10</nonFoodReward>
+			<!-- Lambda discount factor for the learning algorithm -->
+			<rlDiscountFactor>1</rlDiscountFactor>
+			<!-- Alpha for the learning algorithm -->
+			<alpha>.5</alpha>
+			<!-- Elegibility traces for the learning algorithm -->
+			<tracesDecay>.85</tracesDecay>
+			<!-- Initial value for values and action values -->
+			<initialValue>0</initialValue>
+			
 			<!-- Step length in meters -->
 			<step>.05</step>
 			<!-- Left rotation amount in radians -->
 			<leftAngle>0.195</leftAngle>
 			<!-- Right rotation amount in radians -->
 			<rightAngle>-0.195</rightAngle>
-			<!-- Minimum conjuntive layer cell radius -->
-			<PCRadius>.12</PCRadius>
-			<!-- Cells per side of the square -->
-			<numPCCellsPerSide>16</numPCCellsPerSide>
-			<!-- Type of conjunctive cell -->
-			<placeCells>exponential</placeCells>
 			<!-- Map dimensions for conjuntive cell placing -->
 			<xmin>-1</xmin>
 			<ymin>-1</ymin>
@@ -73,9 +98,10 @@
 	<beforeExperimentTasks>
 		<!-- Enable feeders all feeders -->
 		<task>
-			<name>edu.usf.experiment.task.AddAllFeedersTask</name>
+			<name>edu.usf.experiment.task.AddNFeedersFromFileTask</name>
 			<params>
 				<feederFile>multiscalemodel/src/edu/usf/ratsim/experiment/feederPositions/positionsTSP21Feeders</feederFile>
+				<numFeeders>5</numFeeders>
 			</params>
 		</task>
 		
@@ -118,7 +144,7 @@
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<task>
-					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
+					<name>edu.usf.experiment.task.ReleaseFoodFromAllFeeders</name>
 				</task>
 				<!-- Place the animat in a given place -->
 				<task>
@@ -135,9 +161,7 @@
 						
 					</params>
 				</task>
-				<task>
-					<name>edu.usf.experiment.task.ReleaseFoodFromAllFeeders</name>
-				</task>
+				
 				
 				
 			</beforeEpisodeTasks>
@@ -155,9 +179,9 @@
 					<params>
 					</params>
 				</logger>
-				<logger>
+				<!-- <logger>
 					<name>edu.usf.ratsim.experiment.log.PCActivityLogger</name>
-				</logger>
+				</logger>-->
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->
 			<afterEpisodeLoggers>
@@ -170,9 +194,9 @@
 				<logger>
 					<name>edu.usf.experiment.log.FeederLogger</name>
 				</logger>
-				<logger>
+				<!--<logger>
 					<name>edu.usf.ratsim.experiment.log.PCLogger</name>
-				</logger>
+				</logger>-->
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
@@ -212,9 +236,9 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.ratsim.experiment.plot.PCPlotter</name>
-				</plotter>
+				</plotter>-->
 				
 			</afterEpisodePlotters>
 		</episodes>

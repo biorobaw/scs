@@ -102,10 +102,7 @@ public class TSPSubjectKnownIDAC extends Subject {
 		throw new NotImplementedException();
 	}
 
-	public List<PlaceCell> getPlaceCells() {
-		return model.getPlaceCells();
-	}
-
+	
 	@Override
 	public void deactivateHPCLayersProportion(LinkedList<Integer> indexList,
 			float proportion) {
@@ -117,9 +114,7 @@ public class TSPSubjectKnownIDAC extends Subject {
 		throw new NotImplementedException();
 	}
 
-	public Map<Integer, Float> getCellActivity() {
-		return model.getCellActivation();
-	}
+	
 
 	@Override
 	public float getValueEntropy() {
