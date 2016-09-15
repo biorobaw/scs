@@ -26,11 +26,8 @@ public class LastTriedToEatGoalDecider extends Module {
 		
 		if (subTriedToEat.get()) {
 			int newGoal = closestFeeder.get();
-			System.out.println("LastTriedToEatGoal: changing last tried to " + newGoal);
 			goalFeeder.set(newGoal);
 		}
-
-		System.out.println(goalFeeder.get());
 	}
 
 	public void newTrial() {

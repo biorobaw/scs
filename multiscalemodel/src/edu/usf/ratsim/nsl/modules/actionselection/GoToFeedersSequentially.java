@@ -39,9 +39,7 @@ public class GoToFeedersSequentially extends Module {
 		boolean seeToGoFeeder = false;
 		for (Feeder f : visibleFeeders){
 			seeToGoFeeder |= f.getId() == togo;
-			System.out.print(f.getId() + " ");
 		}
-		System.out.println();
 
 		if (!seeToGoFeeder) {
 			// Turn 120
