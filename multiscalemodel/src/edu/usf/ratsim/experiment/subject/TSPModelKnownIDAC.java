@@ -2,6 +2,7 @@ package edu.usf.ratsim.experiment.subject;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
@@ -56,6 +57,8 @@ public class TSPModelKnownIDAC extends Model {
 		// Parameters for action voting
 		List<Float> connProbs = params.getChildFloatList("votesConnProbs");
 		float votesNormalizer = params.getChildFloat("votesNormalizer");
+		
+		Random r = RandomSingleton.getInstance();
 
 		LastTriedToEatGoalDecider lastTriedToEatGoalDecider = new LastTriedToEatGoalDecider(
 				"Last Tried To Eat Goal Decider");
@@ -105,6 +108,10 @@ public class TSPModelKnownIDAC extends Model {
 		int numStates = ((Float1dPort) jointPCLActivation
 				.getOutPort("jointState")).getSize();
 		value = new float[numStates][numActions + 1];
+		// Randomize weigths
+		for (int s = 0; s < numStates; s++)
+			for(int a = 0; a < numActions + 1; a++)
+				value[s][a] = (float) r.nextGaussian();
 		FloatMatrixPort valuePort = new FloatMatrixPort((Module) null, value);
 
 		// Voting mechanism for action selection
@@ -115,10 +122,10 @@ public class TSPModelKnownIDAC extends Model {
 		addModule(rlVotes);
 
 		// Add in port for dependency
-//		GoToFeeder gotofeeder = new GoToFeeder("Go To Feeder", subject,
-//				RandomSingleton.getInstance());
-		GoToFeedersSequentially gotofeeder = new GoToFeedersSequentially("Go To Feeder", subject,
+		GoToFeeder gotofeeder = new GoToFeeder("Go To Feeder", subject,
 				RandomSingleton.getInstance());
+//		GoToFeedersSequentially gotofeeder = new GoToFeedersSequentially("Go To Feeder", subject,
+//				RandomSingleton.getInstance());
 		gotofeeder.addInPort("votes", rlVotes.getOutPort("votes"));
 		Port takenActionPort = gotofeeder.getOutPort("takenAction");
 		addModule(gotofeeder);
