@@ -26,13 +26,7 @@ public class LastAteGoalDecider extends Module {
 		Int0dPort closestFeeder = (Int0dPort) getInPort("closestFeeder");
 		
 		if (subAte.get()) {
-			//currentGoal = closestFeeder.get();
-			int newGoal;
-			do{
-				newGoal = RandomSingleton.getInstance().nextInt(3);
-			} while (newGoal == currentGoal);
-			currentGoal = newGoal;
-				
+			currentGoal = closestFeeder.get();				
 		}
 
 		goalFeeder[0] = currentGoal;
