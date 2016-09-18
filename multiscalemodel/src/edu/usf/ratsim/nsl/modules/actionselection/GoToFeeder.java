@@ -40,9 +40,13 @@ public class GoToFeeder extends Module {
 
 		// Get action value for each visible feeder
 		List<ActionValue> avList = new LinkedList<ActionValue>();
-		for (Feeder f : visibleFeeders)
+		for (Feeder f : visibleFeeders){
 			// Votes at 0 are for feeder 1
-			avList.add(new ActionValue(f.getId(), votes.get(f.getId() - 1)));
+			avList.add(new ActionValue(f.getId(), votes.get(f.getId())));
+			System.out.print(f.getId() + " " + votes.get(f.getId()));
+		}
+		System.out.println();
+		
 		// Sort avList by value
 		Collections.sort(avList);
 		
