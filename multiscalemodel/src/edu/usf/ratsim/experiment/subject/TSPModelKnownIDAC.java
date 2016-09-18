@@ -11,24 +11,28 @@ import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.module.concat.Float1dSparseConcatModule;
+import edu.usf.micronsl.module.copy.Float1dCopyModule;
 import edu.usf.micronsl.module.copy.Float1dSparseCopyModule;
 import edu.usf.micronsl.port.Port;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
 import edu.usf.ratsim.nsl.modules.actionselection.GoToFeeder;
-import edu.usf.ratsim.nsl.modules.actionselection.GoToFeedersSequentially;
+import edu.usf.ratsim.nsl.modules.actionselection.GradientValue;
 import edu.usf.ratsim.nsl.modules.actionselection.GradientVotes;
 import edu.usf.ratsim.nsl.modules.celllayer.RndConjCellLayer;
 import edu.usf.ratsim.nsl.modules.goaldecider.LastTriedToEatGoalDecider;
 import edu.usf.ratsim.nsl.modules.input.ClosestFeeder;
+import edu.usf.ratsim.nsl.modules.input.SubjectAte;
 import edu.usf.ratsim.nsl.modules.input.SubjectTriedToEat;
 import edu.usf.ratsim.nsl.modules.intention.LastAteIntention;
 import edu.usf.ratsim.nsl.modules.intention.NoIntention;
+import edu.usf.ratsim.nsl.modules.rl.MultiStateAC;
+import edu.usf.ratsim.nsl.modules.rl.Reward;
 
 public class TSPModelKnownIDAC extends Model {
 
-	// One action per feeder
-	private int numActions = 5;
+	// One action per feeder, 0 is invalid
+	private int numActions = 6;
 	// One intention per feeder (last eaten) + one initial intention
 	private int numIntentions = 6;
 	// Value table for actions and state-values (Actor Critic)
@@ -57,6 +61,16 @@ public class TSPModelKnownIDAC extends Model {
 		// Parameters for action voting
 		List<Float> connProbs = params.getChildFloatList("votesConnProbs");
 		float votesNormalizer = params.getChildFloat("votesNormalizer");
+		float valueNormalizer = params.getChildFloat("valueNormalizer");
+		
+		// Rewarding params
+		float foodReward = params.getChildFloat("foodReward");
+		float nonFoodReward = params.getChildFloat("nonFoodReward");
+		
+		// RL params
+		float rlDiscountFactor = params.getChildFloat("rlDiscountFactor");
+		float alpha = params.getChildFloat("alpha");
+		float tracesDecay = params.getChildFloat("tracesDecay");
 		
 		Random r = RandomSingleton.getInstance();
 
@@ -111,7 +125,7 @@ public class TSPModelKnownIDAC extends Model {
 		// Randomize weigths
 		for (int s = 0; s < numStates; s++)
 			for(int a = 0; a < numActions + 1; a++)
-				value[s][a] = (float) r.nextGaussian();
+				value[s][a] = (float) r.nextGaussian() * .01f;
 		FloatMatrixPort valuePort = new FloatMatrixPort((Module) null, value);
 
 		// Voting mechanism for action selection
@@ -129,6 +143,11 @@ public class TSPModelKnownIDAC extends Model {
 		gotofeeder.addInPort("votes", rlVotes.getOutPort("votes"));
 		Port takenActionPort = gotofeeder.getOutPort("takenAction");
 		addModule(gotofeeder);
+		
+		// State calculation should be done after movement
+		for (RndConjCellLayer ccl : conjCellLayers)
+			ccl.addPreReq(gotofeeder);
+		lastTriedToEatGoalDecider.addPreReq(gotofeeder);
 
 		// Information to lastAteGoalDecider about the step
 		SubjectTriedToEat subTriedToEat = new SubjectTriedToEat(
@@ -143,7 +162,46 @@ public class TSPModelKnownIDAC extends Model {
 				subTriedToEat.getOutPort("subTriedToEat"));
 		lastTriedToEatGoalDecider.addInPort("closestFeeder",
 				closestFeeder.getOutPort("closestFeeder"));
+		
+		// Value estimation
+		GradientValue rlValue = new GradientValue("RL value estimation", numActions,
+				connProbs, numCCCellsPerLayer, valueNormalizer);
+		rlValue.addInPort("states",
+				jointPCLActivation.getOutPort("jointState"));
+		rlValue.addInPort("value", valuePort);
+		rlValue.addInPort("takenAction", takenActionPort);
+		addModule(rlValue);
+		
+		Float1dCopyModule rlValueCopy = new Float1dCopyModule(
+				"RL Value Estimation Before");
+		rlValueCopy.addInPort("toCopy",
+				(Float1dPort) rlValue.getOutPort("valueEst"), true);
+		addModule(rlValueCopy);
+		
+		// Rewarding schema
+		SubjectAte subAte = new SubjectAte("Subject Ate", subject);
+		subAte.addInPort("takenAction", takenActionPort); // just for dependency
+		addModule(subAte);
+		Reward reward = new Reward("Reward", foodReward, nonFoodReward);
+		reward.addInPort("subAte", subAte.getOutPort("subAte"));
+		addModule(reward);
 
+		// Actor Critic setup
+		MultiStateAC mspac = new MultiStateAC(
+				"RL Module",numActions, numStates,
+				rlDiscountFactor, alpha, tracesDecay);
+		mspac.addInPort("reward", reward.getOutPort("reward"));
+		mspac.addInPort("takenAction", takenActionPort);
+		mspac.addInPort("statesBefore", getModule("States Before")
+				.getOutPort("copy"));
+		mspac.addInPort("statesAfter",
+				jointPCLActivation.getOutPort("jointState"));
+		mspac.addInPort("value", valuePort);
+		mspac.addInPort("rlValueEstimationAfter",
+				rlValue.getOutPort("valueEst"));
+		mspac.addInPort("rlValueEstimationBefore",
+				getModule("RL Value Estimation Before").getOutPort("copy"));
+		addModule(mspac);
 	}
 
 	public void newTrial() {

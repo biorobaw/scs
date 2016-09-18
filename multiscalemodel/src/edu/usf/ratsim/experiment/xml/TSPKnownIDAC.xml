@@ -11,7 +11,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/tspSimpleRuns.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>false</display>
+			<display>true</display>
 		</params>
 	</universe>
 	
@@ -60,7 +60,7 @@
 			<!-- Reward value for food -->
 			<foodReward>1000</foodReward>
 			<!-- Reward value given when it doesnt eat -->
-			<nonFoodReward>-10</nonFoodReward>
+			<nonFoodReward>0</nonFoodReward>
 			<!-- Lambda discount factor for the learning algorithm -->
 			<rlDiscountFactor>1</rlDiscountFactor>
 			<!-- Alpha for the learning algorithm -->
