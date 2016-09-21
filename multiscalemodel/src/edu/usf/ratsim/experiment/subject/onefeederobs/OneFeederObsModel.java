@@ -1,4 +1,4 @@
-package edu.usf.ratsim.experiment.subject.threefeeders;
+package edu.usf.ratsim.experiment.subject.onefeederobs;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -33,26 +33,21 @@ import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.actionselection.StillExplorer;
 import edu.usf.ratsim.nsl.modules.actionselection.Voter;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.FlashingTaxicFoodFinderSchema;
-import edu.usf.ratsim.nsl.modules.actionselection.taxic.FlashingTaxicValueSchema;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.ObstacleEndTaxic;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicFoodManyFeedersManyActionsNotLast;
-import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicValueSchema;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 import edu.usf.ratsim.nsl.modules.celllayer.RndConjCellLayer;
-import edu.usf.ratsim.nsl.modules.goaldecider.LastTriedToEatGoalDecider;
-import edu.usf.ratsim.nsl.modules.goaldecider.OneThenTheOtherGoalDecider;
 import edu.usf.ratsim.nsl.modules.input.ClosestFeeder;
 import edu.usf.ratsim.nsl.modules.input.SubjectAte;
 import edu.usf.ratsim.nsl.modules.input.SubjectTriedToEat;
 import edu.usf.ratsim.nsl.modules.intention.Intention;
-import edu.usf.ratsim.nsl.modules.intention.LastAteIntention;
 import edu.usf.ratsim.nsl.modules.intention.NoIntention;
-import edu.usf.ratsim.nsl.modules.rl.MultiStateACTaxic;
+import edu.usf.ratsim.nsl.modules.rl.MultiStateAC;
 import edu.usf.ratsim.nsl.modules.rl.MultiStateProportionalQL;
 import edu.usf.ratsim.nsl.modules.rl.QLAlgorithm;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
 
-public class ThreeFeedersModel extends Model {
+public class OneFeederObsModel extends Model {
 
 	// private ProportionalExplorer actionPerformerVote;
 	// private List<WTAVotes> qLActionSel;
@@ -65,10 +60,10 @@ public class ThreeFeedersModel extends Model {
 	private int numActions;
 	private QLAlgorithm rlAlg;
 
-	public ThreeFeedersModel() {
+	public OneFeederObsModel() {
 	}
 
-	public ThreeFeedersModel(ElementWrapper params, Subject subject,
+	public OneFeederObsModel(ElementWrapper params, Subject subject,
 			LocalizableRobot lRobot) {
 		// Get some configuration values for place cells + qlearning
 		float minPCRadius = params.getChildFloat("minPCRadius");
@@ -88,7 +83,7 @@ public class ThreeFeedersModel extends Model {
 		float initialValue = params.getChildFloat("initialValue");
 		float foodReward = params.getChildFloat("foodReward");
 		float nonFoodReward = params.getChildFloat("nonFoodReward");
-		int numIntentions = params.getChildInt("numIntentions");
+		int numIntentions = 1;
 		float flashingReward = params.getChildFloat("flashingReward");
 		float flashingNegReward = params.getChildFloat("flashingNegReward");
 		float nonFlashingReward = params.getChildFloat("nonFlashingReward");
@@ -120,32 +115,8 @@ public class ThreeFeedersModel extends Model {
 		// qLActionSel = new LinkedList<WTAVotes>();
 		exploration = new LinkedList<DecayingExplorationSchema>();
 
-		// beforeActiveGoalDecider = new ActiveGoalDecider(
-		// BEFORE_ACTIVE_GOAL_DECIDER_STR, this);
-//		LastAteGoalDecider lastAteGoalDecider = new LastAteGoalDecider(
-//				"Last Ate Goal Decider");
-//		addModule(lastAteGoalDecider);
-
-		LastTriedToEatGoalDecider lastTriedToEatGoalDecider = new LastTriedToEatGoalDecider(
-				"Last Tried To Eat Goal Decider");
-		addModule(lastTriedToEatGoalDecider);
-//
-//		ActiveFeederGoalDecider activeFeederGoalDecider = new ActiveFeederGoalDecider(
-//				"Active Feeder Goal Decider");
-//		addModule(activeFeederGoalDecider);
-
-		OneThenTheOtherGoalDecider oneThenTheOtherGoalDecider = new OneThenTheOtherGoalDecider(
-				"One Then The Other Goal Decider",lRobot);
-		addModule(oneThenTheOtherGoalDecider);
-
-		Module intention;
-		if (numIntentions > 1) {
-			intention = new LastAteIntention("Intention", numIntentions);
-			intention.addInPort("goalFeeder",
-					oneThenTheOtherGoalDecider.getOutPort("goalFeeder"));
-		} else {
-			intention = new NoIntention("Intention", numIntentions);
-		}
+		// No intention, but needer for conj cells
+		NoIntention intention = new NoIntention("Intention", numIntentions);
 		addModule(intention);
 		intentionGetter = (Intention) intention;
 
@@ -216,8 +187,6 @@ public class ThreeFeedersModel extends Model {
 		TaxicFoodManyFeedersManyActionsNotLast taxicff = new TaxicFoodManyFeedersManyActionsNotLast(
 				"Taxic Food Finder", subject, lRobot, nonFlashingReward,
 				nonFlashingNegReward, taxicDiscountFactor, estimateValue);
-		taxicff.addInPort("goalFeeder",
-				lastTriedToEatGoalDecider.getOutPort("goalFeeder"), true);
 		addModule(taxicff);
 		votesPorts.add((Float1dPort) taxicff.getOutPort("votes"));
 
@@ -282,38 +251,6 @@ public class ThreeFeedersModel extends Model {
 		// attExpl.addInPort("takenAction", takenActionPort, true);
 		stillExpl.addInPort("takenAction", takenActionPort, true);
 
-		List<Port> taxicValueEstimationPorts = new LinkedList<Port>();
-		TaxicValueSchema taxVal = new TaxicValueSchema("Taxic Value Estimator",
-				subject, lRobot, nonFlashingReward, nonFoodReward,
-				taxicDiscountFactor, estimateValue);
-		taxVal.addInPort("goalFeeder",
-				lastTriedToEatGoalDecider.getOutPort("goalFeeder"));
-		taxVal.addInPort("takenAction", takenActionPort); // just for dependency
-		taxicValueEstimationPorts.add(taxVal.getOutPort("value"));
-		addModule(taxVal);
-
-		FlashingTaxicValueSchema flashTaxVal = new FlashingTaxicValueSchema(
-				"Flashing Taxic Value Estimator", subject, lRobot,
-				flashingReward, nonFoodReward, taxicDiscountFactor,
-				estimateValue);
-		flashTaxVal.addInPort("goalFeeder",
-				oneThenTheOtherGoalDecider.getOutPort("goalFeeder"));
-		flashTaxVal.addInPort("takenAction", takenActionPort); // just for
-																// dependency
-		taxicValueEstimationPorts.add(flashTaxVal.getOutPort("value"));
-		addModule(flashTaxVal);
-
-		Float1dSumModule sumTaxicValue = new Float1dSumModule(
-				"Taxic joint value estimation");
-		sumTaxicValue.addInPorts(taxicValueEstimationPorts);
-		addModule(sumTaxicValue);
-
-		Float1dCopyModule taxicValueCopy = new Float1dCopyModule(
-				"Taxic Value Estimation Before");
-		taxicValueCopy.addInPort("toCopy",
-				(Float1dPort) sumTaxicValue.getOutPort("jointState"), true);
-		addModule(taxicValueCopy);
-
 		if (voteType.equals("halfAndHalfConnection"))
 			rlValue = new HalfAndHalfConnectionValue("RL value estimation",
 					numActions, cellContribution);
@@ -354,19 +291,7 @@ public class ThreeFeedersModel extends Model {
 		closestFeeder.addInPort("takenAction", takenActionPort);
 		addModule(closestFeeder);
 
-//		lastAteGoalDecider.addInPort("subAte", subAte.getOutPort("subAte"));
-//		lastAteGoalDecider.addInPort("closestFeeder",
-//				closestFeeder.getOutPort("closestFeeder"));
-		lastTriedToEatGoalDecider.addInPort("subTriedToEat",
-				subTriedToEat.getOutPort("subTriedToEat"));
-		lastTriedToEatGoalDecider.addInPort("closestFeeder",
-				closestFeeder.getOutPort("closestFeeder"));
-		oneThenTheOtherGoalDecider.addInPort("subAte", subAte.getOutPort("subAte"));
-		oneThenTheOtherGoalDecider.addInPort("closestFeeder",
-				closestFeeder.getOutPort("closestFeeder"));
-		oneThenTheOtherGoalDecider.addInPort("subTriedToEat",
-				subTriedToEat.getOutPort("subTriedToEat"));
-		
+
 		Reward reward = new Reward("Reward", foodReward, nonFoodReward);
 		reward.addInPort("subAte", subAte.getOutPort("subAte"));
 		addModule(reward);
@@ -394,9 +319,9 @@ public class ThreeFeedersModel extends Model {
 			addModule(mspql);
 			rlAlg = mspql;
 		} else if (rlType.equals("actorCritic")) {
-			MultiStateACTaxic mspac = new MultiStateACTaxic(
+			MultiStateAC mspac = new MultiStateAC(
 					"RL Module",numActions, numStates,
-					taxicDiscountFactor, rlDiscountFactor, alpha, tracesDecay);
+					rlDiscountFactor, alpha, tracesDecay);
 			mspac.addInPort("reward", reward.getOutPort("reward"));
 			mspac.addInPort("takenAction", takenActionPort);
 			mspac.addInPort("statesBefore", getModule("States Before")
@@ -404,12 +329,6 @@ public class ThreeFeedersModel extends Model {
 			mspac.addInPort("statesAfter",
 					jointPCHDIntentionState.getOutPort("jointState"));
 			mspac.addInPort("value", valuePort);
-			mspac.addInPort("taxicValueEstimationAfter",
-					sumTaxicValue.getOutPort("jointState"));
-			mspac.addInPort(
-					"taxicValueEstimationBefore",
-					getModule("Taxic Value Estimation Before").getOutPort(
-							"copy"));
 			mspac.addInPort("rlValueEstimationAfter",
 					rlValue.getOutPort("valueEst"));
 			mspac.addInPort("rlValueEstimationBefore",

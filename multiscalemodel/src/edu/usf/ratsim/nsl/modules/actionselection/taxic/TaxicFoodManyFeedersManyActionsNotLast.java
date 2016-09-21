@@ -17,7 +17,7 @@ import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
 
-public class TaxicFoodManyFeedersManyActions extends Module {
+public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 
 	public float[] votes;
 	private float reward;
@@ -26,7 +26,7 @@ public class TaxicFoodManyFeedersManyActions extends Module {
 	private LocalizableRobot robot;
 	private float negReward;
 
-	public TaxicFoodManyFeedersManyActions(String name, Subject subject,
+	public TaxicFoodManyFeedersManyActionsNotLast(String name, Subject subject,
 			LocalizableRobot robot, float reward, float negReward,
 			float lambda, boolean estimateValue) {
 		super(name);
@@ -51,8 +51,6 @@ public class TaxicFoodManyFeedersManyActions extends Module {
 	 * goal).
 	 */
 	public void run() {
-		Int1dPortArray goalFeeder = (Int1dPortArray) getInPort("goalFeeder");
-
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;
 
@@ -70,8 +68,7 @@ public class TaxicFoodManyFeedersManyActions extends Module {
 				if (af instanceof TurnAffordance
 						|| af instanceof ForwardAffordance) {
 					if (!feederToEat) {
-						for (Feeder f : robot.getVisibleFeeders(goalFeeder
-								.getData())) {
+						for (Feeder f : robot.getVisibleFeeders(null)) {
 							if (f != null) {
 								Point3f newPos = GeomUtils.simulate(
 										f.getPosition(), af);

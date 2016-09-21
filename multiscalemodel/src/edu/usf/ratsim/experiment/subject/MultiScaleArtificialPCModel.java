@@ -35,7 +35,7 @@ import edu.usf.ratsim.nsl.modules.actionselection.Voter;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.FlashingTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.FlashingTaxicValueSchema;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.ObstacleEndTaxic;
-import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicFoodManyFeedersManyActions;
+import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicFoodManyFeedersManyActionsNotLast;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicValueSchema;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 import edu.usf.ratsim.nsl.modules.celllayer.RndConjCellLayer;
@@ -213,7 +213,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
-		TaxicFoodManyFeedersManyActions taxicff = new TaxicFoodManyFeedersManyActions(
+		TaxicFoodManyFeedersManyActionsNotLast taxicff = new TaxicFoodManyFeedersManyActionsNotLast(
 				"Taxic Food Finder", subject, lRobot, nonFlashingReward,
 				nonFlashingNegReward, taxicDiscountFactor, estimateValue);
 		taxicff.addInPort("goalFeeder",

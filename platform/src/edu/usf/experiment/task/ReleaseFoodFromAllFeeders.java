@@ -3,21 +3,18 @@ package edu.usf.experiment.task;
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
-import edu.usf.experiment.task.Task;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
+/**
+ * Task to activate all enabled feeders
+ * @author ludo
+ *
+ */
+public class ReleaseFoodFromAllFeeders extends Task {
 
-public class ClearWallsTask extends Task {
-
-
-
-	public ClearWallsTask(ElementWrapper params) {
+	public ReleaseFoodFromAllFeeders(ElementWrapper params) {
 		super(params);
-	}
-
-	public void perform(Universe u) {
-		u.clearWalls();
 	}
 
 	@Override
@@ -33,6 +30,11 @@ public class ClearWallsTask extends Task {
 	@Override
 	public void perform(Episode episode) {
 		perform(episode.getUniverse());
+	}
+	
+	private void perform(Universe u){
+		for (Integer f : u.getEnabledFeeders())
+			u.releaseFood(f);
 	}
 
 }
