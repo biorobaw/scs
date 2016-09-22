@@ -423,7 +423,7 @@
 				<task>
 					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
 					<params>
-						<timeout>150</timeout>
+						<timeout>500</timeout>
 					</params>
 				</task>
 			</afterCycleTasks>
