@@ -9,7 +9,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/oneFeeder.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>true</display>
+			<display>false</display>
 		</params>
 	</universe>
 	
@@ -353,42 +353,9 @@
 			<group>Dorsal</group>
 			<group>Ventral</group>
 			<group>NegControl</group>
-			<group>TimeoutControl</group>
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
-			<!-- Deactivation of a proportion of HPC layers -->
-			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
-				<params>
-					<group>Ventral</group>
-					<layers>2</layers>
-					<proportion>.5</proportion>
-					<constant>2.3</constant>
-				</params>
-			</task>
-			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
-				<params>
-					<group>Dorsal</group>
-					<layers>0</layers>
-					<proportion>.5</proportion>
-					<constant>2.3</constant>
-				</params>
-			</task>
-			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
-				<params>
-					<group>NegControl</group>
-					<layers>0,1,2</layers>
-					<proportion>.5</proportion>
-					<constant>2.3</constant>
-				</params>
-			</task>
-			<!-- 
-			<task>
-				<name>edu.usf.experiment.task.AddSmallWallsTask</name>
-			</task>Add small obstacles -->
 		</beforeTrialTasks>
 		<!-- Episodes definition -->
 		<episodes>
@@ -716,6 +683,9 @@
 	<afterExperimentPlotters>
 		<plotter>
 			<name>edu.usf.experiment.plot.RuntimePerTrialPlotter</name>
+		</plotter>
+		<plotter>
+			<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
 		</plotter>
 		<plotter>
 			<name>edu.usf.experiment.plot.RPlotter</name>
