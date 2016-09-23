@@ -9,7 +9,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/oneFeeder.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>true</display>
+			<display>false</display>
 		</params>
 	</universe>
 	
@@ -62,7 +62,7 @@
 			<!-- Maximum conjuntive layer cell radius -->
 			<maxPCRadius>.1428</maxPCRadius>
 			<!-- Type of conjunctive cell -->
-			<placeCells>ExponentialConjCell</placeCells>
+			<placeCells>ExponentialWallConjCell</placeCells>
 			<votesNormalizer>1</votesNormalizer>
 			<valueNormalizer>1</valueNormalizer>
 			<!-- Wall cell modulation. How much does a wall modulate the place field. Greater
@@ -87,7 +87,7 @@
 			<!-- Alpha for the learning algorithm -->
 			<alpha>.5</alpha>
 			<!-- Elegibility traces for the learning algorithm -->
-			<tracesDecay>.75</tracesDecay>
+			<tracesDecay>.85</tracesDecay>
 			<!-- Initial value for values and action values -->
 			<initialValue>0</initialValue>
 			<!-- Value associated with a flashing feeder -->
