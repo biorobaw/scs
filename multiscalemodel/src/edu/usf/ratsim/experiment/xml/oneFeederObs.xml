@@ -48,7 +48,7 @@
 			<!-- Size of each layer in millimeters -->
 			<layerLengths>3,3,3</layerLengths>
 			<!-- Number of cells per layer -->
-			<numCCCellsPerLayer>2000,1200,800</numCCCellsPerLayer>
+			<numCCCellsPerLayer>200000,120000,80000</numCCCellsPerLayer>
 			<!-- Type of learning -->
 			<rlType>actorCritic</rlType>
 			<!-- Type of conjunctive layer -> learning connection -->
@@ -63,8 +63,8 @@
 			<maxPCRadius>.1428</maxPCRadius>
 			<!-- Type of conjunctive cell -->
 			<placeCells>ExponentialWallConjCell</placeCells>
-			<votesNormalizer>1</votesNormalizer>
-			<valueNormalizer>1</valueNormalizer>
+			<votesNormalizer>20</votesNormalizer>
+			<valueNormalizer>20</valueNormalizer>
 			<!-- Wall cell modulation. How much does a wall modulate the place field. Greater
 				means less activity -->
 			<wallInhibition>0.1</wallInhibition>
@@ -87,7 +87,7 @@
 			<!-- Alpha for the learning algorithm -->
 			<alpha>.5</alpha>
 			<!-- Elegibility traces for the learning algorithm -->
-			<tracesDecay>.85</tracesDecay>
+			<tracesDecay>.75</tracesDecay>
 			<!-- Initial value for values and action values -->
 			<initialValue>0</initialValue>
 			<!-- Value associated with a flashing feeder -->
@@ -217,7 +217,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>12</number>
+			<number>50</number>
 			<!-- Sleep between cycles for visualization -->
 			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
@@ -386,6 +386,17 @@
 					<constant>2.3</constant>
 				</params>
 			</task>
+			<!-- Place the animat in a given place before wall placement to avoid walls in near the robot -->
+			<task>
+				<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+				<params>
+					<point>
+						<x>-.6</x>
+						<y>-.6</y>
+						<theta>0</theta>
+					</point>
+				</params>
+			</task>
 			<!-- Add small obstacles -->
 			<task>
 				<name>edu.usf.experiment.task.AddSmallWallsTask</name>
@@ -425,6 +436,7 @@
 						</point>
 					</params>
 				</task>
+
 			</beforeEpisodeTasks>
 			<!-- Tasks to performe before each cycle -->
 			<beforeCycleTasks>

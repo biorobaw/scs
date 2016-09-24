@@ -409,4 +409,8 @@ public abstract class Universe {
 		walls.clear();
 	}
 
+	public float shortestDistanceToRobot(LineSegment wall) {
+		return (float) wall.distance(new Coordinate(getRobotPosition().x, getRobotPosition().y));
+	}
+
 }
