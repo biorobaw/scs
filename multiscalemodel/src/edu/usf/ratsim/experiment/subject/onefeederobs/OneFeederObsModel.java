@@ -168,7 +168,7 @@ public class OneFeederObsModel extends Model {
 			List<Float> connProbs = params.getChildFloatList("votesConnProbs");
 			float votesNormalizer = params.getChildFloat("votesNormalizer");
 			rlVotes = new GradientVotes("RL votes", numActions, connProbs,
-					numCCCellsPerLayer, votesNormalizer);
+					numCCCellsPerLayer, votesNormalizer, foodReward);
 		} else if (voteType.equals("halfAndHalfConnection"))
 			rlVotes = new HalfAndHalfConnectionVotes("RL votes", numActions,
 					cellContribution);
@@ -260,7 +260,7 @@ public class OneFeederObsModel extends Model {
 			List<Float> connProbs = params.getChildFloatList("valueConnProbs");
 			float valueNormalizer = params.getChildFloat("valueNormalizer");
 			rlValue = new GradientValue("RL value estimation", numActions,
-					connProbs, numCCCellsPerLayer, valueNormalizer);
+					connProbs, numCCCellsPerLayer, valueNormalizer, foodReward);
 		} else
 			throw new RuntimeException("Vote mechanism not implemented");
 		rlValue.addInPort("states",

@@ -9,9 +9,11 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/oneFeeder.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>false</display>
+			<display>true</display>
 		</params>
 	</universe>
+	
+	<plot>true</plot>
 	
 	<robot>
 		<!-- Robot to use. Use full name of the class -->

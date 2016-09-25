@@ -16,9 +16,10 @@ public class GradientVotes extends Module implements Voter {
 	public float[] actionVote;
 	private int numActions;
 	private boolean[] connected;
+	private float foodReward;
 
 	public GradientVotes(String name, int numActions, List<Float> connProbs,
-			List<Integer> statesPerLayer, float normalizer) {
+			List<Integer> statesPerLayer, float normalizer, float foodReward) {
 		super(name);
 
 		actionVote = new float[numActions];
@@ -43,6 +44,7 @@ public class GradientVotes extends Module implements Voter {
 		}
 		
 		this.normalizer = normalizer;
+		this.foodReward = foodReward;
 	}
 
 	public void run() {
@@ -67,10 +69,15 @@ public class GradientVotes extends Module implements Voter {
 			}
 		}
 
-		// Normalize
+//		// Normalize
+//		for (int action = 0; action < numActions; action++)
+//			// Normalize with real value and revert previous normalization
+//			actionVote[action] = (float) (actionVote[action] / normalizer);
+		
 		for (int action = 0; action < numActions; action++)
 			// Normalize with real value and revert previous normalization
-			actionVote[action] = (float) (actionVote[action] / normalizer);
+			if (actionVote[action] > foodReward)
+				actionVote[action] = foodReward;
 
 		if (Debug.printValues) {
 			System.out.println("RL votes");
