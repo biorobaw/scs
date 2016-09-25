@@ -1,6 +1,7 @@
 package edu.usf.experiment;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 import edu.usf.experiment.condition.Condition;
@@ -44,12 +45,15 @@ public class Episode {
 	private List<Logger> beforeCycleLoggers;
 	private List<Logger> afterCycleLoggers;
 	private List<Logger> afterEpisodeLoggers;
+	private boolean makePlots;
 
-	public Episode(ElementWrapper episodeNode, String parentLogPath, Trial trial, int episodeNumber) {
+	public Episode(ElementWrapper episodeNode, String parentLogPath, Trial trial, int episodeNumber, boolean makePlots) {
 		this.trial = trial;
 		this.episodeNumber = episodeNumber;
 		this.sleep = episodeNode.getChildInt("sleep");
-
+		this.makePlots = makePlots;
+		
+		
 		logPath = parentLogPath
 				+ File.separator + episodeNumber + File.separator
 				+ getSubject().getGroup() + File.separator
@@ -68,10 +72,15 @@ public class Episode {
 				episodeNode.getChild("afterEpisodeTasks"));
 		stopConds = ConditionLoader.getInstance().load(
 				episodeNode.getChild("stopConditions"));
-		beforeEpisodePlotters = PlotterLoader.getInstance().load(
-				episodeNode.getChild("beforeEpisodePlotters"), logPath);
-		afterEpisodePlotters = PlotterLoader.getInstance().load(
-				episodeNode.getChild("afterEpisodePlotters"), logPath);
+		if (makePlots){
+			beforeEpisodePlotters = PlotterLoader.getInstance().load(
+					episodeNode.getChild("beforeEpisodePlotters"), logPath);
+			afterEpisodePlotters = PlotterLoader.getInstance().load(
+					episodeNode.getChild("afterEpisodePlotters"), logPath);
+		} else {
+			beforeEpisodePlotters = new LinkedList<Plotter>();
+			afterEpisodePlotters = new LinkedList<Plotter>();
+		}
 		beforeEpisodeLoggers = LoggerLoader.getInstance().load(
 				episodeNode.getChild("beforeEpisodeLoggers"), logPath);
 		beforeCycleLoggers = LoggerLoader.getInstance().load(

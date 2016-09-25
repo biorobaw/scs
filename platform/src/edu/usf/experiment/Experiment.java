@@ -38,6 +38,7 @@ public class Experiment implements Runnable {
 	private List<Task> afterTasks;
 	private Universe universe;
 	private Subject subject;
+	private boolean makePlots;
 
 	protected Experiment(){
 		
@@ -104,7 +105,12 @@ public class Experiment implements Runnable {
 		universe = UniverseLoader.getInstance().load(root, logPath);
 
 		Robot robot = RobotLoader.getInstance().load(root);
-
+		
+		if (root.getChild("plot") != null)
+			makePlots = root.getChildBoolean("plot");
+		else
+			makePlots = true;
+		
 		long seed;
 		if (root.getChildText("seed") != null) {
 			seed = root.getChildLong("seed");
@@ -127,7 +133,7 @@ public class Experiment implements Runnable {
 
 		// Load trials that apply to the subject
 		trials = XMLExperimentParser.loadTrials(root, logPath, subject,
-				universe);
+				universe, makePlots);
 
 		// Load tasks and plotters
 		ElementWrapper params = root;
