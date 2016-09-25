@@ -64,9 +64,9 @@
 			<!-- Maximum conjuntive layer cell radius -->
 			<maxPCRadius>.1428</maxPCRadius>
 			<!-- Type of conjunctive cell -->
-			<placeCells>ExponentialWallConjCell</placeCells>
+			<placeCells>ExponentialConjCell</placeCells>
 			<votesNormalizer>20</votesNormalizer>
-			<valueNormalizer>20</valueNormalizer>
+			<valueNormalizer>40</valueNormalizer>
 			<!-- Wall cell modulation. How much does a wall modulate the place field. Greater
 				means less activity -->
 			<wallInhibition>0.1</wallInhibition>
