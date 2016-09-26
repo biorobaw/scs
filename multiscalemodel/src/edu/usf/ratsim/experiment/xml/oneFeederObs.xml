@@ -50,7 +50,7 @@
 			<!-- Size of each layer in millimeters -->
 			<layerLengths>3,3,3</layerLengths>
 			<!-- Number of cells per layer -->
-			<numCCCellsPerLayer>200000,120000,80000</numCCCellsPerLayer>
+			<numCCCellsPerLayer>20000,12000,8000</numCCCellsPerLayer>
 			<!-- Type of learning -->
 			<rlType>actorCritic</rlType>
 			<!-- Type of conjunctive layer -> learning connection -->
@@ -65,8 +65,8 @@
 			<maxPCRadius>.1428</maxPCRadius>
 			<!-- Type of conjunctive cell -->
 			<placeCells>ExponentialConjCell</placeCells>
-			<votesNormalizer>20</votesNormalizer>
-			<valueNormalizer>40</valueNormalizer>
+			<votesNormalizer>0</votesNormalizer>
+			<valueNormalizer>4</valueNormalizer>
 			<!-- Wall cell modulation. How much does a wall modulate the place field. Greater
 				means less activity -->
 			<wallInhibition>0.1</wallInhibition>
