@@ -29,7 +29,7 @@ public class AddSmallWallsTask extends Task {
 	private int watchDogCount;
 	private static final float MIN_DIST_TO_FEEDERS = 0.05f;
 	private static final float LENGTH = .25f;
-	private static final int NUM_WALLS = 20;
+	private static final int NUM_WALLS = 14;
 	private static final float NEAR_WALL_RADIUS = .44f;
 	private static final float DISTANCE_INTERIOR_WALLS = .1f;
 	private static final float MIN_DIST_TO_FEEDERS_INTERIOR = 0.1f;
@@ -38,7 +38,7 @@ public class AddSmallWallsTask extends Task {
 	private static final double MIN_DIST_TO_OTHER_OUTER = .1;
 	private static final int MAX_WATCH_DOG = 10000;
 	private static final float MIN_ANGLE_DISTANCE_OUTER = (float) (2 * Math.PI / (2 * 8));
-	private static final float MIN_DIST_TO_ROBOT = .1f;
+	private static final float MIN_DIST_TO_ROBOT = .2f;
 
 	public AddSmallWallsTask(ElementWrapper params) {
 		super(params);
