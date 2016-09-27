@@ -22,6 +22,7 @@ import java.util.Scanner;
  */
 public class IRReader extends Thread {
 
+	private static final float CLOSETHRS = 5.0f;
 	float leftIR, rightIR, frontIR;
 	private Scanner scanner;
 
@@ -33,7 +34,7 @@ public class IRReader extends Thread {
 		CommPortIdentifier portIdentifier;
 		try {
 			portIdentifier = CommPortIdentifier
-					.getPortIdentifier("/dev/ttyACM0");
+					.getPortIdentifier("/dev/uno");
 			if (portIdentifier.isCurrentlyOwned()) {
 				System.out.println("Error: Port is currently in use");
 			} else {
@@ -68,8 +69,9 @@ public class IRReader extends Thread {
 		while (true) {
 			synchronized (this) {
 				leftIR = scanner.nextFloat();
-				rightIR = scanner.nextFloat();
 				frontIR = scanner.nextFloat();
+				rightIR = scanner.nextFloat();
+			//	System.out.println(leftIR + " " + frontIR + " " + rightIR);
 			}
 			try {
 				Thread.sleep(10);
@@ -80,16 +82,20 @@ public class IRReader extends Thread {
 		}
 	}
 
-	private synchronized float getLeftIR() {
+	public synchronized float getLeftIR() {
 		return leftIR;
 	}
 
-	private synchronized float getRightIR() {
+	public synchronized float getRightIR() {
 		return rightIR;
 	}
 
-	private synchronized float getFrontIR() {
+	public synchronized float getFrontIR() {
 		return frontIR;
+	}
+	
+	public synchronized boolean somethingClose(){
+		return leftIR < CLOSETHRS || rightIR < CLOSETHRS || frontIR < CLOSETHRS;
 	}
 
 	/**
