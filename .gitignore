@@ -1,4 +1,5 @@
 *.RData
+deps/RXTX*
 out
 *~
 javadocs/*
