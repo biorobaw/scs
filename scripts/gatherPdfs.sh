@@ -6,4 +6,4 @@ cd $logs
 
 mkdir figs
 
-find . -iname "*.pdf" -exec ln  {} figs/$(filename {}) \;
+find . -iname "*.pdf" -exec ln  {} figs/ \;
