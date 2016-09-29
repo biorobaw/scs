@@ -4,7 +4,7 @@
                 <param name="camera_frame_id" value="usb_cam" />
                 <param name="io_method" value="mmap" />
                 <param name="pixel_format" value="yuyv" />
-		<param name="camera_info_url" value="file://$(find visual_features_extractor)/cfg/head_camera.yaml"/>
+		<param name="camera_info_url" value="file:///home/martin/head_camera.yaml"/>
 	</node>
 
 	<node pkg="tf" type="static_transform_publisher" name="camtf" args="0.0 0.0 0.0 0.0 0.0 0.0 1.0 map usb_cam 10" output="screen"/>
