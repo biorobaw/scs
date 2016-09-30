@@ -214,6 +214,8 @@ public class SSLRobot extends LocalizableRobot {
 	public static void main(String[] args) throws InterruptedException{
 		SSLRobot r = new SSLRobot(null);
 		
+		r.startRobot();
+		
 		r.forward(10);
 		Thread.sleep(1000);
 		
