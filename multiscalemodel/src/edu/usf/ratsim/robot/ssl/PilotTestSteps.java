@@ -45,11 +45,25 @@ public class PilotTestSteps extends Thread{
 				if (irReader.somethingClose()){
 					state = 't';
 					if (r.nextBoolean())
-						while(irReader.somethingClose())
+						while(irReader.somethingClose()){
 							pilot.stepLeft();
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
 					else
-						while(irReader.somethingClose())
+						while(irReader.somethingClose()){
 							pilot.stepRight();
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
 				}
 				break;
 			case 't':
