@@ -13,7 +13,7 @@ import java.io.OutputStream;
 public class SSLPilot {
 
 	private static final long FORWARD_SLEEP = 1000;
-	private static final long TURN_SLEEP = 500;
+	private static final long TURN_SLEEP = 200;
 	public final int FWDVEL = 2;
 	public final int ROTVEL = 1;
 
