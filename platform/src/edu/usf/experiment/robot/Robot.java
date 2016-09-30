@@ -55,12 +55,6 @@ public abstract class Robot {
 	 */
 	public abstract void rotate(float degrees);
 
-	/**
-	 * Get a list of all visible landmarks
-	 * @return
-	 */
-	public abstract List<Landmark> getLandmarks();
-
 	public abstract Feeder getFlashingFeeder();
 
 	public abstract boolean seesFlashingFeeder();

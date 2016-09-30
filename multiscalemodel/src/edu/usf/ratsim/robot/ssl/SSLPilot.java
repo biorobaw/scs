@@ -12,11 +12,14 @@ import java.io.OutputStream;
 
 public class SSLPilot {
 
+	private static final long FORWARD_SLEEP = 1000;
+	private static final long TURN_SLEEP = 500;
 	public final int FWDVEL = 2;
 	public final int ROTVEL = 1;
 
 
 	private OutputStream outStream;
+	private SerialPort serialPort;
 
 	public SSLPilot() {
 		CommPortIdentifier portIdentifier;
@@ -29,7 +32,7 @@ public class SSLPilot {
 				CommPort commPort = portIdentifier.open(this.getClass()
 						.getName(), 2000);
 
-				SerialPort serialPort = (SerialPort) commPort;
+				serialPort = (SerialPort) commPort;
 				serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8,
 						SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 
@@ -81,6 +84,44 @@ public class SSLPilot {
 	public void right(){
 		sendVels(-ROTVEL,-ROTVEL,ROTVEL,ROTVEL);
 	}
+	
+	public void still() {
+		sendVels(0,0,0,0);
+	}
+
+
+	public void stepForward() {
+		forward();
+		try {
+			Thread.sleep(FORWARD_SLEEP);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		still();
+	}
+	
+	public void stepRight() {
+		right();
+		try {
+			Thread.sleep(TURN_SLEEP);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		still();
+	}
+	
+	public void stepLeft() {
+		left();
+		try {
+			Thread.sleep(TURN_SLEEP);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		still();
+	}
 
 	public void stop(){
 		sendVels(0,0,0,0);
@@ -102,5 +143,15 @@ public class SSLPilot {
 		p.sendVels(0, 0, 0,0);
 		
 	}
+
+	public void close() {
+		try {
+			outStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		serialPort.close();
+	}
+
 
 }

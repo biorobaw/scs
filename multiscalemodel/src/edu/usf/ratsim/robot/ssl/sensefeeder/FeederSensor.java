@@ -36,7 +36,7 @@ public class FeederSensor extends Thread {
 
 			if (serverSocket != null)
 				serverSocket.close();
-			
+
 			System.out.println("Listening to " + PORT);
 			serverSocket = new ServerSocket(PORT);
 			protoSocket = serverSocket.accept();
@@ -52,8 +52,8 @@ public class FeederSensor extends Thread {
 		while (!terminated) {
 			try {
 				Feeders newFs = Feeders.parseDelimitedFrom(protoInputStream);
-				
-				if (fs == null){
+
+				if (fs == null) {
 					setFeeders(Feeders.getDefaultInstance());
 					establishConnection();
 				} else
@@ -65,10 +65,10 @@ public class FeederSensor extends Thread {
 		}
 	}
 
-	private synchronized void setFeeders(Feeders fs){
+	private synchronized void setFeeders(Feeders fs) {
 		this.fs = fs;
 	}
-	
+
 	public synchronized boolean isSeeinFeeder() {
 		return !fs.getFeedersList().isEmpty();
 	}
@@ -79,7 +79,7 @@ public class FeederSensor extends Thread {
 			p = new Point3f(fs.getFeeders(0).getX(), fs.getFeeders(0).getY(), 0);
 		else
 			p = null;
-		
+
 		return p;
 	}
 
@@ -96,6 +96,17 @@ public class FeederSensor extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+	}
+
+	public void close() {
+		try {
+			protoInputStream.close();
+			serverSocket.close();
+			protoSocket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

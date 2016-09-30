@@ -25,11 +25,16 @@ public class IRReader extends Thread {
 	private static final float CLOSETHRS = 5.0f;
 	float leftIR, rightIR, frontIR;
 	private Scanner scanner;
+	private boolean terminate;
+	private InputStream in;
+	private SerialPort serialPort;
 
 	public IRReader() {
 		leftIR = 0;
 		rightIR = 0;
 		frontIR = 0;
+		
+		terminate = false;
 
 		CommPortIdentifier portIdentifier;
 		try {
@@ -41,11 +46,11 @@ public class IRReader extends Thread {
 				CommPort commPort = portIdentifier.open(this.getClass()
 						.getName(), 2000);
 
-				SerialPort serialPort = (SerialPort) commPort;
+				serialPort = (SerialPort) commPort;
 				serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8,
 						SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 
-				InputStream in = serialPort.getInputStream();
+				in = serialPort.getInputStream();
 				scanner = new Scanner(in);
 			}
 		} catch (NoSuchPortException e) {
@@ -66,7 +71,7 @@ public class IRReader extends Thread {
 	}
 
 	public void run() {
-		while (true) {
+		while (!terminate) {
 			synchronized (this) {
 				leftIR = scanner.nextFloat();
 				frontIR = scanner.nextFloat();
@@ -80,6 +85,18 @@ public class IRReader extends Thread {
 				e.printStackTrace();
 			}
 		}
+		
+		try {
+			in.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		serialPort.close();
+	}
+	
+	public synchronized void terminate(){
+		terminate = true;
 	}
 
 	public synchronized float getLeftIR() {
@@ -117,6 +134,18 @@ public class IRReader extends Thread {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public boolean somethingLeft() {
+		return leftIR < CLOSETHRS;
+	}
+	
+	public boolean somethingRight() {
+		return rightIR < CLOSETHRS;
+	}
+	
+	public boolean somethingFront() {
+		return frontIR < CLOSETHRS;
 	}
 
 }
