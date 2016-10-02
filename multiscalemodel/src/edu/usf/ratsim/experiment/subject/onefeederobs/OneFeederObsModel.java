@@ -10,6 +10,7 @@ import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
@@ -129,7 +130,7 @@ public class OneFeederObsModel extends Model {
 			RndConjCellLayer ccl = new RndConjCellLayer("CCL "
 					+ i, lRobot, radius, minHDRadius, maxHDRadius,
 					numIntentions, numCCCellsPerLayer.get(i), placeCellType,
-					xmin, ymin, xmax, ymax, null,
+					xmin, ymin, xmax, ymax, new LinkedList<Feeder>(),
 					goalCellProportion, layerLengths.get(i), wallInhibition);
 			ccl.addInPort("intention", intention.getOutPort("intention"));
 			conjCellLayers.add(ccl);
