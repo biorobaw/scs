@@ -7,6 +7,7 @@ import javax.vecmath.Point3f;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
 /**
@@ -20,6 +21,10 @@ import edu.usf.experiment.utils.ElementWrapper;
 public abstract class Robot {
 	
 	public Robot(ElementWrapper params){
+		
+	}
+	
+	public Robot(ElementWrapper params, Universe u){
 		
 	}
 	
