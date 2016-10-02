@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
 /**
@@ -33,7 +34,7 @@ public class RobotLoader {
 //			classBySimpleName.put(c.getSimpleName(), c);
 //		}
 	}
-
+	
 	public Robot load(ElementWrapper root) {
 		ElementWrapper robotNode = root.getChild("robot");
 		try {
@@ -46,6 +47,36 @@ public class RobotLoader {
 					ElementWrapper.class);
 			Robot robot = (Robot) constructor.newInstance(robotNode
 					.getChild("params"));
+			return robot;
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public Robot load(ElementWrapper root, Universe universe) {
+		ElementWrapper robotNode = root.getChild("robot");
+		try {
+			Constructor constructor;
+//			constructor = classBySimpleName.get(
+//					robotNode.getChildText("name")).getConstructor(
+//					ElementWrapper.class);
+			constructor = Class.forName(
+					robotNode.getChildText("name")).getConstructor(
+					ElementWrapper.class, Universe.class);
+			Robot robot = (Robot) constructor.newInstance(robotNode
+					.getChild("params"), universe);
 			return robot;
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
