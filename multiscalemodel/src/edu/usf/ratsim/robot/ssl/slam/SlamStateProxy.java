@@ -70,7 +70,7 @@ public class SlamStateProxy extends Thread {
 		this.ss = ss;
 	}
 
-	private synchronized int getTrackingState(){
+	public synchronized int getTrackingState(){
 		return ss.getState();
 	}
 
