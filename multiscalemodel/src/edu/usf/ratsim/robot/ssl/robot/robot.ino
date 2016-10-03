@@ -186,7 +186,7 @@ double targetLBvelSerial = 0;
 double targetRBvelSerial = 0;
 
 int resetCtrlsSerial = 0;
-
+unsigned long last_comm_update = 0;
 void runComm()
 {
     switch (state)
@@ -206,7 +206,8 @@ void runComm()
           targetRFvelSerial = (int)Serial.read() - 100;
           targetRBvelSerial = ((int)Serial.read() - 100);
           resetCtrlsSerial = (int)Serial.read();
-
+          
+          
           if (char(Serial.read()) == char(255))          // Check for End Marker
           {
             state = 't';
@@ -216,7 +217,7 @@ void runComm()
             targetRBvel = targetRBvelSerial;
             resetCtrls = resetCtrlsSerial;
             setSpeeds();
- 
+            last_comm_update = millis(); 
           }
           else
           {
@@ -225,6 +226,17 @@ void runComm()
           break;
         }
         state = 't';
+    }
+
+    // Stop all motion if the last update is more
+    // that 2 seconds old
+    if(millis()-last_comm_update > 2000)
+    {
+      targetLFvel = 0;
+      targetLBvel = 0;
+      targetRFvel = 0;
+      targetRBvel = 0;
+      setSpeeds();
     }
 }
 
