@@ -20,7 +20,7 @@ public class SlamSetup {
 			// Go right
 			pilot.strafeRight();
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(4000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -28,12 +28,13 @@ public class SlamSetup {
 			
 			pilot.strafeLeft();
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(4000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}			
-		}		
+		}
+		pilot.still();
 	}
 	
 	// After initialization, move in a large circle to recognize 
