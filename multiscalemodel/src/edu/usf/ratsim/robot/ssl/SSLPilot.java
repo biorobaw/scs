@@ -88,7 +88,18 @@ public class SSLPilot {
 	public void still() {
 		sendVels(0,0,0,0);
 	}
-
+	
+	// Moves right while facing the same direction
+	public void strafeLeft()
+	{
+		sendVels(-2, 2, 2, -2);
+	}
+	
+	// Moves left while facing the same direction
+	public void strafeRight()
+	{
+		sendVels(2, -2, -2, 2);
+	}
 
 	public void stepForward() {
 		forward();
