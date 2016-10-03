@@ -1,4 +1,4 @@
-package edu.usf.ratsim.robot.ssl.sensefeeder;
+	package edu.usf.ratsim.robot.ssl.sensefeeder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,12 +52,17 @@ public class FeederSensor extends Thread {
 		while (!terminated) {
 			try {
 				Feeders newFs = Feeders.parseDelimitedFrom(protoInputStream);
-
 				if (fs == null) {
 					setFeeders(Feeders.getDefaultInstance());
 					establishConnection();
-				} else
+				} else {
 					setFeeders(newFs);
+					if (newFs.getFeedersCount() > 0){
+						System.out.println("Found feeder at " + getFeederLocation());
+					} else {
+						System.out.println("No feeders found");
+					}
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

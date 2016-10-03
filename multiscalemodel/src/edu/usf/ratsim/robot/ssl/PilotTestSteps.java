@@ -81,7 +81,7 @@ public class PilotTestSteps extends Thread{
 			}
 		}
 
-		pilot.stop();
+		pilot.still();
 		
 	}
 

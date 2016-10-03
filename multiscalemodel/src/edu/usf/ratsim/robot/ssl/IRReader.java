@@ -10,7 +10,7 @@ import gnu.io.UnsupportedCommOperationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
-
+import java.util.InputMismatchException;
 /**
  * Class that polls a program that sends three IR sensor data from arduino.
  * 
@@ -73,9 +73,14 @@ public class IRReader extends Thread {
 	public void run() {
 		while (!terminate) {
 			synchronized (this) {
-				leftIR = scanner.nextFloat();
-				frontIR = scanner.nextFloat();
-				rightIR = scanner.nextFloat();
+				try {
+					leftIR = scanner.nextFloat();
+					frontIR = scanner.nextFloat();
+					rightIR = scanner.nextFloat();
+				} catch (InputMismatchException e) {
+					System.err.println("Error reading distance");
+				}
+				
 			//	System.out.println(leftIR + " " + frontIR + " " + rightIR);
 			}
 			try {

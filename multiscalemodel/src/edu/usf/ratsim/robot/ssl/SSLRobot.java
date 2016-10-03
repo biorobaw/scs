@@ -59,30 +59,40 @@ public class SSLRobot extends LocalizableRobot {
 		if (fsensor != null)
 			fsensor.close();
 		fsensor = new FeederSensor();
+		fsensor.start();
 	}
 
 	@Override
 	public void forward(float distance) {
+		System.out.println("forward");	
 		pilot.stepForward();
 	}
 
 	@Override
 	public void rotate(float degrees) {
-		if (degrees > 0)
+		if (degrees > 0){
+			System.out.println("left");	
 			pilot.stepLeft();
-		else
+		} else {
+			System.out.println("right");	
 			pilot.stepRight();
+		}
 	}
 
 	@Override
 	public Feeder getFlashingFeeder() {
 		List<Feeder> visible = getVisibleFeeders(null);
-		if (visible.isEmpty())
+		if (visible.isEmpty()){
+			System.out.println("No visible feeder");
 			return null;
-		else if (universe.isFeederFlashing(visible.get(0).getId()))
+		}
+		else if (universe.isFeederFlashing(visible.get(0).getId())){
+			System.out.println("Found flashing feeder " + visible.get(0).getId());
 			return visible.get(0);
-		else 
+		} 	else {
+			System.out.println("Feeder " + visible.get(0).getId() +	" is visible but not flashing");
 			return null;
+		}
 	}
 
 	@Override
@@ -151,12 +161,12 @@ public class SSLRobot extends LocalizableRobot {
 		List<Feeder> res = new LinkedList<Feeder>();
 
 		if (p != null) {
-			res.add(new Feeder(1, p));
+			res.add(new Feeder(0, p));
 
 			if (is != null)
 				// Check that it is not excluded
 				for (int i = 0; i < is.length; i++)
-					if (is[i] == 1)
+					if (is[i] == 0)
 						res.clear();
 		}
 		
@@ -170,12 +180,12 @@ public class SSLRobot extends LocalizableRobot {
 
 	@Override
 	public int getLastAteFeeder() {
-		return 1;
+		return -1;
 	}
 
 	@Override
 	public int getLastTriedToEatFeeder() {
-		return 1;
+		return -1;
 	}
 
 	@Override

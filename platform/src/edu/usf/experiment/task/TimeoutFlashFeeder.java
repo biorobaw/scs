@@ -50,12 +50,15 @@ public class TimeoutFlashFeeder extends Task {
 			timeSinceAte = 0;
 		else
 			timeSinceAte++;
-
+ 
+		System.out.println("Timesinceate " + timeSinceAte + " timeout " + timeout);
 		if (timeSinceAte == timeout) {
 			List<Integer> active = u.getActiveFeeders();
 
 			// Pick an active one and flash
-			int toFlash = active.get(random.nextInt(active.size()));
+			int i = random.nextInt(active.size());
+			System.out.println("Flashing feeder " + active.get(i));
+			int toFlash = active.get(i);
 			u.setFlashingFeeder(toFlash, true);
 		}
 	}
