@@ -13,6 +13,7 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.robot.ssl.sensefeeder.FeederSensor;
 
@@ -21,9 +22,15 @@ public class SSLRobot extends LocalizableRobot {
 	IRReader irreader = null;
 	SSLPilot pilot = null;
 	FeederSensor fsensor = null;
+	private Universe universe;
+	private float closeThrs;
 
-	public SSLRobot(ElementWrapper params) {
+	public SSLRobot(ElementWrapper params, Universe u) {
 		super(params);
+		
+		closeThrs = params.getChildFloat("closeThrs");
+		
+		this.universe = u;
 	}
 
 	@Override
@@ -69,26 +76,35 @@ public class SSLRobot extends LocalizableRobot {
 
 	@Override
 	public Feeder getFlashingFeeder() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Feeder> visible = getVisibleFeeders(null);
+		if (visible.isEmpty())
+			return null;
+		else if (universe.isFeederFlashing(visible.get(0).getId()))
+			return visible.get(0);
+		else 
+			return null;
 	}
 
 	@Override
 	public boolean seesFlashingFeeder() {
-		// TODO Auto-generated method stub
-		return false;
+		return getFlashingFeeder() != null;
 	}
 
 	@Override
 	public Feeder getClosestFeeder(int lastFeeder) {
-		// TODO Auto-generated method stub
-		return null;
+		int[] except = {lastFeeder};
+		List<Feeder> visible = getVisibleFeeders(except);
+		if (visible.isEmpty())
+			return null;
+		else if (visible.get(0).getPosition().distance(new Point3f()) < closeThrs)
+			return visible.get(0);
+		else 
+			return null;
 	}
 
 	@Override
 	public boolean isFeederClose() {
-		// TODO Auto-generated method stub
-		return false;
+		return getClosestFeeder(-1) != null;
 	}
 
 	@Override
@@ -212,7 +228,7 @@ public class SSLRobot extends LocalizableRobot {
 	}
 
 	public static void main(String[] args) throws InterruptedException{
-		SSLRobot r = new SSLRobot(null);
+		SSLRobot r = new SSLRobot(null, null);
 		
 		r.startRobot();
 		
