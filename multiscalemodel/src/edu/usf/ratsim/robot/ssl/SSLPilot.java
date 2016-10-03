@@ -93,13 +93,13 @@ public class SSLPilot {
 	// Moves right while facing the same direction
 	public void strafeLeft()
 	{
-		sendVels(-2, 2, 2, -2);
+		sendVels(-1, 2, 2, -1);
 	}
 	
 	// Moves left while facing the same direction
 	public void strafeRight()
 	{
-		sendVels(2, -2, -2, 2);
+		sendVels(1, -2, -2, 1);
 	}
 
 	public void stepForward() {
