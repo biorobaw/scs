@@ -65,7 +65,7 @@ public class PilotTest extends Thread{
 			}
 		}
 
-		pilot.stop();
+		pilot.still();
 		
 	}
 

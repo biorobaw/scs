@@ -12,8 +12,9 @@ import java.io.OutputStream;
 
 public class SSLPilot {
 
-	private static final long FORWARD_SLEEP = 1000;
-	private static final long TURN_SLEEP = 200;
+	private static final long FORWARD_SLEEP = 500;
+	private static final long TURN_SLEEP = 250;
+	private static final long AFTER_SLEEP = 2500;
 	public final int FWDVEL = 2;
 	public final int ROTVEL = 1;
 
@@ -78,11 +79,11 @@ public class SSLPilot {
 	}
 	
 	public void left(){
-		sendVels(ROTVEL,ROTVEL,-ROTVEL,-ROTVEL);
+		sendVels(-ROTVEL,-ROTVEL,ROTVEL,ROTVEL);
 	}
 	
 	public void right(){
-		sendVels(-ROTVEL,-ROTVEL,ROTVEL,ROTVEL);
+		sendVels(ROTVEL,ROTVEL,-ROTVEL,-ROTVEL);
 	}
 	
 	public void still() {
@@ -110,6 +111,12 @@ public class SSLPilot {
 			e.printStackTrace();
 		}
 		still();
+		try {
+			Thread.sleep(AFTER_SLEEP);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void stepRight() {
@@ -121,6 +128,12 @@ public class SSLPilot {
 			e.printStackTrace();
 		}
 		still();
+		try {
+			Thread.sleep(AFTER_SLEEP);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void stepLeft() {
@@ -132,11 +145,18 @@ public class SSLPilot {
 			e.printStackTrace();
 		}
 		still();
+		try {
+			Thread.sleep(AFTER_SLEEP);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	public void stop(){
-		sendVels(0,0,0,0);
+	public void finalize(){
+		still();
 	}
+
 	/**
 	 * @param args
 	 */

@@ -1,4 +1,4 @@
-	package edu.usf.ratsim.robot.ssl.sensefeeder;
+package edu.usf.ratsim.robot.ssl.slam;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,22 +9,23 @@ import java.net.Socket;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.ratsim.robot.ssl.sensefeeder.protobuf.FeedersOuterClass.Feeders;
+import edu.usf.ratsim.robot.ssl.slam.protobuf.Slamstate.SlamState;
 
-public class FeederSensor extends Thread {
+public class SlamStateProxy extends Thread {
 
 	private static final String HOST = "locahost";
-	private static final int PORT = 12345;
+	private static final int PORT = 12346;
 	private Socket protoSocket;
 	private boolean terminated;
-	private Feeders fs;
 	private InputStream protoInputStream;
 	private ServerSocket serverSocket;
 
-	public FeederSensor() {
+	private SlamState ss;
+
+	public SlamStateProxy() {
 		establishConnection();
 
-		fs = Feeders.getDefaultInstance();
+		ss = SlamState.getDefaultInstance();
 
 		terminated = false;
 	}
@@ -51,17 +52,12 @@ public class FeederSensor extends Thread {
 	public void run() {
 		while (!terminated) {
 			try {
-				Feeders newFs = Feeders.parseDelimitedFrom(protoInputStream);
-				if (fs == null) {
-					setFeeders(Feeders.getDefaultInstance());
+				SlamState newSS = SlamState.parseDelimitedFrom(protoInputStream);
+				if (newSS == null) {
+					setSlamState(SlamState.getDefaultInstance());
 					establishConnection();
 				} else {
-					setFeeders(newFs);
-					if (newFs.getFeedersCount() > 0){
-						System.out.println("Found feeder at " + getFeederLocation());
-					} else {
-						System.out.println("No feeders found");
-					}
+					setSlamState(newSS);
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -70,31 +66,31 @@ public class FeederSensor extends Thread {
 		}
 	}
 
-	private synchronized void setFeeders(Feeders fs) {
-		this.fs = fs;
+	private synchronized void setSlamState(SlamState ss) {
+		this.ss = ss;
 	}
 
-	public synchronized boolean isSeeinFeeder() {
-		return !fs.getFeedersList().isEmpty();
+	private synchronized int getTrackingState(){
+		return ss.getState();
 	}
 
-	public synchronized Point3f getFeederLocation() {
-		Point3f p;
-		if (fs.getFeedersCount() > 0)
-			p = new Point3f(fs.getFeeders(0).getX(), fs.getFeeders(0).getY(), 0);
-		else
-			p = null;
+	private synchronized Point3f getPosition(){
+		return new Point3f(ss.getX(), ss.getY(), 0);
+	}
 
-		return p;
+	private synchronized float getOrientation(){
+		return ss.getHeading();
 	}
 
 	public static void main(String[] args) {
-		FeederSensor fSensor = new FeederSensor();
-		fSensor.start();
+		SlamStateProxy ssProxy = new SlamStateProxy();
+		ssProxy.start();
 
 		while (true) {
-			Point3f p = fSensor.getFeederLocation();
-			System.out.println("Marker at " + p);
+			int state = ssProxy.getTrackingState();
+			System.out.println("Tracking state " + state);
+			Point3f p = ssProxy.getPosition();
+			System.out.println("Robot at " + p);
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {

@@ -48,7 +48,7 @@ public class PilotTestSteps extends Thread{
 						while(irReader.somethingClose()){
 							pilot.stepLeft();
 							try {
-								Thread.sleep(2000);
+								Thread.sleep(3000);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -58,7 +58,7 @@ public class PilotTestSteps extends Thread{
 						while(irReader.somethingClose()){
 							pilot.stepRight();
 							try {
-								Thread.sleep(2000);
+								Thread.sleep(3000);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
@@ -81,7 +81,7 @@ public class PilotTestSteps extends Thread{
 			}
 		}
 
-		pilot.stop();
+		pilot.still();
 		
 	}
 
