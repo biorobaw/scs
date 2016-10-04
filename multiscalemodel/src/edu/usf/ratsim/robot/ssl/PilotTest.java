@@ -29,31 +29,36 @@ public class PilotTest extends Thread{
 	}
 	
 	public void run(){
-		char state;	
-		if (!irReader.somethingClose()){
-			state = 'f';
-			pilot.forward();
-		} else {
-			state = 't';
-			pilot.left();
-		} 
+		char state = 'f';
 	
-		
+		// Two state machine. Have to reissue cmds every time due to timeout in teensy
+		// THANKS A LOT SHAMSI!!!!
+		boolean turningLeft = false;
 		while (!stop){
 			switch (state){
 			case 'f':
 				if (irReader.somethingClose()){
 					state = 't';
-					if (r.nextBoolean())
+					if (r.nextBoolean()){
+						turningLeft = true;
 						pilot.left();
-					else
+					} else {
+						turningLeft = false;
 						pilot.right();
+					}
+				} else {
+					pilot.forward();
 				}
 				break;
 			case 't':
 				if (!irReader.somethingClose()){
 					state = 'f';
 					pilot.forward();
+				} else {
+					if (turningLeft)
+						pilot.left();
+					else
+						pilot.right();
 				}
 				break;
 			}
