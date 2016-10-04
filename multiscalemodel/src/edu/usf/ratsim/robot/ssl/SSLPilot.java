@@ -78,6 +78,10 @@ public class SSLPilot {
 		sendVels(FWDVEL,FWDVEL,FWDVEL,FWDVEL);
 	}
 	
+	public void backward(){
+		sendVels(-FWDVEL,-FWDVEL,-FWDVEL,-FWDVEL);
+	}
+	
 	public void left(){
 		sendVels(-ROTVEL,-ROTVEL,ROTVEL,ROTVEL);
 	}
