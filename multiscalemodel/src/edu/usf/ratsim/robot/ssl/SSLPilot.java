@@ -85,7 +85,22 @@ public class SSLPilot {
 	public void left(){
 		sendVels(-ROTVEL,-ROTVEL,ROTVEL,ROTVEL);
 	}
-	
+
+	public void circleLeft()
+	{
+		sendVels(-5, 1, 5, -1);
+	}
+
+	public void circleLeftConcave()
+        {
+                sendVels(-1, 5, 1, -5);
+        }
+
+	public void circleRight()
+	{
+		sendVels(5, -1, -5, 1);
+	}	
+
 	public void right(){
 		sendVels(ROTVEL,ROTVEL,-ROTVEL,-ROTVEL);
 	}
@@ -166,7 +181,8 @@ public class SSLPilot {
 	 */
 	public static void main(String[] args) {
 		SSLPilot p = new SSLPilot();
-		p.sendVels(p.FWDVEL, p.FWDVEL, p.FWDVEL, p.FWDVEL);
+		
+		p.left();
 		
 		try {
 			Thread.sleep(1000);
