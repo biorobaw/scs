@@ -22,7 +22,7 @@ import java.util.InputMismatchException;
  */
 public class IRReader extends Thread {
 
-	private static final float CLOSETHRS = 5.0f;
+	private static final float CLOSETHRS = 7.0f;
 	float leftIR, rightIR, frontIR;
 	private Scanner scanner;
 	private boolean terminate;
