@@ -64,6 +64,8 @@ public class PilotTestSteps extends Thread{
 								e.printStackTrace();
 							}
 						}
+				} else {
+					pilot.forward();
 				}
 				break;
 			case 't':
