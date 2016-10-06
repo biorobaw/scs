@@ -48,39 +48,19 @@ int leeSensor(int sensor) {
          }
        }
     }
-  int sum=0;
-  for (int j=2; j<8; j++){
-    sum=sum+n[j];
-  }
-  sum=sum/6;
   
   return n[5];
 }
 
 float convierte(float medida) {
+  float volt = (medida/1023.0f) * 5;
+  if (volt < .3)
+    return 400;
 
-  float sens[12]={386, 293, 238, 195, 165, 145, 127, 115, 103, 95, 80, 65};
-  int i=1;
-  float conv=0;
-  for (int i=0; i<8; i++ ){
-    if ((medida<=sens[i])&&(medida>sens[i+1])){
-    //conv=(i+3)-(medida-sens[i+1])/(sens[i]-sens[i+1]);
-    conv=(i+3)-(medida-sens[i+1])/(sens[i]-sens[i+1]);
-    }
-  }
-
-  if (medida<65){
-    conv=10;
-  }
-
-  if (medida>385){
-    conv=2;
-  }
-  
-  if (medida==195){
-    conv=5;
-  }
-  
-  return conv;
+  // Inverse of distance using eq
+  float distinv = 0.08 * volt - 0.002;
+  float dist = 1 / distinv - 0.42;
+  // return milimeters
+  return dist * 10;
 }
 

@@ -34,18 +34,26 @@ public class SlamSetup {
 				strafe_start_time = System.currentTimeMillis(); 
 		}*/
 
-		while (slamState.getTrackingState() <= 3)
+		for(long i = 0; i < 1800; ++i)
 		{
 			pilot.circleLeftConcave();
-			 try {
-                                       Thread.sleep(100);
-                               } catch (InterruptedException e) {
-                                       // TODO Auto-generated catch block
-                                       e.printStackTrace();
-                               }
+
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
-	
+		// Stay still for a bit to signal initialization
+		pilot.still();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	// After initialization, move in a large circle to recognize 
@@ -54,57 +62,28 @@ public class SlamSetup {
 	// features in all directions	
 	void map()
 	{		
-		if(slamState.getTrackingState() < 3)
+		// Wall Follow
+		for(int i = 0; i < 3000; ++i)
 		{
-			
-			if(need_sleep){
-				try {
-                                        Thread.sleep(3000);
-                                } catch (InterruptedException e) {
-                                        // TODO Auto-generated catch block
-                                        e.printStackTrace();
-                                }
-				need_sleep = false;
-			}
-
 			if(irReader.somethingClose())
-			{
 				pilot.left();
-				
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
 			else
-			{
-				pilot.circleLeft();
-			}			
-		}
-		else
-		{
-			// If we lose tracking, we move backwards
-			pilot.circleRight();
-			need_sleep = true;
-		}	
-	}
-	
-	public static void main(String[] args)
-	{
-		SlamSetup ss = new SlamSetup();
-		while(true)
-			ss.initialize();
-		/*while(true)
-		{
-			ss.map();
+				pilot.forward();
+
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}*/
+		}			
+		pilot.still();
+	}
+	
+	public static void main(String[] args)
+	{
+		SlamSetup ss = new SlamSetup();
+		ss.initialize();
+		ss.map();
 	}
 }

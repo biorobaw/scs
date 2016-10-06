@@ -39,12 +39,12 @@ public class PilotTest extends Thread{
 			case 'f':
 				if (irReader.somethingClose()){
 					state = 't';
-					if (r.nextBoolean()){
+					if (irReader.getRightIR() < 200){
 						turningLeft = true;
-						pilot.left();
+						pilot.circleLeft();
 					} else {
 						turningLeft = false;
-						pilot.right();
+						pilot.circleRight();
 					}
 				} else {
 					pilot.forward();
@@ -56,9 +56,9 @@ public class PilotTest extends Thread{
 					pilot.forward();
 				} else {
 					if (turningLeft)
-						pilot.left();
+						pilot.circleLeft();
 					else
-						pilot.right();
+						pilot.circleRight();
 				}
 				break;
 			}

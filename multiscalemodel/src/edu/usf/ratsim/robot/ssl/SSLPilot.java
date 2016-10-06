@@ -15,7 +15,7 @@ public class SSLPilot {
 	private static final long FORWARD_SLEEP = 500;
 	private static final long TURN_SLEEP = 250;
 	private static final long AFTER_SLEEP = 2500;
-	public final int FWDVEL = 2;
+	public final int FWDVEL = 1;
 	public final int ROTVEL = 1;
 
 
@@ -182,17 +182,55 @@ public class SSLPilot {
 	public static void main(String[] args) {
 		SSLPilot p = new SSLPilot();
 		
-		p.left();
+//		p.left();
+		while (true){
+/*		for (int i = 0; i < 30; i++){
+			p.sendVels(1,1,1,1);
 		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 		p.sendVels(0, 0, 0,0);
-		
+		try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}*/
+			for (int i = 0; i < 30; i++){
+				p.right();
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			for (int i = 0; i < 30; i++){
+				p.left();
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			for (int i = 0; i < 30; i++){
+				p.forward();
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}	
 	}
 
 	public void close() {
