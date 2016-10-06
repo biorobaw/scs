@@ -88,7 +88,7 @@ public class WallFollowTest extends Thread {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		float wallP = Float.parseFloat(args[0]);
 		float frontP = Float.parseFloat(args[1]);
-		float fwP = Float.parseFloat(args[3]);
+		float fwP = Float.parseFloat(args[2]);
 		WallFollowTest wft = new WallFollowTest(wallP, frontP, fwP);
 		System.out.println("Starting wall follow");
 		wft.start();

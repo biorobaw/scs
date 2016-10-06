@@ -23,6 +23,7 @@ import java.util.InputMismatchException;
 public class IRReader extends Thread {
 
 	private static final float CLOSETHRS = 200.0f;
+	private static final float REALLYCLOSETHRS = 50.0f;
 	float leftIR, rightIR, frontIR;
 	private Scanner scanner;
 	private boolean terminate;
@@ -120,6 +121,9 @@ public class IRReader extends Thread {
 		return leftIR < CLOSETHRS || rightIR < CLOSETHRS || frontIR < CLOSETHRS;
 	}
 
+	public synchronized boolean somethingReallyClose(){
+		return leftIR < REALLYCLOSETHRS || rightIR < REALLYCLOSETHRS || frontIR < REALLYCLOSETHRS;
+	}
 	/**
 	 * @param args
 	 */

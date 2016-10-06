@@ -1,5 +1,6 @@
 package edu.usf.ratsim.robot.ssl;
 import edu.usf.ratsim.robot.ssl.slam.SlamStateProxy;
+import java.util.Random;
 
 public class SlamSetup {
 	private SSLPilot pilot;
@@ -7,76 +8,65 @@ public class SlamSetup {
 	private SlamStateProxy slamState;
 	long strafe_start_time;
 	boolean need_sleep;
+	
+	private float frontP = .05f, wallP = .1f, fwP = .05f;
+	
 	public SlamSetup()
 	{
 		pilot = new SSLPilot();
 	    	irReader = new IRReader();
 	    	irReader.start();
-	    	slamState = new SlamStateProxy();
-	    	slamState.start();
+	    	//slamState = new SlamStateProxy();
+	    	//slamState.start();
 		strafe_start_time = System.currentTimeMillis();
 	}
 	
-	// Strafe side to side while keeping the camera focused on a point
-	// in order to initialize from parallax
-	 
-    public void initialize()
+    	public void initialize()
 	{
-		/*while(slamState.getTrackingState() <= 1)
-		{
-			if (System.currentTimeMillis() - strafe_start_time < 4000)
-				pilot.strafeRight();							
-			
-			else if (System.currentTimeMillis() - strafe_start_time < 8000)
-				pilot.strafeLeft();
-
-			else
-				strafe_start_time = System.currentTimeMillis(); 
-		}*/
-
-		for(long i = 0; i < 1800; ++i)
-		{
-			pilot.circleLeftConcave();
-
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		// Stay still for a bit to signal initialization
-		pilot.still();
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+		int toTurn = 0;
+		Random r = new Random();
+		for (int i = 0; i < 10 * 60 * 5; i++){		
+			// Get sensor readings from IR
+			// Do proportional control, maybe PI
+			float leftM = irReader.getLeftIR();
+			float frontM = irReader.getFrontIR();
+			float rightM = irReader.getRightIR();
 	
-	// After initialization, move in a large circle to recognize 
-	// features in all directions	
-		// After initialization, move in a large circle to recognize 
-	// features in all directions	
-	void map()
-	{		
-		// Wall Follow
-		for(int i = 0; i < 3000; ++i)
-		{
-			if(irReader.somethingClose())
-				pilot.left();
-			else
-				pilot.forward();
+			if ( (rightM < 250 || r.nextFloat() < .05) && toTurn == 0)
+				toTurn = 15;
 
+			if (toTurn > 0 )
+			{
+				if (irReader.somethingReallyClose())
+					toTurn = 0;
+				else {
+					pilot.sendVels(10,-1,-10,1);
+					toTurn--;
+				}
+			} else {
+
+				// Errors
+				float leftE = leftM - 150;
+				float frontE = frontM - 250;
+				float fwE = rightM - 200;
+				// Vel = fwVel + p . err
+				// Also, control power limited to 5
+				int wallG = (int) Math.round(Math.max(-10, Math.min(10, wallP * leftE)));
+				int frontG = (int) Math.round(Math.max(-10, Math.min(10, frontP * frontE)));
+				int fwG = (int) Math.round(Math.max(-10, Math.min(10, fwP * fwE)));
+				// Send command
+				pilot.sendVels(fwG - frontG,  wallG,  wallG, fwG + frontG);
+							
+		
+			}
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}			
+		}
+
 		pilot.still();
 	}
 	
@@ -84,6 +74,5 @@ public class SlamSetup {
 	{
 		SlamSetup ss = new SlamSetup();
 		ss.initialize();
-		ss.map();
 	}
 }
