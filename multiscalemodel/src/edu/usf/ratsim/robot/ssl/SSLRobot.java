@@ -25,12 +25,14 @@ public class SSLRobot extends LocalizableRobot {
 	FeederSensor fsensor = null;
 	private Universe universe;
 	private float closeThrs;
+    private boolean initSlam;
 	private SlamStateProxy slamproxy;
 
 	public SSLRobot(ElementWrapper params, Universe u) {
 		super(params);
 		
 		closeThrs = params.getChildFloat("closeThrs");
+		initSlam = params.getChildBoolean("initSlam");
 		
 		this.universe = u;
 	}
@@ -66,8 +68,10 @@ public class SSLRobot extends LocalizableRobot {
 		slamproxy = new SlamStateProxy();
 		slamproxy.start();
 		
-		SlamSetup slamSetup = new SlamSetup(pilot, irreader);
-		slamSetup.initialize();
+        if (initSlam){
+            SlamSetup slamSetup = new SlamSetup(pilot, irreader);
+            slamSetup.initialize();
+        }
 		
 		
 	}
