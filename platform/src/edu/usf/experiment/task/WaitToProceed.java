@@ -54,7 +54,7 @@ public class WaitToProceed extends Task {
 	}
 	
 	public static void main(String[] args) throws UnknownHostException, IOException{
-		new Socket("localhost", 15678);
+		new Socket("odroid", 15678);
 	}
 
 }

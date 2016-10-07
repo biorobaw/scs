@@ -27,8 +27,8 @@ public class IRReader extends Thread {
 	float leftIR, rightIR, frontIR;
 	private Scanner scanner;
 	private boolean terminate;
-	private InputStream in;
-	private SerialPort serialPort;
+	private InputStream in = null;
+	private SerialPort serialPort = null;
 
 	public IRReader() {
 		leftIR = 0;
@@ -37,6 +37,21 @@ public class IRReader extends Thread {
 		
 		terminate = false;
 
+		setupPort();
+
+	}
+
+	private void setupPort() {
+		if (in != null){
+			try {
+				in.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			serialPort.close();
+		}
+		
 		CommPortIdentifier portIdentifier;
 		try {
 			portIdentifier = CommPortIdentifier
@@ -55,20 +70,15 @@ public class IRReader extends Thread {
 				scanner = new Scanner(in);
 			}
 		} catch (NoSuchPortException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.exit(1);
 		} catch (PortInUseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (UnsupportedCommOperationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 	}
 
 	public void run() {
@@ -79,10 +89,9 @@ public class IRReader extends Thread {
 					frontIR = scanner.nextFloat();
 					rightIR = scanner.nextFloat();
 				} catch (InputMismatchException e) {
-					System.err.println("Error reading distance");
+					System.err.println("Error reading distance, trying to reset port");
+					setupPort();
 				}
-				
-			//	System.out.println(leftIR + " " + frontIR + " " + rightIR);
 			}
 			try {
 				Thread.sleep(10);
