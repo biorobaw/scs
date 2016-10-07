@@ -11,13 +11,13 @@ public class SlamSetup {
 	
 	private float frontP = .05f, wallP = .1f, fwP = .05f;
 	
-	public SlamSetup()
+	public SlamSetup(SSLPilot p, IRReader r)
 	{
-		pilot = new SSLPilot();
-	    	irReader = new IRReader();
-	    	irReader.start();
-	    	//slamState = new SlamStateProxy();
-	    	//slamState.start();
+		pilot = p;
+    	irReader = r;
+    	irReader.start();
+    	//slamState = new SlamStateProxy();
+    	//slamState.start();
 		strafe_start_time = System.currentTimeMillis();
 	}
 	
@@ -74,7 +74,7 @@ public class SlamSetup {
 	
 	public static void main(String[] args)
 	{
-		SlamSetup ss = new SlamSetup();
+		SlamSetup ss = new SlamSetup(new SSLPilot(),new IRReader());
 		ss.initialize();
 	}
 }
