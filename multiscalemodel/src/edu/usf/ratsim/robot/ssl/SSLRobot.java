@@ -78,7 +78,6 @@ public class SSLRobot extends LocalizableRobot {
 
 	@Override
 	public void forward(float distance) {
-		System.out.println("forward");	
 		pilot.stepForward();
 	}
 
@@ -122,8 +121,11 @@ public class SSLRobot extends LocalizableRobot {
 			return null;
 		else if (visible.get(0).getPosition().distance(new Point3f()) < closeThrs)
 			return visible.get(0);
-		else 
+		else {
+			System.out.println("Distance to closest feeder " + visible.get(0).getPosition().distance(new Point3f()));
 			return null;
+		}
+			
 	}
 
 	@Override
@@ -160,10 +162,14 @@ public class SSLRobot extends LocalizableRobot {
 				rotate(-30);
 		} else if (af instanceof ForwardAffordance) {
 			forward(30); // same, value is not necessary
+			System.out.println("forward");	
 		} else if (af instanceof EatAffordance) {
+			System.out.println("Trying to eat");
 			sub.setTriedToEat();
-			if (isFeederClose())
+			if (isFeederClose()){
+				System.out.println("Eating");
 				sub.setHasEaten(true);
+			}
 		}
 	}
 
