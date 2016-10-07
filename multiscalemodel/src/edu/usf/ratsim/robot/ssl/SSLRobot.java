@@ -66,7 +66,7 @@ public class SSLRobot extends LocalizableRobot {
 		slamproxy = new SlamStateProxy();
 		slamproxy.start();
 		
-		SlamSetup slamSetup = new SlamSetup();
+		SlamSetup slamSetup = new SlamSetup(pilot, irreader);
 		slamSetup.initialize();
 		
 		
