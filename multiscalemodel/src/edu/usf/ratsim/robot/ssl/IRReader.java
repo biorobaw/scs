@@ -88,6 +88,7 @@ public class IRReader extends Thread {
 					leftIR = scanner.nextFloat();
 					frontIR = scanner.nextFloat();
 					rightIR = scanner.nextFloat();
+                    //System.out.println("IRs " + leftIR + " " + frontIR + " " + rightIR);
 				} catch (InputMismatchException e) {
 					System.err.println("Error reading distance, trying to reset port");
 					setupPort();

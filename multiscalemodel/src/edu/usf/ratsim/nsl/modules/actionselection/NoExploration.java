@@ -74,11 +74,15 @@ public class NoExploration extends Module {
 
 		// Publish the taken action
 		// if (selectedAction.getValue() > 0) {
-		takenAction.set(aff.indexOf(selectedAction));
-		if (Debug.printSelectedValues)
-			System.out.println(selectedAction.toString());
+        if (selectedAction.isRealizable()){
+            takenAction.set(aff.indexOf(selectedAction));
+            if (Debug.printSelectedValues)
+                System.out.println(selectedAction.toString());
 
-		robot.executeAffordance(selectedAction, sub);
+            robot.executeAffordance(selectedAction, sub);
+        } else {
+            System.err.println("No realizable affordances, skiping execution");
+        }
 		// } else {
 		// takenAction.set(-1);
 		// }

@@ -7,11 +7,11 @@ individual=$4
 
 roslaunch orb_slam2 orb_slam.launch &
 
-sleep 10
+#sleep 10
 
 java -Dgnu.io.rxtx.SerialPorts=/dev/teensy:/dev/uno \
 	-Djava.library.path=/usr/lib/jni/ -classpath    \
-	"./bin/:./deps/*" edu.usf.experiment.Experiment $xml $logs $group $individual &
+	"./platform/src/:./multiscalemodel/src/:./bin/:./deps/*" edu.usf.experiment.Experiment $xml $logs $group $individual &
 
 sleep 2
 

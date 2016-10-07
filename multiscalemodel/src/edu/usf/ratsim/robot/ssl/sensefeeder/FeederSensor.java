@@ -57,11 +57,11 @@ public class FeederSensor extends Thread {
 	//				establishConnection();
 				} else {
 					setFeeders(newFs);
-					if (newFs.getFeedersCount() > 0){
-						System.out.println("Found feeder at " + getFeederLocation());
-					} else {
-						System.out.println("No feeders found");
-					}
+		//			if (newFs.getFeedersCount() > 0){
+		//				System.out.println("Found feeder at " + getFeederLocation());
+		//			} else {
+		//				System.out.println("No feeders found");
+		//			}
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

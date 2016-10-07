@@ -21,7 +21,7 @@
 		<params>
 			<!-- How far away can the robot eat food. This should be shorter than the universe
 				threshold -->
-			<closeThrs>.15</closeThrs>
+			<closeThrs>.40</closeThrs>
 			<initSlam>false</initSlam>
 		</params>
 	</robot>

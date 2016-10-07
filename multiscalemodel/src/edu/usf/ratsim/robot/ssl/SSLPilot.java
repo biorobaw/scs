@@ -14,7 +14,7 @@ public class SSLPilot {
 
 	private static final long FORWARD_SLEEP = 500;
 	private static final long TURN_SLEEP = 250;
-	private static final long AFTER_SLEEP = 2500;
+	private static final long AFTER_SLEEP = 00;
 	public final int FWDVEL = 1;
 	public final int ROTVEL = 1;
 

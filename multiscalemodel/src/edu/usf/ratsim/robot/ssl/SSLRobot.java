@@ -138,10 +138,10 @@ public class SSLRobot extends LocalizableRobot {
 		for (Affordance af : possibleAffordances) {
 			if (af instanceof TurnAffordance) {
 				TurnAffordance tf = (TurnAffordance) af;
-				if (((TurnAffordance) af).getAngle() > 0) // left
-					tf.setRealizable(!irreader.somethingFront() && !irreader.somethingLeft());
+                if (((TurnAffordance) af).getAngle() > 0) // left
+					tf.setRealizable((irreader.somethingFront() && irreader.somethingRight()) || (!irreader.somethingFront() && !irreader.somethingLeft()));
 				else
-					tf.setRealizable(!irreader.somethingFront() && !irreader.somethingRight());
+					tf.setRealizable((irreader.somethingFront() && irreader.somethingLeft()) || (!irreader.somethingFront() && !irreader.somethingRight()));
 			} else if (af instanceof ForwardAffordance) {
 				af.setRealizable(!irreader.somethingClose());
 			} else if (af instanceof EatAffordance) {
@@ -240,7 +240,7 @@ public class SSLRobot extends LocalizableRobot {
 
 	@Override
 	public float getHalfFieldView() {
-		return (float) (Math.PI/8);
+		return (float) (Math.PI/16);
 	}
 
 	@Override
