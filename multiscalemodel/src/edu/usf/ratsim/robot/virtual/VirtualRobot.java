@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.media.j3d.Transform3D;
+import javax.media.j3d.VirtualUniverse;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
@@ -17,6 +18,7 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
@@ -51,7 +53,7 @@ public class VirtualRobot extends LocalizableRobot {
 
 	private int lastTriedToEat;
 
-	public VirtualRobot(ElementWrapper params) {
+	public VirtualRobot(ElementWrapper params, Universe u) {
 		super(params);
 
 		noise = params.getChildFloat("noise");
@@ -62,7 +64,7 @@ public class VirtualRobot extends LocalizableRobot {
 		visionDist = params.getChildFloat("visionDist");
 		closeThrs = params.getChildFloat("closeThrs");
 
-		universe = VirtUniverse.getInstance();
+		universe = (VirtUniverse)u;
 		if (universe == null)
 			throw new RuntimeException("A virtual universe must be created"
 					+ " before Virtual Robot is created");
