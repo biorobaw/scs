@@ -15,7 +15,6 @@ public class SlamSetup {
 	{
 		pilot = p;
     	irReader = r;
-    	irReader.start();
     	//slamState = new SlamStateProxy();
     	//slamState.start();
 		strafe_start_time = System.currentTimeMillis();
