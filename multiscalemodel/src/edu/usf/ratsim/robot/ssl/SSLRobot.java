@@ -16,6 +16,7 @@ import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.robot.ssl.sensefeeder.FeederSensor;
+import edu.usf.ratsim.robot.ssl.slam.SlamStateProxy;
 
 public class SSLRobot extends LocalizableRobot {
 
@@ -24,6 +25,7 @@ public class SSLRobot extends LocalizableRobot {
 	FeederSensor fsensor = null;
 	private Universe universe;
 	private float closeThrs;
+	private SlamStateProxy slamproxy;
 
 	public SSLRobot(ElementWrapper params, Universe u) {
 		super(params);
@@ -60,6 +62,14 @@ public class SSLRobot extends LocalizableRobot {
 			fsensor.close();
 		fsensor = new FeederSensor();
 		fsensor.start();
+		
+		slamproxy = new SlamStateProxy();
+		slamproxy.start();
+		
+		SlamSetup slamSetup = new SlamSetup();
+		slamSetup.initialize();
+		
+		
 	}
 
 	@Override
