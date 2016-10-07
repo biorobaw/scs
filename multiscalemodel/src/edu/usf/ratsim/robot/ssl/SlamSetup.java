@@ -73,7 +73,9 @@ public class SlamSetup {
 	
 	public static void main(String[] args)
 	{
-		SlamSetup ss = new SlamSetup(new SSLPilot(),new IRReader());
+        IRReader irr = new IRReader();
+        irr.start();
+		SlamSetup ss = new SlamSetup(new SSLPilot(),irr);
 		ss.initialize();
 	}
 }
