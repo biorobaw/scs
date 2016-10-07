@@ -240,6 +240,11 @@
 					<params>
 					</params>
 				</task>
+				<task>
+					<name>edu.usf.experiment.task.WaitToProceed</name>
+					<params>
+					</params>
+				</task>
 			</beforeEpisodeTasks>
 			<!-- Tasks to performe before each cycle -->
 			<beforeCycleTasks>
