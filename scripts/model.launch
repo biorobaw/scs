@@ -1,4 +1,0 @@
-<launch>
-	<include file="$(find orb_slam2)/launch/orb_slam.launch"/>
-	<include file="$(find ssl_driver)/launch/feeder_proxy.launch"/>
-</launch>
