@@ -106,6 +106,7 @@ public class Experiment implements Runnable {
 		universe = UniverseLoader.getInstance().load(root, logPath);
 
 		robot = RobotLoader.getInstance().load(root, universe);
+		robot.startRobot();
 		
 		if (root.getChild("plot") != null)
 			makePlots = root.getChildBoolean("plot");
