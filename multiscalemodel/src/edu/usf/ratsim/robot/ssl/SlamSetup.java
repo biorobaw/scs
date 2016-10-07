@@ -32,33 +32,35 @@ public class SlamSetup {
 			float frontM = irReader.getFrontIR();
 			float rightM = irReader.getRightIR();
 	
-			if ( (rightM < 250 || r.nextFloat() < .05) && toTurn == 0)
-				toTurn = 15;
+			if (irReader.somethingReallyClose()){
+				toTurn = 0;
+				pilot.right();
+			} else {
+			
+				if ( (rightM < 250 || r.nextFloat() < .05) && toTurn == 0)
+					toTurn = 15;
 
-			if (toTurn > 0 )
-			{
-				if (irReader.somethingReallyClose())
-					toTurn = 0;
-				else {
+				if (toTurn > 0 )
+				{
 					pilot.sendVels(10,-1,-10,1);
 					toTurn--;
-				}
-			} else {
+				} else {
 
-				// Errors
-				float leftE = leftM - 150;
-				float frontE = frontM - 250;
-				float fwE = rightM - 200;
-				// Vel = fwVel + p . err
-				// Also, control power limited to 5
-				int wallG = (int) Math.round(Math.max(-10, Math.min(10, wallP * leftE)));
-				int frontG = (int) Math.round(Math.max(-10, Math.min(10, frontP * frontE)));
-				int fwG = (int) Math.round(Math.max(-10, Math.min(10, fwP * fwE)));
-				// Send command
-				pilot.sendVels(fwG - frontG,  wallG,  wallG, fwG + frontG);
-							
-		
+					// Errors
+					float leftE = leftM - 150;
+					float frontE = frontM - 250;
+					float fwE = rightM - 200;
+					// Vel = fwVel + p . err
+					// Also, control power limited to 5
+					int wallG = (int) Math.round(Math.max(-10, Math.min(10, wallP * leftE)));
+					int frontG = (int) Math.round(Math.max(-10, Math.min(10, frontP * frontE)));
+					int fwG = (int) Math.round(Math.max(-10, Math.min(10, fwP * fwE)));
+					// Send command
+					pilot.sendVels(fwG - frontG,  wallG,  wallG, fwG + frontG);
+								
+				}		
 			}
+
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
