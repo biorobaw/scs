@@ -21,7 +21,7 @@ public class SlamSetup {
 		strafe_start_time = System.currentTimeMillis();
 	}
 	
-    	public void initialize()
+    public void initialize()
 	{
 		int toTurn = 0;
 		Random r = new Random();
