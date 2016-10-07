@@ -42,6 +42,7 @@ public class WaitToProceed extends Task {
 
 	private void perform(Universe u) {
 		boolean gotit = false;
+		System.out.println("[+] Waiting for connection to continue");
 		while (!gotit)
 			try {
 				ServerSocket sock = new ServerSocket(port);
