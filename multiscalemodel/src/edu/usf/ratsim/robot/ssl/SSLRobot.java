@@ -215,12 +215,12 @@ public class SSLRobot extends LocalizableRobot {
 
 	@Override
 	public Point3f getPosition() {
-		return new Point3f();
+		return slamproxy.getPosition();
 	}
 
 	@Override
 	public float getOrientationAngle() {
-		return 0;
+		return slamproxy.getOrientation();
 	}
 
 	@Override

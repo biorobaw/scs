@@ -57,6 +57,7 @@ public class SlamStateProxy extends Thread {
 					setSlamState(SlamState.getDefaultInstance());
 					establishConnection();
 				} else {
+					System.out.println("Robot at " + newSS.getX() + "," + newSS.getY() + "," + newSS.getHeading());
 					setSlamState(newSS);
 				}
 			} catch (IOException e) {
@@ -74,11 +75,11 @@ public class SlamStateProxy extends Thread {
 		return ss.getState();
 	}
 
-	private synchronized Point3f getPosition(){
+	public synchronized Point3f getPosition(){
 		return new Point3f(ss.getX(), ss.getY(), 0);
 	}
 
-	private synchronized float getOrientation(){
+	public synchronized float getOrientation(){
 		return ss.getHeading();
 	}
 
