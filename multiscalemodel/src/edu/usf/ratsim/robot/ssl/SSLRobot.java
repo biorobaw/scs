@@ -135,15 +135,20 @@ public class SSLRobot extends LocalizableRobot {
 
 	@Override
 	public List<Affordance> checkAffordances(List<Affordance> possibleAffordances) {
+        boolean left = irreader.somethingLeft();
+        boolean right = irreader.somethingRight();
+        boolean front = irreader.somethingFront();
+        boolean any = irreader.somethingClose();
 		for (Affordance af : possibleAffordances) {
 			if (af instanceof TurnAffordance) {
-				TurnAffordance tf = (TurnAffordance) af;
+				af.setRealizable(true);
+                /*TurnAffordance tf = (TurnAffordance) af;
                 if (((TurnAffordance) af).getAngle() > 0) // left
-					tf.setRealizable((irreader.somethingFront() && irreader.somethingRight()) || (!irreader.somethingFront() && !irreader.somethingLeft()));
+		    		tf.setRealizable(any);
 				else
-					tf.setRealizable((irreader.somethingFront() && irreader.somethingLeft()) || (!irreader.somethingFront() && !irreader.somethingRight()));
+					tf.setRealizable(any);*/
 			} else if (af instanceof ForwardAffordance) {
-				af.setRealizable(!irreader.somethingClose());
+				af.setRealizable(!any);
 			} else if (af instanceof EatAffordance) {
 				af.setRealizable(isFeederClose());
 			}

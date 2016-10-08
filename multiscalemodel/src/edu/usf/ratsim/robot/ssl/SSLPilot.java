@@ -14,7 +14,7 @@ public class SSLPilot {
 
 	private static final long FORWARD_SLEEP = 500;
 	private static final long TURN_SLEEP = 250;
-	private static final long AFTER_SLEEP = 00;
+    private static final long AFTER_SLEEP = 500;
 	public final int FWDVEL = 1;
 	public final int ROTVEL = 1;
 
@@ -92,9 +92,9 @@ public class SSLPilot {
 	}
 
 	public void circleLeftConcave()
-        {
-                sendVels(-1, 5, 1, -5);
-        }
+    {
+       sendVels(-1, 5, 1, -5);
+    }
 
 	public void circleRight()
 	{
