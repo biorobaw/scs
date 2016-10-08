@@ -5,7 +5,7 @@ logs=$2
 group=$3
 individual=$4
 
-roslaunch orb_slam2 orb_slam.launch &
+# roslaunch orb_slam2 orb_slam.launch &
 
 #sleep 10
 

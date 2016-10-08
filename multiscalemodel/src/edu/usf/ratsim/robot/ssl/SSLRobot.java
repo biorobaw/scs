@@ -141,14 +141,14 @@ public class SSLRobot extends LocalizableRobot {
         boolean any = irreader.somethingClose();
 		for (Affordance af : possibleAffordances) {
 			if (af instanceof TurnAffordance) {
-				af.setRealizable(true);
-                /*TurnAffordance tf = (TurnAffordance) af;
-                if (((TurnAffordance) af).getAngle() > 0) // left
-		    		tf.setRealizable(any);
+				//af.setRealizable(true);
+                TurnAffordance tf = (TurnAffordance) af;
+                if (tf.getAngle() > 0) // left
+		    		tf.setRealizable(!left || (front && right));
 				else
-					tf.setRealizable(any);*/
+					tf.setRealizable(!right || (front && left));
 			} else if (af instanceof ForwardAffordance) {
-				af.setRealizable(!any);
+				af.setRealizable(!front && !irreader.somethingReallyClose());
 			} else if (af instanceof EatAffordance) {
 				af.setRealizable(isFeederClose());
 			}
