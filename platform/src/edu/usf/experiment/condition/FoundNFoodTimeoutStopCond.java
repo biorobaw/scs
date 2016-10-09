@@ -9,12 +9,14 @@ public class FoundNFoodTimeoutStopCond implements Condition {
 
 	private int stepsSinceLastAte;
 	private int timeout;
+	private int originalN;
 	private int n;
 	private int toGo;
 
 	public FoundNFoodTimeoutStopCond(ElementWrapper condParams) {
 		n = condParams.getChildInt("n");
 		toGo = n;
+		originalN = n;
 		timeout = condParams.getChildInt("timeout");
 		stepsSinceLastAte = 0;
 	}
@@ -42,4 +44,6 @@ public class FoundNFoodTimeoutStopCond implements Condition {
 		return toGo <= 0;
 	}
 
+
+	
 }

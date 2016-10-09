@@ -3,15 +3,21 @@
 <experiment>
 	<seed>-59875563504154406</seed>
 	
+	 <!-- load will load the subject (indicated by the input to the program) as saved after the specified episode  of the specified  trial-->
+	<!-- <load>
+		<episode>3777</episode>
+		<trial>Travel</trial>
+	</load>  -->
+	
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
 			<!-- Distance from which the food is accessible according to the universe -->
 			<closeToFoodThrs>0.1</closeToFoodThrs>
 			<!-- Map file -->
-			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/multipleT.xml</maze>
+			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/multipleTmaze.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>true</display>
+			<display>false</display>
 		</params>
 	</universe>
 	
@@ -37,30 +43,50 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.experiment.subject.TSPSubject</name>
-		<params>
+		<name>edu.usf.ratsim.experiment.subject.multipleT.MultipleTSubject</name>
+		<params>1
+		
+			<!-- subject params: -->
 			<!-- Step length in meters -->
-			<step>.05</step>
+			<step>.08</step>
 			<!-- Left rotation amount in radians -->
-			<leftAngle>0.195</leftAngle>
+			<!-- <leftAngle>0.195</leftAngle> -->
 			<!-- Right rotation amount in radians -->
-			<rightAngle>-0.195</rightAngle>
+			<!-- <rightAngle>-0.195</rightAngle> -->
+			
+			<!-- model params: -->
+			
 			<!-- Type of learning -->
-			<rlType>actorCritic</rlType>
+			<!--  <rlType>actorCritic</rlType> -->
+			<!-- discount factor in rl -->
+			<discountFactor>0.99</discountFactor>
+			<!-- rl learning rate -->
+			<learningRate>0.6</learningRate>
+			<!-- reward when eating -->
+			<foodReward>1.0</foodReward>
+			<!-- transition matrix learning rate -->
+			<wTransitionLR>1.0</wTransitionLR>
+			
+			<!-- number of replays done during sleep state -->
+			<cantReplay>8</cantReplay>
+			<!-- threshold to propagate PC activation during 
+			     sleep state. Should be numPC/50           -->
+			<replayThres>86</replayThres>
+			
+			<!-- number of directions the rat con move towards -->
+			<numActions>8</numActions>
+			<sameActionBias>0.85</sameActionBias>
+			
 			<!-- Minimum conjuntive layer cell radius -->
-			<PCRadius>.12</PCRadius>
+			<PCRadius>.2</PCRadius><!-- small = 0.08, big=0.2 -->
 			<!-- Cells per side of the square -->
-			<numPCCellsPerSide>16</numPCCellsPerSide>
+			<numPC>430</numPC>
 			<!-- Type of conjunctive cell -->
-			<placeCells>exponential</placeCells>
+			<placeCells>exponentialMultipleT</placeCells>
 			<!-- Map dimensions for conjuntive cell placing -->
-			<xmin>-1</xmin>
-			<ymin>-1</ymin>
-			<xmax>1</xmax>
-			<ymax>1</ymax>
 			
 			<!-- Order in which feeders are visited -->
-			<feederOrder>$(feederOrder)</feederOrder>
+			<!--  <feederOrder>$(feederOrder)</feederOrder> -->
 			<!--<feederOrder>1,2</feederOrder>-->
 		</params>
 	</model>
@@ -77,12 +103,21 @@
 	<!-- Task to be performed before the eperiment -->
 	<beforeExperimentTasks>
 		<!-- Enable feeders all feeders -->
-		<task>
+		<!-- <task>
 			<name>edu.usf.experiment.task.AddAllFeedersTask</name>
 			<params>
 				<feederFile>multiscalemodel/src/edu/usf/ratsim/experiment/feederPositions/positionsTSP21Feeders</feederFile>
 			</params>
+		</task> -->
+		<task>
+			<name>edu.usf.experiment.task.AddFeederTask</name>
+			<params>
+				<id>1</id>
+				<x>0</x> <!-- left arm: 0, right arm: 3.6 ~~ (lab_origin, lab_origin + length) -->
+				<y>10.5</y><!-- y=10.5 -->
+			</params>
 		</task>
+
 		
 		<task>
 			<name>edu.usf.experiment.task.EnableAllFeeders</name>
@@ -117,7 +152,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>1</number>
+			<number>4000</number>
 			<!-- Sleep between cycles for visualization -->
 			<sleep>00</sleep>
 			<!-- Tasks to perform before each episode -->
@@ -129,14 +164,14 @@
 				<task>
 					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
 					<params>
-						<filename>$(ratpath)</filename>
+						<!--<filename>$(ratpath)</filename>-->
 						<!--<pointXYW>$(startPosition)</pointXYW> -->
 						
-						<!--<point>
-							<x>-0.2</x>
-							<y>-0.4</y>
+						<point>
+							<x>0</x>
+							<y>0.1</y>
 							<theta>1.57</theta>
-						</point>-->
+						</point>
 						
 					</params>
 				</task>
@@ -190,6 +225,9 @@
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
+				<task>
+					<name>edu.usf.experiment.task.SaveSubject</name>
+				</task>
 			</afterEpisodeTasks>
 			<!-- Conditions upon which the episode ends -->
 			<stopConditions>
@@ -197,14 +235,16 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>100000</max>
+						<max>2000</max>
 					</params>
 				</condition>
 				<!-- Has eaten from 5 feeders -->
 				<condition>
 					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
 					<params>
-						<n>$(nFoodStopCondition)</n>
+						<!--  <n>$(nFoodStopCondition)</n>-->
+						<n>1</n>
+						<extraCycles>1</extraCycles>
 					</params>
 				</condition>
 				<!-- Somebody sets done flag condition -->
@@ -247,7 +287,9 @@
 		</afterTrialLoggers>
 		<!-- Plotters to execute after the trial has ended -->
 		<afterTrialPlotters>
-
+			<plotter>
+				<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
+			</plotter>
 		</afterTrialPlotters>
 	</trial>
 	

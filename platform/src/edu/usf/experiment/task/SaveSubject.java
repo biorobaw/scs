@@ -8,12 +8,12 @@ import edu.usf.experiment.utils.ElementWrapper;
 
 public class SaveSubject extends Task {
 
-	private ElementWrapper filename;
+	//private ElementWrapper filename;
 
 	public SaveSubject(ElementWrapper params) {
 		super(params);
 
-		filename = params.getChild("filename");
+		//filename = params.getChild("filename");
 	}
 
 	@Override
@@ -33,6 +33,7 @@ public class SaveSubject extends Task {
 
 	public void perform(Subject sub) {
 //		sub.save(PropertyHolder.getInstance().getProperty("log.directory") + filename);
+		sub.save();
 		
 	}
 

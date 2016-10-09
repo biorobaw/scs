@@ -54,13 +54,15 @@ public class Float1dSparsePortMap extends Float1dSparsePort {
 		if (nonZero.containsKey(index))
 			return nonZero.get(index);
 		else
-			throw new IllegalArgumentException();
+			//throw new IllegalArgumentException();
+			return 0;
 	}
 
 	@Override
 	public void set(int i, float x) {
 		if (x != 0)
 			nonZero.put(i, x);
+		else nonZero.remove(i);
 	}
 
 	@Override

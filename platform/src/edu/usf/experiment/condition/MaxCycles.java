@@ -24,5 +24,7 @@ public class MaxCycles implements Condition {
 
 		return cycles >= maxCycles;
 	}
+	
+
 
 }

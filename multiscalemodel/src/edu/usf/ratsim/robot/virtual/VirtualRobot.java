@@ -291,6 +291,38 @@ public class VirtualRobot extends LocalizableRobot {
 
 		return affs;
 	}
+	
+	@Override
+	public boolean checkAffordance(Affordance af){
+		boolean realizable;
+		if (af instanceof TurnAffordance) {
+			TurnAffordance ta = (TurnAffordance) af;
+			// Either it can move there, or it cannot move forward and the
+			// other angle is not an option
+			realizable = !universe.canRobotMove(0, ROBOT_LENGTH
+					* lookaheadSteps)
+					// && !canRobotMove(-ta.getAngle(), ROBOT_LENGTH))
+					|| universe.canRobotMove(ta.getAngle(), ROBOT_LENGTH
+							* lookaheadSteps);
+			// realizable = true;
+		} else if (af instanceof ForwardAffordance)
+			realizable = universe.canRobotMove(0, ROBOT_LENGTH
+					* lookaheadSteps);
+		else if (af instanceof EatAffordance) {
+			// realizable = hasRobotFoundFood();
+			if (getClosestFeeder() != null)
+				realizable = getClosestFeeder().getPosition().distance(
+						new Point3f()) < closeThrs;
+			else
+				realizable = false;
+		} else
+			throw new RuntimeException("Affordance "
+					+ af.getClass().getName() + " not supported by robot");
+
+		af.setRealizable(realizable);
+		return realizable;
+		
+	}
 
 	@Override
 	public void executeAffordance(Affordance af, Subject sub) {
@@ -299,10 +331,10 @@ public class VirtualRobot extends LocalizableRobot {
 			List<Affordance> forward = new LinkedList<Affordance>();
 			forward.add(new ForwardAffordance(ta.getDistance()));
 			// Turn until can move forward (there is no wall on front)
-			do {
+//			do {
 				rotate(ta.getAngle());
-				forward = checkAffordances(forward);
-			} while (!forward.get(0).isRealizable());
+//				forward = checkAffordances(forward);
+//			} while (!forward.get(0).isRealizable());
 
 		} else if (af instanceof ForwardAffordance)
 			forward(((ForwardAffordance) af).getDistance());

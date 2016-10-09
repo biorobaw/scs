@@ -19,7 +19,13 @@ public class ViewNode extends ExpUniverseNode {
 		float x = params.getChildFloat("x");
 		float y = params.getChildFloat("y");
 		float z = params.getChildFloat("z");
-
+		Float r = null;
+		try {
+			r = params.getChildFloat("r");			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
 		Transform3D rPos = new Transform3D();
 		rPos.setTranslation(new Vector3f(x, y, z));
 //		Transform3D rRot = new Transform3D();
@@ -28,10 +34,24 @@ public class ViewNode extends ExpUniverseNode {
 		TransformGroup tg = new TransformGroup();
 		tg.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
 		tg.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-		tg.setTransform(rPos);
+		
 
 		CameraView cv = new CameraView(false);
 		view = cv.getView();
+		
+		if (r!=null)
+		{
+			view.setProjectionPolicy(View.PARALLEL_PROJECTION);
+			rPos.setScale(r);
+			tg.setTransform(rPos);
+		}
+		else
+		{
+			tg.setTransform(rPos);
+			
+			
+			
+		}
 		tg.addChild(cv.getRootBG());
 
 		// Add the transform group to the world branch group

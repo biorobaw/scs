@@ -44,16 +44,20 @@ public class Episode {
 	private List<Logger> beforeCycleLoggers;
 	private List<Logger> afterCycleLoggers;
 	private List<Logger> afterEpisodeLoggers;
+	
+	private int[] sleepValues = new int[] {0,30,100,300,500,1000,2000,4000,8000,0};
 
 	public Episode(ElementWrapper episodeNode, String parentLogPath, Trial trial, int episodeNumber) {
 		this.trial = trial;
 		this.episodeNumber = episodeNumber;
-		this.sleep = episodeNode.getChildInt("sleep");
+		this.sleepValues[sleepValues.length-1] = episodeNode.getChildInt("sleep");
 
+
+//		System.out.println("parent " + parentLogPath);
 		logPath = parentLogPath
-				+ File.separator + episodeNumber + File.separator
-				+ getSubject().getGroup() + File.separator
-				+ getSubject().getName() + File.separator;
+				+ episodeNumber + "/"
+				+ getSubject().getGroup() + "/"
+				+ getSubject().getName() + "/";
 
 		File file = new File(logPath);
 		file.mkdirs();
@@ -83,6 +87,8 @@ public class Episode {
 	}
 
 	public void run() {
+		Globals g = Globals.getInstance();
+		g.put("episodeLogPath", logPath);
 		PropertyHolder props = PropertyHolder.getInstance();
 		props.setProperty("episode", new Integer(episodeNumber).toString());
 		props.setProperty("log.directory", logPath);
@@ -105,6 +111,7 @@ public class Episode {
 		boolean finished = false;
 		int cycle = 0;
 		while (!finished) {
+			if((boolean)g.get("pause")) continue;
 			props.setProperty("cycle", new Integer(cycle).toString());
 			for (Logger l : beforeCycleLoggers)
 				l.log(this);
@@ -132,7 +139,7 @@ public class Episode {
 			if (cycle % 5000 == 0)
 				System.out.println("");
 
-			if (!finished && sleep != 0)
+			if (!finished && (sleep = sleepValues[(int)g.get("simulationSpeed")]) != 0)
 				try {
 					Thread.sleep(sleep);
 				} catch (InterruptedException e) {
@@ -164,6 +171,10 @@ public class Episode {
 		// Plotters
 		for (Plotter p : afterEpisodePlotters)
 			p.plot();
+		
+		// reset All conditions:
+//		for (Condition sc : stopConds)
+//			sc.reset();
 
 		System.out.println("[+] Episode " + trial.getName() + " "
 				+ trial.getGroup() + " " + trial.getSubjectName() + " "

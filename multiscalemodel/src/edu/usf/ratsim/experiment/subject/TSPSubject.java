@@ -117,7 +117,7 @@ public class TSPSubject extends Subject {
 		throw new NotImplementedException();
 	}
 
-	public Map<Integer, Float> getCellActivity() {
+	public Map<Integer, Float> getPCActivity() {
 		return model.getCellActivation();
 	}
 

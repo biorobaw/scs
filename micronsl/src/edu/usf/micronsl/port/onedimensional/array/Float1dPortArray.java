@@ -46,6 +46,10 @@ public class Float1dPortArray extends Float1dPort {
 		data[i] = x;
 	}
 
+	public void set(float[] data) {
+		this.data = data;
+	}
+	
 	@Override
 	public void clear() {
 		for (int i = 0; i < data.length; i++)

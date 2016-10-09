@@ -1,5 +1,6 @@
 package edu.usf.experiment.subject;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,9 @@ public abstract class Subject {
 	private Robot robot;
 	private boolean hasEaten;
 	private boolean triedToEat;
+	
+	public void save(){};
+	
 
 	public Subject(String name, String group, ElementWrapper modelParams, Robot robot) {
 		this.name = name;
@@ -119,4 +123,9 @@ public abstract class Subject {
 	public abstract float getValueEntropy();
 
 	public abstract void reactivateHPCLayers(LinkedList<Integer> indexList);
+	
+	public Map<Integer, Float>  getPCActivity(){
+		return new HashMap<>();
+	}
+
 }

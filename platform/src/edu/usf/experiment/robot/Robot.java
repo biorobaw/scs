@@ -79,6 +79,8 @@ public abstract class Robot {
 	 * @return
 	 */
 	public abstract List<Affordance> checkAffordances(List<Affordance> possibleAffordances);
+	
+	public abstract boolean checkAffordance(Affordance af);
 
 	public abstract void executeAffordance(Affordance selectedAction, Subject sub);
 	

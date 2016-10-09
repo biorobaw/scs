@@ -1,15 +1,9 @@
 package edu.usf.experiment.task;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
-import edu.usf.experiment.log.FeederLogger;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.CSVReader;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -29,6 +23,8 @@ public class AddAllFeedersTask extends Task{
 		if(feedersFile==null){
 			System.err.println("WARNING: no feeder file");
 		}
+		
+		
 		
 	}
 

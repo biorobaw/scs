@@ -1,13 +1,20 @@
 package edu.usf.ratsim.experiment.universe.virtual;
 
+import java.awt.Color;
 import java.awt.GraphicsConfiguration;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
 
 import javax.media.j3d.Canvas3D;
 import javax.vecmath.Vector3f;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
+
+import edu.usf.experiment.Globals;
+import edu.usf.experiment.utils.RandomSingleton;
+import edu.usf.ratsim.experiment.universe.virtual.drawingUtilities.DrawPolarGraph;
+import edu.usf.ratsim.experiment.universe.virtual.drawingUtilities.DrawingFunction;
 
 public class UniverseFrame extends java.awt.Frame {
 
@@ -33,6 +40,9 @@ public class UniverseFrame extends java.awt.Frame {
 	private java.awt.Label posRat;
 
 	private VirtUniverse expUniv;
+	
+	LinkedList<Runnable> drawingFunctions = new LinkedList<Runnable>();
+	Globals g = Globals.getInstance();
 
 	public UniverseFrame(VirtUniverse world) {
 		this.expUniv = world;
@@ -59,11 +69,30 @@ public class UniverseFrame extends java.awt.Frame {
 		// .addCanvas3D(robotViewCanvas);
 		// robotViewPanel.add(robotViewCanvas);
 		// Top view canvas
-		topViewCanvas = new Canvas3D(config);
+		topViewCanvas = new Canvas3D(config){
+
+			private static final long serialVersionUID = 2278728176596780651L;
+			
+			
+			public void postRender()
+	        {
+				
+				for (Runnable r : drawingFunctions)
+					r.run();
+				
+	        }
+			
+			
+		};
 		world.getTopView().addCanvas3D(topViewCanvas);
 		topViewCanvas.setSize(500, 500);
 		topViewPanel.add(topViewCanvas);
 
+	}
+	
+	public void addDrawingFunction(DrawingFunction function){
+		function.setGraphics(topViewCanvas.getGraphics2D());
+		drawingFunctions.push(function);
 	}
 
 	private void initComponents() {
@@ -102,6 +131,8 @@ public class UniverseFrame extends java.awt.Frame {
 		button1.setLabel("Publ. Space");
 		button1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Globals g = Globals.getInstance();
+				g.put("pause",!(boolean)g.get("pause"));
 				// TODO restore pause
 				// Trial.cont = ! Trial.cont;
 			}
@@ -258,12 +289,18 @@ public class UniverseFrame extends java.awt.Frame {
 
 	// accion asociada al boton de mover izquierda
 	private void leftBtnAction(java.awt.event.ActionEvent evt) {
-		expUniv.moveRobot(new Vector3f(-.1f, 0f, 0f));
+		int speed = (int)g.get("simulationSpeed");
+		speed = --speed > 0 ? speed : 0; 
+		g.put("simulationSpeed",speed);
+		//expUniv.moveRobot(new Vector3f(-.1f, 0f, 0f));
 	}
 
 	// accion asociada al boton de mover derecha
 	private void rightBtnAction(java.awt.event.ActionEvent evt) {
-		expUniv.moveRobot(new Vector3f(0.1f, 0f, 0f));
+		//expUniv.moveRobot(new Vector3f(0.1f, 0f, 0f));
+		int speed = (int)g.get("simulationSpeed");
+		speed = ++speed > 9 ? 9 : speed; 
+		g.put("simulationSpeed",speed);
 	}
 
 	// accion asociada al boton de retroceder

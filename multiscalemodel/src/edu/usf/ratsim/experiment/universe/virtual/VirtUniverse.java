@@ -29,6 +29,7 @@ import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.Wall;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
+import edu.usf.ratsim.experiment.universe.virtual.drawingUtilities.DrawingFunction;
 import edu.usf.ratsim.support.XMLDocReader;
 
 /**
@@ -56,6 +57,8 @@ public class VirtUniverse extends Universe {
 	private boolean display;
 	private List<Wall> initialWalls;
 	private List<WallNode> wallsToRevert;
+	
+	UniverseFrame frame;
 
 	public VirtUniverse(ElementWrapper params, String logPath) {
 		super(params, logPath);
@@ -129,13 +132,17 @@ public class VirtUniverse extends Universe {
 			bg.addChild(new DirectionalLightNode(new Vector3f(0f, -5, 0),
 					new Color3f(1f, 1f, 1f)));
 
-			UniverseFrame frame = new UniverseFrame(this);
+			frame = new UniverseFrame(this);
 			frame.setVisible(true);
 		}
 
 		instance = this;
 		
 		wallsToRevert = new LinkedList<WallNode>();
+	}
+	
+	public void addDrawingFunction(DrawingFunction function){
+		if(display)	frame.addDrawingFunction(function);
 	}
 
 	@Override
@@ -275,6 +282,11 @@ public class VirtUniverse extends Universe {
 		rPos.mul(trans);
 		// Set the new transform
 		robot.setT(rPos);
+		
+		Vector3f p = new Vector3f();
+		robot.getT().get(p);
+		//System.out.println("New Pos: " + p);
+		
 		if (display)
 			robotNode.getTransformGroup().setTransform(rPos);
 	}
@@ -326,6 +338,28 @@ public class VirtUniverse extends Universe {
 		Vector3f finalPos = new Vector3f();
 		rPos.get(finalPos);
 		Coordinate finalCoordinate = new Coordinate(finalPos.x, finalPos.y);
+		// Check if crosses any wall
+		boolean intesectsWall = false;
+		LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
+		for (Wall wall : getWalls()) {
+			intesectsWall = intesectsWall
+					|| (path.intersection(wall.s) != null) || (path.distance(wall.s) < MIN_DISTANCE_TO_WALLS);
+		}
+
+		return !intesectsWall;
+	}
+	
+	public boolean canRobotMoveDeltaPos(Point3f deltaPos ){
+		// The current position with rotation
+		
+		Vector3f p = new Vector3f();
+		robot.getT().get(p);
+		
+		Coordinate initCoordinate  = new Coordinate(p.x, p.y);
+		Coordinate finalCoordinate = new Coordinate(p.x+deltaPos.x, p.y+deltaPos.y);
+		
+		//System.out.println("movement: "+initCoordinate + " " + finalCoordinate);
+				
 		// Check if crosses any wall
 		boolean intesectsWall = false;
 		LineSegment path = new LineSegment(initCoordinate, finalCoordinate);

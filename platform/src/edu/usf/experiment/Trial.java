@@ -29,7 +29,7 @@ public class Trial implements Runnable {
 	private Subject subject;
 
 	private List<Task> beforeTasks;
-	private List<Episode> episodes;
+	public List<Episode> episodes;
 	private List<Task> afterTasks;
 	private Universe universe;
 	private List<Logger> beforeLoggers;
@@ -44,7 +44,7 @@ public class Trial implements Runnable {
 		this.subject = subject;
 		this.universe = universe;
 		
-		logPath = parentLogPath + File.separator + name + File.separator;
+		logPath = parentLogPath + name + "/";
 		
 		File file = new File(logPath);
 		file.mkdirs();

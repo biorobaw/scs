@@ -34,6 +34,7 @@ public class AddFeederTask extends Task {
 		id = params.getChildInt("id");
 		x = params.getChildFloat("x");
 		y = params.getChildFloat("y");
+		System.out.println("" + id + " " + x + " " + y );
 	}
 
 	@Override

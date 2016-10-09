@@ -24,6 +24,32 @@ public class GeomUtils {
 	public static void shuffleList(Object[] array) {
 		Collections.shuffle(Arrays.asList(array));
 	}
+	
+	
+	///////////////////////////////////////////PABLO MODIFICATIONS//////////////////////////////////////////////////////////////////
+	
+	/**
+	 * Returns relative angle to the base. Result is given in the range [-pi,pi)
+	 * 
+	 * @param angle
+	 * @param base
+	 * @return
+	 */
+	
+	public static float relativeAngle(float angle, float base){
+		float deltaAngle =(float) ((angle - base) % (2*Math.PI));
+		if (deltaAngle >= Math.PI ) return (float)(deltaAngle - 2*Math.PI);
+		if (deltaAngle < -Math.PI ) return (float)(deltaAngle + 2*Math.PI);
+		return deltaAngle;
+	
+	}
+	
+	
+	
+	
+	
+	
+	//////////////////////////////////////////END OF PABLO MODIFICATIONS////////////////////////////////////////////////////////////
 
 	/**
 	 * Returns a Quaternion representing the 3d rotation that transforms vector

@@ -52,15 +52,21 @@ public class Experiment implements Runnable {
 	 */
 	public Experiment(String experimentFile, String logPath, String groupName,
 			String subjectName) {
-		logPath = logPath + "/";
-		
+		Globals g = Globals.getInstance();
 		System.out.println("[+] Creating directories");
-		File file = new File(logPath);
+		File file = new File(logPath +"/");
 		file.mkdirs();
 		
 		IOUtils.copyFile(experimentFile, logPath + "/experiment.xml");
 		ElementWrapper root = XMLExperimentParser.loadRoot(experimentFile);
 		
+		ElementWrapper load = root.getChild("load");
+		if(load!=null) {
+			g.put("loadEpisode", load.getChildInt("episode"));
+			g.put("loadTrial", load.getChildText("trial"));
+		}
+		g.put("pause", false);
+		g.put("simulationSpeed",9); //speed defined in xml file (sleep value)
 		String mazeFile = root.getChild("universe").getChild("params")
 				.getChildText("maze");
 		IOUtils.copyFile(mazeFile, logPath + "/maze.xml");
@@ -99,7 +105,7 @@ public class Experiment implements Runnable {
 		props.setProperty("group", groupName);
 		props.setProperty("subject", subjectName);
 		
-		props.setProperty("maze.file", logPath + "/maze.xml");
+		props.setProperty("maze.file", logPath + "maze.xml");
 
 		universe = UniverseLoader.getInstance().load(root, logPath);
 
@@ -128,6 +134,22 @@ public class Experiment implements Runnable {
 		// Load trials that apply to the subject
 		trials = XMLExperimentParser.loadTrials(root, logPath, subject,
 				universe);
+		
+		//check if we are loading from a particular trial
+		String t = (String)g.get("loadTrial");
+		Integer e = (Integer)g.get("loadEpisode");
+		if(t!=null){
+			//Pop trials until we get the 
+			for(int i =0;;i++){
+				if(trials.get(0).getName().equals(t)) break;
+				else trials.remove(0);
+			}
+			
+			//pop episodes from the trial until we reach the episode being loaded (remove that episode to since we have already executed that one)
+			for(int i=0;i<=e;i++)
+				trials.get(0).episodes.remove(0);
+		}
+		
 
 		// Load tasks and plotters
 		ElementWrapper params = root;
@@ -179,7 +201,9 @@ public class Experiment implements Runnable {
 
 		//set global variables:
 		Globals g = Globals.getInstance();
-		g.put("logPath",args[1] + "/");
+		if (args[1].endsWith("/"))
+			args[1] = args[1].substring(0, args[1].length()-1);			
+		g.put("logPath",args[1]);
 		g.put("groupName", args[2]);
 		g.put("subName", args[3]);
 		
@@ -188,10 +212,11 @@ public class Experiment implements Runnable {
 			g.put(args[nextVar], args[nextVar+1]);
 			nextVar+=2;
 		}
+
 		
 		//Save globals to a file:
 		try {
-			File f = new File(args[1]+"/globals.txt");
+			File f = new File(g.get("logPath")+"/globals.txt");
 			f.getParentFile().mkdirs();
 			BufferedWriter bw = new BufferedWriter(new FileWriter(f));
 			for(String key : g.global.keySet()){
@@ -205,7 +230,7 @@ public class Experiment implements Runnable {
 		}
 			
 		
-		Experiment e = new Experiment(args[0],args[1] + "/" , args[2], args[3]);
+		Experiment e = new Experiment(args[0],(String)g.get("logPath") , args[2], args[3]);
 		e.run();
 
 		System.exit(0);

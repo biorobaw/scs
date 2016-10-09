@@ -12,6 +12,7 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject;
 import edu.usf.ratsim.experiment.subject.TSPSubject;
+import edu.usf.ratsim.experiment.subject.multipleT.MultipleTSubject;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialConjCell;
 
@@ -24,13 +25,16 @@ public class PCLogger extends Logger {
 	}
 
 	public void log(Subject sub) {
-		if (!(sub instanceof TSPSubject))
+		if (sub instanceof TSPSubject)
+			cells = ((TSPSubject) sub).getPlaceCells();
+		else if (sub instanceof MultipleTSubject)
+			cells = ((MultipleTSubject) sub).getPlaceCells();
+		else
 			throw new IllegalArgumentException(
-					"PC logger can only be used with TSPModel");
+					"PC logger can only be used with TSPModel or MultipleTModel");
 
-		TSPSubject msSub = (TSPSubject) sub;
 
-		cells = msSub.getPlaceCells();
+		
 	}
 
 	@Override
@@ -68,7 +72,7 @@ public class PCLogger extends Logger {
 				cellNum++;
 			}
 
-			cells.clear();
+			//cells.clear();
 		}
 	}
 
