@@ -115,19 +115,30 @@ public class SSLRobot extends LocalizableRobot {
 
 	@Override
 	public Feeder getClosestFeeder(int lastFeeder) {
+	    return getClosestFeeder(lastFeeder, 1);		
+	}
+
+    private Feeder getClosestFeeder(int lastFeeder, int falsePositiveChecksRemaining){
 		int[] except = {lastFeeder};
-		List<Feeder> visible = getVisibleFeeders(except);
+        List<Feeder> visible = getVisibleFeeders(except);
 		if (visible.isEmpty())
 			return null;
-		else if (visible.get(0).getPosition().distance(new Point3f()) < closeThrs)
-			return visible.get(0);
-		else {
+		else if (visible.get(0).getPosition().distance(new Point3f()) < closeThrs){
+            if (falsePositiveChecksRemaining == 0){
+			    return visible.get(0);
+            } else {
+                // Check for false negatives
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e){
+                }
+                return getClosestFeeder(lastFeeder, falsePositiveChecksRemaining - 1);
+            }
+		} else {
 			System.out.println("Distance to closest feeder " + visible.get(0).getPosition().distance(new Point3f()));
 			return null;
 		}
-			
-	}
-
+    }
 	@Override
 	public boolean isFeederClose() {
 		return getClosestFeeder(-1) != null;
