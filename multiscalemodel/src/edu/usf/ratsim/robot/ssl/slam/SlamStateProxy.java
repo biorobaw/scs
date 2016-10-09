@@ -57,7 +57,7 @@ public class SlamStateProxy extends Thread {
 					setSlamState(SlamState.getDefaultInstance());
 					establishConnection();
 				} else {
-					System.out.println("Robot at " + newSS.getX() + "," + newSS.getY() + "," + newSS.getHeading());
+		//			System.out.println("Robot at " + newSS.getX() + "," + newSS.getY() + "," + newSS.getHeading());
 					setSlamState(newSS);
 				}
 			} catch (IOException e) {
