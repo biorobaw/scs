@@ -23,8 +23,8 @@ import java.util.InputMismatchException;
 public class IRReader extends Thread {
 
 	private static final float CLOSETHRS = 200.0f;
-	private static final float REALLYCLOSETHRS = 50.0f;
-	float leftIR, rightIR, frontIR;
+	private static final float REALLYCLOSETHRS = 80.0f;
+	float leftIR, rightIR, frontIR, lowerLIR, lowerRIR;
 	private Scanner scanner;
 	private boolean terminate;
 	private InputStream in = null;
@@ -34,7 +34,8 @@ public class IRReader extends Thread {
 		leftIR = 0;
 		rightIR = 0;
 		frontIR = 0;
-		
+		lowerLIR = 0;
+        lowerRIR = 0;
 		terminate = false;
 
 		setupPort();
@@ -88,6 +89,8 @@ public class IRReader extends Thread {
 					leftIR = scanner.nextFloat();
 					frontIR = scanner.nextFloat();
 					rightIR = scanner.nextFloat();
+					lowerLIR = scanner.nextFloat();
+					lowerRIR = scanner.nextFloat();
                     //System.out.println("IRs " + leftIR + " " + frontIR + " " + rightIR);
 				} catch (InputMismatchException e) {
 					System.err.println("Error reading distance, trying to reset port");
@@ -126,13 +129,21 @@ public class IRReader extends Thread {
 	public synchronized float getFrontIR() {
 		return frontIR;
 	}
-	
+
+    public synchronized float getLowerLIR() {
+		return lowerLIR;
+	}	
+
+    public synchronized float getLowerRIR() {
+		return lowerRIR;
+	}
+
 	public synchronized boolean somethingClose(){
-		return leftIR < CLOSETHRS || rightIR < CLOSETHRS || frontIR < CLOSETHRS;
+		return leftIR < CLOSETHRS || rightIR < CLOSETHRS || frontIR < CLOSETHRS || lowerLIR < CLOSETHRS || lowerRIR < CLOSETHRS;
 	}
 
 	public synchronized boolean somethingReallyClose(){
-		return leftIR < REALLYCLOSETHRS || rightIR < REALLYCLOSETHRS || frontIR < REALLYCLOSETHRS;
+		return leftIR < REALLYCLOSETHRS || rightIR < REALLYCLOSETHRS || frontIR < REALLYCLOSETHRS || lowerLIR < REALLYCLOSETHRS || lowerRIR < REALLYCLOSETHRS;
 	}
 	/**
 	 * @param args
@@ -145,6 +156,8 @@ public class IRReader extends Thread {
 			System.out.print(irreader.getLeftIR() + " ");
 			System.out.print(irreader.getFrontIR() + " ");
 			System.out.print(irreader.getRightIR() + " ");
+			System.out.print(irreader.getLowerLIR() + " ");
+			System.out.print(irreader.getLowerRIR() + " ");
 			System.out.println();
 			try {
 				Thread.sleep(100);
@@ -164,7 +177,7 @@ public class IRReader extends Thread {
 	}
 	
 	public boolean somethingFront() {
-		return frontIR < CLOSETHRS;
+		return frontIR < CLOSETHRS || lowerLIR < CLOSETHRS || lowerRIR < CLOSETHRS;
 	}
 
 }

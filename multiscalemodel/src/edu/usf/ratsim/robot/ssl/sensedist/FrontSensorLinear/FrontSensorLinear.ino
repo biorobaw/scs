@@ -1,8 +1,12 @@
 #include <math.h>
 
+// Mid robot sensors
 const int SFSensor = A2;  
 const int SLSensor = A1;  
-const int SRSensor = A3;    
+const int SRSensor = A3; 
+// Lower sensors  
+const int SLRSensor = A0;  
+const int SLLSensor = A4;  
 
 int SFValue = 0;        // value read from the pot
 int SLValue = 0;        // value read from the pot
@@ -26,6 +30,14 @@ void loop() {
   Serial.print(valor);
   Serial.print(" ");
   m=leeSensor(SRSensor);
+  valor=convierte(m);
+  Serial.print(valor);
+  Serial.print(" ");
+  m=leeSensor(SLLSensor);
+  valor=convierte(m);
+  Serial.print(valor);
+  Serial.print(" ");
+  m=leeSensor(SLRSensor);
   valor=convierte(m);
   Serial.print(valor);
   Serial.print(" ");
