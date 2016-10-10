@@ -153,16 +153,20 @@ public class SSLRobot extends LocalizableRobot {
         boolean right = irreader.somethingRight();
         boolean front = irreader.somethingFront();
         boolean any = irreader.somethingClose();
+        boolean canForward = !front && !irreader.somethingReallyClose();
 		for (Affordance af : possibleAffordances) {
 			if (af instanceof TurnAffordance) {
 				//af.setRealizable(true);
                 TurnAffordance tf = (TurnAffordance) af;
                 if (tf.getAngle() > 0) // left
-		    		tf.setRealizable(!left || (front && right));
+                    // I can turn left if left is free, or if I cannot go forward and right is not an option
+                    // Then, upon not advancing, one side occupied allows the other. If both are occupied, 
+                    // the robot can turn both sides
+		    		tf.setRealizable(!left || (!canForward && right));
 				else
-					tf.setRealizable(!right || (front && left));
+					tf.setRealizable(!right || (!canForward && left));
 			} else if (af instanceof ForwardAffordance) {
-				af.setRealizable(!front && !irreader.somethingReallyClose());
+				af.setRealizable(canForward);
 			} else if (af instanceof EatAffordance) {
 				af.setRealizable(isFeederClose());
 			}
