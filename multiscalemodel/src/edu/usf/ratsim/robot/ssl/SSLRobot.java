@@ -27,6 +27,7 @@ public class SSLRobot extends LocalizableRobot {
 	private float closeThrs;
     private boolean initSlam;
 	private SlamStateProxy slamproxy;
+	private VisionListener visionProxy;
 
 	public SSLRobot(ElementWrapper params, Universe u) {
 		super(params);
@@ -67,6 +68,8 @@ public class SSLRobot extends LocalizableRobot {
 		
 		slamproxy = new SlamStateProxy();
 		slamproxy.start();
+		
+		visionProxy = VisionListener.getVisionListener();
 		
         if (initSlam){
             SlamSetup slamSetup = new SlamSetup(pilot, irreader);
