@@ -31,7 +31,8 @@ public class FeedingLogger extends Logger {
 		if (subject.hasTriedToEat()) {
 			PropertyHolder props = PropertyHolder.getInstance();
 			String cycle = props.getProperty("cycle");
-			int feeder = universe.getFoundFeeder();
+	//		int feeder = universe.getFoundFeeder();
+            int feeder = subject.getRobot().getClosestFeeder().getId();
 			FeedingLog fl = new FeedingLog(feeder, cycle, subject.hasEaten(),
 					universe.isFeederFlashing(feeder), universe.isFeederEnabled(feeder));
 			feederLogs.add(fl);
