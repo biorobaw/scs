@@ -399,6 +399,7 @@
 			<task>
 				<name>edu.usf.experiment.task.AddSmallWallsTask</name>
 			</task>
+            
 		</beforeTrialTasks>
 		<!-- Episodes definition -->
 		<episodes>
@@ -434,6 +435,11 @@
 						</point>
 					</params>
 				</task>
+                <task>
+					<name>edu.usf.experiment.task.WaitToProceed</name>
+					<params>
+					</params>
+				</task>
 
 			</beforeEpisodeTasks>
 			<!-- Tasks to performe before each cycle -->
@@ -445,7 +451,7 @@
 				<task>
 					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
 					<params>
-						<timeout>00</timeout>
+						<timeout>1</timeout>
 					</params>
 				</task>
 			</afterCycleTasks>
@@ -495,7 +501,7 @@
 				<!-- Has eaten from 15 feeders with no errors and only up to two flashing feeders
 					in the sequence-->
 				<condition>
-					<name>edu.usf.experiment.condition.FoundNFoodNoMistakesStopCond</name>
+					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
 					<params>
 						<n>1</n>
 					</params>
