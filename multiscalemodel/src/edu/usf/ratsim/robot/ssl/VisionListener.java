@@ -1,9 +1,13 @@
 package edu.usf.ratsim.robot.ssl;
 
+import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.Socket;
 import java.net.UnknownHostException;
 
 import javax.vecmath.Point3f;
@@ -33,6 +37,10 @@ public class VisionListener extends Thread {
 	private Position lastPosition;
 	private long lastPosTime;
 
+	private Socket proxySocket;
+
+	private PrintWriter outStream;
+
 	private VisionListener() {
 		try {
 			group = InetAddress.getByName("224.5.23.2");
@@ -47,6 +55,14 @@ public class VisionListener extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		try {
+			proxySocket = new Socket("odroid", 65977);
+			outStream = new PrintWriter(proxySocket.getOutputStream(),true);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 
 		lastPosTime = 0;
 
@@ -57,6 +73,7 @@ public class VisionListener extends Thread {
 	public void run() {
 		while (true) {
 			getRobotPosition();
+			outStream.println(positionToString());
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
@@ -64,6 +81,10 @@ public class VisionListener extends Thread {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private synchronized String positionToString() {
+		return lastPosition.getX() + " " + lastPosition.getY() + " " + lastPosition.getOrient();
 	}
 
 	private void getRobotPosition() {
@@ -142,43 +163,10 @@ public class VisionListener extends Thread {
 	}
 
 	public static void main(String[] args) {
-		
-		// VisionListener v = new VisionListener();
-		// while (true){
-		// System.out.println(v.getRobotPoint());
-		// try {
-		// Thread.sleep(100);
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// }
-		Position p = null;
-		try {
-			VisionListener v = new VisionListener();
-			Thread.sleep(1000);
-			p = v.getLastPosition();
-			System.out.println("private final float nex = " + p.getX() + "f;");
-			System.out.println("private final float ney = " + p.getY() + "f;");
-			Thread.sleep(1000);
-			p = v.getLastPosition();
-			System.out.println("private final float sex = " + p.getX() + "f;");
-			System.out.println("private final float sey = " + p.getY() + "f;");
-			Thread.sleep(1000);
-			p = v.getLastPosition();
-			System.out.println("private final float swx = " + p.getX() + "f;");
-			System.out.println("private final float swy = " + p.getY() + "f;");
-			Thread.sleep(1000);
-			p = v.getLastPosition();
-			System.out.println("private final float nwx = " + p.getX() + "f;");
-			System.out.println("private final float nwy = " + p.getY() + "f;");
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		getVisionListener();
 	}
 
-	public static VisionListener getVisionListener() {
+	private static VisionListener getVisionListener() {
 		if (vl == null)
 			vl  = new VisionListener();
 		
