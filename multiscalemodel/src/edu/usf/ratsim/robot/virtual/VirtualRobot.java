@@ -23,6 +23,7 @@ import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.experiment.utils.RandomSingleton;
+import edu.usf.ratsim.experiment.subject.NotImplementedException;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 
 public class VirtualRobot extends LocalizableRobot {
@@ -391,6 +392,11 @@ public class VirtualRobot extends LocalizableRobot {
 	@Override
 	public int getLastTriedToEatFeeder() {
 		return lastTriedToEat;
+	}
+
+	@Override
+	public void moveContinous(float lVel, float angVel) {
+		throw new NotImplementedException();
 	}
 
 }

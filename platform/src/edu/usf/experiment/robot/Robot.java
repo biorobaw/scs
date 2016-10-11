@@ -110,4 +110,11 @@ public abstract class Robot {
 	public abstract int getLastAteFeeder();
 
 	public abstract int getLastTriedToEatFeeder() ;
+
+	/**
+	 * Move the robot in a continous fashion, as opposed to step motions
+	 * @param lVel Linear velocity, positive values produce forward motions
+	 * @param angVel Angular velocity, positive values mean left rotations
+	 */
+	public abstract void moveContinous(float lVel, float angVel);
 }

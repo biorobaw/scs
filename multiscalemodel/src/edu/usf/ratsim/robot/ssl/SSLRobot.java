@@ -20,6 +20,8 @@ import edu.usf.ratsim.robot.ssl.slam.SlamStateProxy;
 
 public class SSLRobot extends LocalizableRobot {
 
+	private static final float MAX_GAIN = 10;
+	
 	IRReader irreader = null;
 	SSLPilot pilot = null;
 	FeederSensor fsensor = null;
@@ -120,7 +122,8 @@ public class SSLRobot extends LocalizableRobot {
 	@Override
 	public boolean isFeederClose() {
 		Point3f fp = new Point3f(fx, fy, 0);
-		// Check distance against global vision - this only gives true/false info 
+		// Check distance against global vision - this only gives true/false
+		// info
 		// i.e. doesn't help the robot to get there at all
 		return visionProxy.getRobotPoint().distance(fp) < closeThrs;
 	}
@@ -133,15 +136,16 @@ public class SSLRobot extends LocalizableRobot {
 		boolean close = irreader.somethingClose();
 		boolean reallyClose = irreader.somethingReallyClose();
 		boolean canForward = !front && !reallyClose;
-        // Seeing close feeder overrides affordances
-        Feeder closest = getClosestFeeder();
-        boolean feederClose = closest != null && closest.getPosition().distance(new Point3f()) < .4f;
-        System.out.println("l f r cl rcl cF fC: " + left + " " + front + " " + right +" " + close + " " + reallyClose + " " + canForward + " " + feederClose);
+		// Seeing close feeder overrides affordances
+		Feeder closest = getClosestFeeder();
+		boolean feederClose = closest != null && closest.getPosition().distance(new Point3f()) < .4f;
+		System.out.println("l f r cl rcl cF fC: " + left + " " + front + " " + right + " " + close + " " + reallyClose
+				+ " " + canForward + " " + feederClose);
 		for (Affordance af : possibleAffordances) {
 			if (af instanceof TurnAffordance) {
 				// af.setRealizable(true);
 				TurnAffordance tf = (TurnAffordance) af;
-               	if (tf.getAngle() > 0) // left
+				if (tf.getAngle() > 0) // left
 					// I can turn left if left is free, or if I cannot go
 					// forward and right is not an option
 					// Then, upon not advancing, one side occupied allows the
@@ -279,6 +283,22 @@ public class SSLRobot extends LocalizableRobot {
 		r.rotate(-10);
 		Thread.sleep(1000);
 
+	}
+
+	@Override
+	public void moveContinous(float lVel, float angVel) {
+		float leftV = Math.round(lVel - angVel);
+		float rightV = Math.round(lVel + angVel);
+		float maxAbs = Math.max(Math.abs(leftV), Math.abs(rightV));
+		if (maxAbs > MAX_GAIN){
+			leftV /= maxAbs;
+			rightV /= maxAbs;
+		}
+		
+		int leftVInt = Math.round(leftV);
+		int rightVInt = Math.round(rightV);
+		
+		pilot.sendVels(leftVInt, leftVInt, rightVInt, rightVInt);
 	}
 
 }

@@ -221,7 +221,7 @@
 					<params>
 					</params>
 				</task>
-				<!-- Place the animat in a given place -->
+				<!-- Place the animat in a given place 
 				<task>
 					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
 					<params>
@@ -231,7 +231,18 @@
 							<theta>0</theta>
 						</point>
 					</params>
-				</task>
+				</task>-->
+				<!-- Move the robot automatically to the initial position -->
+				<task>
+					<name>edu.usf.ratsim.robot.ssl.GoBackToStart</name>
+					<params>
+						<p_lin>0.002</p_lin>
+						<p_rot>2</p_rot>
+						<dist_thrs>100</dist_thrs>
+						<final_rot_thrs>0.196349541</final_rot_thrs>
+						<init_rot_thrs>0.196349541</init_rot_thrs>
+					</params>
+				</task>			
 				<!-- Release food from the feeder if the rat is close -->
 				<task>
 					<name>edu.usf.experiment.task.ReleaseFoodFromAllFeeders</name>
