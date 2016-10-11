@@ -32,10 +32,12 @@ public class FeedingLogger extends Logger {
 			PropertyHolder props = PropertyHolder.getInstance();
 			String cycle = props.getProperty("cycle");
 	//		int feeder = universe.getFoundFeeder();
-            int feeder = subject.getRobot().getClosestFeeder().getId();
-			FeedingLog fl = new FeedingLog(feeder, cycle, subject.hasEaten(),
-					universe.isFeederFlashing(feeder), universe.isFeederEnabled(feeder));
-			feederLogs.add(fl);
+			if(subject.getRobot().isFeederClose()){
+	            int feeder = subject.getRobot().getClosestFeeder().getId();
+				FeedingLog fl = new FeedingLog(feeder, cycle, subject.hasEaten(),
+						universe.isFeederFlashing(feeder), universe.isFeederEnabled(feeder));
+				feederLogs.add(fl);
+			}
 		}
 
 	}

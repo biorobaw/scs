@@ -25,16 +25,16 @@ public class SSLRobot extends LocalizableRobot {
 	FeederSensor fsensor = null;
 	private Universe universe;
 	private float closeThrs;
-    private boolean initSlam;
+	private boolean initSlam;
 	private SlamStateProxy slamproxy;
 	private VisionListener visionProxy;
 
 	public SSLRobot(ElementWrapper params, Universe u) {
 		super(params);
-		
+
 		closeThrs = params.getChildFloat("closeThrs");
 		initSlam = params.getChildBoolean("initSlam");
-		
+
 		this.universe = u;
 	}
 
@@ -65,18 +65,17 @@ public class SSLRobot extends LocalizableRobot {
 			fsensor.close();
 		fsensor = new FeederSensor();
 		fsensor.start();
-		
+
 		slamproxy = new SlamStateProxy();
 		slamproxy.start();
-		
+
 		visionProxy = VisionListener.getVisionListener();
-		
-        if (initSlam){
-            SlamSetup slamSetup = new SlamSetup(pilot, irreader);
-            slamSetup.initialize();
-        }
-		
-		
+
+		if (initSlam) {
+			SlamSetup slamSetup = new SlamSetup(pilot, irreader);
+			slamSetup.initialize();
+		}
+
 	}
 
 	@Override
@@ -86,11 +85,11 @@ public class SSLRobot extends LocalizableRobot {
 
 	@Override
 	public void rotate(float degrees) {
-		if (degrees > 0){
-			System.out.println("left");	
+		if (degrees > 0) {
+			System.out.println("left");
 			pilot.stepLeft();
 		} else {
-			System.out.println("right");	
+			System.out.println("right");
 			pilot.stepRight();
 		}
 	}
@@ -98,15 +97,14 @@ public class SSLRobot extends LocalizableRobot {
 	@Override
 	public Feeder getFlashingFeeder() {
 		List<Feeder> visible = getVisibleFeeders(null);
-		if (visible.isEmpty()){
+		if (visible.isEmpty()) {
 			System.out.println("No visible feeder");
 			return null;
-		}
-		else if (universe.isFeederFlashing(visible.get(0).getId())){
+		} else if (universe.isFeederFlashing(visible.get(0).getId())) {
 			System.out.println("Found flashing feeder " + visible.get(0).getId());
 			return visible.get(0);
-		} 	else {
-			System.out.println("Feeder " + visible.get(0).getId() +	" is visible but not flashing");
+		} else {
+			System.out.println("Feeder " + visible.get(0).getId() + " is visible but not flashing");
 			return null;
 		}
 	}
@@ -117,52 +115,34 @@ public class SSLRobot extends LocalizableRobot {
 	}
 
 	@Override
-	public Feeder getClosestFeeder(int lastFeeder) {
-	    return getClosestFeeder(lastFeeder, 1);		
-	}
-
-    private Feeder getClosestFeeder(int lastFeeder, int falsePositiveChecksRemaining){
-		int[] except = {lastFeeder};
-        List<Feeder> visible = getVisibleFeeders(except);
-		if (visible.isEmpty())
-			return null;
-		else if (visible.get(0).getPosition().distance(new Point3f()) < closeThrs){
-            if (falsePositiveChecksRemaining == 0){
-			    return visible.get(0);
-            } else {
-                // Check for false negatives
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e){
-                }
-                return getClosestFeeder(lastFeeder, falsePositiveChecksRemaining - 1);
-            }
-		} else {
-			System.out.println("Distance to closest feeder " + visible.get(0).getPosition().distance(new Point3f()));
-			return null;
-		}
-    }
-	@Override
 	public boolean isFeederClose() {
-		return getClosestFeeder(-1) != null;
+		// Hardcoded feeder location
+		final float fx = -643.51056f;
+		final float fy = -709.91986f;
+		Point3f fp = new Point3f(fx, fy, 0);
+		// Check distance against global vision - this only gives true/false info 
+		// i.e. doesn't help the robot to get there at all
+		return visionProxy.getRobotPoint().distance(fp) < closeThrs;
 	}
 
 	@Override
 	public List<Affordance> checkAffordances(List<Affordance> possibleAffordances) {
-        boolean left = irreader.somethingLeft();
-        boolean right = irreader.somethingRight();
-        boolean front = irreader.somethingFront();
-        boolean any = irreader.somethingClose();
-        boolean canForward = !front && !irreader.somethingReallyClose();
+		boolean left = irreader.somethingLeft();
+		boolean right = irreader.somethingRight();
+		boolean front = irreader.somethingFront();
+		boolean any = irreader.somethingClose();
+		boolean canForward = !front && !irreader.somethingReallyClose();
 		for (Affordance af : possibleAffordances) {
 			if (af instanceof TurnAffordance) {
-				//af.setRealizable(true);
-                TurnAffordance tf = (TurnAffordance) af;
-                if (tf.getAngle() > 0) // left
-                    // I can turn left if left is free, or if I cannot go forward and right is not an option
-                    // Then, upon not advancing, one side occupied allows the other. If both are occupied, 
-                    // the robot can turn both sides
-		    		tf.setRealizable(!left || (!canForward && right));
+				// af.setRealizable(true);
+				TurnAffordance tf = (TurnAffordance) af;
+				if (tf.getAngle() > 0) // left
+					// I can turn left if left is free, or if I cannot go
+					// forward and right is not an option
+					// Then, upon not advancing, one side occupied allows the
+					// other. If both are occupied,
+					// the robot can turn both sides
+					tf.setRealizable(!left || (!canForward && right));
 				else
 					tf.setRealizable(!right || (!canForward && left));
 			} else if (af instanceof ForwardAffordance) {
@@ -185,11 +165,11 @@ public class SSLRobot extends LocalizableRobot {
 				rotate(-30);
 		} else if (af instanceof ForwardAffordance) {
 			forward(30); // same, value is not necessary
-			System.out.println("forward");	
+			System.out.println("forward");
 		} else if (af instanceof EatAffordance) {
 			System.out.println("Trying to eat");
 			sub.setTriedToEat();
-			if (isFeederClose()){
+			if (isFeederClose()) {
 				System.out.println("Eating");
 				sub.setHasEaten(true);
 			}
@@ -209,10 +189,10 @@ public class SSLRobot extends LocalizableRobot {
 			if (is != null)
 				// Check that it is not excluded
 				for (int i = 0; i < is.length; i++)
-					if (is[i] == 0)
-						res.clear();
+				if (is[i] == 0)
+				res.clear();
 		}
-		
+
 		return res;
 	}
 
@@ -263,7 +243,7 @@ public class SSLRobot extends LocalizableRobot {
 
 	@Override
 	public float getHalfFieldView() {
-		return (float) (Math.PI/16);
+		return (float) (Math.PI / 16);
 	}
 
 	@Override
@@ -280,22 +260,20 @@ public class SSLRobot extends LocalizableRobot {
 			return feeders.get(0);
 	}
 
-	public static void main(String[] args) throws InterruptedException{
+	public static void main(String[] args) throws InterruptedException {
 		SSLRobot r = new SSLRobot(null, null);
-		
+
 		r.startRobot();
-		
+
 		r.forward(10);
 		Thread.sleep(1000);
-		
+
 		r.rotate(10);
 		Thread.sleep(1000);
-		
+
 		r.rotate(-10);
 		Thread.sleep(1000);
-		
+
 	}
-	
+
 }
-
-

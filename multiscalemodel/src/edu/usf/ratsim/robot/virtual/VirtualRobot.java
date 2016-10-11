@@ -196,25 +196,25 @@ public class VirtualRobot extends LocalizableRobot {
 		return getFlashingFeeder() != null;
 	}
 
-	@Override
-	public Feeder getClosestFeeder(int lastFeeder) {
-		// If feeder was invalidated - re compute it
-		// if (!closestFeederValid){
-		// previouslyFoundFeeder = getClosestFeederImpl(-1);
-		// closestFeederValid = true;
-		// }
-		//
-		// // No feeder visible at all
-		// if (previouslyFoundFeeder == null)
-		// return null;
-		//
-		// // Optimize to return previously computed if hasnt moved
-		// if (previouslyFoundFeeder.getId() == lastFeeder){
-		return getClosestFeederImpl(lastFeeder);
-		// } else
-		// return previouslyFoundFeeder;
-
-	}
+//	@Override
+//	public Feeder getClosestFeeder(int lastFeeder) {
+//		// If feeder was invalidated - re compute it
+//		// if (!closestFeederValid){
+//		// previouslyFoundFeeder = getClosestFeederImpl(-1);
+//		// closestFeederValid = true;
+//		// }
+//		//
+//		// // No feeder visible at all
+//		// if (previouslyFoundFeeder == null)
+//		// return null;
+//		//
+//		// // Optimize to return previously computed if hasnt moved
+//		// if (previouslyFoundFeeder.getId() == lastFeeder){
+//		return getClosestFeederImpl(lastFeeder);
+//		// } else
+//		// return previouslyFoundFeeder;
+//
+//	}
 
 	private Feeder getClosestFeederImpl(int lastFeeder) {
 		int[] except = { lastFeeder };
@@ -241,7 +241,7 @@ public class VirtualRobot extends LocalizableRobot {
 
 	@Override
 	public boolean isFeederClose() {
-		Feeder f = getClosestFeeder(-1);
+		Feeder f = getClosestFeeder();
 		return f != null && f.getPosition().distance(new Point3f()) < closeThrs;
 	}
 
@@ -331,7 +331,7 @@ public class VirtualRobot extends LocalizableRobot {
 
 	@Override
 	public boolean seesFeeder() {
-		return getClosestFeeder(-1) != null;
+		return getClosestFeeder() != null;
 	}
 
 	@Override

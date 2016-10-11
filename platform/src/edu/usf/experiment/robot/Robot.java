@@ -64,10 +64,18 @@ public abstract class Robot {
 
 	public abstract boolean seesFlashingFeeder();
 
-	public abstract Feeder getClosestFeeder(int lastFeeder);
-	
 	public Feeder getClosestFeeder(){
-		return getClosestFeeder(-1);
+		List<Feeder> feeders = getVisibleFeeders(null);
+		float minDist = Float.MAX_VALUE;
+		Feeder closest = null;
+		for (Feeder f : feeders){
+			float dist = f.getPosition().distance(new Point3f());
+			if (dist < minDist){
+				closest = f;
+				minDist = dist;
+			}
+		}
+		return closest;	
 	}
 
 	public abstract boolean isFeederClose();
