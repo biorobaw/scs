@@ -58,9 +58,9 @@ public class GoBackToStart extends Task {
 	private void goToPoint(float x, float y, float t, Universe u, Robot r) {
 		Point3f toP = new Point3f(x, y, 0);
 		// Rotate to face
-		float angleToGoal = GeomUtils.angleToPointWithOrientation(u.getRobotOrientation(), u.getRobotPosition(), toP);
+		float angleToGoal = angleToPwithO(u.getRobotOrientation(), u.getRobotPosition(), toP);
 		while (Math.abs(angleToGoal) > init_rot_thrs){
-			angleToGoal = GeomUtils.angleToPointWithOrientation(u.getRobotOrientation(), u.getRobotPosition(), toP);
+			angleToGoal = angleToPwithO(u.getRobotOrientation(), u.getRobotPosition(), toP);
 			System.out.println(angleToGoal);
 			r.moveContinous(0, -p_rot * angleToGoal);
 			try {
@@ -72,12 +72,12 @@ public class GoBackToStart extends Task {
 		}
 		
 		// Go to point
-		angleToGoal = GeomUtils.angleToPointWithOrientation(u.getRobotOrientation(), u.getRobotPosition(), toP);
+		angleToGoal = angleToPwithO(u.getRobotOrientation(), u.getRobotPosition(), toP);
 		float distanceToGoal = toP.distance(u.getRobotPosition());
 		while (distanceToGoal > dist_thrs){
-			angleToGoal = GeomUtils.angleToPointWithOrientation(u.getRobotOrientation(), u.getRobotPosition(), toP);
+			angleToGoal = angleToPwithO(u.getRobotOrientation(), u.getRobotPosition(), toP);
 			distanceToGoal = toP.distance(u.getRobotPosition());
-			r.moveContinous(p_lin * distanceToGoal, p_rot * angleToGoal);
+			r.moveContinous(p_lin * distanceToGoal, -p_rot * angleToGoal);
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
@@ -91,7 +91,7 @@ public class GoBackToStart extends Task {
 		angleToGoal = GeomUtils.angleDiff(u.getRobotOrientationAngle(), t);
 		while (Math.abs(angleToGoal) > final_rot_thrs){
 			angleToGoal = GeomUtils.angleDiff(u.getRobotOrientationAngle(), t);
-			r.moveContinous(0, p_rot * angleToGoal);
+			r.moveContinous(0, -p_rot * angleToGoal);
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
