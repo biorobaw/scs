@@ -43,12 +43,6 @@ public class VisionProxy extends Thread {
 	public void run() {
 		while (!terminate) {
 			getRobotPosition();
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 	}
 
