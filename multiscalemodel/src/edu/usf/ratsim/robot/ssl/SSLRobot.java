@@ -130,11 +130,13 @@ public class SSLRobot extends LocalizableRobot {
 		boolean left = irreader.somethingLeft();
 		boolean right = irreader.somethingRight();
 		boolean front = irreader.somethingFront();
-		boolean any = irreader.somethingClose();
-		boolean canForward = !front && !irreader.somethingReallyClose();
+		boolean close = irreader.somethingClose();
+		boolean reallyClose = irreader.somethingReallyClose();
+		boolean canForward = !front && !reallyClose;
         // Seeing close feeder overrides affordances
         Feeder closest = getClosestFeeder();
         boolean feederClose = closest != null && closest.getPosition().distance(new Point3f()) < .4f;
+        System.out.println("l f r cl rcl cF fC: " + left + " " + front + " " + right +" " + close + " " + reallyClose + " " + canForward + " " + feederClose);
 		for (Affordance af : possibleAffordances) {
 			if (af instanceof TurnAffordance) {
 				// af.setRealizable(true);
