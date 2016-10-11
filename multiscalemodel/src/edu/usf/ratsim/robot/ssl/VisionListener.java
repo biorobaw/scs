@@ -30,14 +30,11 @@ public class VisionListener extends Thread {
 			Socket clientSocket;
 			try {
 				clientSocket = proxySocket.accept();
-				outStream = new PrintWriter(clientSocket.getOutputStream(),true);
-				new VisionListenerHandler(outStream).start();
+				new VisionListenerHandler(clientSocket).start();
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			
-			
 			
 		}
 	}

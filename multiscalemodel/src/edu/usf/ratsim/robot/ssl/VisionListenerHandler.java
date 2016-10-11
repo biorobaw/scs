@@ -8,6 +8,7 @@ import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.UnknownHostException;
 
 import javax.vecmath.Point3f;
@@ -25,19 +26,19 @@ public class VisionListenerHandler extends Thread {
 	private Position lastPosition;
 	private long lastPosTime;
 
-	public VisionListenerHandler(PrintWriter outStream) {
-		this.outStream = outStream;
+	private Socket clientSocket;
 
+	public VisionListenerHandler(Socket clientSocket) {
+		this.clientSocket = clientSocket;
 		try {
+			this.outStream = new PrintWriter(clientSocket.getOutputStream(),true);
 			s = new MulticastSocket(10002);
 			s.joinGroup(new InetSocketAddress("224.5.23.2", 10002), NetworkInterface.getByName("lo"));
 			s.setReceiveBufferSize(4096);
 			System.out.println(s.getReceiveBufferSize());
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -46,7 +47,7 @@ public class VisionListenerHandler extends Thread {
 	}
 
 	public void run() {
-		while (true) {
+		while (!clientSocket.isClosed()) {
 			System.out.println("Getting robot position");
 			getRobotPosition();
 			System.out.println("Sending it to feeder proxy");
