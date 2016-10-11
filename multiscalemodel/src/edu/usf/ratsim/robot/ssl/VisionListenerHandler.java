@@ -53,12 +53,6 @@ public class VisionListenerHandler extends Thread {
 			System.out.println("Sending it to feeder proxy");
 			outStream.println(positionToString());
 			System.out.println(positionToString());
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 	}
 
