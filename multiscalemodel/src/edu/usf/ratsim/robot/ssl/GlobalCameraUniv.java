@@ -10,12 +10,12 @@ import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 
 public class GlobalCameraUniv extends VirtUniverse{
 
-	private VisionListener vision;
+	private VisionProxy vision;
 
 	public GlobalCameraUniv(ElementWrapper params, String logPath) {
 		super(params, logPath);
 		
-		vision = VisionListener.getVisionListener();
+		vision = VisionProxy.getVisionProxy();
 	}
 
 	@Override

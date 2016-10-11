@@ -27,7 +27,7 @@ public class SSLRobot extends LocalizableRobot {
 	private float closeThrs;
 	private boolean initSlam;
 	private SlamStateProxy slamproxy;
-	private VisionListener visionProxy;
+	private VisionProxy visionProxy;
 	// Hardcoded feeder location
 	private final float fx = 550.07025f;
 	private final float fy = -1200.7332f;
@@ -72,7 +72,7 @@ public class SSLRobot extends LocalizableRobot {
 		slamproxy = new SlamStateProxy();
 		slamproxy.start();
 
-		visionProxy = VisionListener.getVisionListener();
+		visionProxy = VisionProxy.getVisionProxy();
 
 		if (initSlam) {
 			SlamSetup slamSetup = new SlamSetup(pilot, irreader);
