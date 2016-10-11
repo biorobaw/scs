@@ -3,24 +3,25 @@ require(grid)
 require(plyr, quietly = TRUE)
 require(dunn.test, quietly = TRUE)
 
-stepsPerSec <- 4
+#stepsPerSec <- 4
 
 plotArrival <- function(pathData, plotName){
   #pathData <- pathData[pathData$runtime < 10000,]
-  pathData$runtime <- pathData$runtime / stepsPerSec
+#  pathData$runtime <- pathData$runtime / stepsPerSec
   summarizedRunTimes <- ddply(pathData, .(group, repetition), summarise, sdRT = sd(runtime)/sqrt(length(runtime)), mRT = mean(runtime))
   #   print(head(summarizedRunTimes))
   summarizedRunTimes <- ddply(summarizedRunTimes, .(group), summarise, repetition=repetition, mRT=mRT, sdRT=sdRT, runmedian = runmed(mRT, 31))
   #   print(pathData[1,'trial'])
   p <- ggplot(pathData, aes(x=factor(repetition), y = runtime)) 
   #p <- p + geom_bar(data=summarizedRunTimes, mapping=aes(x=Group, y = mRT), stat='identity')
-  p <- p + ylab("Completion time (s)\n") + xlab("\nRepetition") 
+  p <- p + ylab("Completion time (num. actions)\n") + xlab("\nRepetition") 
   # p <- p + scale_fill_grey(name="Group",start = .4)
   p <- p + theme_bw() + scale_fill_discrete(guide = guide_legend(title = "Group"))
   p <- p + scale_y_continuous()
   p <- p + theme(legend.text = element_text(size=20), legend.title = element_text(size=20), text = element_text(size=20)) 
   p <- p + theme(legend.key.height = unit(3,"line"), legend.key.width = unit(3,"line"), legend.position = "right", legend.justification = c(1, 1), legend.background = element_rect(colour = NA, fill = NA))
-  box <- p + geom_boxplot(aes(fill=group),position=position_dodge(.5))# + geom_jitter()
+  #box <- p + geom_boxplot(aes(fill=group),position=position_dodge(.5))# + geom_jitter()
+  box <- p + geom_point(aes(color=group), size = 5)
   print(box)
   ggsave(plot=box,filename=paste(plotName, "box.", pathData[1,'trial'],".pdf", sep=''), width=30, height=10)
   
