@@ -56,6 +56,7 @@ public class GoBackToStart extends Task {
 		float angleToGoal = GeomUtils.angleToPointWithOrientation(u.getRobotOrientation(), u.getRobotPosition(), toP);
 		while (Math.abs(angleToGoal) > init_rot_thrs){
 			angleToGoal = GeomUtils.angleToPointWithOrientation(u.getRobotOrientation(), u.getRobotPosition(), toP);
+			System.out.println(angleToGoal);
 			r.moveContinous(0, p_rot * angleToGoal);
 			try {
 				Thread.sleep(50);

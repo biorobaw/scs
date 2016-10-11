@@ -6,6 +6,7 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 
 public class GlobalCameraUniv extends VirtUniverse{
@@ -30,7 +31,7 @@ public class GlobalCameraUniv extends VirtUniverse{
 	public Quat4f getRobotOrientation() {
 		Point3f p = vision.getRobotPoint();
 		setRobotPosition(new Point2D.Float(p.x, p.z), vision.getRobotOrientation());
-		return new Quat4f(0, 1, 0, vision.getRobotOrientation());
+		return GeomUtils.angleToRot(vision.getRobotOrientation());
 	}
 
 	@Override
