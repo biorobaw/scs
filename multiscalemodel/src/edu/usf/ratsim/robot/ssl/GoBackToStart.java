@@ -91,7 +91,7 @@ public class GoBackToStart extends Task {
 		angleToGoal = GeomUtils.angleDiff(u.getRobotOrientationAngle(), t);
 		while (Math.abs(angleToGoal) > final_rot_thrs){
 			angleToGoal = GeomUtils.angleDiff(u.getRobotOrientationAngle(), t);
-			r.moveContinous(0, -p_rot * angleToGoal);
+			r.moveContinous(0, p_rot * angleToGoal);
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
