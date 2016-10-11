@@ -57,7 +57,7 @@ public class VisionListener extends Thread {
 		}
 		
 		try {
-			proxySocket = new Socket("odroid", 65977);
+			proxySocket = new Socket("odroid", 63111);
 			outStream = new PrintWriter(proxySocket.getOutputStream(),true);
 		} catch (IOException e) {
 			e.printStackTrace();

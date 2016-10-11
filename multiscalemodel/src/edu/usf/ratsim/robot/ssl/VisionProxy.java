@@ -20,7 +20,7 @@ public class VisionProxy extends Thread {
 
 	private VisionProxy() {
 		try {
-			listenSocket = new ServerSocket(65977);
+			listenSocket = new ServerSocket(63111);
 			socket = listenSocket.accept();
 			reader = new Scanner(socket.getInputStream());
 			reader.nextLine();
