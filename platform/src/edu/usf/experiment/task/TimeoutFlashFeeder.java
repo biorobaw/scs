@@ -51,7 +51,7 @@ public class TimeoutFlashFeeder extends Task {
 		else
 			timeSinceAte++;
  
-		System.out.println("Time since ate " + timeSinceAte + " timeout " + timeout);
+//		System.out.println("Time since ate " + timeSinceAte + " timeout " + timeout);
 		if (timeSinceAte == timeout) {
 			List<Integer> active = u.getActiveFeeders();
 
