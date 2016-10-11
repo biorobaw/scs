@@ -14,14 +14,13 @@ public class VisionProxy extends Thread {
 	private static VisionProxy vp;
 	private Position lastPosition;
 	private long lastPosTime;
-	private ServerSocket listenSocket;
+	private Socket listenSocket;
 	private Socket socket;
 	private Scanner reader;
 
 	private VisionProxy() {
 		try {
-			listenSocket = new ServerSocket(63111);
-			socket = listenSocket.accept();
+			listenSocket = new Socket("cmac1", 63111);
 			reader = new Scanner(socket.getInputStream());
 			reader.nextLine();
 		} catch (IOException e) {
