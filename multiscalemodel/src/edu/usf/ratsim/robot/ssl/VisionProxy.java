@@ -3,6 +3,7 @@ package edu.usf.ratsim.robot.ssl;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import javax.vecmath.Point3f;
@@ -50,11 +51,16 @@ public class VisionProxy extends Thread {
 	}
 
 	private void getRobotPosition() {
-		float x = reader.nextFloat();
-		float y = reader.nextFloat();
-		float theta = reader.nextFloat();
-		setPosition(new Position(x, y, theta));
-		reader.nextLine();
+		try {
+			float x = reader.nextFloat();
+			float y = reader.nextFloat();
+			float theta = reader.nextFloat();
+			setPosition(new Position(x, y, theta));
+			reader.nextLine();
+		} catch (NoSuchElementException e) {
+			System.err.println("Broken channel, exiting");
+			System.exit(1);
+		}
 		
 		
 	}

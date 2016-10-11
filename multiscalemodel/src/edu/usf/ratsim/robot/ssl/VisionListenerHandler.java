@@ -19,7 +19,7 @@ import edu.usf.ratsim.support.Position;
 public class VisionListenerHandler extends Thread {
 
 	private PrintWriter outStream;
-	
+
 	private InetAddress group;
 	private MulticastSocket s;
 	private Position lastPosition;
@@ -27,10 +27,10 @@ public class VisionListenerHandler extends Thread {
 
 	public VisionListenerHandler(PrintWriter outStream) {
 		this.outStream = outStream;
-		
+
 		try {
 			s = new MulticastSocket(10002);
-			s.joinGroup(new InetSocketAddress("224.5.23.2",10002), NetworkInterface.getByName("lo"));
+			s.joinGroup(new InetSocketAddress("224.5.23.2", 10002), NetworkInterface.getByName("lo"));
 			s.setReceiveBufferSize(4096);
 			System.out.println(s.getReceiveBufferSize());
 		} catch (UnknownHostException e) {
@@ -40,25 +40,27 @@ public class VisionListenerHandler extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		lastPosTime = 0;
 		lastPosition = new Position(0, 0, 0);
 	}
-	
-	public void run(){
-		System.out.println("Getting robot position");
-		getRobotPosition();
-		System.out.println("Sending it to feeder proxy");
-		outStream.println(positionToString());
-		System.out.println(positionToString());
-		try {
-			Thread.sleep(50);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+	public void run() {
+		while (true) {
+			System.out.println("Getting robot position");
+			getRobotPosition();
+			System.out.println("Sending it to feeder proxy");
+			outStream.println(positionToString());
+			System.out.println(positionToString());
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
-	
+
 	private synchronized String positionToString() {
 		return lastPosition.getX() + " " + lastPosition.getY() + " " + lastPosition.getOrient();
 	}
@@ -75,24 +77,25 @@ public class VisionListenerHandler extends Thread {
 			byte[] data = new byte[recv.getLength()];
 			System.arraycopy(buf, 0, data, 0, recv.getLength());
 			f = SSL_WrapperPacket.parseFrom(data);
-			
+
 			// Only accept readings from cam 0
-			if (f.getDetection().getCameraId() == 0){
+			if (f.getDetection().getCameraId() == 0) {
 				SSL_DetectionRobot robot1 = null;
-				for(SSL_DetectionRobot r : f.getDetection().getRobotsBlueList()){
+				for (SSL_DetectionRobot r : f.getDetection().getRobotsBlueList()) {
 					if (r.getRobotId() == 1)
 						robot1 = r;
 				}
-				
-				if (robot1 != null){
+
+				if (robot1 != null) {
 					SSL_DetectionRobot r = f.getDetection().getRobotsBlue(0);
 					// System.out.println(r.getX());
 					// System.out.println(r.getY());
 					setPosition(new Position(r.getX(), r.getY(), r.getOrientation()));
-					
+
 				} else {
-					if (System.currentTimeMillis() - lastPosTime > 500){
-	//					System.err.println("Havent detected robot for more than half a second");
+					if (System.currentTimeMillis() - lastPosTime > 500) {
+						// System.err.println("Havent detected robot for more
+						// than half a second");
 					}
 				}
 			}
@@ -104,15 +107,14 @@ public class VisionListenerHandler extends Thread {
 			e.printStackTrace();
 		}
 
-		
 	}
-	
+
 	private synchronized void setPosition(Position position) {
 		lastPosition = position;
 		lastPosTime = System.currentTimeMillis();
 	}
 
-	private synchronized Position getLastPosition(){
+	private synchronized Position getLastPosition() {
 		return lastPosition;
 	}
 
@@ -123,12 +125,12 @@ public class VisionListenerHandler extends Thread {
 		s.close();
 		outStream.close();
 	}
-	
-	public synchronized boolean hasPosition(){
+
+	public synchronized boolean hasPosition() {
 		return lastPosTime > System.currentTimeMillis() - 300;
 	}
 
-	public synchronized Point3f getRobotPoint() {		
+	public synchronized Point3f getRobotPoint() {
 		Position p = lastPosition;
 		return new Point3f(p.getX(), p.getY(), 0);
 	}
