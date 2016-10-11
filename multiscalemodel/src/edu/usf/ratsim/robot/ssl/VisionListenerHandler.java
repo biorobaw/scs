@@ -49,7 +49,14 @@ public class VisionListenerHandler extends Thread {
 	public void run() {
 		while (!outStream.checkError()) {
 			System.out.println("Getting robot position");
+			// Get varioius to reduce framerate
 			getRobotPosition();
+			getRobotPosition();
+			getRobotPosition();
+			getRobotPosition();
+			getRobotPosition();
+			getRobotPosition();
+			
 			System.out.println("Sending it to feeder proxy");
 			outStream.println(positionToString());
 			System.out.println(positionToString());
