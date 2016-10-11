@@ -28,6 +28,9 @@ public class SSLRobot extends LocalizableRobot {
 	private boolean initSlam;
 	private SlamStateProxy slamproxy;
 	private VisionListener visionProxy;
+	// Hardcoded feeder location
+	private final float fx = 550.07025f;
+	private final float fy = -1200.7332f;
 
 	public SSLRobot(ElementWrapper params, Universe u) {
 		super(params);
@@ -116,9 +119,6 @@ public class SSLRobot extends LocalizableRobot {
 
 	@Override
 	public boolean isFeederClose() {
-		// Hardcoded feeder location
-		final float fx = -643.51056f;
-		final float fy = -709.91986f;
 		Point3f fp = new Point3f(fx, fy, 0);
 		// Check distance against global vision - this only gives true/false info 
 		// i.e. doesn't help the robot to get there at all

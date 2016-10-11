@@ -79,21 +79,24 @@ public class VisionListener extends Thread {
 			System.arraycopy(buf, 0, data, 0, recv.getLength());
 			f = SSL_WrapperPacket.parseFrom(data);
 			
-			SSL_DetectionRobot robot1 = null;
-			for(SSL_DetectionRobot r : f.getDetection().getRobotsBlueList()){
-				if (r.getRobotId() == 1)
-					robot1 = r;
-			}
-			
-			if (robot1 != null){
-				SSL_DetectionRobot r = f.getDetection().getRobotsBlue(0);
-				// System.out.println(r.getX());
-				// System.out.println(r.getY());
-				setPosition(new Position(r.getX(), r.getY(), r.getOrientation()));
+			// Only accept readings from cam 0
+			if (f.getDetection().getCameraId() == 0){
+				SSL_DetectionRobot robot1 = null;
+				for(SSL_DetectionRobot r : f.getDetection().getRobotsBlueList()){
+					if (r.getRobotId() == 1)
+						robot1 = r;
+				}
 				
-			} else {
-				if (System.currentTimeMillis() - lastPosTime > 500){
-//					System.err.println("Havent detected robot for more than half a second");
+				if (robot1 != null){
+					SSL_DetectionRobot r = f.getDetection().getRobotsBlue(0);
+					// System.out.println(r.getX());
+					// System.out.println(r.getY());
+					setPosition(new Position(r.getX(), r.getY(), r.getOrientation()));
+					
+				} else {
+					if (System.currentTimeMillis() - lastPosTime > 500){
+	//					System.err.println("Havent detected robot for more than half a second");
+					}
 				}
 			}
 		} catch (UnknownHostException e) {
