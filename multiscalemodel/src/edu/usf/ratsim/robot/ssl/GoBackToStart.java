@@ -1,5 +1,6 @@
 package edu.usf.ratsim.robot.ssl;
 
+import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
@@ -14,7 +15,10 @@ import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
 
 public class GoBackToStart extends Task {
-
+	private static final float P1_X = 194.10301f;
+	private static final float P1_Y = -358.76526f;
+	private static final float P2_X = 1326.2297f;
+	private static final float P2_Y = -1578.6276f;
 	private final float FEEDER_X = 550.07025f;
 	private final float FEEDER_Y = -1200.7332f;
 	private final float START_X = 2511.367f;
@@ -51,8 +55,21 @@ public class GoBackToStart extends Task {
 		perform(episode.getUniverse(), episode.getSubject().getRobot());
 	}
 
-	private void perform(Universe universe, Robot r) {
-		goToPoint(START_X, START_Y, START_T, universe, r);
+	private void perform(Universe u, Robot r) {
+		Point3f robot = u.getRobotPosition();
+		Point3f feeder = new Point3f(FEEDER_X, FEEDER_Y, 0);
+		Point3f start = new Point3f(START_X, START_Y, 0);
+		// If farther away from the start than feeder -> behind feeder
+		if (start.distance(robot) > start.distance(feeder)){
+			Point2f rInFeederFrame = new Point2f(robot.x - feeder.x, robot.y - feeder.y);
+			// If x is larger, closer to y (negative coords)
+			if (rInFeederFrame.x > rInFeederFrame.y){
+				goToPoint(P1_X, P1_Y, 0, u, r);
+			} else {
+				goToPoint(P2_X, P2_Y, 0, u, r);
+			}
+		}
+		goToPoint(START_X, START_Y, START_T, u, r);
 	}
 
 	private void goToPoint(float x, float y, float t, Universe u, Robot r) {
