@@ -47,7 +47,7 @@ public class VisionListenerHandler extends Thread {
 	}
 
 	public void run() {
-		while (!clientSocket.isClosed()) {
+		while (!outStream.checkError()) {
 			System.out.println("Getting robot position");
 			getRobotPosition();
 			System.out.println("Sending it to feeder proxy");

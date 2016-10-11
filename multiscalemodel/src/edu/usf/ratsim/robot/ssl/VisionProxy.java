@@ -15,14 +15,15 @@ public class VisionProxy extends Thread {
 	private static VisionProxy vp;
 	private Position lastPosition;
 	private long lastPosTime;
-	private Socket listenSocket;
+	private Socket socket;
 	private Scanner reader;
+	private boolean terminate;
 
 	private VisionProxy() {
 		try {
 			System.out.println("[+] Connecting to vision listener");
-			listenSocket = new Socket("cmac1", 63111);
-			reader = new Scanner(listenSocket.getInputStream());
+			socket = new Socket("cmac1", 63111);
+			reader = new Scanner(socket.getInputStream());
 			System.out.println("[+] Connected to vision listener");
 			reader.nextLine();
 			
@@ -33,13 +34,14 @@ public class VisionProxy extends Thread {
 		
 		lastPosTime = 0;
 		lastPosition = new Position(0, 0, 0);
+		terminate = false;
 		
 		start();
 	}
 
 	@Override
 	public void run() {
-		while (true) {
+		while (!terminate) {
 			getRobotPosition();
 			try {
 				Thread.sleep(50);
@@ -77,8 +79,7 @@ public class VisionProxy extends Thread {
 	@Override
 	protected void finalize() throws Throwable {
 		reader.close();
-		listenSocket.close();
-		listenSocket.close();
+		socket.close();
 	}
 	
 	public synchronized boolean hasPosition(){
