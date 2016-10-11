@@ -121,7 +121,7 @@ public class Episode {
 				t.perform(this);
 
 			getSubject().stepCycle();
-			System.out.println("cycle");
+//			System.out.println("cycle");
 			// TODO: universe step cycle
 
 			for (Logger l : afterCycleLoggers)

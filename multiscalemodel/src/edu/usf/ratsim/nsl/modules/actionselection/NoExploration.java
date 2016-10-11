@@ -7,6 +7,8 @@ import java.util.List;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.experiment.subject.affordance.ForwardAffordance;
+import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
@@ -36,8 +38,11 @@ public class NoExploration extends Module {
 
 	/**
 	 * Create the module
-	 * @param name The module's name
-	 * @param sub The subject to use
+	 * 
+	 * @param name
+	 *            The module's name
+	 * @param sub
+	 *            The subject to use
 	 */
 	public NoExploration(String name, Subject sub) {
 		super(name);
@@ -57,14 +62,12 @@ public class NoExploration extends Module {
 		Float1dPort votes = (Float1dPort) getInPort("votes");
 
 		Affordance selectedAction;
-		List<Affordance> aff = robot.checkAffordances(sub
-				.getPossibleAffordances());
+		List<Affordance> aff = robot.checkAffordances(sub.getPossibleAffordances());
 
 		for (int action = 0; action < aff.size(); action++) {
 			aff.get(action).setValue(votes.get(action));
 			if (Debug.printSelectedValues)
-				System.out.println("votes for aff " + action + ": "
-						+ votes.get(action));
+				System.out.println("votes for aff " + action + ": " + votes.get(action));
 		}
 
 		// Select best action
@@ -72,17 +75,18 @@ public class NoExploration extends Module {
 		Collections.sort(sortedAff);
 		selectedAction = sortedAff.get(aff.size() - 1);
 
-		// Publish the taken action
-		// if (selectedAction.getValue() > 0) {
-        if (selectedAction.isRealizable()){
-            takenAction.set(aff.indexOf(selectedAction));
-            if (Debug.printSelectedValues)
-                System.out.println(selectedAction.toString());
+		// Only execute realizable actions unless rotation (rotations are always
+		// truly realizable and still explorer might vote for "non-realizable"
+		// rotations
+		if (selectedAction instanceof TurnAffordance || selectedAction.isRealizable()) {
+			takenAction.set(aff.indexOf(selectedAction));
+			if (Debug.printSelectedValues)
+				System.out.println(selectedAction.toString());
 
-            robot.executeAffordance(selectedAction, sub);
-        } else {
-            System.err.println("No realizable affordances, skiping execution");
-        }
+			robot.executeAffordance(selectedAction, sub);
+		} else {
+			System.err.println("No realizable affordances, skiping execution");
+		}
 		// } else {
 		// takenAction.set(-1);
 		// }
