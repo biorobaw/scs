@@ -42,6 +42,7 @@ public class VisionListenerHandler extends Thread {
 		}
 		
 		lastPosTime = 0;
+		lastPosition = null;
 	}
 	
 	public void run(){
@@ -57,6 +58,9 @@ public class VisionListenerHandler extends Thread {
 	}
 	
 	private synchronized String positionToString() {
+		if (lastPosition == null)
+			return "0.0 0.0 0.0";
+		
 		return lastPosition.getX() + " " + lastPosition.getY() + " " + lastPosition.getOrient();
 	}
 

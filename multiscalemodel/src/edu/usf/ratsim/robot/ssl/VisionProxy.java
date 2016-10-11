@@ -15,14 +15,16 @@ public class VisionProxy extends Thread {
 	private Position lastPosition;
 	private long lastPosTime;
 	private Socket listenSocket;
-	private Socket socket;
 	private Scanner reader;
 
 	private VisionProxy() {
 		try {
+			System.out.println("[+] Connecting to vision listener");
 			listenSocket = new Socket("cmac1", 63111);
-			reader = new Scanner(socket.getInputStream());
+			reader = new Scanner(listenSocket.getInputStream());
+			System.out.println("[+] Connected to vision listener");
 			reader.nextLine();
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -68,7 +70,7 @@ public class VisionProxy extends Thread {
 	@Override
 	protected void finalize() throws Throwable {
 		reader.close();
-		socket.close();
+		listenSocket.close();
 		listenSocket.close();
 	}
 	
