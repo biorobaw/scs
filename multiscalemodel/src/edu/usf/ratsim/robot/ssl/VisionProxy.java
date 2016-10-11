@@ -12,6 +12,7 @@ import edu.usf.ratsim.support.Position;
 
 public class VisionProxy extends Thread {
 
+	private static final long FRESH_THRS = 300;
 	private static VisionProxy vp;
 	private Position lastPosition;
 	private long lastPosTime;
@@ -110,5 +111,9 @@ public class VisionProxy extends Thread {
 			vp  = new VisionProxy();
 		
 		return vp;
+	}
+
+	public boolean isInfoFresh() {
+		return System.currentTimeMillis() - lastPosTime < FRESH_THRS;
 	}
 }

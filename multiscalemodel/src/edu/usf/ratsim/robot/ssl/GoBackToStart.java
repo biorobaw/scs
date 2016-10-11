@@ -29,17 +29,17 @@ public class GoBackToStart extends Task {
 	private float dist_thrs;
 	private float p_lin;
 	private float final_rot_thrs;
-	
+
 	public GoBackToStart(ElementWrapper params) {
 		super(params);
-		
+
 		p_lin = params.getChildFloat("p_lin");
 		p_rot = params.getChildFloat("p_rot");
 		dist_thrs = params.getChildFloat("dist_thrs");
 		init_rot_thrs = params.getChildFloat("init_rot_thrs");
 		final_rot_thrs = params.getChildFloat("final_rot_thrs");
 	}
-	
+
 	@Override
 	public void perform(Experiment experiment) {
 		perform(experiment.getUniverse(), experiment.getSubject().getRobot());
@@ -60,10 +60,10 @@ public class GoBackToStart extends Task {
 		Point3f feeder = new Point3f(FEEDER_X, FEEDER_Y, 0);
 		Point3f start = new Point3f(START_X, START_Y, 0);
 		// If farther away from the start than feeder -> behind feeder
-		if (start.distance(robot) > start.distance(feeder)){
+		if (start.distance(robot) > start.distance(feeder)) {
 			Point2f rInFeederFrame = new Point2f(robot.x - feeder.x, robot.y - feeder.y);
 			// If x is larger, closer to y (negative coords)
-			if (rInFeederFrame.x < rInFeederFrame.y){
+			if (rInFeederFrame.x < rInFeederFrame.y) {
 				goToPoint(P1_X, P1_Y, 0, u, r);
 			} else {
 				goToPoint(P2_X, P2_Y, 0, u, r);
@@ -76,10 +76,15 @@ public class GoBackToStart extends Task {
 		Point3f toP = new Point3f(x, y, 0);
 		// Rotate to face
 		float angleToGoal = angleToPwithO(u.getRobotOrientation(), u.getRobotPosition(), toP);
-		while (Math.abs(angleToGoal) > init_rot_thrs){
-			angleToGoal = angleToPwithO(u.getRobotOrientation(), u.getRobotPosition(), toP);
-			System.out.println(angleToGoal);
-			r.moveContinous(0, -p_rot * angleToGoal);
+		while (Math.abs(angleToGoal) > init_rot_thrs) {
+			// If we are not receiving cam info, wait until we do
+			if (((GlobalCameraUniv) u).isCamInfoFresh()) {
+				angleToGoal = angleToPwithO(u.getRobotOrientation(), u.getRobotPosition(), toP);
+				System.out.println(angleToGoal);
+				r.moveContinous(0, -p_rot * angleToGoal);
+			} else {
+				r.moveContinous(0, 0);
+			}
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
@@ -87,14 +92,19 @@ public class GoBackToStart extends Task {
 				e.printStackTrace();
 			}
 		}
-		
+
 		// Go to point
 		angleToGoal = angleToPwithO(u.getRobotOrientation(), u.getRobotPosition(), toP);
 		float distanceToGoal = toP.distance(u.getRobotPosition());
-		while (distanceToGoal > dist_thrs){
-			angleToGoal = angleToPwithO(u.getRobotOrientation(), u.getRobotPosition(), toP);
-			distanceToGoal = toP.distance(u.getRobotPosition());
-			r.moveContinous(p_lin * distanceToGoal, -p_rot * angleToGoal);
+		while (distanceToGoal > dist_thrs) {
+			// If we are not receiving cam info, wait until we do
+			if (((GlobalCameraUniv) u).isCamInfoFresh()) {
+				angleToGoal = angleToPwithO(u.getRobotOrientation(), u.getRobotPosition(), toP);
+				distanceToGoal = toP.distance(u.getRobotPosition());
+				r.moveContinous(p_lin * distanceToGoal, -p_rot * angleToGoal);
+			} else {
+				r.moveContinous(0, 0);
+			}
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
@@ -102,13 +112,17 @@ public class GoBackToStart extends Task {
 				e.printStackTrace();
 			}
 		}
-		
-		
+
 		// Rotate to face desired orientation
 		angleToGoal = GeomUtils.angleDiff(u.getRobotOrientationAngle(), t);
-		while (Math.abs(angleToGoal) > final_rot_thrs){
-			angleToGoal = GeomUtils.angleDiff(u.getRobotOrientationAngle(), t);
-			r.moveContinous(0, p_rot * angleToGoal);
+		while (Math.abs(angleToGoal) > final_rot_thrs) {
+			// If we are not receiving cam info, wait until we do
+			if (((GlobalCameraUniv) u).isCamInfoFresh()) {
+				angleToGoal = GeomUtils.angleDiff(u.getRobotOrientationAngle(), t);
+				r.moveContinous(0, p_rot * angleToGoal);
+			} else {
+				r.moveContinous(0, 0);
+			}
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
@@ -116,10 +130,10 @@ public class GoBackToStart extends Task {
 				e.printStackTrace();
 			}
 		}
-		
+
 		r.moveContinous(0, 0);
 	}
-	
+
 	private float angleToPwithO(Quat4f orientation, Point3f from, Point3f to) {
 		Vector3f toPoint = GeomUtils.pointsToVector(from, to);
 		Quat4f rotTo = GeomUtils.rotBetweenVectors(new Vector3f(1, 0, 0), toPoint);
@@ -127,6 +141,6 @@ public class GoBackToStart extends Task {
 		rotTo.mul(orientation);
 		rotTo.normalize();
 		float angle = (float) (2 * Math.acos(rotTo.w)) * Math.signum(rotTo.z);
-		return angle;	
+		return angle;
 	}
 }

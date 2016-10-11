@@ -41,5 +41,9 @@ public class GlobalCameraUniv extends VirtUniverse{
 		return vision.getRobotOrientation();
 	}
 
+	public boolean isCamInfoFresh() {
+		return vision.isInfoFresh();
+	}
+
 	
 }
