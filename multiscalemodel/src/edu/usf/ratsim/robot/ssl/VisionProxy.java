@@ -31,7 +31,8 @@ public class VisionProxy extends Thread {
 		}
 		
 		lastPosTime = 0;
-
+		lastPosition = new Position(0, 0, 0);
+		
 		start();
 	}
 

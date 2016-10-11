@@ -42,11 +42,13 @@ public class VisionListenerHandler extends Thread {
 		}
 		
 		lastPosTime = 0;
-		lastPosition = null;
+		lastPosition = new Position(0, 0, 0);
 	}
 	
 	public void run(){
+		System.out.println("Getting robot position");
 		getRobotPosition();
+		System.out.println("Sending it to feeder proxy");
 		outStream.println(positionToString());
 		System.out.println(positionToString());
 		try {
@@ -58,9 +60,6 @@ public class VisionListenerHandler extends Thread {
 	}
 	
 	private synchronized String positionToString() {
-		if (lastPosition == null)
-			return "0.0 0.0 0.0";
-		
 		return lastPosition.getX() + " " + lastPosition.getY() + " " + lastPosition.getOrient();
 	}
 
@@ -122,6 +121,7 @@ public class VisionListenerHandler extends Thread {
 		super.finalize();
 		s.leaveGroup(group);
 		s.close();
+		outStream.close();
 	}
 	
 	public synchronized boolean hasPosition(){
