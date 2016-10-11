@@ -185,11 +185,6 @@ public class OneFeederObsModel extends Model {
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
-		TaxicFoodManyFeedersManyActionsNotLast taxicff = new TaxicFoodManyFeedersManyActionsNotLast(
-				"Taxic Food Finder", subject, lRobot, nonFlashingReward,
-				nonFlashingNegReward, taxicDiscountFactor, estimateValue);
-		addModule(taxicff);
-		votesPorts.add((Float1dPort) taxicff.getOutPort("votes"));
 
 		FlashingTaxicFoodFinderSchema flashingTaxicFF = new FlashingTaxicFoodFinderSchema(
 				"Flashing Taxic Food Finder", subject, lRobot, flashingReward,

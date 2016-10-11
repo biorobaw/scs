@@ -463,10 +463,6 @@
 					<params>
 					</params>
 				</logger>
-				<!-- Log feeding events -->
-				<logger>
-					<name>edu.usf.experiment.log.FeedingLogger</name>
-				</logger>
 				
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->
