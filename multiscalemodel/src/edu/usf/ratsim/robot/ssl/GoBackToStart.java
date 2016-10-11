@@ -63,7 +63,7 @@ public class GoBackToStart extends Task {
 		if (start.distance(robot) > start.distance(feeder)){
 			Point2f rInFeederFrame = new Point2f(robot.x - feeder.x, robot.y - feeder.y);
 			// If x is larger, closer to y (negative coords)
-			if (rInFeederFrame.x > rInFeederFrame.y){
+			if (rInFeederFrame.x < rInFeederFrame.y){
 				goToPoint(P1_X, P1_Y, 0, u, r);
 			} else {
 				goToPoint(P2_X, P2_Y, 0, u, r);
