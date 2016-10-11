@@ -15,6 +15,9 @@ public class GoBackToStart extends Task {
 
 	private final float FEEDER_X = 550.07025f;
 	private final float FEEDER_Y = -1200.7332f;
+	private final float START_X = 2511.367f;
+	private final float START_Y = 821.49615f;
+	private final float START_T = -1.4741312f;
 	private float init_rot_thrs;
 	private float p_rot;
 	private float dist_thrs;
@@ -47,7 +50,7 @@ public class GoBackToStart extends Task {
 	}
 
 	private void perform(Universe universe, Robot r) {
-		goToPoint(FEEDER_X, FEEDER_Y, (float) (-Math.PI / 2), universe, r);
+		goToPoint(START_X, START_Y, START_T, universe, r);
 	}
 
 	private void goToPoint(float x, float y, float t, Universe u, Robot r) {
