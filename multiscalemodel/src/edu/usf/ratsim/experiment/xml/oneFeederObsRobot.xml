@@ -210,7 +210,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>50</number>
+			<number>20</number>
 			<!-- Sleep between cycles for visualization -->
 			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
@@ -451,7 +451,7 @@
 				<task>
 					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
 					<params>
-						<timeout>1</timeout>
+						<timeout>500</timeout>
 					</params>
 				</task>
 			</afterCycleTasks>
