@@ -132,6 +132,13 @@ public class GoBackToStart extends Task {
 		}
 
 		r.moveContinous(0, 0);
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private float angleToPwithO(Quat4f orientation, Point3f from, Point3f to) {
