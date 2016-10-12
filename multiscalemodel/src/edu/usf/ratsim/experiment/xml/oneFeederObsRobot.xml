@@ -260,6 +260,10 @@
 			</beforeEpisodeTasks>
 			<!-- Tasks to performe before each cycle -->
 			<beforeCycleTasks>
+				<task>
+					<name>edu.usf.experiment.task.CheckHalt</name>
+					<params></params>
+				</task>
 			</beforeCycleTasks>
 			<!-- Tasks to performe after each cycle -->
 			<afterCycleTasks>
@@ -455,6 +459,10 @@
 			</beforeEpisodeTasks>
 			<!-- Tasks to performe before each cycle -->
 			<beforeCycleTasks>
+				<task>
+					<name>edu.usf.experiment.task.CheckHalt</name>
+					<params></params>
+				</task>
 			</beforeCycleTasks>
 			<!-- Tasks to performe after each cycle -->
 			<afterCycleTasks>
