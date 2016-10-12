@@ -73,20 +73,39 @@ public class NoExploration extends Module {
 		// Select best action
 		List<Affordance> sortedAff = new LinkedList<Affordance>(aff);
 		Collections.sort(sortedAff);
-		selectedAction = sortedAff.get(aff.size() - 1);
+//		
 
 		// Only execute realizable actions unless rotation (rotations are always
 		// truly realizable and still explorer might vote for "non-realizable"
 		// rotations
-		if (selectedAction instanceof TurnAffordance || selectedAction.isRealizable()) {
-			takenAction.set(aff.indexOf(selectedAction));
+		int i = sortedAff.size() - 1;
+		while (i > 0 && !(sortedAff.get(i) instanceof TurnAffordance || sortedAff.get(i).isRealizable()))
+			i--;
+		if (i >= 0){
+			takenAction.set(aff.indexOf(sortedAff.get(i)));
 			if (Debug.printSelectedValues)
-				System.out.println(selectedAction.toString());
+				System.out.println(sortedAff.get(i).toString());
 
-			robot.executeAffordance(selectedAction, sub);
+			robot.executeAffordance(sortedAff.get(i), sub);
 		} else {
 			System.err.println("No realizable affordances, skiping execution");
 		}
+			
+			
+			
+			
+			
+			
+//		selectedAction = sortedAff.get(aff.size() - 1);	
+//		if (selectedAction instanceof TurnAffordance || selectedAction.isRealizable()) {
+//			takenAction.set(aff.indexOf(selectedAction));
+//			if (Debug.printSelectedValues)
+//				System.out.println(selectedAction.toString());
+//
+//			robot.executeAffordance(selectedAction, sub);
+//		} else {
+//			System.err.println("No realizable affordances, skiping execution");
+//		}
 		// } else {
 		// takenAction.set(-1);
 		// }
