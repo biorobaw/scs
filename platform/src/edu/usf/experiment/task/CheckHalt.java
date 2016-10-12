@@ -55,7 +55,7 @@ public class CheckHalt extends Task implements Runnable {
 
 	private void perform() {
 		while (!canContinue()){
-			try {
+			try	 {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -67,7 +67,7 @@ public class CheckHalt extends Task implements Runnable {
 	
 	
 	public static void main(String[] args) throws UnknownHostException, IOException{
-		new Socket("localhost", 15679);
+		new Socket("odroid", 15679);
 	}
 
 	@Override

@@ -275,6 +275,11 @@
 					<params>
 					</params>
 				</logger>
+				<logger>
+					<name>edu.usf.experiment.log.UniversePositionLogger</name>
+					<params>
+					</params>
+				</logger>
 				
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->
@@ -466,6 +471,11 @@
 				<!-- Log the subject position -->
 				<logger>
 					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
+					<params>
+					</params>
+				</logger>
+				<logger>
+					<name>edu.usf.experiment.log.UniversePositionLogger</name>
 					<params>
 					</params>
 				</logger>
