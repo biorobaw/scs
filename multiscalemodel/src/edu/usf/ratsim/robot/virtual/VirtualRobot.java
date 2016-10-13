@@ -256,10 +256,10 @@ public class VirtualRobot extends LocalizableRobot {
 		return universe.getRobotOrientationAngle();
 	}
 
-	@Override
-	public Quat4f getOrientation() {
-		return universe.getRobotOrientation();
-	}
+//	@Override
+//	public Quat4f getOrientation() {
+//		return universe.getRobotOrientation();
+//	}
 
 	@Override
 	public List<Affordance> checkAffordances(List<Affordance> affs) {

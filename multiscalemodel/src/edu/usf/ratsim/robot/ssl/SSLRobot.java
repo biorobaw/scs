@@ -31,8 +31,8 @@ public class SSLRobot extends LocalizableRobot {
 	private SlamStateProxy slamproxy;
 	private VisionProxy visionProxy;
 	// Hardcoded feeder location
-	private final float fx = 550.07025f;
-	private final float fy = -1200.7332f;
+	private final float fx = -0.47929716f;
+	private final float fy = -0.50927526f;
 
 	public SSLRobot(ElementWrapper params, Universe u) {
 		super(params);
@@ -222,18 +222,20 @@ public class SSLRobot extends LocalizableRobot {
 
 	@Override
 	public Point3f getPosition() {
-		return slamproxy.getPosition();
+//		return slamproxy.getPosition();
+		return visionProxy.getRobotPoint();
 	}
 
 	@Override
 	public float getOrientationAngle() {
-		return slamproxy.getOrientation();
+//		return slamproxy.getOrientation();
+		return visionProxy.getRobotOrientation();
 	}
 
-	@Override
-	public Quat4f getOrientation() {
-		return new Quat4f();
-	}
+//	@Override
+//	public Quat4f getOrientation() {
+//		return new Quat4f();
+//	}
 
 	@Override
 	public boolean seesFeeder() {

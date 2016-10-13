@@ -21,13 +21,6 @@ public class GlobalCameraUniv extends VirtUniverse{
 
 	@Override
 	public Point3f getRobotPosition() {
-		while (!vision.isInfoFresh())
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		Point3f p = vision.getRobotPoint();
 //		System.out.println(p);
 		setRobotPosition(new Point2D.Float(p.x, p.z), vision.getRobotOrientation());
@@ -36,13 +29,7 @@ public class GlobalCameraUniv extends VirtUniverse{
 
 	@Override
 	public Quat4f getRobotOrientation() {
-		while (!vision.isInfoFresh())
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		
 		Point3f p = vision.getRobotPoint();
 		setRobotPosition(new Point2D.Float(p.x, p.z), vision.getRobotOrientation());
 		return GeomUtils.angleToRot(vision.getRobotOrientation());
@@ -50,13 +37,6 @@ public class GlobalCameraUniv extends VirtUniverse{
 
 	@Override
 	public float getRobotOrientationAngle() {
-		while (!vision.isInfoFresh())
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		Point3f p = vision.getRobotPoint();
 		setRobotPosition(new Point2D.Float(p.x, p.z), vision.getRobotOrientation());
 		return vision.getRobotOrientation();
