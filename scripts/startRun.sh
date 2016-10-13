@@ -15,6 +15,9 @@ java -Dgnu.io.rxtx.SerialPorts=/dev/teensy:/dev/uno \
 
 sleep 2
 
-roslaunch ssl_driver ssl_driver.launch
+roslaunch ssl_driver ssl_driver.launch 
+
+
+
 
 #roslaunch multiscalemodel/src/edu/usf/ratsim/robot/ssl/model.launch
