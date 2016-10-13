@@ -19,8 +19,8 @@ public class GoBackToStart extends Task {
 	private static final float P1_Y = -358.76526f;
 	private static final float P2_X = 1326.2297f;
 	private static final float P2_Y = -1578.6276f;
-	private final float FEEDER_X = 550.07025f;
-	private final float FEEDER_Y = -1200.7332f;
+	private final float FEEDER_X = -0.47929716f;
+	private final float FEEDER_Y =  -0.50927526f;
 	private final float START_X = 2511.367f;
 	private final float START_Y = 821.49615f;
 	private final float START_T = -1.4741312f;
