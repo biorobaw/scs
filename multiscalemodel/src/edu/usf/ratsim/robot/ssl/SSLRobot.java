@@ -34,11 +34,14 @@ public class SSLRobot extends LocalizableRobot {
 	private final float fx = -0.47929716f;
 	private final float fy = -0.50927526f;
 
+	private float halfFieldOfView;
+
 	public SSLRobot(ElementWrapper params, Universe u) {
 		super(params);
 
 		closeThrs = params.getChildFloat("closeThrs");
 		initSlam = params.getChildBoolean("initSlam");
+		halfFieldOfView = params.getChildFloat("halfFieldOfView");
 
 		this.universe = u;
 	}
@@ -254,7 +257,7 @@ public class SSLRobot extends LocalizableRobot {
 
 	@Override
 	public float getHalfFieldView() {
-		return (float) (Math.PI / 16);
+		return halfFieldOfView;
 	}
 
 	@Override

@@ -23,6 +23,7 @@
 				threshold -->
 			<closeThrs>400</closeThrs>
     		<initSlam>false</initSlam>
+    		<halfFieldOfView>0.392699082</halfFieldOfView>
 		</params>
 	</robot>
 	
