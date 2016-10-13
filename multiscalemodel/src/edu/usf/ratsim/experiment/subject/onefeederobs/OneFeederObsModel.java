@@ -70,7 +70,7 @@ public class OneFeederObsModel extends Model {
 		float minPCRadius = params.getChildFloat("minPCRadius");
 		float maxPCRadius = params.getChildFloat("maxPCRadius");
 		int numCCLayers = params.getChildInt("numCCLayers");
-		List<Integer> layerLengths = params.getChildIntList("layerLengths");
+		List<Float> layerLengths = params.getChildFloatList("layerLengths");
 		List<Integer> numCCCellsPerLayer = params
 				.getChildIntList("numCCCellsPerLayer");
 		float minHDRadius = params.getChildFloat("minHDRadius");

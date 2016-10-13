@@ -37,6 +37,10 @@ public class OneFeederObsSubject extends Subject {
 					+ "needs a Localizable Robot");
 		LocalizableRobot lRobot = (LocalizableRobot) robot;
 
+		if (group.equals("VentralLessTraces")){
+			params.getChild("tracesDecay").setText(".75");
+			System.out.println("[+] Changed traces to " + params.getChildFloat("tracesDecay"));
+		}
 		model = new OneFeederObsModel(params, this, lRobot);
 	}
 
