@@ -2,12 +2,12 @@
 	
 <experiment>
 	<universe>
-		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
+		<name>edu.usf.ratsim.robot.ssl.GlobalCameraUniv</name>
 		<params>
 			<!-- Distance from which the food is accessible according to the universe -->
-			<closeToFoodThrs>0.1</closeToFoodThrs>
+			<closeToFoodThrs>0.3</closeToFoodThrs>
 			<!-- Map file -->
-			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/oneFeeder.xml</maze>
+			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/oneFeederRobot.xml</maze>
 			<!-- Display de window or run without GUI -->
 			<display>false</display>
 		</params>
@@ -17,21 +17,13 @@
 	
 	<robot>
 		<!-- Robot to use. Use full name of the class -->
-		<name>edu.usf.ratsim.robot.virtual.VirtualRobot</name>
+		<name>edu.usf.ratsim.robot.ssl.SSLRobot</name>
 		<params>
-			<!-- Percentual translational noise -->
-			<noise>.2</noise>
-			<!-- Rotation noise added after translation -->
-			<translationRotationNoise>.195</translationRotationNoise>
-			<!-- How many steps are projected for obstacle avoidance purpose -->
-			<lookaheadSteps>1</lookaheadSteps>
-			<!-- Half the field of view of the rat -->
-			<halfFieldOfView>1.83</halfFieldOfView>
-			<!-- How long can the rat see in meters -->
-			<visionDist>10</visionDist>
 			<!-- How far away can the robot eat food. This should be shorter than the universe
 				threshold -->
-			<closeThrs>.1</closeThrs>
+			<closeThrs>.3</closeThrs>
+    		<initSlam>false</initSlam>
+    		<halfFieldOfView>0.392699082</halfFieldOfView>
 		</params>
 	</robot>
 	
