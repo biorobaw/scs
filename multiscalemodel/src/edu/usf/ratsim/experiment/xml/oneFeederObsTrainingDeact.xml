@@ -135,7 +135,7 @@
 	<!-- Group definition. The order determines order of execution -->
 	<group>
 		<name>Ventral</name>
-		<numMembers>4</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -144,7 +144,7 @@
 	
 	<group>
 		<name>VentralLessTraces</name>
-		<numMembers>4</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -153,7 +153,7 @@
 	
 	<group>
 		<name>Dorsal</name>
-		<numMembers>4</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -162,7 +162,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>4</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -171,7 +171,7 @@
 	
 	<group>
 		<name>NegControl</name>
-		<numMembers>4</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -257,7 +257,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>20</number>
+			<number>10</number>
 			<!-- Sleep between cycles for visualization -->
 			<sleep>00</sleep>
 			<!-- Tasks to perform before each episode -->
