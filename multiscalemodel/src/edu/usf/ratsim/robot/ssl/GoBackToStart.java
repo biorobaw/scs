@@ -15,14 +15,14 @@ import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
 
 public class GoBackToStart extends Task {
-	private static final float P1_X = 194.10301f;
-	private static final float P1_Y = -358.76526f;
-	private static final float P2_X = 1326.2297f;
-	private static final float P2_Y = -1578.6276f;
+	private static final float P1_X = -1.0f;
+	private static final float P1_Y =  0.027618423f;
+	private static final float P2_X = -0.019091368f;
+	private static final float P2_Y = -0.9812125f;
 	private final float FEEDER_X = -0.47929716f;
 	private final float FEEDER_Y =  -0.50927526f;
-	private final float START_X = 2511.367f;
-	private final float START_Y = 821.49615f;
+	private final float START_X = 0.8288059f;
+	private final float START_Y = 0.78242755f;
 	private final float START_T = -1.4741312f;
 	private float init_rot_thrs;
 	private float p_rot;
@@ -80,7 +80,7 @@ public class GoBackToStart extends Task {
 			// If we are not receiving cam info, wait until we do
 			if (((GlobalCameraUniv) u).isCamInfoFresh()) {
 				angleToGoal = angleToPwithO(u.getRobotOrientation(), u.getRobotPosition(), toP);
-				System.out.println(angleToGoal);
+//				System.out.println(angleToGoal);
 				r.moveContinous(0, -p_rot * angleToGoal);
 			} else {
 				r.moveContinous(0, 0);
