@@ -5,7 +5,7 @@
 		<name>edu.usf.ratsim.robot.ssl.GlobalCameraUniv</name>
 		<params>
 			<!-- Distance from which the food is accessible according to the universe -->
-			<closeToFoodThrs>0.2</closeToFoodThrs>
+			<closeToFoodThrs>0.3</closeToFoodThrs>
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/oneFeederRobot.xml</maze>
 			<!-- Display de window or run without GUI -->
@@ -21,7 +21,7 @@
 		<params>
 			<!-- How far away can the robot eat food. This should be shorter than the universe
 				threshold -->
-			<closeThrs>400</closeThrs>
+			<closeThrs>.3</closeThrs>
     		<initSlam>false</initSlam>
     		<halfFieldOfView>0.392699082</halfFieldOfView>
 		</params>
@@ -271,7 +271,7 @@
 				<task>
 					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
 					<params>
-						<timeout>100</timeout>
+						<timeout>50</timeout>
 					</params>
 				</task>
 			</afterCycleTasks>
@@ -475,7 +475,7 @@
 				<task>
 					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
 					<params>
-						<timeout>500</timeout>
+						<timeout>100</timeout>
 					</params>
 				</task>
 			</afterCycleTasks>
