@@ -28,7 +28,7 @@ public class SSLRobot extends LocalizableRobot {
 	private Universe universe;
 	private float closeThrs;
 	private boolean initSlam;
-	private SlamStateProxy slamproxy;
+//	private SlamStateProxy slamproxy;
 	private VisionProxy visionProxy;
 	// Hardcoded feeder location
 	private final float fx = -0.47929716f;
@@ -71,8 +71,8 @@ public class SSLRobot extends LocalizableRobot {
 		fsensor = new FeederSensor();
 		fsensor.start();
 
-		slamproxy = new SlamStateProxy();
-		slamproxy.start();
+//		slamproxy = new SlamStateProxy();
+//		slamproxy.start();
 
 		visionProxy = VisionProxy.getVisionProxy();
 
