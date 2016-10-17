@@ -1,14 +1,14 @@
 from morse.builder import *
 
-class Ranger(GroundRobot):
+class Rat(GroundRobot):
     """
-    A template robot model for ranger, with a motion controller and a pose sensor.
+    A template robot model for rat, with a motion controller and a pose sensor.
     """
     def __init__(self, name = None, debug = True):
 
-        # ranger.blend is located in the data/robots directory
-        GroundRobot.__init__(self, 'ranger_sim/robots/ranger.blend', name)
-        self.properties(classpath = "ranger_sim.robots.ranger.Ranger")
+        # rat.blend is located in the data/robots directory
+        GroundRobot.__init__(self, 'morris/robots/rat.blend', name)
+        self.properties(classpath = "morris.robots.rat.Rat")
 
         ###################################
         # Actuators

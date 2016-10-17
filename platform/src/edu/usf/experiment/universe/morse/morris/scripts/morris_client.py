@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 """
-Test client for the <ranger_sim> simulation environment.
+Test client for the <morris> simulation environment.
 
 This simple program shows how to control a robot from Python.
 

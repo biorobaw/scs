@@ -1,12 +1,12 @@
 import logging; logger = logging.getLogger("morse." + __name__)
 import morse.core.robot
 
-class Ranger(morse.core.robot.Robot):
+class Rat(morse.core.robot.Robot):
     """ 
-    Class definition for the ranger robot.
+    Class definition for the rat robot.
     """
 
-    _name = 'ranger robot'
+    _name = 'rat robot'
 
     def __init__(self, obj, parent=None):
         """ Constructor method
