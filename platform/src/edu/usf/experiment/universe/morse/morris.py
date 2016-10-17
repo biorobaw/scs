@@ -12,6 +12,10 @@ motion = MotionVW()
 atrv.append(motion)
 
 # Add default interface for our robot's components
-atrv.add_default_interface('ros')
+#atrv.add_default_interface('ros')
+
+pose.add_stream('socket')
+pose.add_service('socket')
+motion.add_service('socket')
 
 env = Environment('environments/emptySquare.blend')
