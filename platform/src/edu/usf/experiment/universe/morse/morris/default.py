@@ -22,6 +22,10 @@ robot.append(pose)
 motion = MotionVW()
 robot.append(motion)
 
+keyboard = Keyboard()
+robot.append(keyboard)
+keyboard.properties(ControlType = 'Position')
+
 # Add default interface for our robot's components
 #atrv.add_default_interface('ros')
 
