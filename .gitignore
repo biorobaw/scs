@@ -1,4 +1,6 @@
 *.RData
+*__pycache__*
+*.pyc
 *~
 javadocs/*
 InterLabFunctionality/*
