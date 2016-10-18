@@ -18,6 +18,7 @@ import edu.usf.experiment.utils.GeomUtils;
 public class MorseRobot extends LocalizableRobot {
 
 	private PosSensorProxy posSensor;
+	private WaypointsControllerProxy wayptsCtrl;
 
 	public MorseRobot(ElementWrapper params) {
 		super(params);
@@ -28,6 +29,13 @@ public class MorseRobot extends LocalizableRobot {
 			System.out.println("[+] Starting pose sensor proxy");
 			posSensor = new PosSensorProxy(streamPorts.get("robot.pose_001"));
 			posSensor.start();
+		} else {
+			throw new RuntimeException("No robot pose sensor available");
+		}
+		
+		if (streamPorts.containsKey("robot.waypoint")) {
+			System.out.println("[+] Starting waipoint controller proxy");
+			wayptsCtrl = new WaypointsControllerProxy(posSensor, streamPorts.get("robot.waypoint"));
 		} else {
 			throw new RuntimeException("No robot pose sensor available");
 		}
