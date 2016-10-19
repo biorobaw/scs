@@ -50,7 +50,7 @@
 			<!-- Size of each layer in millimeters -->
 			<layerLengths>1</layerLengths>
 			<!-- Number of cells per layer -->
-			<numCCCellsPerLayer>10000</numCCCellsPerLayer>
+			<numCCCellsPerLayer>40000</numCCCellsPerLayer>
 			<!-- Type of learning -->
 			<rlType>MultiStateAC</rlType>
 			<!-- Type of conjunctive layer -> learning connection -->
@@ -106,10 +106,10 @@
 			<avoidWallTaxicVal>20</avoidWallTaxicVal>
 			<avoidWallTaxicDist>.1</avoidWallTaxicDist>
 			<!-- Map dimensions for conjuntive cell placing -->
-			<xmin>-1</xmin>
-			<ymin>-1</ymin>
-			<xmax>1</xmax>
-			<ymax>1</ymax>
+			<xmin>-2</xmin>
+			<ymin>-2</ymin>
+			<xmax>2</xmax>
+			<ymax>2</ymax>
 		</params>
 	</model>
 	
@@ -172,8 +172,8 @@
 					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
 					<params>
 						<point>
-							<x>0</x>
-							<y>0</y>
+							<x>-1</x>
+							<y>-1</y>
 							<theta>3.14</theta>
 						</point>
 					</params>
@@ -221,6 +221,14 @@
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
 						<max>5000</max>
+					</params>
+				</condition>
+				<condition>
+					<name>edu.usf.experiment.condition.NearPoint</name>
+					<params>
+						<x>1</x>
+						<y>1</y>
+						<thrs>.2</thrs>
 					</params>
 				</condition>
 			</stopConditions>

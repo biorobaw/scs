@@ -21,6 +21,8 @@ import edu.usf.experiment.utils.GeomUtils;
 public class MorseUniverse extends Universe {
 
 	private PosSensorProxy posSensor;
+	private BufferedWriter writer;
+	private BufferedReader reader;
 
 	public MorseUniverse(ElementWrapper params, String logPath) {
 		super(params, logPath);
@@ -33,6 +35,14 @@ public class MorseUniverse extends Universe {
 			System.out.println("[+] Starting pose sensor proxy");
 			posSensor = new PosSensorProxy(streamPorts.get("robot.pose"));
 			posSensor.start();
+		}
+		
+		try {
+			Socket s = new Socket("localhost", 4000);
+			writer = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
+			reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -52,8 +62,17 @@ public class MorseUniverse extends Universe {
 	}
 
 	@Override
-	public void setRobotPosition(Float float1, float w) {
-		// TODO
+	public void setRobotPosition(Float p, float w) {
+		// Move the robot by teleporting it
+		try {
+			writer.write("id robot.tele teleport [" + p.getX() + ", " + p.getY() + ",0.2,0,0," + w + "]\n");
+			writer.flush();
+			if(!reader.readLine().contains("SUCCESS"))
+				System.err.println("Teleport of the robot failed");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args) {

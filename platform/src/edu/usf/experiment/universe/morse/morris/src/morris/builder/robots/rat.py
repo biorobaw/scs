@@ -1,6 +1,8 @@
 from morse.builder import *
+from morris.builder.actuators import Teleportservice
 
 from math import cos, sin, pi
+
 
 class Rat(GroundRobot):
     
@@ -20,6 +22,10 @@ class Rat(GroundRobot):
         #self.append(wpy)
         vw = MotionVW('vw')
         self.append(vw)
+        
+        # create a new TeleportService actuator to allow moving the robot
+        tele = Teleportservice('tele')
+        self.append(tele)
         
         #keyboard = Keyboard()
         #self.append(keyboard)
@@ -53,13 +59,15 @@ class Rat(GroundRobot):
         semcam.properties(relative=True)
         self.append(semcam)
         
-        # Interfaces
-        pose.add_interface('socket')
-        vw.add_interface('socket')
         
-        fir.add_stream('socket')
-        lir.add_stream('socket')
-        rir.add_stream('socket')
-
-        semcam.add_interface('socket')
+        self.add_default_interface('socket')
+        # Interfaces
+#         pose.add_interface('socket')
+#         vw.add_interface('socket')
+#         
+#         fir.add_stream('socket')
+#         lir.add_stream('socket')
+#         rir.add_stream('socket')
+# 
+#         semcam.add_interface('socket')
 
