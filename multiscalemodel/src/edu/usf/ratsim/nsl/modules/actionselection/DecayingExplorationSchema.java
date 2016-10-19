@@ -9,6 +9,7 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
+import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
@@ -57,12 +58,22 @@ public class DecayingExplorationSchema extends Module {
 				performableAffs.add(a);
 
 		if (!performableAffs.isEmpty()) {
-			Affordance pickedAffordance;
+			Affordance pickedAffordance = null;
 			if (containsEat(performableAffs))
 				pickedAffordance = getEat(performableAffs);
-			else
-				pickedAffordance = performableAffs.get(r.nextInt(performableAffs.size()));
-
+			else {
+				// If last was forward we can turn or forward
+				if (lastPicked == null || lastPicked instanceof ForwardAffordance)
+					pickedAffordance = performableAffs.get(r.nextInt(performableAffs.size()));
+				// But if last was turn, we have to forward or keep turning that way
+				else if (lastPicked instanceof TurnAffordance)
+					do {
+						pickedAffordance = performableAffs.get(r.nextInt(performableAffs.size()));
+					} while ( pickedAffordance instanceof TurnAffordance &&
+							((TurnAffordance)pickedAffordance).getAngle() != ((TurnAffordance)lastPicked).getAngle() );
+			}
+			
+			
 			votes[pickedAffordance.getIndex()] = (float) explorationValue;
 
 			lastPicked = pickedAffordance;
@@ -70,18 +81,18 @@ public class DecayingExplorationSchema extends Module {
 	}
 
 	private boolean containsEat(List<Affordance> affs) {
-		for(Affordance aff : affs)
+		for (Affordance aff : affs)
 			if (aff instanceof EatAffordance)
 				return true;
-		
+
 		return false;
 	}
-	
+
 	private Affordance getEat(List<Affordance> affs) {
-		for(Affordance aff : affs)
+		for (Affordance aff : affs)
 			if (aff instanceof EatAffordance)
 				return aff;
-		
+
 		return null;
 	}
 

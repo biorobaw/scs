@@ -177,14 +177,15 @@ public class MorseRobot extends LocalizableRobot {
 		// TODO Auto-generated method stub
 		for(Affordance a : possibleAffordances)
 			if (a instanceof ForwardAffordance){
-				System.out.println(frontIR.getDistance());
+				
 				a.setRealizable(frontIR.getDistance() > FORWARD_THRS);
-			} else if (a instanceof ForwardAffordance) {
+			} else if (a instanceof TurnAffordance) {
 				TurnAffordance ta = (TurnAffordance) a;
 				boolean canForward = frontIR.getDistance() > FORWARD_THRS;
-				if (ta.getAngle() > 0)
+				if (ta.getAngle() > 0){
+					System.out.println("Left IR: " + frontIR.getDistance());
 					a.setRealizable(leftIR.getDistance() > TURN_THRS | !canForward);
-				else
+				} else
 					a.setRealizable(rightIR.getDistance() > TURN_THRS | !canForward);
 			}
 		return possibleAffordances;

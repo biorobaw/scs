@@ -1,4 +1,5 @@
 *.RData
+morseout.txt
 *__pycache__*
 *.pyc
 *~
