@@ -29,7 +29,7 @@ public class MorseUtils {
 			    	System.err.print((char)p.getErrorStream().read());
 				}
 				
-				p = Runtime.getRuntime().exec("/usr/local/bin/morse run morris", envp);
+				p = Runtime.getRuntime().exec("morse run morris", envp);
 				
 				cacheStreamPorts();
 				

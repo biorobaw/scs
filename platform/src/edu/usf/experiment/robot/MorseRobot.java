@@ -11,6 +11,7 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.universe.morse.IRSensorProxy;
 import edu.usf.experiment.universe.morse.MorseUtils;
 import edu.usf.experiment.universe.morse.PosSensorProxy;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -20,6 +21,9 @@ public class MorseRobot extends LocalizableRobot {
 
 	private PosSensorProxy posSensor;
 	private MorseControllerProxy robCtrl;
+	private IRSensorProxy leftIR;
+	private IRSensorProxy rightIR;
+	private IRSensorProxy frontIR;
 
 	public MorseRobot(ElementWrapper params) {
 		super(params);
@@ -39,6 +43,30 @@ public class MorseRobot extends LocalizableRobot {
 			robCtrl = new MorseControllerProxy(posSensor);
 		} else {
 			throw new RuntimeException("No robot waypoint controller available");
+		}
+		
+		if (streamPorts.containsKey("robot.leftir")) {
+			System.out.println("[+] Starting left IR sensor proxy");
+			leftIR = new IRSensorProxy(streamPorts.get("robot.leftir"));
+			leftIR.start();
+		} else {
+			throw new RuntimeException("No left IR available");
+		}
+		
+		if (streamPorts.containsKey("robot.rightir")) {
+			System.out.println("[+] Starting right IR sensor proxy");
+			rightIR = new IRSensorProxy(streamPorts.get("robot.rightir"));
+			rightIR.start();
+		} else {
+			throw new RuntimeException("No right IR available");
+		}
+		
+		if (streamPorts.containsKey("robot.frontir")) {
+			System.out.println("[+] Starting front IR sensor proxy");
+			frontIR = new IRSensorProxy(streamPorts.get("robot.frontir"));
+			frontIR.start();
+		} else {
+			throw new RuntimeException("No front IR available");
 		}
 	}
 
