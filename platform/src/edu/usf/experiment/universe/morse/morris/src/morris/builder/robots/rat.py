@@ -22,7 +22,7 @@ class Rat(GroundRobot):
         self.append(vw)
         
         #keyboard = Keyboard()
-        #robot.append(keyboard)
+        #self.append(keyboard)
         #keyboard.properties(ControlType = 'Position')
 
         ###################################
