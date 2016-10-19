@@ -15,10 +15,11 @@ class Rat(GroundRobot):
         ###################################
         # Actuators
         ###################################
-        wpy = Waypoint('wpy')
-        wpy.properties(Speed=2.0, Tolerance=0.1)
-        self.append(wpy)
-
+        #wpy = Waypoint('wpy')
+        #wpy.properties(Speed=2.0, Tolerance=0.1)
+        #self.append(wpy)
+        vw = MotionVW('vw')
+        self.append(vw)
         
         #keyboard = Keyboard()
         #robot.append(keyboard)
@@ -46,15 +47,19 @@ class Rat(GroundRobot):
         rir.translate(x=cos(self.IR_ANGLE),y=-sin(self.IR_ANGLE))
         self.append(rir)
         
+        # Semantic camera
         semcam = SemanticCamera()
         semcam.translate(1, 0, 1)
         semcam.properties(relative=True)
         self.append(semcam)
         
+        # Interfaces
         pose.add_interface('socket')
+        vw.add_interface('socket')
+        
         fir.add_stream('socket')
         lir.add_stream('socket')
         rir.add_stream('socket')
-        wpy.add_interface('socket')
+
         semcam.add_interface('socket')
 

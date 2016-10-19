@@ -11,6 +11,7 @@ from morris.builder.robots import Rat
 from math import cos, sin, pi
 
 robot = Rat()
+robot.translate(0,0,.075)
 
 # Semantic camera
 # book = PassiveObject('props/misc_objects','Book_Blue_medium')
