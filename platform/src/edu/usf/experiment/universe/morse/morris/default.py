@@ -13,9 +13,9 @@ from math import cos, sin, pi
 robot = Rat()
 
 # Semantic camera
-book = PassiveObject('props/misc_objects','Book_Blue_medium')
-book.properties(Object=True) 
-book.translate(0.6, 0.6, 10)
+# book = PassiveObject('props/misc_objects','Book_Blue_medium')
+# book.properties(Object=True) 
+# book.translate(0.6, 0.6, 10)
 
 
 env = Environment('environments/emptySquare.blend', fastmode = True)

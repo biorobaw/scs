@@ -22,7 +22,14 @@ public class MorseUtils {
 				// Wait to release the port
 				Thread.sleep(500);
 				// Execute the process
-				Process p = Runtime.getRuntime().exec("/usr/local/bin/morse run morris", envp);
+				Process p = Runtime.getRuntime().exec("killall -9 blender", envp);
+				
+				while(p.getErrorStream().available() > 0)
+				{
+			    	System.err.print((char)p.getErrorStream().read());
+				}
+				
+				p = Runtime.getRuntime().exec("/usr/local/bin/morse run morris", envp);
 				
 				cacheStreamPorts();
 				
@@ -49,7 +56,7 @@ public class MorseUtils {
 				s = new Socket("localhost", 4000);
 				gotConnection = true;
 			} catch (IOException e) {
-				System.out.println("{+] Error connecting, waiting");
+				System.out.println("[+] Error connecting, waiting");
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e1) {

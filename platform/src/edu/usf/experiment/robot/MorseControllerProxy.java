@@ -11,24 +11,23 @@ import javax.vecmath.Point3f;
 
 import edu.usf.experiment.universe.morse.PosSensorProxy;
 
-public class WaypointsControllerProxy {
+public class MorseControllerProxy {
 
-	private static final float STEP = 0.1f;
-	private static final float TOLERANCE = 0.02f;
-	private static final float SPEED = 1.0f;
+	private static final float STEP = 0.15f;
+	private static final float TOLERANCE = 0.04f;
+	private static final float SPEED = 2.0f;
 	private Socket s;
 	private BufferedWriter writer;
 	private PosSensorProxy poseSensor;
 	private int msgNum;
 	private BufferedReader reader;
 
-	public WaypointsControllerProxy(PosSensorProxy posSensor, int port) {
+	public MorseControllerProxy(PosSensorProxy posSensor, int port) {
 		try {
-			s = new Socket("localhost", port);
+			s = new Socket("localhost", 4000);
 			writer = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
 			reader = new BufferedReader(new InputStreamReader(s.getInputStream()));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -41,14 +40,15 @@ public class WaypointsControllerProxy {
 		float yaw = poseSensor.getOrientation();
 		Point3f dst = new Point3f(pose.x + STEP * (float) Math.cos(yaw), pose.y + (float) Math.sin(yaw), pose.z);
 		try {
-			writer.write("id" + msgNum++ + " robot.waypoint goto [" + dst.x + ", " + dst.y + "," + dst.z + ", " + TOLERANCE
-					+ ", " + SPEED + "]");
-			
-			boolean arrived = false;
-			while (!arrived){
-				String line = reader.readLine();
-				line.split(" ")[2];
+			String cmd = "id" + msgNum++ + " robot.wpy goto [" + dst.x + ", " + dst.y + "," + dst.z + ", " + TOLERANCE
+					+ ", " + SPEED + "]\n";
+			System.out.println(cmd);
+			writer.write(cmd);
+			writer.flush();
+			if(!reader.readLine().contains("Arrived")){
+				System.err.println("[-] Controller could not step forward");
 			}
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

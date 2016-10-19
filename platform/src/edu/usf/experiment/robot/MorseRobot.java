@@ -9,6 +9,7 @@ import javax.vecmath.Quat4f;
 
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.morse.MorseUtils;
 import edu.usf.experiment.universe.morse.PosSensorProxy;
@@ -18,26 +19,26 @@ import edu.usf.experiment.utils.GeomUtils;
 public class MorseRobot extends LocalizableRobot {
 
 	private PosSensorProxy posSensor;
-	private WaypointsControllerProxy wayptsCtrl;
+	private MorseControllerProxy wayptsCtrl;
 
 	public MorseRobot(ElementWrapper params) {
 		super(params);
 		
 		Map<String, Integer> streamPorts = MorseUtils.getStreamPorts();
-		
-		if (streamPorts.containsKey("robot.pose_001")) {
+		System.out.println(streamPorts.toString());
+		if (streamPorts.containsKey("robot.pose")) {
 			System.out.println("[+] Starting pose sensor proxy");
-			posSensor = new PosSensorProxy(streamPorts.get("robot.pose_001"));
+			posSensor = new PosSensorProxy(streamPorts.get("robot.pose"));
 			posSensor.start();
 		} else {
 			throw new RuntimeException("No robot pose sensor available");
 		}
 		
-		if (streamPorts.containsKey("robot.waypoint")) {
+		if (streamPorts.containsKey("robot.wpy")) {
 			System.out.println("[+] Starting waipoint controller proxy");
-			wayptsCtrl = new WaypointsControllerProxy(posSensor, streamPorts.get("robot.waypoint"));
+			wayptsCtrl = new MorseControllerProxy(posSensor, streamPorts.get("robot.wpy"));
 		} else {
-			throw new RuntimeException("No robot pose sensor available");
+			throw new RuntimeException("No robot waypoint controller available");
 		}
 	}
 
@@ -107,8 +108,7 @@ public class MorseRobot extends LocalizableRobot {
 
 	@Override
 	public void forward(float distance) {
-		// TODO Auto-generated method stub
-
+		wayptsCtrl.stepForward();
 	}
 
 	@Override
@@ -145,13 +145,20 @@ public class MorseRobot extends LocalizableRobot {
 	@Override
 	public List<Affordance> checkAffordances(List<Affordance> possibleAffordances) {
 		// TODO Auto-generated method stub
+		for(Affordance a : possibleAffordances)
+			a.setRealizable(true);
 		return possibleAffordances;
 	}
 
 	@Override
 	public void executeAffordance(Affordance selectedAction, Subject sub) {
-		// TODO Auto-generated method stub
-
+		if (selectedAction instanceof ForwardAffordance){
+			System.out.println("Executing forward affordance");
+			forward(((ForwardAffordance)selectedAction).getDistance());
+		} else {
+			System.out.println(selectedAction);
+			forward(0);
+		}
 	}
 
 	@Override

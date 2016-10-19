@@ -29,9 +29,9 @@ public class MorseUniverse extends Universe {
 
 		Map<String, Integer> streamPorts = MorseUtils.getStreamPorts();
 		
-		if (streamPorts.containsKey("robot.pose_001")) {
+		if (streamPorts.containsKey("robot.pose")) {
 			System.out.println("[+] Starting pose sensor proxy");
-			posSensor = new PosSensorProxy(streamPorts.get("robot.pose_001"));
+			posSensor = new PosSensorProxy(streamPorts.get("robot.pose"));
 			posSensor.start();
 		}
 	}

@@ -15,9 +15,11 @@ class Rat(GroundRobot):
         ###################################
         # Actuators
         ###################################
-        destination = Destination('destination')
-        destination.properties(Speed=2.0, Tolerance=0.3, RemainAtDestination = True)
-        self.append(destination)
+        wpy = Waypoint('wpy')
+        wpy.properties(Speed=2.0, Tolerance=0.1)
+        self.append(wpy)
+
+        
         #keyboard = Keyboard()
         #robot.append(keyboard)
         #keyboard.properties(ControlType = 'Position')
@@ -53,6 +55,6 @@ class Rat(GroundRobot):
         fir.add_stream('socket')
         lir.add_stream('socket')
         rir.add_stream('socket')
-        destination.add_interface('socket')
+        wpy.add_interface('socket')
         semcam.add_interface('socket')
 
