@@ -21,23 +21,7 @@
 			<z>0</z>
 		</params>
 	</mazeElement>
-		
-		<feeder>
-			<id>0</id>
-			<r>0.01</r>
-			<h>0</h>
-			<cr>0</cr>
-			<cg>0</cg>
-			<cb>1</cb>
-			<x>0.40</x>
-			<y>0</y>
-			<z>0.0</z>
-		</feeder>
-			
-	
-	
-		
-	
+
 	<floor>
 		<r>3</r>
 		<h>0</h>

@@ -55,7 +55,6 @@ public class MorrisSubject extends Subject {
 		res.add(new TurnAffordance(leftAngle, step));
 		res.add(new ForwardAffordance(step));
 		res.add(new TurnAffordance(rightAngle, step));
-		res.add(new EatAffordance());
 		
 		return res;
 	}

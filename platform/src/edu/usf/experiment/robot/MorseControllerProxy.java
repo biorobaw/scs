@@ -14,12 +14,12 @@ import edu.usf.experiment.utils.GeomUtils;
 
 public class MorseControllerProxy {
 
-	private static final float STEP = 0.15f;
-	private static final float TOLERANCE = 0.04f;
+	private static final float STEP = 0.10f;
+	private static final float TOLERANCE = 0.02f;
 	private static final float SPEED = 2.0f;
-	private static final long SLEEP = 100;
+	private static final long SLEEP = 1;
 	private static final float TURNSTEP = 3.14159f / 8;
-	private static final float TURNSPEED = 1;
+	private static final float TURNSPEED = 3;
 	private Socket s;
 	private BufferedWriter writer;
 	private PosSensorProxy poseSensor;

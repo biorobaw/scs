@@ -133,19 +133,6 @@
 	</group>
 	
 	<beforeExperimentTasks>
-		<!-- Enable feeders for the to be able to give food -->
-		<task>
-			<name>edu.usf.experiment.task.EnableFeeders</name>
-			<params>
-				<feeders>0</feeders>
-			</params>
-		</task>
-		
-		<task>
-			<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
-			<params>
-			</params>
-		</task>
 	</beforeExperimentTasks>
 	
 	<!-- Loggers to be executed before the eperiment -->
@@ -177,7 +164,7 @@
 			<!-- Number of episodes -->
 			<number>40</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>500</sleep>
+			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Place the animat in a given place -->
@@ -197,10 +184,6 @@
 			</beforeCycleTasks>
 			<!-- Tasks to performe after each cycle -->
 			<afterCycleTasks>
-				<!-- Release food from the feeder if the rat is close -->
-				<task>
-					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
-				</task>
 			</afterCycleTasks>
 			<!-- Loggers to execute after each cycle -->
 			<afterCycleLoggers>
@@ -238,13 +221,6 @@
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
 						<max>5000</max>
-					</params>
-				</condition>
-				<!-- Has eaten from 100 feeders -->
-				<condition>
-					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
-					<params>
-						<n>1</n>
 					</params>
 				</condition>
 			</stopConditions>

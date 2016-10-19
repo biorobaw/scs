@@ -10,6 +10,7 @@ import javax.vecmath.Quat4f;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
+import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.morse.IRSensorProxy;
 import edu.usf.experiment.universe.morse.MorseUtils;
@@ -19,6 +20,8 @@ import edu.usf.experiment.utils.GeomUtils;
 
 public class MorseRobot extends LocalizableRobot {
 
+	private static final float FORWARD_THRS = .3f;
+	private static final float TURN_THRS = .2f;
 	private PosSensorProxy posSensor;
 	private MorseControllerProxy robCtrl;
 	private IRSensorProxy leftIR;
@@ -173,7 +176,17 @@ public class MorseRobot extends LocalizableRobot {
 	public List<Affordance> checkAffordances(List<Affordance> possibleAffordances) {
 		// TODO Auto-generated method stub
 		for(Affordance a : possibleAffordances)
-			a.setRealizable(true);
+			if (a instanceof ForwardAffordance){
+				System.out.println(frontIR.getDistance());
+				a.setRealizable(frontIR.getDistance() > FORWARD_THRS);
+			} else if (a instanceof ForwardAffordance) {
+				TurnAffordance ta = (TurnAffordance) a;
+				boolean canForward = frontIR.getDistance() > FORWARD_THRS;
+				if (ta.getAngle() > 0)
+					a.setRealizable(leftIR.getDistance() > TURN_THRS | !canForward);
+				else
+					a.setRealizable(rightIR.getDistance() > TURN_THRS | !canForward);
+			}
 		return possibleAffordances;
 	}
 
@@ -182,9 +195,9 @@ public class MorseRobot extends LocalizableRobot {
 		if (selectedAction instanceof ForwardAffordance){
 			System.out.println("Executing forward affordance");
 			forward(((ForwardAffordance)selectedAction).getDistance());
-		} else {
+		} else if (selectedAction instanceof TurnAffordance){
 			System.out.println(selectedAction);
-			rotate(-10);
+			rotate(((TurnAffordance)selectedAction).getAngle());
 		}
 	}
 

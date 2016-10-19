@@ -21,7 +21,7 @@ public class Debug {
 	public static boolean printHDCells = print && false;
 	public static boolean printGiveFood = print && false;
 	public static boolean printTaxicBh = print && false;
-	public static boolean printSelectedValues = print && false;	
+	public static boolean printSelectedValues = print && true;	
 	public static boolean printRobotEaten = print && false;
 	public static boolean printFeederCells = print && false;
 	public static boolean printJointMultiply = print && false;
@@ -35,6 +35,7 @@ public class Debug {
 	public static boolean printSilentSynapses = print && false;
 	public static boolean printValueAfter = print && false;
 	public static boolean printAvoidWallValues = print && false;
-	public static boolean printMaps = print && false;	
+	public static boolean printMaps = print && false;
+	public static boolean printMorseErr = print && true;	
 	
 }
