@@ -46,27 +46,27 @@
 			<!-- Right rotation amount in radians -->
 			<rightAngle>-0.195</rightAngle>
 			<!-- Number of conjunctive cell layers -->
-			<numCCLayers>1</numCCLayers>
+			<numCCLayers>2</numCCLayers>
 			<!-- Size of each layer in millimeters -->
-			<layerLengths>1</layerLengths>
+			<layerLengths>5,5</layerLengths>
 			<!-- Number of cells per layer -->
-			<numCCCellsPerLayer>40000</numCCCellsPerLayer>
+			<numCCCellsPerLayer>40000,20000</numCCCellsPerLayer>
 			<!-- Type of learning -->
 			<rlType>MultiStateAC</rlType>
 			<!-- Type of conjunctive layer -> learning connection -->
 			<voteType>gradient</voteType>
 			<!-- Layer connection probabilities to action selection for gradient connections -->
-			<votesConnProbs>1</votesConnProbs>
+			<votesConnProbs>1,0</votesConnProbs>
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
-			<valueConnProbs>1</valueConnProbs>
+			<valueConnProbs>0,1</valueConnProbs>
 			<!-- Minimum conjuntive layer cell radius -->
 			<minPCRadius>.0682</minPCRadius>
 			<!-- Maximum conjuntive layer cell radius -->
-			<maxPCRadius>.1428</maxPCRadius>
+			<maxPCRadius>.3</maxPCRadius>
 			<!-- Type of conjunctive cell -->
 			<placeCells>ExponentialHDPC</placeCells>
-			<votesNormalizer>50</votesNormalizer>
-			<valueNormalizer>50</valueNormalizer>
+			<votesNormalizer>10</votesNormalizer>
+			<valueNormalizer>10</valueNormalizer>
 			<!-- Wall cell modulation. How much does a wall modulate the place field. Greater
 				means less activity -->
 			<wallInhibition>0.1</wallInhibition>
@@ -81,7 +81,7 @@
 			<!-- Reward value for food -->
 			<foodReward>1000</foodReward>
 			<!-- Reward value given when it doesnt eat -->
-			<nonFoodReward>-10</nonFoodReward>
+			<nonFoodReward>-0</nonFoodReward>
 			<!-- Lambda discount factor for the taxic module-->
 			<taxicDiscountFactor>1</taxicDiscountFactor>
 			<!-- Lambda discount factor for the learning algorithm -->
@@ -94,7 +94,7 @@
 			<!-- TODO: take out -->
 			<cellContribution>1</cellContribution>
 			<!-- Value assigned to exploration action-values -->
-			<explorationReward>1000</explorationReward>
+			<explorationReward>.0001</explorationReward>
 			<!-- Half life value for decay exploration -->
 			<explorationHalfLifeVal>1</explorationHalfLifeVal>
 			<!-- Value assigned to wall actions for the wall taxic modules -->

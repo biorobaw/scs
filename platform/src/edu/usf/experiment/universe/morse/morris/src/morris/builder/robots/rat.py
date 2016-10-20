@@ -54,10 +54,10 @@ class Rat(GroundRobot):
         self.append(rir)
         
         # Semantic camera
-        semcam = SemanticCamera()
-        semcam.translate(1, 0, 1)
-        semcam.properties(relative=True)
-        self.append(semcam)
+#         semcam = SemanticCamera()
+#         semcam.translate(1, 0, 1)
+#         semcam.properties(relative=True)
+#         self.append(semcam)
         
         
         self.add_default_interface('socket')
