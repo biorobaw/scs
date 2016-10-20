@@ -101,8 +101,7 @@ public class MorseRobot extends LocalizableRobot {
 
 	@Override
 	public float getDistanceToClosestWall() {
-		// TODO Auto-generated method stub
-		return 0;
+		return 30;
 	}
 
 	@Override
@@ -112,7 +111,6 @@ public class MorseRobot extends LocalizableRobot {
 
 	@Override
 	public int closeToNoseWalls(float distToConsider) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -183,7 +181,6 @@ public class MorseRobot extends LocalizableRobot {
 				TurnAffordance ta = (TurnAffordance) a;
 				boolean canForward = frontIR.getDistance() > FORWARD_THRS;
 				if (ta.getAngle() > 0){
-					System.out.println("Left IR: " + frontIR.getDistance());
 					a.setRealizable(leftIR.getDistance() > TURN_THRS | !canForward);
 				} else
 					a.setRealizable(rightIR.getDistance() > TURN_THRS | !canForward);
@@ -194,10 +191,8 @@ public class MorseRobot extends LocalizableRobot {
 	@Override
 	public void executeAffordance(Affordance selectedAction, Subject sub) {
 		if (selectedAction instanceof ForwardAffordance){
-			System.out.println("Executing forward affordance");
 			forward(((ForwardAffordance)selectedAction).getDistance());
 		} else if (selectedAction instanceof TurnAffordance){
-			System.out.println(selectedAction);
 			rotate(((TurnAffordance)selectedAction).getAngle());
 		}
 	}

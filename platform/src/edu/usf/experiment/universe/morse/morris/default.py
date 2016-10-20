@@ -21,7 +21,8 @@ robot.translate(0,0,.075)
 
 env = Environment('environments/emptySquare.blend', fastmode=True)
 env.use_internal_syncer()
-env.set_time_scale(.1)
+env.set_time_scale(.2)
 #env.simulator_frequency(20)  
 robot.frequency(10)
+env.show_framerate()
 

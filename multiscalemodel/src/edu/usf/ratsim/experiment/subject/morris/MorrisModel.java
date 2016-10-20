@@ -10,6 +10,7 @@ import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
@@ -36,6 +37,7 @@ import edu.usf.ratsim.nsl.modules.actionselection.taxic.ObstacleEndTaxic;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 import edu.usf.ratsim.nsl.modules.celllayer.RndHDPCellLayer;
 import edu.usf.ratsim.nsl.modules.input.ClosestFeeder;
+import edu.usf.ratsim.nsl.modules.input.SubFoundPlatform;
 import edu.usf.ratsim.nsl.modules.input.SubjectAte;
 import edu.usf.ratsim.nsl.modules.input.SubjectTriedToEat;
 import edu.usf.ratsim.nsl.modules.rl.MultiStateAC;
@@ -253,28 +255,14 @@ public class MorrisModel extends Model {
 		rlValueCopy.addInPort("toCopy",
 				(Float1dPort) rlValue.getOutPort("valueEst"), true);
 		addModule(rlValueCopy);
-
-		// Did the subject ate last cycle
-		SubjectAte subAte = new SubjectAte("Subject Ate", subject);
-		subAte.addInPort("takenAction", takenActionPort); // just for dependency
-		addModule(subAte);
-
-		// Did the subject tried to eat
-		SubjectTriedToEat subTriedToEat = new SubjectTriedToEat(
-				"Subject Tried To Eat", subject);
-		subTriedToEat.addInPort("takenAction", takenActionPort); // just for
-																	// dependency
-		addModule(subTriedToEat);
-
-		// The closest available feeder
-		ClosestFeeder closestFeeder = new ClosestFeeder(
-				"Closest Feeder After Move", subject);
-		closestFeeder.addInPort("takenAction", takenActionPort);
-		addModule(closestFeeder);
-
+		
+		SubFoundPlatform foundPlat = new SubFoundPlatform("foundplat", lRobot); 
+		foundPlat.addInPort("takenAction", takenActionPort); //dep
+		addModule(foundPlat);
+		
 		// The obtained reward last cycle
 		Reward reward = new Reward("Reward", foodReward, nonFoodReward);
-		reward.addInPort("subAte", subAte.getOutPort("subAte"));
+		reward.addInPort("rewardingEvent", foundPlat.getOutPort("foundPlatform"));
 		addModule(reward);
 
 		// Reinforcement learning initialization

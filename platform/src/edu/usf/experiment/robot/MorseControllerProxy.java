@@ -43,7 +43,6 @@ public class MorseControllerProxy {
 		Point3f fromPose = poseSensor.getPosition();
 		try {
 			String cmd = "id" + msgNum++ + " robot.vw set_speed [" + SPEED + ", 0]\n";
-			System.out.println(cmd);
 			writer.write(cmd);
 			writer.flush();
 
@@ -54,7 +53,6 @@ public class MorseControllerProxy {
 			} while (dist < STEP - TOLERANCE);
 
 			cmd = "id" + msgNum++ + " robot.vw set_speed [0, 0]\n";
-			System.out.println(cmd);
 			writer.write(cmd);
 			writer.flush();
 
@@ -71,7 +69,6 @@ public class MorseControllerProxy {
 		float fromAngle = poseSensor.getOrientation();
 		try {
 			String cmd = "id" + msgNum++ + " robot.vw set_speed [0, " + TURNSPEED * Math.signum(degrees) + "]\n";
-			System.out.println(cmd);
 			writer.write(cmd);
 			writer.flush();
 
@@ -82,7 +79,6 @@ public class MorseControllerProxy {
 			} while (dist < TURNSTEP - TOLERANCE);
 
 			cmd = "id" + msgNum++ + " robot.vw set_speed [0, 0]\n";
-			System.out.println(cmd);
 			writer.write(cmd);
 			writer.flush();
 

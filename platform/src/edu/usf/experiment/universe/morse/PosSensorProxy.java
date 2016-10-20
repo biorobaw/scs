@@ -54,7 +54,7 @@ public class PosSensorProxy extends Thread {
 		float ya = (float) obj.getDouble("yaw");
 		float ro = (float) obj.getDouble("roll");
 		
-		point = new Point3f(x,y,z);
+		point = new Point3f(x,y,0);
 		theta = ya;
 	}
 
@@ -63,6 +63,7 @@ public class PosSensorProxy extends Thread {
 	}
 
 	public synchronized Point3f getPosition() {
+		
 		return point;
 	}
 
