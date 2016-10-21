@@ -10,6 +10,8 @@ from morris.builder.robots import Rat
 
 from math import cos, sin, pi
 
+
+
 robot = Rat()
 robot.translate(0,0,.075)
 
@@ -19,7 +21,7 @@ robot.translate(0,0,.075)
 # book.translate(0.6, 0.6, 10)
 
 
-env = Environment('environments/emptySquare.blend', fastmode=True)
+env = Environment('environments/circularMorris.blend')
 env.use_internal_syncer()
 env.set_time_scale(.2)
 #env.simulator_frequency(20)  

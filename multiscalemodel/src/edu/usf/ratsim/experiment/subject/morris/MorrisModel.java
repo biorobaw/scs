@@ -312,6 +312,9 @@ public class MorrisModel extends Model {
 			gs.newEpisode();
 		
 		rlAlg.newEpisode();
+		
+		for (RndHDPCellLayer layer : conjCellLayers)
+			layer.clear();
 	}
 
 	public void setExplorationVal(float val) {

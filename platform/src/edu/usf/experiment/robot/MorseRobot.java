@@ -20,17 +20,18 @@ import edu.usf.experiment.utils.GeomUtils;
 
 public class MorseRobot extends LocalizableRobot {
 
-	private static final float FORWARD_THRS = .3f;
-	private static final float TURN_THRS = .2f;
+	private static final float FORWARD_THRS = .4f;
+	private static final float TURN_THRS = .3f;
 	private PosSensorProxy posSensor;
 	private MorseControllerProxy robCtrl;
 	private IRSensorProxy leftIR;
 	private IRSensorProxy rightIR;
 	private IRSensorProxy frontIR;
+	private Affordance lastAction;
 
 	public MorseRobot(ElementWrapper params) {
 		super(params);
-		
+
 		Map<String, Integer> streamPorts = MorseUtils.getStreamPorts();
 		System.out.println(streamPorts.toString());
 		if (streamPorts.containsKey("robot.pose")) {
@@ -40,14 +41,14 @@ public class MorseRobot extends LocalizableRobot {
 		} else {
 			throw new RuntimeException("No robot pose sensor available");
 		}
-		
+
 		if (streamPorts.containsKey("robot.vw")) {
 			System.out.println("[+] Starting waipoint controller proxy");
 			robCtrl = new MorseControllerProxy(posSensor);
 		} else {
 			throw new RuntimeException("No robot waypoint controller available");
 		}
-		
+
 		if (streamPorts.containsKey("robot.leftir")) {
 			System.out.println("[+] Starting left IR sensor proxy");
 			leftIR = new IRSensorProxy(streamPorts.get("robot.leftir"));
@@ -55,7 +56,7 @@ public class MorseRobot extends LocalizableRobot {
 		} else {
 			throw new RuntimeException("No left IR available");
 		}
-		
+
 		if (streamPorts.containsKey("robot.rightir")) {
 			System.out.println("[+] Starting right IR sensor proxy");
 			rightIR = new IRSensorProxy(streamPorts.get("robot.rightir"));
@@ -63,7 +64,7 @@ public class MorseRobot extends LocalizableRobot {
 		} else {
 			throw new RuntimeException("No right IR available");
 		}
-		
+
 		if (streamPorts.containsKey("robot.frontir")) {
 			System.out.println("[+] Starting front IR sensor proxy");
 			frontIR = new IRSensorProxy(streamPorts.get("robot.frontir"));
@@ -71,6 +72,8 @@ public class MorseRobot extends LocalizableRobot {
 		} else {
 			throw new RuntimeException("No front IR available");
 		}
+
+		lastAction = null;
 	}
 
 	@Override
@@ -173,14 +176,19 @@ public class MorseRobot extends LocalizableRobot {
 	@Override
 	public List<Affordance> checkAffordances(List<Affordance> possibleAffordances) {
 		// TODO Auto-generated method stub
-		for(Affordance a : possibleAffordances)
-			if (a instanceof ForwardAffordance){
-				
+		for (Affordance a : possibleAffordances)
+			if (a instanceof ForwardAffordance) {
+
 				a.setRealizable(frontIR.getDistance() > FORWARD_THRS);
 			} else if (a instanceof TurnAffordance) {
 				TurnAffordance ta = (TurnAffordance) a;
 				boolean canForward = frontIR.getDistance() > FORWARD_THRS;
-				if (ta.getAngle() > 0){
+
+//				if (lastAction != null && lastAction instanceof TurnAffordance
+//						&& ((TurnAffordance) lastAction).getAngle() != ta.getAngle())
+//					a.setRealizable(false);
+//				else 
+				if (ta.getAngle() > 0) {
 					a.setRealizable(leftIR.getDistance() > TURN_THRS | !canForward);
 				} else
 					a.setRealizable(rightIR.getDistance() > TURN_THRS | !canForward);
@@ -190,11 +198,13 @@ public class MorseRobot extends LocalizableRobot {
 
 	@Override
 	public void executeAffordance(Affordance selectedAction, Subject sub) {
-		if (selectedAction instanceof ForwardAffordance){
-			forward(((ForwardAffordance)selectedAction).getDistance());
-		} else if (selectedAction instanceof TurnAffordance){
-			rotate(((TurnAffordance)selectedAction).getAngle());
+		if (selectedAction instanceof ForwardAffordance) {
+			forward(((ForwardAffordance) selectedAction).getDistance());
+		} else if (selectedAction instanceof TurnAffordance) {
+			rotate(((TurnAffordance) selectedAction).getAngle());
 		}
+
+		lastAction = selectedAction;
 	}
 
 	@Override
@@ -223,8 +233,8 @@ public class MorseRobot extends LocalizableRobot {
 
 	@Override
 	public boolean hasFoundPlatform() {
-		// TODO Auto-generated method stub
-		return false;
+		// TODO: make it generic
+		return posSensor.getPosition().distance(new Point3f(.3f, .3f, 0)) < .15f;
 	}
 
 }
