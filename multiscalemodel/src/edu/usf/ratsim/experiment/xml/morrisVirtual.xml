@@ -4,10 +4,10 @@
 	
 <!--	<seed>23423423</seed-->
 	<universe>
-		<name>edu.usf.experiment.universe.morse.MorseUniverse</name>
+		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
 			<!-- Distance from which the food is accessible according to the universe -->
-			<closeToFoodThrs>0.15</closeToFoodThrs>
+			<closeToFoodThrs>0.1</closeToFoodThrs>
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/MorrisMaze.xml</maze>
 			<!-- Display de window or run without GUI -->
@@ -17,16 +17,16 @@
 	
 	<robot>
 		<!-- Robot to use. Use full name of the class -->
-		<name>edu.usf.experiment.robot.MorseRobot</name>
+		<name>edu.usf.ratsim.robot.virtual.VirtualRobot</name>
 		<params>
 			<!-- Percentual translational noise -->
 			<noise>.2</noise>
 			<!-- Rotation noise added after translation -->
 			<translationRotationNoise>.195</translationRotationNoise>
 			<!-- How many steps are projected for obstacle avoidance purpose -->
-			<lookaheadSteps>1.5</lookaheadSteps>
+			<lookaheadSteps>1</lookaheadSteps>
 			<!-- Half the field of view of the rat -->
-			<halfFieldOfView>2.71</halfFieldOfView>
+			<halfFieldOfView>1.83</halfFieldOfView>
 			<!-- How long can the rat see in meters -->
 			<visionDist>10</visionDist>
 			<!-- How far away can the robot eat food. This should be shorter than the universe
@@ -62,11 +62,11 @@
 			<!-- Minimum conjuntive layer cell radius -->
 			<minPCRadius>.0682</minPCRadius>
 			<!-- Maximum conjuntive layer cell radius -->
-			<maxPCRadius>.3</maxPCRadius>
+			<maxPCRadius>.15</maxPCRadius>
 			<!-- Type of conjunctive cell -->
 			<placeCells>ExponentialHDPC</placeCells>
-			<votesNormalizer>50</votesNormalizer>
-			<valueNormalizer>50</valueNormalizer>
+			<votesNormalizer>10</votesNormalizer>
+			<valueNormalizer>10</valueNormalizer>
 			<!-- Wall cell modulation. How much does a wall modulate the place field. Greater
 				means less activity -->
 			<wallInhibition>0.1</wallInhibition>
@@ -81,7 +81,7 @@
 			<!-- Reward value for food -->
 			<foodReward>1000</foodReward>
 			<!-- Reward value given when it doesnt eat -->
-			<nonFoodReward>-0</nonFoodReward>
+			<nonFoodReward>-1</nonFoodReward>
 			<!-- Lambda discount factor for the taxic module-->
 			<taxicDiscountFactor>1</taxicDiscountFactor>
 			<!-- Lambda discount factor for the learning algorithm -->
@@ -89,7 +89,7 @@
 			<!-- Alpha for the learning algorithm -->
 			<alpha>.5</alpha>
 			<!-- Elegibility traces for the learning algorithm -->
-			<tracesDecay>0.9</tracesDecay>
+			<tracesDecay>0.95</tracesDecay>
 			<!-- Cell contribution when not using normalization -->
 			<!-- TODO: take out -->
 			<cellContribution>1</cellContribution>
@@ -172,8 +172,8 @@
 					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
 					<params>
 						<point>
-							<x>-1</x>
-							<y>-1</y>
+							<x>-.5</x>
+							<y>-.5</y>
 							<theta>3.14</theta>
 						</point>
 					</params>
@@ -201,11 +201,7 @@
 					<params>
 					</params>
 				</logger>
-				<logger>
-					<name>edu.usf.experiment.log.FeederLogger</name>
-					<params>
-					</params>
-				</logger>
+				
 				<!-- Log each position estimated value -->
 				<!-- <logger> <name>edu.usf.experiment.log.ValueLogger</name> <params> <circle>false</circle>
 					<interval>.1</interval> <angleInterval>.78</angleInterval> <numIntentions>8</numIntentions>
@@ -224,11 +220,8 @@
 					</params>
 				</condition>
 				<condition>
-					<name>edu.usf.experiment.condition.NearPoint</name>
+					<name>edu.usf.experiment.condition.FoundPlatform</name>
 					<params>
-						<x>1</x>
-						<y>1</y>
-						<thrs>.2</thrs>
 					</params>
 				</condition>
 			</stopConditions>
@@ -335,11 +328,7 @@
 					<params>
 					</params>
 				</logger>
-				<logger>
-					<name>edu.usf.experiment.log.FeederLogger</name>
-					<params>
-					</params>
-				</logger>
+				
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
@@ -356,9 +345,8 @@
 				<!-- Has eaten from 15 feeders with no errors and only up to two flashing feeders
 					in the sequence-->
 				<condition>
-					<name>edu.usf.experiment.condition.FoundNFoodNoMistakesStopCond</name>
+					<name>edu.usf.experiment.condition.FoundPlatform</name>
 					<params>
-						<n>1</n>
 					</params>
 				</condition>
 			</stopConditions>
