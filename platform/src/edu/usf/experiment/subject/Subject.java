@@ -17,6 +17,7 @@ public abstract class Subject {
 	private Robot robot;
 	private boolean hasEaten;
 	private boolean triedToEat;
+	private boolean rewarded;
 
 	public Subject(String name, String group, ElementWrapper modelParams, Robot robot) {
 		this.name = name;

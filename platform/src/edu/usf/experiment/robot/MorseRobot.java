@@ -221,4 +221,10 @@ public class MorseRobot extends LocalizableRobot {
 		return 0;
 	}
 
+	@Override
+	public boolean hasFoundPlatform() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

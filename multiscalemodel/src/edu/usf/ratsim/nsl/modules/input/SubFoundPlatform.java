@@ -14,8 +14,6 @@ import edu.usf.micronsl.port.singlevalue.Bool0dPort;
  */
 public class SubFoundPlatform extends Module {
 
-	private static final float DIST_THRS = 0.2f;
-	private Subject sub;
 	private Bool0dPort outPort;
 	private LocalizableRobot robot;
 
@@ -30,7 +28,7 @@ public class SubFoundPlatform extends Module {
 
 	@Override
 	public void run() {
-		outPort.set(robot.getPosition().distance(new Point3f(1,1,0)) < DIST_THRS);
+		outPort.set(robot.hasFoundPlatform());
 	}
 
 	@Override

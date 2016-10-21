@@ -103,4 +103,6 @@ public abstract class Robot {
 	public abstract int getLastAteFeeder();
 
 	public abstract int getLastTriedToEatFeeder() ;
+	
+	public abstract boolean hasFoundPlatform();
 }

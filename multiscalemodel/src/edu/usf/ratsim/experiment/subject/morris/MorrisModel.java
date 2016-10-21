@@ -10,7 +10,6 @@ import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
@@ -20,7 +19,6 @@ import edu.usf.micronsl.module.copy.Float1dSparseCopyModule;
 import edu.usf.micronsl.module.sum.Float1dSumModule;
 import edu.usf.micronsl.port.Port;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
-import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
 import edu.usf.ratsim.nsl.modules.actionselection.DecayingExplorationSchema;
@@ -31,15 +29,10 @@ import edu.usf.ratsim.nsl.modules.actionselection.HalfAndHalfConnectionVotes;
 import edu.usf.ratsim.nsl.modules.actionselection.NoExploration;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalValue;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
-import edu.usf.ratsim.nsl.modules.actionselection.StillExplorer;
 import edu.usf.ratsim.nsl.modules.actionselection.Voter;
-import edu.usf.ratsim.nsl.modules.actionselection.taxic.ObstacleEndTaxic;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 import edu.usf.ratsim.nsl.modules.celllayer.RndHDPCellLayer;
-import edu.usf.ratsim.nsl.modules.input.ClosestFeeder;
 import edu.usf.ratsim.nsl.modules.input.SubFoundPlatform;
-import edu.usf.ratsim.nsl.modules.input.SubjectAte;
-import edu.usf.ratsim.nsl.modules.input.SubjectTriedToEat;
 import edu.usf.ratsim.nsl.modules.rl.MultiStateAC;
 import edu.usf.ratsim.nsl.modules.rl.QLAlgorithm;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
@@ -256,7 +249,7 @@ public class MorrisModel extends Model {
 				(Float1dPort) rlValue.getOutPort("valueEst"), true);
 		addModule(rlValueCopy);
 		
-		SubFoundPlatform foundPlat = new SubFoundPlatform("foundplat", lRobot); 
+		SubFoundPlatform foundPlat = new SubFoundPlatform("sub found platform", lRobot); 
 		foundPlat.addInPort("takenAction", takenActionPort); //dep
 		addModule(foundPlat);
 		

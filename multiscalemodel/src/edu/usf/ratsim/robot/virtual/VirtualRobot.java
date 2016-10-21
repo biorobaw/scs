@@ -391,4 +391,9 @@ public class VirtualRobot extends LocalizableRobot {
 		return lastTriedToEat;
 	}
 
+	@Override
+	public boolean hasFoundPlatform() {
+		return universe.hasRobotFoundPlatform();
+	}
+
 }

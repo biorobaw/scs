@@ -56,6 +56,7 @@ public class VirtUniverse extends Universe {
 	private boolean display;
 	private List<Wall> initialWalls;
 	private List<WallNode> wallsToRevert;
+	private LinkedList<PlatformNode> platformNodes;
 
 	public VirtUniverse(ElementWrapper params, String logPath) {
 		super(params, logPath);
@@ -102,6 +103,14 @@ public class VirtUniverse extends Universe {
 				FeederNode feeder = new FeederNode(fn);
 				feederNodes.put(feeder.getId(), feeder);
 				bg.addChild(feeder);
+			}
+			
+			list = maze.getChildren("platform");
+			platformNodes = new LinkedList<PlatformNode>();
+			for (ElementWrapper pn : list) {
+				PlatformNode p = new PlatformNode(pn);
+				platformNodes.add(p);
+				bg.addChild(p);
 			}
 
 			ElementWrapper floor = maze.getChild("floor");

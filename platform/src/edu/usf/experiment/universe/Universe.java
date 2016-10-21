@@ -24,13 +24,12 @@ import edu.usf.experiment.utils.XMLDocReader;
 
 public abstract class Universe {
 
-	
-
 	// TODO: get as param
 	private static float CLOSE_TO_FOOD_THRS;
 
 	private static Map<Integer, Feeder> feeders;
 	private List<Wall> walls;
+	private List<Platform> platforms;
 	private Rectangle2D.Float boundingRect;
 
 	private int lastAteFeeder;
@@ -38,7 +37,6 @@ public abstract class Universe {
 	private List<Wall> innerWalls;
 
 	private List<Wall> wallsToRevert;
-
 
 	public Universe(ElementWrapper params, String logPath) {
 		CLOSE_TO_FOOD_THRS = params.getChildFloat("closeToFoodThrs");
@@ -51,10 +49,9 @@ public abstract class Universe {
 		Document doc = XMLDocReader.readDocument(mazeFile);
 		ElementWrapper maze = new ElementWrapper(doc.getDocumentElement());
 		List<ElementWrapper> list;
-		
+
 		ElementWrapper brEW = maze.getChild("boundingRect");
-		setBoundingRect(new Rectangle2D.Float(brEW.getChildFloat("x"),
-				brEW.getChildFloat("y"), brEW.getChildFloat("w"),
+		setBoundingRect(new Rectangle2D.Float(brEW.getChildFloat("x"), brEW.getChildFloat("y"), brEW.getChildFloat("w"),
 				brEW.getChildFloat("h")));
 
 		// list = doc.getElementsByTagName("pool");
@@ -64,55 +61,64 @@ public abstract class Universe {
 		// Walls
 		list = maze.getChildren("wall");
 		for (ElementWrapper wall : list) {
-			Wall w = new Wall(wall.getChildFloat("x1"),
-					wall.getChildFloat("y1"), wall.getChildFloat("x2"),
+			Wall w = new Wall(wall.getChildFloat("x1"), wall.getChildFloat("y1"), wall.getChildFloat("x2"),
 					wall.getChildFloat("y2"));
 			walls.add(w);
 		}
-		
+
 		MazeElementLoader meloader = MazeElementLoader.getInstance();
 		list = maze.getChildren("mazeElement");
-		for (ElementWrapper element : list){
+		for (ElementWrapper element : list) {
 			MazeElement e = meloader.load(element);
-			for (Wall w : e.walls){
+			for (Wall w : e.walls) {
 				walls.add(w);
 			}
-			
-			
+
 		}
-		
-//		ElementWrapper pool = maze.getChild("pool");
-//		if (pool != null){
-//			float r = pool.getChildFloat("r");
-//			float x = pool.getChildFloat("x");
-//			float y = pool.getChildFloat("y");
-//			float currentAngle = (float) (Math.PI / WALLS_PER_POOL);
-//			for (int i = 0; i < WALLS_PER_POOL; i++) {
-//				float x1 = (float) (x + r * Math.sin(currentAngle));
-//				float y1 = (float) (y + r * Math.cos(currentAngle));
-//				float nextAngle = (float) (currentAngle + (2 * Math.PI / WALLS_PER_POOL) % (2*Math.PI));
-//				float x2 = (float) (r * Math.sin(nextAngle));
-//				float y2 = (float) (r * Math.cos(nextAngle));
-//				
-//				walls.add(new Wall(x1, y1, x2, y2));
-//				
-//				currentAngle = nextAngle;
-//			}
-//		}
-		
+
+		// ElementWrapper pool = maze.getChild("pool");
+		// if (pool != null){
+		// float r = pool.getChildFloat("r");
+		// float x = pool.getChildFloat("x");
+		// float y = pool.getChildFloat("y");
+		// float currentAngle = (float) (Math.PI / WALLS_PER_POOL);
+		// for (int i = 0; i < WALLS_PER_POOL; i++) {
+		// float x1 = (float) (x + r * Math.sin(currentAngle));
+		// float y1 = (float) (y + r * Math.cos(currentAngle));
+		// float nextAngle = (float) (currentAngle + (2 * Math.PI /
+		// WALLS_PER_POOL) % (2*Math.PI));
+		// float x2 = (float) (r * Math.sin(nextAngle));
+		// float y2 = (float) (r * Math.cos(nextAngle));
+		//
+		// walls.add(new Wall(x1, y1, x2, y2));
+		//
+		// currentAngle = nextAngle;
+		// }
+		// }
+
 		list = maze.getChildren("feeder");
 		int i = 0;
-		for(ElementWrapper feeder : list){
-			Feeder f = new Feeder(feeder.getChildInt("id"), new Point3f(feeder.getChildFloat("x"),feeder.getChildFloat("y"),feeder.getChildFloat("z")));
+		for (ElementWrapper feeder : list) {
+			Feeder f = new Feeder(feeder.getChildInt("id"),
+					new Point3f(feeder.getChildFloat("x"), feeder.getChildFloat("y"), feeder.getChildFloat("z")));
 			feeders.put(f.getId(), f);
 			i++;
 		}
-		
 		wallsToRevert = new LinkedList<Wall>();
+
+		list = maze.getChildren("platform");
+		platforms = new LinkedList<Platform>();
+		for (ElementWrapper platform : list) {
+			Platform p = new Platform(
+					new Point3f(platform.getChildFloat("x"), platform.getChildFloat("y"), platform.getChildFloat("z")),
+					platform.getChildFloat("r"));
+			platforms.add(p);
+		}
+
 	}
 
 	// Boundaries
-	public Rectangle2D.Float getBoundingRectangle(){
+	public Rectangle2D.Float getBoundingRectangle() {
 		return boundingRect;
 	}
 
@@ -161,12 +167,12 @@ public abstract class Universe {
 	public List<Integer> getFeederNums() {
 		return new LinkedList<Integer>(feeders.keySet());
 	}
-	
-	public List<Feeder> getFeeders(){
+
+	public List<Feeder> getFeeders() {
 		return new LinkedList<Feeder>(feeders.values());
 	}
-	
-	public Feeder getFeeder(int i){
+
+	public Feeder getFeeder(int i) {
 		return feeders.get(i);
 	}
 
@@ -190,8 +196,7 @@ public abstract class Universe {
 	public boolean hasRobotFoundFood() {
 		Point3f robot = getRobotPosition();
 		for (Feeder f : feeders.values()) {
-			if (f.isActive() && f.hasFood()
-					&& robot.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS)
+			if (f.isActive() && f.hasFood() && robot.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS)
 				return true;
 		}
 
@@ -208,7 +213,7 @@ public abstract class Universe {
 					feedingFeeder = f.getId();
 		}
 
-		if (feedingFeeder != -1){
+		if (feedingFeeder != -1) {
 			feeders.get(feedingFeeder).clearFood();
 			lastAteFeeder = feedingFeeder;
 			if (Debug.printRobotEaten)
@@ -217,11 +222,10 @@ public abstract class Universe {
 			System.out.println("Robot tried to eat far from food");
 		}
 	}
-	
-	public int getLastFeedingFeeder(){
+
+	public int getLastFeedingFeeder() {
 		return lastAteFeeder;
 	}
-	
 
 	public boolean isRobotCloseToFeeder(int currentGoal) {
 		Point3f robot = getRobotPosition();
@@ -298,7 +302,6 @@ public abstract class Universe {
 			if (w.distanceTo(wall) < shortestDistance)
 				shortestDistance = w.distanceTo(wall);
 
-
 		return shortestDistance;
 	}
 
@@ -325,7 +328,6 @@ public abstract class Universe {
 			if (w.distanceTo(x1) < shortestDistance)
 				shortestDistance = w.distanceTo(x1);
 
-
 		return shortestDistance;
 	}
 
@@ -346,7 +348,7 @@ public abstract class Universe {
 		wallsToRevert.add(wall);
 		walls.add(wall);
 	}
-	
+
 	public boolean wallIntersectsOtherWalls(LineSegment wall) {
 		boolean intersects = false;
 		for (Wall w : walls)
@@ -354,10 +356,10 @@ public abstract class Universe {
 
 		return intersects;
 	}
-	
+
 	public float getDistanceToClosestWall(Point3f p) {
-		Point2f p2 = new Point2f(p.x,p.y);
-		
+		Point2f p2 = new Point2f(p.x, p.y);
+
 		float shortestDistance = Float.MAX_VALUE;
 		for (Wall w : getWalls())
 			if (w.distanceTo(p2) < shortestDistance)
@@ -366,7 +368,7 @@ public abstract class Universe {
 		return shortestDistance;
 	}
 
-	public float getDistanceToClosestWall(){
+	public float getDistanceToClosestWall() {
 		return getDistanceToClosestWall(getRobotPosition());
 	}
 
@@ -376,7 +378,7 @@ public abstract class Universe {
 
 	public float shortestDistanceToFeeders(LineSegment wall) {
 		double distance = Float.MAX_VALUE;
-		for (Feeder f : feeders.values()){
+		for (Feeder f : feeders.values()) {
 			Coordinate p = new Coordinate(f.getPosition().x, f.getPosition().y);
 			if (wall.distance(p) < distance)
 				distance = wall.distance(p);
@@ -403,6 +405,18 @@ public abstract class Universe {
 
 	public void addFeeder(int id, float x, float y) {
 		feeders.put(id, new Feeder(id, new Point3f(x, y, 0)));
+	}
+
+	public List<Platform> getPlatforms() {
+		return platforms;
+	}
+
+	public boolean hasRobotFoundPlatform() {
+		Point3f pos = getRobotPosition();
+		for (Platform plat : platforms)
+			if (plat.getPosition().distance(pos) < CLOSE_TO_FOOD_THRS)
+				return true;
+		return false;
 	}
 
 }

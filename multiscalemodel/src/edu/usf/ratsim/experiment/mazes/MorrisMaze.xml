@@ -11,7 +11,7 @@
 	<mazeElement>
 		<name>Pool</name>
 		<params>
-			<r>0.8</r>
+			<r>1</r>
 			<h>.025</h>
 			<cr>1</cr>
 			<cg>0</cg>
@@ -32,6 +32,17 @@
 		<y>0</y>
 		<z>-.075</z>
 	</floor>
+
+	<platform>
+		<r>.1</r>
+		<h>0</h>
+		<cr>0</cr>
+		<cg>1</cg>
+		<cb>0</cb>
+		<x>.3</x>
+		<y>.3</y>
+		<z>0</z>
+	</platform>		
 
 	
 	<!-- Views -->

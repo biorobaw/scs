@@ -129,6 +129,5 @@ public class MorrisSubject extends Subject {
 	public void reactivateHPCLayers(LinkedList<Integer> indexList) {
 		model.reactivatePCL(indexList);
 	}
-	
 
 }
