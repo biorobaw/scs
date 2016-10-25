@@ -17,6 +17,8 @@ public class PosSensorProxy extends Thread {
 	private boolean terminate;
 	private Point3f point;
 	private float theta;
+	private boolean posFresh;
+	private boolean rotFresh;
 
 	public PosSensorProxy(int port){
 		this.port = port;
@@ -32,6 +34,8 @@ public class PosSensorProxy extends Thread {
 		theta = 0;
 		
 		terminate = false;
+		posFresh = false;
+		rotFresh = false;
 	}
 	
 	public void run(){
@@ -56,6 +60,10 @@ public class PosSensorProxy extends Thread {
 		
 		point = new Point3f(x,y,0);
 		theta = ya;
+		
+		posFresh = true;
+		rotFresh = true;
+		notifyAll();
 	}
 
 	public static void main (String[] args){
@@ -63,11 +71,28 @@ public class PosSensorProxy extends Thread {
 	}
 
 	public synchronized Point3f getPosition() {
+		while (!posFresh)
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		
+		posFresh = false;
 		return point;
 	}
 
 	public synchronized float getOrientation() {
+		while (!rotFresh)
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		rotFresh = false;
 		return theta;
 	}
 }

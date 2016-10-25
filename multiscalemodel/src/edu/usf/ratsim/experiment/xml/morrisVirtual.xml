@@ -407,7 +407,7 @@
 	<!-- Plotters to execute after the experiment is over -->
 	<afterExperimentPlotters>
 		<plotter>
-			<name>edu.usf.experiment.plot.RuntimePerTrialPlotter</name>
+			<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
 		</plotter>
 		<!--<plotter> <name>edu.usf.experiment.plot.RPlotter</name> <params> <plotScript>/edu/usf/experiment/plot/plotTimeouts.r</plotScript>
 			</params> </plotter> -->

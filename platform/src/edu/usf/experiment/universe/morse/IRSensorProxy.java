@@ -17,6 +17,7 @@ public class IRSensorProxy extends Thread {
 	private BufferedReader reader;
 	private boolean terminate;
 	private float distance;
+	private boolean distFresh;
 
 	public IRSensorProxy(int port){
 		this.port = port;
@@ -31,6 +32,7 @@ public class IRSensorProxy extends Thread {
 		distance = 0;
 		
 		terminate = false;
+		distFresh = false;
 	}
 	
 	public void run(){
@@ -54,9 +56,21 @@ public class IRSensorProxy extends Thread {
 				minDist = val;
 		}
 		distance = minDist;
+		distFresh = true;
+		notifyAll();
 	}
 
 	public synchronized float getDistance() {
+		while(!distFresh)
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		distFresh = false;
+		
 		return distance;
 	}
 	

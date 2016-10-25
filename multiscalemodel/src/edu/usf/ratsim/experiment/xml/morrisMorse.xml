@@ -73,7 +73,7 @@
 			<!-- Amount of cells placed near the goal -->
 			<goalCellProportion>0.0</goalCellProportion>
 			<!-- Minimum angular radius of conjuntive cells -->
-			<minHDRadius>0.39</minHDRadius>
+			<minHDRadius>0.195</minHDRadius>
 			<!-- Maximum angular radius of conjuntive cells -->
 			<maxHDRadius>1.57</maxHDRadius>
 			<!-- Number of intentions or maps -->
@@ -94,7 +94,7 @@
 			<!-- TODO: take out -->
 			<cellContribution>1</cellContribution>
 			<!-- Value assigned to exploration action-values -->
-			<explorationReward>1000</explorationReward>
+			<explorationReward>100</explorationReward>
 			<!-- Half life value for decay exploration -->
 			<explorationHalfLifeVal>1</explorationHalfLifeVal>
 			<!-- Value assigned to wall actions for the wall taxic modules -->
@@ -162,7 +162,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>40</number>
+			<number>32</number>
 			<!-- Sleep between cycles for visualization -->
 			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
@@ -277,7 +277,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>10</number>
+			<number>4</number>
 			<!-- Sleep between cycles for visualization -->
 			<sleep>00</sleep>
 			<!-- Tasks to perform before each episode -->
@@ -293,8 +293,8 @@
 					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
 					<params>
 						<point>
-							<x>-.3</x>
-							<y>-.3</y>
+							<x>-.5</x>
+							<y>-.5</y>
 							<theta>3.14</theta>
 						</point>
 					</params>
@@ -407,7 +407,7 @@
 	<!-- Plotters to execute after the experiment is over -->
 	<afterExperimentPlotters>
 		<plotter>
-			<name>edu.usf.experiment.plot.RuntimePerTrialPlotter</name>
+			<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
 		</plotter>
 		<!--<plotter> <name>edu.usf.experiment.plot.RPlotter</name> <params> <plotScript>/edu/usf/experiment/plot/plotTimeouts.r</plotScript>
 			</params> </plotter> -->

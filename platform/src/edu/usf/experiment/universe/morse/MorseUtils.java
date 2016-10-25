@@ -19,44 +19,44 @@ public class MorseUtils {
 	private static Process simProcess;
 
 	public static void startSimulator() {
-			
-			String[] envp = { "DISPLAY=:0.0", "MORSE_SILENT_PYTHON_CHECK=1", "PATH=/home/martin/blender/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games" };
-			try {
-				// Execute the process
-				Process p = Runtime.getRuntime().exec("killall -9 blender", envp);
-				
-				while(p.getErrorStream().available() > 0)
-				{
-			    	System.err.print((char)p.getErrorStream().read());
-				}
-				
-				File output;
-				if (Debug.printMorseErr)
-					output = new File("morseout.txt");
-				else
-					output = new File("/dev/null");
-				
-				ProcessBuilder builder = new ProcessBuilder("morse", "run", "morris");
-				for (String envv : envp)
-					builder.environment().put(envv.split("=")[0], envv.split("=")[1]);
-				builder.redirectOutput(output);
-				builder.redirectError(output);
-				simProcess = builder.start(); // may throw IOException
-				
-				cacheStreamPorts();
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+		String[] envp = { "DISPLAY=:0.0", "MORSE_SILENT_PYTHON_CHECK=1",
+				"PATH=/home/martin/blender/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games" };
+		try {
+			// Execute the process
+			Process p = Runtime.getRuntime().exec("killall -9 blender", envp);
+
+			while (p.getErrorStream().available() > 0) {
+				System.err.print((char) p.getErrorStream().read());
 			}
-			
-			System.out.println("[+] Morse simulator initialized");
-	}		
-	
+
+			File output;
+			if (Debug.printMorseErr)
+				output = new File("morseout.txt");
+			else
+				output = new File("/dev/null");
+
+			ProcessBuilder builder = new ProcessBuilder("morse", "run", "morris");
+			for (String envv : envp)
+				builder.environment().put(envv.split("=")[0], envv.split("=")[1]);
+			builder.redirectOutput(output);
+			builder.redirectError(output);
+			simProcess = builder.start(); // may throw IOException
+
+			cacheStreamPorts();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		System.out.println("[+] Morse simulator initialized");
+	}
+
 	private static void cacheStreamPorts() {
 		Socket s = null;
 		boolean gotConnection = false;
-		while (!gotConnection){
+		while (!gotConnection) {
 			try {
 				s = new Socket("localhost", 4000);
 				gotConnection = true;
@@ -70,7 +70,7 @@ public class MorseUtils {
 				}
 			}
 		}
-		
+
 		try {
 			BufferedReader r = new BufferedReader(new InputStreamReader(s.getInputStream()));
 			BufferedWriter w = new BufferedWriter(new OutputStreamWriter(s.getOutputStream()));
@@ -114,7 +114,7 @@ public class MorseUtils {
 		return streamPorts;
 	}
 
-	public static void main (String[] args){
+	public static void main(String[] args) {
 		startSimulator();
 	}
 }

@@ -16,6 +16,7 @@ import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 
 public class DecayingExplorationSchema extends Module {
 
+	private static final float FORWARD_BIAS = 0.3f;
 	public float[] votes;
 	private float maxReward;
 	private Random r;
@@ -64,12 +65,18 @@ public class DecayingExplorationSchema extends Module {
 			else {
 				// If last was forward we can turn or forward
 				if (lastPicked == null || lastPicked instanceof ForwardAffordance)
-					pickedAffordance = performableAffs.get(r.nextInt(performableAffs.size()));
+					if (containsForward(performableAffs) && r.nextFloat() < FORWARD_BIAS)
+						pickedAffordance = getForward(performableAffs);
+					else
+						pickedAffordance = performableAffs.get(r.nextInt(performableAffs.size()));
 				// But if last was turn, we have to forward or keep turning that way
 				else if (lastPicked instanceof TurnAffordance)
 					do {
-						pickedAffordance = performableAffs.get(r.nextInt(performableAffs.size()));
-					} while ( pickedAffordance instanceof TurnAffordance &&
+						if (containsForward(performableAffs) && r.nextFloat() < FORWARD_BIAS)
+							pickedAffordance = getForward(performableAffs);
+						else
+							pickedAffordance = performableAffs.get(r.nextInt(performableAffs.size()));
+					} while (performableAffs.size() != 1 && pickedAffordance instanceof TurnAffordance &&
 							((TurnAffordance)pickedAffordance).getAngle() != ((TurnAffordance)lastPicked).getAngle() );
 			}
 			
@@ -78,6 +85,14 @@ public class DecayingExplorationSchema extends Module {
 
 			lastPicked = pickedAffordance;
 		}
+	}
+
+	private boolean containsForward(List<Affordance> affs) {
+		for (Affordance aff : affs)
+			if (aff instanceof ForwardAffordance)
+				return true;
+
+		return false;
 	}
 
 	private boolean containsEat(List<Affordance> affs) {
@@ -96,6 +111,14 @@ public class DecayingExplorationSchema extends Module {
 		return null;
 	}
 
+	private Affordance getForward(List<Affordance> affs) {
+		for (Affordance aff : affs)
+			if (aff instanceof ForwardAffordance)
+				return aff;
+
+		return null;
+	}
+	
 	public void newEpisode() {
 		episodeCount++;
 	}

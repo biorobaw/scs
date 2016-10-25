@@ -20,8 +20,8 @@ import edu.usf.experiment.utils.GeomUtils;
 
 public class MorseRobot extends LocalizableRobot {
 
-	private static final float FORWARD_THRS = .4f;
-	private static final float TURN_THRS = .3f;
+	private static final float FORWARD_THRS = .3f;
+	private static final float TURN_THRS = .2f;
 	private PosSensorProxy posSensor;
 	private MorseControllerProxy robCtrl;
 	private IRSensorProxy leftIR;
@@ -176,22 +176,25 @@ public class MorseRobot extends LocalizableRobot {
 	@Override
 	public List<Affordance> checkAffordances(List<Affordance> possibleAffordances) {
 		// TODO Auto-generated method stub
+		float front = frontIR.getDistance();
+		float left = leftIR.getDistance();
+		float right = rightIR.getDistance();
+//		System.out.println(front + " " + left + " " + right);
+		boolean canForward = front > FORWARD_THRS;
 		for (Affordance a : possibleAffordances)
 			if (a instanceof ForwardAffordance) {
 
-				a.setRealizable(frontIR.getDistance() > FORWARD_THRS);
+				a.setRealizable(canForward);
 			} else if (a instanceof TurnAffordance) {
 				TurnAffordance ta = (TurnAffordance) a;
-				boolean canForward = frontIR.getDistance() > FORWARD_THRS;
-
 //				if (lastAction != null && lastAction instanceof TurnAffordance
 //						&& ((TurnAffordance) lastAction).getAngle() != ta.getAngle())
 //					a.setRealizable(false);
 //				else 
 				if (ta.getAngle() > 0) {
-					a.setRealizable(leftIR.getDistance() > TURN_THRS | !canForward);
+					a.setRealizable(left > TURN_THRS || (!canForward && right <= TURN_THRS));
 				} else
-					a.setRealizable(rightIR.getDistance() > TURN_THRS | !canForward);
+					a.setRealizable(right > TURN_THRS || (!canForward && left <= TURN_THRS));
 			}
 		return possibleAffordances;
 	}
@@ -202,6 +205,8 @@ public class MorseRobot extends LocalizableRobot {
 			forward(((ForwardAffordance) selectedAction).getDistance());
 		} else if (selectedAction instanceof TurnAffordance) {
 			rotate(((TurnAffordance) selectedAction).getAngle());
+//			if (frontIR.getDistance() > FORWARD_THRS)
+//				forward(10);
 		}
 
 		lastAction = selectedAction;

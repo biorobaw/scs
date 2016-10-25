@@ -14,7 +14,7 @@ import edu.usf.experiment.utils.GeomUtils;
 
 public class MorseControllerProxy {
 
-	private static final float STEP = 0.10f;
+	private static final float STEP = 0.05f;
 	private static final float TOLERANCE = 0.02f;
 	private static final float SPEED = 2.0f;
 	private static final long SLEEP = 1;

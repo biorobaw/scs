@@ -7,6 +7,8 @@ import java.util.List;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.experiment.subject.affordance.ForwardAffordance;
+import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
@@ -78,7 +80,20 @@ public class NoExploration extends Module {
 		if (Debug.printSelectedValues)
 			System.out.println(selectedAction.toString());
 
-		robot.executeAffordance(selectedAction, sub);
+		
+		
+		List<Affordance> fwd = new LinkedList<Affordance>();
+		fwd.add(new ForwardAffordance(10));
+		if (selectedAction instanceof TurnAffordance){
+			do {
+				robot.executeAffordance(selectedAction, sub);
+				robot.checkAffordances(fwd);
+			} while (!fwd.get(0).isRealizable());
+			
+		} else {
+			robot.executeAffordance(selectedAction, sub);
+		}
+			
 		// } else {
 		// takenAction.set(-1);
 		// }

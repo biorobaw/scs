@@ -10,8 +10,6 @@ from morris.builder.robots import Rat
 
 from math import cos, sin, pi
 
-
-
 robot = Rat()
 robot.translate(0,0,.075)
 

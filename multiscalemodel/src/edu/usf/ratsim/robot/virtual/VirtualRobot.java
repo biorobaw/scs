@@ -303,6 +303,9 @@ public class VirtualRobot extends LocalizableRobot {
 				rotate(ta.getAngle());
 				forward = checkAffordances(forward);
 			} while (!forward.get(0).isRealizable());
+			
+//			forward(ta.getDistance());
+			
 
 		} else if (af instanceof ForwardAffordance)
 			forward(((ForwardAffordance) af).getDistance());
