@@ -146,7 +146,7 @@ public class MultiStateACReplay extends Module implements QLAlgorithm {
 	 */
 	private void update(UpdateItem ui, FloatMatrixPort value) {
 		for (Integer state : ui.states.keySet()) {
-			float valueDelta = ui.reward + +rlDiscountFactor * ui.valueEstAfter - ui.valueEstBefore;
+			float valueDelta = ui.reward + rlDiscountFactor * ui.valueEstAfter - ui.valueEstBefore;
 
 			// Update value
 			float currValue = value.get(state, numActions);
@@ -159,7 +159,7 @@ public class MultiStateACReplay extends Module implements QLAlgorithm {
 			value.set(state, numActions, newValue);
 
 			// Update action value
-			float actionDelta = ui.reward + +rlDiscountFactor * ui.valueEstAfter - ui.valueEstBefore;
+			float actionDelta = ui.reward + rlDiscountFactor * ui.valueEstAfter - ui.valueEstBefore;
 			float actionVal = value.get(state, ui.action);
 			float newActionValue = actionVal + alpha * activation * (actionDelta);
 

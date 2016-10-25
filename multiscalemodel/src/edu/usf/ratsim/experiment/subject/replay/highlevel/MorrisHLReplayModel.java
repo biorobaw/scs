@@ -34,7 +34,6 @@ import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 import edu.usf.ratsim.nsl.modules.celllayer.RndHDPCellLayer;
 import edu.usf.ratsim.nsl.modules.input.SubFoundPlatform;
 import edu.usf.ratsim.nsl.modules.rl.MultiStateAC;
-import edu.usf.ratsim.nsl.modules.rl.MultiStateACNoTraces;
 import edu.usf.ratsim.nsl.modules.rl.MultiStateACReplay;
 import edu.usf.ratsim.nsl.modules.rl.QLAlgorithm;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
@@ -50,7 +49,7 @@ public class MorrisHLReplayModel extends Model {
 	private float[][] value;
 	private int numActions;
 	private QLAlgorithm rlAlg;
-	private MultiStateACNoTraces msac;
+	private MultiStateACReplay msac;
 
 	public MorrisHLReplayModel() {
 	}
@@ -259,7 +258,7 @@ public class MorrisHLReplayModel extends Model {
 
 		// Reinforcement learning initialization
 		if (rlType.equals("MultiStateAC")) {
-			msac = new MultiStateACNoTraces(
+			msac = new MultiStateACReplay(
 					"RL Module", numActions, numStates,
 					rlDiscountFactor, alpha);
 
@@ -383,10 +382,10 @@ public class MorrisHLReplayModel extends Model {
 	}
 
 	public void replay() {
-//		msac.replay();
+		msac.replay();
 	}
 
 	public void clearPath() {
-//		msac.clearPath();
+		msac.clearPath();
 	}
 }
