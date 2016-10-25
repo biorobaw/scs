@@ -120,4 +120,6 @@ public abstract class Subject {
 	public abstract float getValueEntropy();
 
 	public abstract void reactivateHPCLayers(LinkedList<Integer> indexList);
+
+	public void endEpisode(){};
 }

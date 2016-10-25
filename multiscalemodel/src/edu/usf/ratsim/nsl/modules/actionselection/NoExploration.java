@@ -89,10 +89,12 @@ public class NoExploration extends Module {
 				robot.executeAffordance(selectedAction, sub);
 				robot.checkAffordances(fwd);
 			} while (!fwd.get(0).isRealizable());
-			
+//			robot.executeAffordance(new ForwardAffordance(.05f), sub);
 		} else {
 			robot.executeAffordance(selectedAction, sub);
 		}
+		
+		
 			
 		// } else {
 		// takenAction.set(-1);
