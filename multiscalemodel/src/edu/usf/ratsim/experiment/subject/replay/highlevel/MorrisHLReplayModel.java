@@ -96,6 +96,11 @@ public class MorrisHLReplayModel extends Model {
 		 */
 		float alpha = params.getChildFloat("alpha");
 		/**
+		 * Number of replay events after reward
+		 */
+		int numReplay = params.getChildInt("numReplay");
+		
+		/**
 		 * Reward given upon eating
 		 */
 		float foodReward = params.getChildFloat("foodReward");
@@ -260,7 +265,7 @@ public class MorrisHLReplayModel extends Model {
 		if (rlType.equals("MultiStateAC")) {
 			msac = new MultiStateACReplay(
 					"RL Module", numActions, numStates,
-					rlDiscountFactor, alpha);
+					rlDiscountFactor, alpha, numReplay);
 
 		
 			msac.addInPort("reward", reward.getOutPort("reward"));

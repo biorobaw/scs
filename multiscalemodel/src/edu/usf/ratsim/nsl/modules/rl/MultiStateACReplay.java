@@ -33,11 +33,6 @@ import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
 public class MultiStateACReplay extends Module implements QLAlgorithm {
 
 	/**
-	 * The minimum value to consider a state no longer active
-	 */
-	private static final float EPS = .01f;
-
-	/**
 	 * Learning rate
 	 */
 	private float alpha;
@@ -59,6 +54,8 @@ public class MultiStateACReplay extends Module implements QLAlgorithm {
 
 	private LinkedList<UpdateItem> path;
 
+	private int numReplay;
+
 	/**
 	 * Create the multiscale actor critic
 	 * 
@@ -73,12 +70,14 @@ public class MultiStateACReplay extends Module implements QLAlgorithm {
 	 * @param alpha
 	 *            The learning rate
 	 */
-	public MultiStateACReplay(String name, int numActions, int numStates, float rlDiscountFactor, float alpha) {
+	public MultiStateACReplay(String name, int numActions, int numStates, float rlDiscountFactor, float alpha, int numReplay) {
 		super(name);
 		this.alpha = alpha;
 		this.rlDiscountFactor = rlDiscountFactor;
 
 		this.numActions = numActions;
+		
+		this.numReplay = numReplay;
 		
 		path = new LinkedList<UpdateItem>();
 		
@@ -129,7 +128,7 @@ public class MultiStateACReplay extends Module implements QLAlgorithm {
 			update(ui, value);
 			
 			if (reward.get() > 0)
-				for (int i = 0; i < 0; i++)
+				for (int i = 0; i < numReplay; i++)
 					replay();
 		}
 	}

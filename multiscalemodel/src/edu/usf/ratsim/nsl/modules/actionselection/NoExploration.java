@@ -10,6 +10,7 @@ import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.Debug;
+import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
@@ -62,17 +63,44 @@ public class NoExploration extends Module {
 		List<Affordance> aff = robot.checkAffordances(sub
 				.getPossibleAffordances());
 
+		
+		List<Affordance> possible = new LinkedList<Affordance>();
+		float totalPossible = 0f;
+		float minVal = 0;
 		for (int action = 0; action < aff.size(); action++) {
 			aff.get(action).setValue(votes.get(action));
+			if (aff.get(action).isRealizable()){
+				possible.add(aff.get(action));
+				totalPossible += votes.get(action);
+				if (votes.get(action) < minVal)
+					minVal = votes.get(action);
+			}
+			
 			if (Debug.printSelectedValues)
 				System.out.println("votes for aff " + action + ": "
 						+ votes.get(action));
 		}
+		
+		for (int i = 0; i < possible.size(); i++){
+			possible.get(i).setValue(possible.get(i).getValue() - minVal);
+			totalPossible -= minVal;
+		}
+
+		float f = RandomSingleton.getInstance().nextFloat() * totalPossible;
+		int i = 0;
+		do {
+			f -= possible.get(i).getValue();
+			i++;
+		} while (f > 0 && i < possible.size());
+		
+		selectedAction = possible.get(i-1);
+		
+		
 
 		// Select best action
-		List<Affordance> sortedAff = new LinkedList<Affordance>(aff);
-		Collections.sort(sortedAff);
-		selectedAction = sortedAff.get(aff.size() - 1);
+//		List<Affordance> sortedAff = new LinkedList<Affordance>(aff);
+//		Collections.sort(sortedAff);
+//		selectedAction = sortedAff.get(aff.size() - 1);
 
 		// Publish the taken action
 		// if (selectedAction.getValue() > 0) {

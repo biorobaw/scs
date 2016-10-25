@@ -11,7 +11,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/MorrisMaze.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>false</display>
+			<display>true</display>
 		</params>
 	</universe>
 	
@@ -88,13 +88,15 @@
 			<rlDiscountFactor>1</rlDiscountFactor>
 			<!-- Alpha for the learning algorithm -->
 			<alpha>.5</alpha>
+			<!-- Number of replay events after reward -->
+			<numReplay>0</numReplay>
 			<!-- Cell contribution when not using normalization -->
 			<!-- TODO: take out -->
 			<cellContribution>1</cellContribution>
 			<!-- Value assigned to exploration action-values -->
-			<explorationReward>1000</explorationReward>
+			<explorationReward>0.1</explorationReward>
 			<!-- Half life value for decay exploration -->
-			<explorationHalfLifeVal>1</explorationHalfLifeVal>
+			<explorationHalfLifeVal>1000</explorationHalfLifeVal>
 			<!-- Value assigned to wall actions for the wall taxic modules -->
 			<wallTaxicVal>10</wallTaxicVal>
 			<wallNegReward>-1</wallNegReward>
