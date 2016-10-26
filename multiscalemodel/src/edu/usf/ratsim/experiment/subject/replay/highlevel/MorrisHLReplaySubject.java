@@ -137,4 +137,9 @@ public class MorrisHLReplaySubject extends Subject {
 		model.clearPath();
 	}
 
+	@Override
+	public Map<Point3f, Float> getValuePoints() {
+		return model.getValuePoints();
+	}
+
 }

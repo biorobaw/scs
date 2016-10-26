@@ -11,7 +11,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/MorrisMaze.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>true</display>
+			<display>false</display>
 		</params>
 	</universe>
 	
@@ -62,11 +62,11 @@
 			<!-- Minimum conjuntive layer cell radius -->
 			<minPCRadius>.0682</minPCRadius>
 			<!-- Maximum conjuntive layer cell radius -->
-			<maxPCRadius>.15</maxPCRadius>
+			<maxPCRadius>.3</maxPCRadius>
 			<!-- Type of conjunctive cell -->
 			<placeCells>ExponentialHDPC</placeCells>
-			<votesNormalizer>10</votesNormalizer>
-			<valueNormalizer>10</valueNormalizer>
+			<votesNormalizer>50</votesNormalizer>
+			<valueNormalizer>50</valueNormalizer>
 			<!-- Wall cell modulation. How much does a wall modulate the place field. Greater
 				means less activity -->
 			<wallInhibition>0.1</wallInhibition>
@@ -81,7 +81,7 @@
 			<!-- Reward value for food -->
 			<foodReward>1000</foodReward>
 			<!-- Reward value given when it doesnt eat -->
-			<nonFoodReward>-1</nonFoodReward>
+			<nonFoodReward>-10</nonFoodReward>
 			<!-- Lambda discount factor for the taxic module-->
 			<taxicDiscountFactor>1</taxicDiscountFactor>
 			<!-- Lambda discount factor for the learning algorithm -->
@@ -106,10 +106,10 @@
 			<avoidWallTaxicVal>20</avoidWallTaxicVal>
 			<avoidWallTaxicDist>.1</avoidWallTaxicDist>
 			<!-- Map dimensions for conjuntive cell placing -->
-			<xmin>-2</xmin>
-			<ymin>-2</ymin>
-			<xmax>2</xmax>
-			<ymax>2</ymax>
+			<xmin>-1</xmin>
+			<ymin>-1</ymin>
+			<xmax>1</xmax>
+			<ymax>1</ymax>
 		</params>
 	</model>
 	
@@ -203,9 +203,11 @@
 				</logger>
 				
 				<!-- Log each position estimated value -->
-				<!-- <logger> <name>edu.usf.experiment.log.ValueLogger</name> <params> <circle>false</circle>
-					<interval>.1</interval> <angleInterval>.78</angleInterval> <numIntentions>8</numIntentions>
-					</params> </logger> -->
+				<logger>
+					<name>edu.usf.experiment.log.ValueLogger</name>
+					<params>
+					</params>
+				</logger> 
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
@@ -243,13 +245,21 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
-				
+				<plotter>
+					<name>edu.usf.experiment.plot.ValuePlotter</name>
+				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.PlotGatherer</name>
+				</plotter>
 			</afterEpisodePlotters>
 		</episodes>
 		<!-- Tasks to perform after the trial has ended -->
 		<afterTrialTasks>
 			
 		</afterTrialTasks>
+			<plotter>
+				<name>edu.usf.experiment.plot.PlotGatherer</name>
+			</plotter>
 		<!-- Loggers to execute after the trial has ended -->
 		<afterTrialLoggers>
 		</afterTrialLoggers>
@@ -257,6 +267,9 @@
 		<afterTrialPlotters>
 			<plotter>
 				<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
+			</plotter>
+			<plotter>
+				<name>edu.usf.experiment.plot.PlotGatherer</name>
 			</plotter>
 		</afterTrialPlotters>
 	</trial>
@@ -282,19 +295,13 @@
 			<sleep>00</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
-				<!-- Activate all enabled feeders so the rat decides which one to feed from -->
-				<task>
-					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
-					<params>
-					</params>
-				</task>
 				<!-- Place the animat in a given place -->
 				<task>
 					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
 					<params>
 						<point>
-							<x>0</x>
-							<y>0</y>
+							<x>-.5</x>
+							<y>-.5</y>
 							<theta>3.14</theta>
 						</point>
 					</params>
@@ -328,7 +335,11 @@
 					<params>
 					</params>
 				</logger>
-				
+				<logger>
+					<name>edu.usf.experiment.log.ValueLogger</name>
+					<params>
+					</params>
+				</logger> 
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
@@ -339,7 +350,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>1000</max>
+						<max>5000</max>
 					</params>
 				</condition>
 				<!-- Has eaten from 15 feeders with no errors and only up to two flashing feeders
@@ -371,6 +382,12 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.ValuePlotter</name>
+				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.PlotGatherer</name>
+				</plotter>
 			</afterEpisodePlotters>
 		</episodes>
 		<!-- Tasks to perform after the trial has ended -->
@@ -394,6 +411,9 @@
 			
 			<plotter>
 				<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
+			</plotter>
+			<plotter>
+				<name>edu.usf.experiment.plot.PlotGatherer</name>
 			</plotter>
 		</afterTrialPlotters>
 	</trial>

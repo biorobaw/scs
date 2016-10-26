@@ -15,19 +15,11 @@ import edu.usf.experiment.utils.ElementWrapper;
 
 public class ValueLogger extends Logger {
 
-	private int numIntentions;
-	private float angleInterval;
-	private float interval;
-	private boolean circle;
 	private PrintWriter writer;
 
 	public ValueLogger(ElementWrapper params, String logPath) {
 		super(params, logPath);
 
-		numIntentions = params.getChildInt("numIntentions");
-		angleInterval = params.getChildFloat("angleInterval");
-		interval = params.getChildFloat("interval");
-		circle = params.getChildBoolean("circle");
 		
 		writer = getWriter();
 	}
@@ -42,35 +34,13 @@ public class ValueLogger extends Logger {
 
 		System.out.println("Starting to log value");
 
-		for (int intention = 0; intention < numIntentions; intention++) {
-//			System.out.println("Logging intention " + intention);
-			for (float xInc = 0; xInc < univ.getBoundingRectangle().getWidth()
-					+ interval; xInc += interval) {
-				for (float yInc = 0; yInc < univ.getBoundingRectangle()
-						.getHeight() + interval; yInc += interval) {
 
-					float x = (float) (univ.getBoundingRectangle().getMinX() + xInc);
-					float y = (float) (univ.getBoundingRectangle().getMinY() + yInc);
-
-					Point3f p = new Point3f(x, y, 0);
-					float distToWall = univ.getDistanceToClosestWall(p);
-					if (!circle
-							|| inCircle(x, y, univ.getBoundingRectangle()
-									.getWidth())) {
-
-						Map<Float, Float> angleVals = sub.getValue(p,
-								intention, angleInterval, distToWall);
-
-						for (Float k : angleVals.keySet())
-							writer.println(trialName + '\t' + groupName + '\t'
-									+ subName + '\t' + episodeName + '\t' + cycle+ "\t" + x
-									+ "\t" + y + "\t" + intention + "\t" + k
-									+ "\t" + angleVals.get(k));
-					}
-					System.out.print(".");
-				}
-			}
-		}
+		Map<Point3f, Float> valPoints = sub.getValuePoints();
+	
+		for (Point3f p : valPoints.keySet())
+			writer.println(trialName + '\t' + groupName + '\t'
+					+ subName + '\t' + episodeName + '\t' + cycle+ "\t" + p.x
+					+ "\t" + p.y + "\t" +  valPoints.get(p));
 
 		System.out.println("Finished loggin value");
 	}
@@ -96,7 +66,7 @@ public class ValueLogger extends Logger {
 
 	@Override
 	public String getHeader() {
-		return "trial\tgroup\tsubject\trepetition\tcycle\tx\ty\tintention\tangle\tval";
+		return "trial\tgroup\tsubject\trepetition\tcycle\tx\ty\tval";
 	}
 
 	@Override

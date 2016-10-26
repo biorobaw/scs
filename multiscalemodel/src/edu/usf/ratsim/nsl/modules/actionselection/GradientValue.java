@@ -1,7 +1,11 @@
 package edu.usf.ratsim.nsl.modules.actionselection;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+
+import javax.vecmath.Point3f;
 
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -34,9 +38,12 @@ public class GradientValue extends Module implements Voter {
 		int layer = 0;
 		int stateIndex = 0;
 		for (Integer layerNumStates : statesPerLayer) {
+			int numConnected = 0;
 			float prob = connProbs.get(layer);
 			for (int i = 0; i < layerNumStates; i++) {
 				connected[stateIndex] = r.nextFloat() < prob;
+				if (connected[stateIndex])
+					numConnected++;
 				stateIndex++;
 			}
 			layer++;
@@ -90,6 +97,14 @@ public class GradientValue extends Module implements Voter {
 	@Override
 	public boolean usesRandom() {
 		return false;
+	}
+
+	public boolean isConnected(int k) {
+		return connected[k];
+	}
+
+	public boolean[] getConnectPattern() {
+		return connected;
 	}
 
 }

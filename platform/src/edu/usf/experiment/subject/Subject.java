@@ -9,6 +9,7 @@ import javax.vecmath.Point3f;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.utils.ElementWrapper;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public abstract class Subject {
 
@@ -121,5 +122,9 @@ public abstract class Subject {
 
 	public abstract void reactivateHPCLayers(LinkedList<Integer> indexList);
 
-	public void endEpisode(){};
+	public void endEpisode(){}
+
+	public Map<Point3f, Float> getValuePoints(){
+		throw new NotImplementedException();
+	}
 }

@@ -44,12 +44,13 @@ public class MorrisHLReplayModel extends Model {
 	// private List<WTAVotes> qLActionSel;
 	private List<DecayingExplorationSchema> exploration;
 	private Float1dSparseConcatModule jointPCHDIntentionState;
-	private Module rlValue;
+	private GradientValue rlValue;
 	private List<RndHDPCellLayer> conjCellLayers;
 	private float[][] value;
 	private int numActions;
 	private QLAlgorithm rlAlg;
 	private MultiStateACReplay msac;
+	private List<Float> valueConnProbs;
 
 	public MorrisHLReplayModel() {
 	}
@@ -226,18 +227,18 @@ public class MorrisHLReplayModel extends Model {
 		Port takenActionPort = actionPerformer.getOutPort("takenAction");
 
 		// RL votes to consolidate cell activity and action-value to votes
-		if (voteType.equals("halfAndHalfConnection"))
-			rlValue = new HalfAndHalfConnectionValue("RL value estimation",
-					numActions, cellContribution);
-		else if (voteType.equals("proportional"))
-			rlValue = new ProportionalValue("RL  estimation", numActions);
-		else if (voteType.equals("gradient")) {
-			List<Float> connProbs = params.getChildFloatList("valueConnProbs");
-			float valueNormalizer = params.getChildFloat("valueNormalizer");
-			rlValue = new GradientValue("RL value estimation", numActions,
-					connProbs, numCCCellsPerLayer, valueNormalizer);
-		} else
-			throw new RuntimeException("Vote mechanism not implemented");
+//		if (voteType.equals("halfAndHalfConnection"))
+//			rlValue = new HalfAndHalfConnectionValue("RL value estimation",
+//					numActions, cellContribution);
+//		else if (voteType.equals("proportional"))
+//			rlValue = new ProportionalValue("RL  estimation", numActions);
+//		else if (voteType.equals("gradient")) {
+		valueConnProbs = params.getChildFloatList("valueConnProbs");
+		float valueNormalizer = params.getChildFloat("valueNormalizer");
+		rlValue = new GradientValue("RL value estimation", numActions,
+				valueConnProbs, numCCCellsPerLayer, valueNormalizer);
+//		} else
+//			throw new RuntimeException("Vote mechanism not implemented");
 		rlValue.addInPort("states",
 				jointPCHDIntentionState.getOutPort("jointState"));
 		rlValue.addInPort("value", valuePort);
@@ -392,5 +393,30 @@ public class MorrisHLReplayModel extends Model {
 
 	public void clearPath() {
 		msac.clearPath();
+	}
+
+	public Map<Point3f, Float> getValuePoints() {
+		Map<Point3f, Float> res = new HashMap<Point3f, Float>();
+		boolean connected[] = rlValue.getConnectPattern();
+		System.out.println(connected.length + " conected booleans");
+		boolean anyTrue = false;
+		int i = 0, k = 0;
+		for (RndHDPCellLayer l : conjCellLayers){
+			float connProb = valueConnProbs.get(i);
+			List<ConjCell> cells = l.getCells();
+			System.out.println(cells.size() +  " number of cells in layer " + i + " with conn prob " + connProb);
+			if (connProb != 0)
+				for (ConjCell c : cells){
+					if (connected[k]){
+						res.put(c.getPreferredLocation(), value[k][numActions]);
+					}
+					k++;
+				}
+			else
+				k += cells.size();
+			i++;
+		}
+			
+		return res;
 	}
 }

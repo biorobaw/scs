@@ -9,7 +9,7 @@ mazePlotTheme <- function(p){
   p + theme(axis.line=element_blank(),axis.text.x=element_blank(),
             axis.text.y=element_blank(),axis.ticks=element_blank(),
             axis.title.x=element_blank(),
-            axis.title.y=element_blank(),legend.position="none",
+            axis.title.y=element_blank(),
             panel.background=element_blank(),panel.border=element_blank(),panel.grid.major=element_blank(),
             panel.grid.minor=element_blank(),plot.background=element_blank())
 }
@@ -58,7 +58,7 @@ ratPathPlot <- function(pathData, p){
   pathSegs <- pathData[1:nrow(pathData)-1,]
   # Add two new columns with shifted data
   pathSegs[c('nX', 'nY')] <- pathData[-1,c('x','y')]
-  p + geom_segment(data=pathSegs[c('x','y','nX','nY','random')], aes(x,y,xend=nX,yend=nY,color = random)) + scale_color_manual(values=c(true="red", false="blue")) 
+  p + geom_segment(data=pathSegs[c('x','y','nX','nY','random')], aes(x,y,xend=nX,yend=nY)) 
 }
 
 ratPathPointsPlot <- function(pathData, p){
@@ -83,29 +83,25 @@ wallPlot <- function(wallData,p){
   }
 }
 
-plotValueOnMaze <- function (preName, name, valData, wallData, maze){
+plotValue <- function(valData){
+  # geom_point(data=valData, aes(x=x,y=y,color = val))
+  list(geom_point(data=valData, aes(x=x,y=y,color = val)),
+       scale_color_gradient2(low = "blue", mid="white", high = "red", limits = c(min(valData$val), max(valData$val)))
+       )
+  
+}
+
+plotValueOnMaze <- function (preName, name, valData, wallData, pathData, maze){
   # Get the individual components of the plot
   p <- ggplot()
 
-  resolution <- 0.005 # you can increase the resolution by decreasing this number (warning: the resulting dataframe size increase very quickly)
-  xo <- seq(min(valData$x),max(valData$x),by=resolution)
-  yo <- seq(min(valData$y),max(valData$y),by=resolution)
-  valDataInterp <- interp(x=valData$x, y=valData$y, z=valData$val, 
-                          xo=xo, 
-                          yo=yo, duplicate="mean")
-  valDataInterpDf <- expand.grid(x=xo, y=yo)
-  dim(valDataInterp$z) <- c(length(xo)*length(yo), 1)
-  valDataInterpDf$val <- valDataInterp$z
-  p <- p + geom_raster(data = valDataInterpDf, aes(x=x, y=y, fill=val)) #+ scale_fill_gradient(low="white", high="red")
-  p <- p + scale_fill_gradient2(limits=c(-100,1000))
-  p <- p + maze
+  p <- p + plotValue(valData)
   
   p <- wallPlot(wallData, p)
   
-  segLen <- .1
-  angle <- valData[1,'angle']
-  arrowDF <- segLen * data.frame(x=-cos(angle), y=-sin(angle), xend=cos(angle), yend=sin(angle))
-  p <- p + geom_segment(data=arrowDF, aes(x, y, xend=xend, yend=yend), size=1.5, arrow = arrow(length = unit(2,"cm"), type="closed"))
+  p <- p + maze
+  
+  p <- ratPathPlot(pathData, p)
 
   # Some aesthetic stuff
   p <- mazePlotTheme(p)
@@ -114,13 +110,14 @@ plotValueOnMaze <- function (preName, name, valData, wallData, maze){
     print(p)  
   else
     ggsave(plot=p,filename=paste("plots/value/value",preName,name,
-                                 ".png", sep=''), width=10, height=10)
+                                 ".pdf", sep=''), width=10, height=10)
   
 }
 
 valueFile <- 'value.RData'
 wallsFile <- 'walls.RData'
 mazeFile <- 'maze.xml'
+pathFile <- 'subjposition.RData'
 
 invisible(dir.create("plots"))
 invisible(dir.create("plots/value/"))
@@ -129,15 +126,14 @@ load(valueFile)
 valData <- data
 load(wallsFile)
 wallData <- data
-splitValIntention <- split(valData, valData[c('trial', 'group', 'subject', 'repetition', 'intention')], drop=TRUE)
+load(pathFile)
+pathData <- data
+splitValCycle <- split(valData, valData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 
-invisible(llply(
-  names(splitValIntention), function(x){
-    if (min(splitValIntention[[x]]$val) != 0 || max (splitValIntention[[x]]$val) != 0){
-      splitValIntentionAngle <- split(splitValIntention[[x]], splitValIntention[[x]][c('trial', 'group', 'subject', 'repetition', 'intention', 'angle')], drop=TRUE)
-      llply(names(splitValIntentionAngle), function(y){
-        plotValueOnMaze(
-          "", y, splitValIntentionAngle[[y]], wallData, maze)}, .parallel = FALSE)
-      } 
+invisible(
+  llply(
+    names(splitValCycle), 
+    function(x){
+          plotValueOnMaze("", x, splitValCycle[[x]], wallData, pathData, maze)
     }, .parallel = FALSE)
-) 
+  )

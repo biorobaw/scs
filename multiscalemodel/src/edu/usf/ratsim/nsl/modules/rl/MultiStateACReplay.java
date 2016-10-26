@@ -150,7 +150,7 @@ public class MultiStateACReplay extends Module implements QLAlgorithm {
 			// Update value
 			float currValue = value.get(state, numActions);
 			float activation = ui.states.get(state);
-			float newValue = currValue + alpha * activation * valueDelta;
+			float newValue = Math.min(1000, Math.max(-1000,currValue + alpha * activation * valueDelta));
 			if (Float.isInfinite(newValue) || Float.isNaN(newValue)) {
 				System.out.println("Numeric Error");
 				System.exit(1);
