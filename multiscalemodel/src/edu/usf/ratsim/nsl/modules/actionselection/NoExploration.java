@@ -36,11 +36,15 @@ public class NoExploration extends Module {
 	 * The output port describing the action taken by the module
 	 */
 	private Int0dPort takenAction;
+	private Affordance lastAction;
 
 	/**
 	 * Create the module
-	 * @param name The module's name
-	 * @param sub The subject to use
+	 * 
+	 * @param name
+	 *            The module's name
+	 * @param sub
+	 *            The subject to use
 	 */
 	public NoExploration(String name, Subject sub) {
 		super(name);
@@ -49,6 +53,8 @@ public class NoExploration extends Module {
 		addOutPort("takenAction", takenAction);
 
 		robot = sub.getRobot();
+
+		lastAction = null;
 
 		this.sub = sub;
 	}
@@ -60,53 +66,53 @@ public class NoExploration extends Module {
 		Float1dPort votes = (Float1dPort) getInPort("votes");
 
 		Affordance selectedAction;
-		List<Affordance> aff = robot.checkAffordances(sub
-				.getPossibleAffordances());
+		List<Affordance> aff = robot.checkAffordances(sub.getPossibleAffordances());
 
-		
 		List<Affordance> possible = new LinkedList<Affordance>();
 		float totalPossible = 0f;
 		float minVal = 0;
 		for (int action = 0; action < aff.size(); action++) {
 			aff.get(action).setValue(votes.get(action));
-			if (aff.get(action).isRealizable() && votes.get(action) > 0){
-				possible.add(aff.get(action));
-				totalPossible += votes.get(action);
-				if (votes.get(action) < minVal)
-					minVal = votes.get(action);
+			if (aff.get(action).isRealizable() && votes.get(action) > 0) {
+				// Dont do different turns consecutively
+				if (lastAction == null || !(lastAction instanceof TurnAffordance)
+						|| !(aff.get(action) instanceof TurnAffordance)
+						|| ((TurnAffordance) lastAction).getAngle() == ((TurnAffordance) aff.get(action)).getAngle()) {
+					possible.add(aff.get(action));
+					totalPossible += votes.get(action);
+					if (votes.get(action) < minVal)
+						minVal = votes.get(action);
+				}
 			}
-			
+
 			if (Debug.printSelectedValues)
-				System.out.println("votes for aff " + action + ": "
-						+ votes.get(action));
+				System.out.println("votes for aff " + action + ": " + votes.get(action));
 		}
-		
-		for (int i = 0; i < possible.size(); i++){
+
+		for (int i = 0; i < possible.size(); i++) {
 			possible.get(i).setValue(possible.get(i).getValue() - minVal);
 			totalPossible -= minVal;
 		}
 
-		if (!possible.isEmpty()){
-			
+		if (!possible.isEmpty()) {
+
 			float f = RandomSingleton.getInstance().nextFloat() * totalPossible;
 			int i = 0;
 			do {
 				f -= possible.get(i).getValue();
 				i++;
 			} while (f > 0 && i < possible.size());
-			
-			selectedAction = possible.get(i-1);
-		
-			
-			
+
+			selectedAction = possible.get(i - 1);
+
 			List<Affordance> fwd = new LinkedList<Affordance>();
 			fwd.add(sub.getForwardAffordance());
-			if (selectedAction instanceof TurnAffordance){
+			if (selectedAction instanceof TurnAffordance) {
 				do {
 					robot.executeAffordance(selectedAction, sub);
 					robot.checkAffordances(fwd);
 				} while (!fwd.get(0).isRealizable());
-//				robot.executeAffordance(new ForwardAffordance(.05f), sub);
+				// robot.executeAffordance(new ForwardAffordance(.05f), sub);
 			} else {
 				robot.executeAffordance(selectedAction, sub);
 			}
@@ -116,34 +122,28 @@ public class NoExploration extends Module {
 			robot.checkAffordances(fwd);
 			if (fwd.get(0).isRealizable())
 				selectedAction = fwd.get(0);
+			else if (RandomSingleton.getInstance().nextBoolean())
+				selectedAction = sub.getLeftAffordance();
 			else
-				if (RandomSingleton.getInstance().nextBoolean())
-					selectedAction = sub.getLeftAffordance();
-				else
-					selectedAction = sub.getRightAffordance();
+				selectedAction = sub.getRightAffordance();
 			robot.executeAffordance(selectedAction, sub);
-			
+
 		}
-		
+
 		takenAction.set(aff.indexOf(selectedAction));
 		if (Debug.printSelectedValues)
 			System.out.println(selectedAction.toString());
 
 		// Select best action
-//		List<Affordance> sortedAff = new LinkedList<Affordance>(aff);
-//		Collections.sort(sortedAff);
-//		selectedAction = sortedAff.get(aff.size() - 1);
+		// List<Affordance> sortedAff = new LinkedList<Affordance>(aff);
+		// Collections.sort(sortedAff);
+		// selectedAction = sortedAff.get(aff.size() - 1);
 
 		// Publish the taken action
 		// if (selectedAction.getValue() > 0) {
-		
 
-		
-		
+		lastAction = selectedAction;
 
-		
-		
-			
 		// } else {
 		// takenAction.set(-1);
 		// }

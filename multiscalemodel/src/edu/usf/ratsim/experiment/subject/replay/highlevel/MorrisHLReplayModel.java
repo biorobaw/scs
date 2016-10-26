@@ -388,11 +388,9 @@ public class MorrisHLReplayModel extends Model {
 	}
 
 	public void replay() {
-		msac.replay();
 	}
 
 	public void clearPath() {
-		msac.clearPath();
 	}
 
 	public Map<Point3f, Float> getValuePoints() {
