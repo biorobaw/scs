@@ -89,7 +89,7 @@
 			<!-- Alpha for the learning algorithm -->
 			<alpha>.5</alpha>
 			<!-- Number of replay events after reward -->
-			<numReplay>0</numReplay>
+			<numReplay>10</numReplay>
 			<!-- Cell contribution when not using normalization -->
 			<!-- TODO: take out -->
 			<cellContribution>1</cellContribution>

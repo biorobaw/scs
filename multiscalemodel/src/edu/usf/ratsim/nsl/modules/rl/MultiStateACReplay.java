@@ -3,6 +3,7 @@ package edu.usf.ratsim.nsl.modules.rl;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.ListIterator;
 
 import edu.usf.experiment.utils.Debug;
 import edu.usf.micronsl.module.Module;
@@ -125,7 +126,7 @@ public class MultiStateACReplay extends Module implements QLAlgorithm {
 			
 			path.add(ui);
 
-			update(ui, value);
+			update(ui, value, true);
 			
 			if (reward.get() > 0)
 				for (int i = 0; i < numReplay; i++)
@@ -142,20 +143,23 @@ public class MultiStateACReplay extends Module implements QLAlgorithm {
 	 *            activation, executed action, reward, and value estimation
 	 *            before and after the action
 	 * @param value The action-value and value holding matrix
+	 * @param updateValue 
 	 */
-	private void update(UpdateItem ui, FloatMatrixPort value) {
+	private void update(UpdateItem ui, FloatMatrixPort value, boolean updateValue) {
 		for (Integer state : ui.states.keySet()) {
 			float valueDelta = ui.reward + rlDiscountFactor * ui.valueEstAfter - ui.valueEstBefore;
-
+			float activation = ui.states.get(state);;
+			
 			// Update value
-			float currValue = value.get(state, numActions);
-			float activation = ui.states.get(state);
-			float newValue = Math.min(1000, Math.max(-1000,currValue + alpha * activation * valueDelta));
-			if (Float.isInfinite(newValue) || Float.isNaN(newValue)) {
-				System.out.println("Numeric Error");
-				System.exit(1);
+			if (updateValue){
+				float currValue = value.get(state, numActions);
+				float newValue = Math.min(1000, Math.max(-1000,currValue + alpha * activation * valueDelta));
+				if (Float.isInfinite(newValue) || Float.isNaN(newValue)) {
+					System.out.println("Numeric Error");
+					System.exit(1);
+				}
+				value.set(state, numActions, newValue);
 			}
-			value.set(state, numActions, newValue);
 
 			// Update action value
 			float actionDelta = ui.reward + rlDiscountFactor * ui.valueEstAfter - ui.valueEstBefore;
@@ -177,8 +181,9 @@ public class MultiStateACReplay extends Module implements QLAlgorithm {
 	public void replay(){
 		FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
 //		Collections.reverse(path);
-		for (UpdateItem ui : path)
-			update(ui, value);
+		ListIterator<UpdateItem> iter = path.listIterator(path.size() - 20);
+		while (iter.hasNext())
+			update(iter.next(), value, true);
 	}
 
 	@Override
