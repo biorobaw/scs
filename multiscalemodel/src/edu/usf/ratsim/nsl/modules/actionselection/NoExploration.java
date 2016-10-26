@@ -69,7 +69,7 @@ public class NoExploration extends Module {
 		float minVal = 0;
 		for (int action = 0; action < aff.size(); action++) {
 			aff.get(action).setValue(votes.get(action));
-			if (aff.get(action).isRealizable()){
+			if (aff.get(action).isRealizable() && votes.get(action) > 0){
 				possible.add(aff.get(action));
 				totalPossible += votes.get(action);
 				if (votes.get(action) < minVal)
@@ -86,16 +86,48 @@ public class NoExploration extends Module {
 			totalPossible -= minVal;
 		}
 
-		float f = RandomSingleton.getInstance().nextFloat() * totalPossible;
-		int i = 0;
-		do {
-			f -= possible.get(i).getValue();
-			i++;
-		} while (f > 0 && i < possible.size());
+		if (!possible.isEmpty()){
+			
+			float f = RandomSingleton.getInstance().nextFloat() * totalPossible;
+			int i = 0;
+			do {
+				f -= possible.get(i).getValue();
+				i++;
+			} while (f > 0 && i < possible.size());
+			
+			selectedAction = possible.get(i-1);
 		
-		selectedAction = possible.get(i-1);
+			
+			
+			List<Affordance> fwd = new LinkedList<Affordance>();
+			fwd.add(sub.getForwardAffordance());
+			if (selectedAction instanceof TurnAffordance){
+				do {
+					robot.executeAffordance(selectedAction, sub);
+					robot.checkAffordances(fwd);
+				} while (!fwd.get(0).isRealizable());
+//				robot.executeAffordance(new ForwardAffordance(.05f), sub);
+			} else {
+				robot.executeAffordance(selectedAction, sub);
+			}
+		} else {
+			List<Affordance> fwd = new LinkedList<Affordance>();
+			fwd.add(sub.getForwardAffordance());
+			robot.checkAffordances(fwd);
+			if (fwd.get(0).isRealizable())
+				selectedAction = fwd.get(0);
+			else
+				if (RandomSingleton.getInstance().nextBoolean())
+					selectedAction = sub.getLeftAffordance();
+				else
+					selectedAction = sub.getRightAffordance();
+			robot.executeAffordance(selectedAction, sub);
+			
+		}
 		
-		
+		takenAction.set(aff.indexOf(selectedAction));
+		if (Debug.printSelectedValues)
+			System.out.println(selectedAction.toString());
 
 		// Select best action
 //		List<Affordance> sortedAff = new LinkedList<Affordance>(aff);
@@ -104,23 +136,11 @@ public class NoExploration extends Module {
 
 		// Publish the taken action
 		// if (selectedAction.getValue() > 0) {
-		takenAction.set(aff.indexOf(selectedAction));
-		if (Debug.printSelectedValues)
-			System.out.println(selectedAction.toString());
+		
 
 		
 		
-		List<Affordance> fwd = new LinkedList<Affordance>();
-		fwd.add(new ForwardAffordance(10));
-		if (selectedAction instanceof TurnAffordance){
-			do {
-				robot.executeAffordance(selectedAction, sub);
-				robot.checkAffordances(fwd);
-			} while (!fwd.get(0).isRealizable());
-//			robot.executeAffordance(new ForwardAffordance(.05f), sub);
-		} else {
-			robot.executeAffordance(selectedAction, sub);
-		}
+
 		
 		
 			

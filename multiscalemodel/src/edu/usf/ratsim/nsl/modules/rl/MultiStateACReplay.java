@@ -162,28 +162,30 @@ public class MultiStateACReplay extends Module implements QLAlgorithm {
 			}
 
 			// Update action value
-			float actionDelta = ui.reward + rlDiscountFactor * ui.valueEstAfter - ui.valueEstBefore;
-			float actionVal = value.get(state, ui.action);
-			float newActionValue = actionVal + alpha * activation * (actionDelta);
-
-			if (Debug.printDelta)
-				System.out.println("State: " + (float) state / ui.states.size() + " V Delta: " + valueDelta
-						+ " A Delta: " + actionDelta);
-
-			if (Float.isInfinite(newActionValue) || Float.isNaN(newActionValue)) {
-				System.out.println("Numeric Error");
-				System.exit(1);
+			if (ui.action != -1){
+				float actionDelta = ui.reward + rlDiscountFactor * ui.valueEstAfter - ui.valueEstBefore;
+				float actionVal = value.get(state, ui.action);
+				float newActionValue = actionVal + alpha * activation * (actionDelta);
+	
+				if (Debug.printDelta)
+					System.out.println("State: " + (float) state / ui.states.size() + " V Delta: " + valueDelta
+							+ " A Delta: " + actionDelta);
+	
+				if (Float.isInfinite(newActionValue) || Float.isNaN(newActionValue)) {
+					System.out.println("Numeric Error");
+					System.exit(1);
+				}
+				value.set(state, ui.action, newActionValue);
 			}
-			value.set(state, ui.action, newActionValue);
 		}
 	}
 	
 	public void replay(){
 		FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
 //		Collections.reverse(path);
-		ListIterator<UpdateItem> iter = path.listIterator(path.size() - 20);
+		ListIterator<UpdateItem> iter = path.listIterator(Math.max(0, path.size() - 100));
 		while (iter.hasNext())
-			update(iter.next(), value, true);
+			update(iter.next(), value, false);
 	}
 
 	@Override

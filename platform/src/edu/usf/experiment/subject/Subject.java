@@ -127,4 +127,10 @@ public abstract class Subject {
 	public Map<Point3f, Float> getValuePoints(){
 		throw new NotImplementedException();
 	}
+
+	public abstract Affordance getForwardAffordance();
+	
+	public abstract Affordance getLeftAffordance();
+	
+	public abstract Affordance getRightAffordance();
 }

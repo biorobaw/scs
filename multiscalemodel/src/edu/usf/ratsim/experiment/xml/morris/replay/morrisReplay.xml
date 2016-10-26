@@ -11,7 +11,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/MorrisMaze.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>false</display>
+			<display>true</display>
 		</params>
 	</universe>
 	
@@ -94,7 +94,7 @@
 			<!-- TODO: take out -->
 			<cellContribution>1</cellContribution>
 			<!-- Value assigned to exploration action-values -->
-			<explorationReward>0.1</explorationReward>
+			<explorationReward>.1</explorationReward>
 			<!-- Half life value for decay exploration -->
 			<explorationHalfLifeVal>1000</explorationHalfLifeVal>
 			<!-- Value assigned to wall actions for the wall taxic modules -->
