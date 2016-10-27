@@ -89,21 +89,11 @@ public class NoExploration extends Module {
 				System.out.println("votes for aff " + action + ": " + votes.get(action));
 		}
 
-		for (int i = 0; i < possible.size(); i++) {
-			possible.get(i).setValue(possible.get(i).getValue() - minVal);
-			totalPossible -= minVal;
-		}
-
 		if (!possible.isEmpty()) {
 
-			float f = RandomSingleton.getInstance().nextFloat() * totalPossible;
-			int i = 0;
-			do {
-				f -= possible.get(i).getValue();
-				i++;
-			} while (f > 0 && i < possible.size());
+			Collections.sort(possible);
 
-			selectedAction = possible.get(i - 1);
+			selectedAction = possible.get(possible.size()-1);
 
 			List<Affordance> fwd = new LinkedList<Affordance>();
 			fwd.add(sub.getForwardAffordance());

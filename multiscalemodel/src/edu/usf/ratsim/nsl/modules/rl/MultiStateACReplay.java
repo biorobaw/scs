@@ -130,7 +130,7 @@ public class MultiStateACReplay extends Module implements QLAlgorithm {
 			
 			if (reward.get() > 0)
 				for (int i = 0; i < numReplay; i++)
-					replay(reward.get());
+					replay();
 		}
 	}
 
@@ -180,56 +180,12 @@ public class MultiStateACReplay extends Module implements QLAlgorithm {
 		}
 	}
 	
-	/**
-	 * Updates the actor critic value estimation and action value based on the
-	 * last update, using given reward as fixed delta
-	 * 
-	 * @param ui
-	 *            Item containing all the needed information to update: state
-	 *            activation, executed action, reward, and value estimation
-	 *            before and after the action
-	 * @param value The action-value and value holding matrix
-	 * @param updateValue 
-	 */
-	private void updateReplay(UpdateItem ui, FloatMatrixPort value, boolean updateValue, float reward) {
-		for (Integer state : ui.states.keySet()) {
-			float activation = ui.states.get(state);;
-			
-			// Update value
-			if (updateValue){
-				float currValue = value.get(state, numActions);
-				float newValue = Math.min(1000, Math.max(-1000,currValue + alpha * activation * reward));
-				if (Float.isInfinite(newValue) || Float.isNaN(newValue)) {
-					System.out.println("Numeric Error");
-					System.exit(1);
-				}
-				value.set(state, numActions, newValue);
-			}
-
-			// Update action value
-			if (ui.action != -1){
-				float actionVal = value.get(state, ui.action);
-				float newActionValue = actionVal + alpha * activation * (reward);
-	
-				if (Debug.printDelta)
-					System.out.println("State: " + (float) state / ui.states.size() + " V Delta: " + reward
-							+ " A Delta: " + reward);
-	
-				if (Float.isInfinite(newActionValue) || Float.isNaN(newActionValue)) {
-					System.out.println("Numeric Error");
-					System.exit(1);
-				}
-				value.set(state, ui.action, newActionValue);
-			}
-		}
-	}
-	
-	public void replay(float reward){
+	public void replay(){
 		FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
 //		Collections.reverse(path);
-		ListIterator<UpdateItem> iter = path.listIterator(Math.max(0, path.size() - 20));
+		ListIterator<UpdateItem> iter = path.listIterator(Math.max(0, path.size() - 50));
 		while (iter.hasNext())
-			updateReplay(iter.next(), value, false, reward);
+			update(iter.next(), value, false);
 	}
 
 	@Override

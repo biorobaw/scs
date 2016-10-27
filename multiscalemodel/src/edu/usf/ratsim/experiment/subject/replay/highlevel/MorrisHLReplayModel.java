@@ -24,16 +24,11 @@ import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
 import edu.usf.ratsim.nsl.modules.actionselection.DecayingExplorationSchema;
 import edu.usf.ratsim.nsl.modules.actionselection.GradientValue;
 import edu.usf.ratsim.nsl.modules.actionselection.GradientVotes;
-import edu.usf.ratsim.nsl.modules.actionselection.HalfAndHalfConnectionValue;
-import edu.usf.ratsim.nsl.modules.actionselection.HalfAndHalfConnectionVotes;
-import edu.usf.ratsim.nsl.modules.actionselection.NoExploration;
-import edu.usf.ratsim.nsl.modules.actionselection.ProportionalValue;
-import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
+import edu.usf.ratsim.nsl.modules.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.nsl.modules.actionselection.Voter;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 import edu.usf.ratsim.nsl.modules.celllayer.RndHDPCellLayer;
 import edu.usf.ratsim.nsl.modules.input.SubFoundPlatform;
-import edu.usf.ratsim.nsl.modules.rl.MultiStateAC;
 import edu.usf.ratsim.nsl.modules.rl.MultiStateACReplay;
 import edu.usf.ratsim.nsl.modules.rl.QLAlgorithm;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
@@ -184,7 +179,7 @@ public class MorrisHLReplayModel extends Model {
 
 		// Get votes from QL and other behaviors and perform an action
 		// One vote per layer (one now) + taxic + wf
-		NoExploration actionPerformer = new NoExploration("Action Performer", subject);
+		ProportionalExplorer actionPerformer = new ProportionalExplorer("Action Performer", subject);
 		actionPerformer.addInPort("votes", jointVotes.getOutPort("jointState"));
 		addModule(actionPerformer);
 		// State calculation should be done after movement

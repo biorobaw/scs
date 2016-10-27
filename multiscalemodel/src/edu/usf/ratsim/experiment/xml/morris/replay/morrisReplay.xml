@@ -11,7 +11,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/MorrisMaze.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>true</display>
+			<display>false</display>
 		</params>
 	</universe>
 	
@@ -89,7 +89,7 @@
 			<!-- Alpha for the learning algorithm -->
 			<alpha>.5</alpha>
 			<!-- Number of replay events after reward -->
-			<numReplay>10</numReplay>
+			<numReplay>100</numReplay>
 			<!-- Cell contribution when not using normalization -->
 			<!-- TODO: take out -->
 			<cellContribution>1</cellContribution>

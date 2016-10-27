@@ -1,142 +1,162 @@
 package edu.usf.ratsim.nsl.modules.actionselection;
-//package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
-//
-//import java.util.Random;
-//
-//import nslj.src.lang.NslDinFloat1;
-//import nslj.src.lang.NslDoutInt0;
-//import nslj.src.lang.NslModule;
-//import edu.usf.experiment.subject.Subject;
-//import edu.usf.experiment.universe.Universe;
-//import edu.usf.ratsim.robot.IRobot;
-//
-//public class ProportionalExplorer extends NslModule {
-//
-//	public float aprioriValueVariance;
-//
-//	public NslDinFloat1[] votes;
-//	public NslDoutInt0 takenAction;
-//
-//	private IRobot robot;
-//
-//	private Random r;
-//
-//	private boolean explore;
-//
-//	private Universe universe;
-//
-//	private Subject subject;
-//
-//	// private float maxPossibleReward;
-//
-//	public ProportionalExplorer(String nslName, NslModule nslParent, Subject subject,
-//			int numLayers) {
-//		super(nslName, nslParent);
-//
-//		this.subject = subject;
-//
-//		takenAction = new NslDoutInt0(this, "takenAction");
-//
-//		votes = new NslDinFloat1[numLayers];
-//		for (int i = 0; i < numLayers; i++)
-//			votes[i] = new NslDinFloat1(this, "votes" + i);
-//
-//		r = RandomSingleton.getInstance();
-//	}
-//
-//	public void simRun() {
-//		// TODO: get proportional explorer back
-////		float[] overallValues = new float[subject.getNumActions()];
-////		for (int i = 0; i < overallValues.length; i++)
-////			overallValues[i] = 0;
-////		// Add each contribution
-////		for (NslDinFloat1 layerVal : votes)
-////			for (int angle = 0; angle < layerVal.getSize(); angle++)
-////				overallValues[angle] += layerVal.get(angle);
-////		// find total value with laplacian
-////		float maxVal = Float.MIN_VALUE;
-////		for (int angle = 0; angle < overallValues.length; angle++)
-////			if (maxVal < overallValues[angle])
-////				maxVal = overallValues[angle];
-////
-////		// if (maxVal > 1)
-////		// System.out.println(maxVal);
-////
-////		// explore = r.nextFloat() > (maxVal / maxPossibleReward);
-////		// if (explore)
-////		// System.out.println("Exploring");
-////		// explore = maxVal == 0;
-////		// System.out.println(maxVal);
-////		// Make a list of actions and values
-////		List<ActionValue> actions = new LinkedList<ActionValue>();
-////		for (int angle = 0; angle < overallValues.length; angle++) {
-////			actions.add(new ActionValue(angle, overallValues[angle]));
-////		}
-////		// Collections.sort(actions);
-////
-////		// Recompute max val
-////		maxVal = Float.MIN_VALUE;
-////		for (int a = 0; a < overallValues.length; a++)
-////			if (maxVal < overallValues[a])
-////				maxVal = overallValues[a];
-////
-////		int action;
-////		// Roulette algorithm
-////		// Get total value
-////		// Find min val
-////		float minVal = 0;
-////		for (ActionValue aValue : actions)
-////			if (aValue.getValue() < minVal)
-////				minVal = aValue.getValue();
-////		// Get max value
-////		float totalVal = 0;
-////		for (ActionValue aValue : actions)
-////			// Substract min val to raise everything above 0
-////			totalVal += aValue.getValue() - minVal;
-////		// Calc a new random in [0, totalVal]
-////		float nextRVal = r.nextFloat() * totalVal;
-////		// Find the next action
-////		action = -1;
-////		if (actions.isEmpty())
-////			System.out.println("no actions");
-////		do {
-////			action++;
-////			nextRVal -= (actions.get(action).getValue() - minVal);
-////		} while (nextRVal >= 0 && action < actions.size() - 1);
-////
-////		// Try the selected action
-////		if (actions.get(action).getAction() == subject.getEatActionNumber()){
-////			System.out.println("Eating");
-////			robot.eat();
-////		} else {
-////			robot.rotate(subject.getActionAngle(actions.get(action).getAction()));
-////			boolean[] aff = robot.getAffordances();
-////			// Random if there was no affordable positive value action
-////			// lastActionRandom = actions.get(action).getValue() <=
-////			// EXPLORATORY_VARIANCE;
-////	//		actions.remove(action);
-////			// } while (!aff[Utiles.discretizeAction(0)]);
-////	
-////			
-////			if (aff[subject.getActionForward()])
-////				robot.forward();
-////		}
-////		// Publish the taken action
-////		takenAction.set(actions.get(action).getAction());
-////
-////		// Now it is safe to forward
-////		// if (!aff[Utiles.discretizeAction(0)]) {
-////		// if (Math.random() > .5)
-////		// robot.rotate((float) (Math.PI / 2));
-////		// else {
-////		// robot.rotate((float) (-Math.PI / 2));
-////		// }
-////		// aff = robot.getAffordances();
-////		// }
-//
-//	}
-//
-//	public boolean wasLastActionRandom() {
-//		return explore;
-//	}
-// }
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
+import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.experiment.subject.affordance.ForwardAffordance;
+import edu.usf.experiment.subject.affordance.TurnAffordance;
+import edu.usf.experiment.utils.Debug;
+import edu.usf.experiment.utils.RandomSingleton;
+import edu.usf.micronsl.module.Module;
+import edu.usf.micronsl.port.onedimensional.Float1dPort;
+import edu.usf.micronsl.port.singlevalue.Int0dPort;
+
+/**
+ * This module receives the action votes as an input port and performs the
+ * action that is realizable and has the most votes.
+ * 
+ * @author Martin Llofriu
+ * 
+ */
+public class ProportionalExplorer extends Module {
+
+	/**
+	 * The robot interface used to perform actions
+	 */
+	private Robot robot;
+	/**
+	 * The subject, used to get all possible affordances
+	 */
+	private Subject sub;
+	/**
+	 * The output port describing the action taken by the module
+	 */
+	private Int0dPort takenAction;
+	private Affordance lastAction;
+
+	/**
+	 * Create the module
+	 * 
+	 * @param name
+	 *            The module's name
+	 * @param sub
+	 *            The subject to use
+	 */
+	public ProportionalExplorer(String name, Subject sub) {
+		super(name);
+
+		takenAction = new Int0dPort(this);
+		addOutPort("takenAction", takenAction);
+
+		robot = sub.getRobot();
+
+		lastAction = null;
+
+		this.sub = sub;
+	}
+
+	/**
+	 * Gets the votes input port, assigns the value to each affordance
+	 */
+	public void run() {
+		Float1dPort votes = (Float1dPort) getInPort("votes");
+
+		Affordance selectedAction;
+		List<Affordance> aff = robot.checkAffordances(sub.getPossibleAffordances());
+
+		List<Affordance> possible = new LinkedList<Affordance>();
+		float totalPossible = 0f;
+		float minVal = 0;
+		for (int action = 0; action < aff.size(); action++) {
+			aff.get(action).setValue(votes.get(action));
+			if (aff.get(action).isRealizable() && votes.get(action) > 0) {
+				// Dont do different turns consecutively
+				if (lastAction == null || !(lastAction instanceof TurnAffordance)
+						|| !(aff.get(action) instanceof TurnAffordance)
+						|| ((TurnAffordance) lastAction).getAngle() == ((TurnAffordance) aff.get(action)).getAngle()) {
+					possible.add(aff.get(action));
+					totalPossible += votes.get(action);
+					if (votes.get(action) < minVal)
+						minVal = votes.get(action);
+				}
+			}
+
+			if (Debug.printSelectedValues)
+				System.out.println("votes for aff " + action + ": " + votes.get(action));
+		}
+
+		for (int i = 0; i < possible.size(); i++) {
+			possible.get(i).setValue(possible.get(i).getValue() - minVal);
+			totalPossible -= minVal;
+		}
+
+		if (!possible.isEmpty()) {
+
+			float f = RandomSingleton.getInstance().nextFloat() * totalPossible;
+			int i = 0;
+			do {
+				f -= possible.get(i).getValue();
+				i++;
+			} while (f > 0 && i < possible.size());
+
+			selectedAction = possible.get(i - 1);
+
+			List<Affordance> fwd = new LinkedList<Affordance>();
+			fwd.add(sub.getForwardAffordance());
+			if (selectedAction instanceof TurnAffordance) {
+				do {
+					robot.executeAffordance(selectedAction, sub);
+					robot.checkAffordances(fwd);
+				} while (!fwd.get(0).isRealizable());
+				// robot.executeAffordance(new ForwardAffordance(.05f), sub);
+			} else {
+				robot.executeAffordance(selectedAction, sub);
+			}
+		} else {
+			List<Affordance> fwd = new LinkedList<Affordance>();
+			fwd.add(sub.getForwardAffordance());
+			robot.checkAffordances(fwd);
+			if (fwd.get(0).isRealizable())
+				selectedAction = fwd.get(0);
+			else if (RandomSingleton.getInstance().nextBoolean())
+				selectedAction = sub.getLeftAffordance();
+			else
+				selectedAction = sub.getRightAffordance();
+			robot.executeAffordance(selectedAction, sub);
+
+		}
+
+		takenAction.set(aff.indexOf(selectedAction));
+		if (Debug.printSelectedValues)
+			System.out.println(selectedAction.toString());
+
+		// Select best action
+		// List<Affordance> sortedAff = new LinkedList<Affordance>(aff);
+		// Collections.sort(sortedAff);
+		// selectedAction = sortedAff.get(aff.size() - 1);
+
+		// Publish the taken action
+		// if (selectedAction.getValue() > 0) {
+
+		lastAction = selectedAction;
+
+		// } else {
+		// takenAction.set(-1);
+		// }
+
+		// TODO: get the rotation -> forward back
+		// // System.out.println(takenAction.get());
+		// lastRot = selectedAction == sub.getActionLeft()
+		// || selectedAction == sub.getActionRight();
+	}
+
+	@Override
+	public boolean usesRandom() {
+		// Executes robot movements, which uses random
+		return true;
+	}
+}
