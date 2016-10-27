@@ -1,4 +1,4 @@
-package edu.usf.ratsim.experiment.subject.replay.highlevel;
+package edu.usf.ratsim.experiment.subject.morris.multiscale;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -24,10 +24,8 @@ import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
 import edu.usf.ratsim.nsl.modules.actionselection.DecayingExplorationSchema;
 import edu.usf.ratsim.nsl.modules.actionselection.GradientValue;
 import edu.usf.ratsim.nsl.modules.actionselection.GradientVotes;
-import edu.usf.ratsim.nsl.modules.actionselection.HalfAndHalfConnectionValue;
 import edu.usf.ratsim.nsl.modules.actionselection.HalfAndHalfConnectionVotes;
 import edu.usf.ratsim.nsl.modules.actionselection.NoExploration;
-import edu.usf.ratsim.nsl.modules.actionselection.ProportionalValue;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.actionselection.Voter;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
@@ -38,7 +36,7 @@ import edu.usf.ratsim.nsl.modules.rl.MultiStateACReplay;
 import edu.usf.ratsim.nsl.modules.rl.QLAlgorithm;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
 
-public class MorrisHLReplayModel extends Model {
+public class ActorCriticModel extends Model {
 
 	// private ProportionalExplorer actionPerformerVote;
 	// private List<WTAVotes> qLActionSel;
@@ -49,13 +47,13 @@ public class MorrisHLReplayModel extends Model {
 	private float[][] value;
 	private int numActions;
 	private QLAlgorithm rlAlg;
-	private MultiStateACReplay msac;
+	private MultiStateAC msac;
 	private List<Float> valueConnProbs;
 
-	public MorrisHLReplayModel() {
+	public ActorCriticModel() {
 	}
 
-	public MorrisHLReplayModel(ElementWrapper params, Subject subject, LocalizableRobot lRobot) {
+	public ActorCriticModel(ElementWrapper params, Subject subject, LocalizableRobot lRobot) {
 		/**
 		 * Place cell radius range
 		 */
@@ -80,10 +78,6 @@ public class MorrisHLReplayModel extends Model {
 		float minHDRadius = params.getChildFloat("minHDRadius");
 		float maxHDRadius = params.getChildFloat("maxHDRadius");
 		/**
-		 * Type of place cells to use
-		 */
-		String placeCellType = params.getChildText("placeCells");
-		/**
 		 * Reinforcement learning discount factor
 		 */
 		float rlDiscountFactor = params.getChildFloat("rlDiscountFactor");
@@ -91,17 +85,11 @@ public class MorrisHLReplayModel extends Model {
 		 * Learning rate
 		 */
 		float alpha = params.getChildFloat("alpha");
-		
-		/**
-		 * Number of replay episodes
-		 */
-		int numReplay = params.getChildInt("numReplay");
-		
+
 		/**
 		 * Reward given upon eating
 		 */
 		float foodReward = params.getChildFloat("foodReward");
-
 		/**
 		 * Reward given in non-food obtaining steps
 		 */
@@ -135,7 +123,7 @@ public class MorrisHLReplayModel extends Model {
 		// For each layer
 		for (int i = 0; i < numCCLayers; i++) {
 			RndHDPCellLayer ccl = new RndHDPCellLayer("CCL " + i, lRobot, radius, minHDRadius, maxHDRadius,
-					numCCCellsPerLayer.get(i), placeCellType, xmin, ymin, xmax, ymax, lRobot.getAllFeeders(), 0f,
+					numCCCellsPerLayer.get(i), "ExponentialHDPC", xmin, ymin, xmax, ymax, lRobot.getAllFeeders(), 0f,
 					layerLengths.get(i));
 			conjCellLayers.add(ccl);
 			conjCellLayersPorts.add(ccl.getOutPort("activation"));
@@ -226,8 +214,7 @@ public class MorrisHLReplayModel extends Model {
 		reward.addInPort("rewardingEvent", foundPlat.getOutPort("foundPlatform"));
 		addModule(reward);
 
-		// Reinforcement learning initialization
-		msac = new MultiStateACReplay("RL Module", numActions, numStates, rlDiscountFactor, alpha, numReplay);
+		msac = new MultiStateAC("RL Module", numActions, numStates, rlDiscountFactor, alpha);
 
 		msac.addInPort("reward", reward.getOutPort("reward"));
 		msac.addInPort("takenAction", takenActionPort);

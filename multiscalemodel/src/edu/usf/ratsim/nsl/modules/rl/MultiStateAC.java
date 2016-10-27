@@ -1,6 +1,9 @@
 package edu.usf.ratsim.nsl.modules.rl;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 import edu.usf.experiment.utils.Debug;
 import edu.usf.micronsl.module.Module;
@@ -18,14 +21,9 @@ import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
  * each action-state combination. This array also stores the value for each
  * state in the last column of each row.
  * 
- * Eligibility traces are also implemented. A set of active states is kept to
- * avoid iterating over all possible states. A sparse port is also used for the
- * state activation. Then, the only the non-zero states are added to the set of
- * active states in each cycle.
- * 
- * All active states and state-action combination are decreased by a factor of
- * tracesDecay. The activeStates that reach a 0 value after the decrement are
- * taken out of the list.
+ * Instead of using eligibility traces, this model implements replay events in a
+ * high level approach. The update information is saved in each iteration and
+ * the whole sequence is replayed upon request.
  * 
  * Finally, for each active state, the state value estimation is updated using
  * the actor critic update equation.
@@ -34,11 +32,6 @@ import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
  *
  */
 public class MultiStateAC extends Module implements QLAlgorithm {
-
-	/**
-	 * The minimum value to consider a state no longer active
-	 */
-	private static final float EPS = .01f;
 
 	/**
 	 * Learning rate
@@ -61,32 +54,6 @@ public class MultiStateAC extends Module implements QLAlgorithm {
 	private float rlDiscountFactor;
 
 	/**
-	 * The rate of decay for eligibility traces. O means no eligibility traces
-	 * use.
-	 */
-	private float tracesDecay;
-
-	/**
-	 * The eligibility traces for states
-	 */
-	private float[] stateTraces;
-
-	/**
-	 * Eligibility traces for action-state combinations
-	 */
-	private float[][] actionTraces;
-
-	/**
-	 * The set of active states
-	 */
-	private HashSet<Integer> activeStates;
-
-	/**
-	 * States to be removed from the active states. TODO: remove as a field?
-	 */
-	private HashSet<Integer> toRemove;
-
-	/**
 	 * Create the multiscale actor critic
 	 * 
 	 * @param name
@@ -99,26 +66,15 @@ public class MultiStateAC extends Module implements QLAlgorithm {
 	 *            The RL discount factor
 	 * @param alpha
 	 *            The learning rate
-	 * @param tracesDecay
-	 *            The rate of decay for eligibility traces
 	 */
-	public MultiStateAC(String name, int numActions, int numStates, float rlDiscountFactor, float alpha,
-			float tracesDecay) {
+	public MultiStateAC(String name, int numActions, int numStates, float rlDiscountFactor, float alpha) {
 		super(name);
 		this.alpha = alpha;
 		this.rlDiscountFactor = rlDiscountFactor;
-		this.tracesDecay = tracesDecay;
-		if (tracesDecay != 0) {
-			stateTraces = new float[numStates];
-			actionTraces = new float[numStates][numActions];
-		}
 
 		this.numActions = numActions;
-
+		
 		update = true;
-
-		activeStates = new HashSet<Integer>(10000);
-		toRemove = new HashSet<Integer>(100);
 	}
 
 	/**
@@ -150,113 +106,66 @@ public class MultiStateAC extends Module implements QLAlgorithm {
 			Float1dPort rlValueEstBefore = (Float1dPort) getInPort("rlValueEstimationBefore");
 			Float1dPort rlValueEstAfter = (Float1dPort) getInPort("rlValueEstimationAfter");
 			FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
-			
+
 			// Gets the active state as computed at the beginning of the cycle
 			int a = takenAction.get();
 
 			if (Debug.printValueAfter)
 				System.out.println("Value after: " + rlValueEstAfter.get(0));
 
-			activeStates.addAll(statesBefore.getNonZero().keySet());
-			toRemove.clear();
-			for (Integer state : activeStates) {
-				boolean stillActive = false;
-				stateTraces[state] *= tracesDecay;
-				// Replacing states
-				if (statesBefore.getNonZero().containsKey(state))
-					stateTraces[state] = Math.max(statesBefore.get(state), stateTraces[state]);
-				stillActive = stillActive || stateTraces[state] > EPS;
-				for (int i = 0; i < numActions; i++) {
-					actionTraces[state][i] *= tracesDecay;
-					stillActive = stillActive || actionTraces[state][i] > EPS;
-				}
-				if (a != -1 && statesBefore.getNonZero().containsKey(state)) {
-					actionTraces[state][a] = Math.max(statesBefore.get(state), actionTraces[state][a]);
-					stillActive = stillActive || actionTraces[state][a] > EPS;
-				}
-
-				if (stillActive && a != -1)
-					updateLastAction(state, a, statesBefore, value, reward, rlValueEstBefore, rlValueEstAfter,
-							stateTraces, actionTraces);
-				else if (!stillActive)
-					toRemove.add(state);
-			}
-			activeStates.removeAll(toRemove);
+			UpdateItem ui = new UpdateItem(statesBefore.getNonZero(), a, reward.get(), rlValueEstBefore.get(0),
+					rlValueEstAfter.get(0));
+			
+			update(ui, value, true);
 		}
 	}
 
 	/**
-	 * Updates a given active state
+	 * Updates the actor critic value estimation and action value based on the
+	 * last update
 	 * 
-	 * @param sBefore
-	 *            The index of the state
-	 * @param a
-	 *            The taken action
-	 * @param statesBefore
-	 *            The set of state activations before movement
-	 * @param value
-	 *            The value table
-	 * @param reward
-	 *            The last obtained reward
-	 * @param rlValueEstBefore
-	 *            The rl value estimation before
-	 * @param rlValueEstAfter
-	 *            The rl value estimation after
-	 * @param stateTraces
-	 *            The eligibility traces activation for the states
-	 * @param actionTraces
-	 *            The eligiblity traces activation for the state-action pairs
+	 * @param ui
+	 *            Item containing all the needed information to update: state
+	 *            activation, executed action, reward, and value estimation
+	 *            before and after the action
+	 * @param value The action-value and value holding matrix
+	 * @param updateValue 
 	 */
-	private void updateLastAction(int sBefore, int a, Float1dSparsePort statesBefore, FloatMatrixPort value,
-			Float0dPort reward, Float1dPort rlValueEstBefore, Float1dPort rlValueEstAfter, float[] stateTraces,
-			float[][] actionTraces) {
-		// Error in estimation
-		// float delta = reward.get() + lambda * valueEstAfter.get(0)
-		// - valueEstBefore.get(0);
-		
-		// TODO: Should we use added value estimation or only the value[s][numactions] entry??
-
-		float valueDelta = reward.get() + 
-				+ rlDiscountFactor * rlValueEstAfter.get(0) - rlValueEstBefore.get(0);
-
-		// Update value
-		float currValue = value.get(sBefore, numActions);
-		float activation;
-		if (tracesDecay == 0)
-			activation = statesBefore.get(sBefore);
-		else
-			activation = stateTraces[sBefore];
-		float newValue = currValue + alpha * activation * valueDelta;
-		if (Float.isInfinite(newValue) || Float.isNaN(newValue)) {
-			System.out.println("Numeric Error");
-			System.exit(1);
-		}
-		value.set(sBefore, numActions, newValue);
-
-		for (int updateAction = 0; updateAction < numActions; updateAction++) {
-			float actionDelta = reward.get() + 
-					+ rlDiscountFactor * rlValueEstAfter.get(0)
-					- rlValueEstBefore.get(0);
-			float actionVal = value.get(sBefore, updateAction);
-			if (tracesDecay == 0)
-				activation = statesBefore.get(sBefore);
-			else
-				activation = actionTraces[sBefore][updateAction];
-			float newActionValue = actionVal + alpha * activation * (actionDelta);
-
-			if (Debug.printDelta)
-				System.out.println("State: " + (float) sBefore / statesBefore.getSize() + " V Delta: " + valueDelta
-						+ " A Delta: " + actionDelta);
-
-			if (Float.isInfinite(newActionValue) || Float.isNaN(newActionValue)) {
-				System.out.println("Numeric Error");
-				System.exit(1);
+	private void update(UpdateItem ui, FloatMatrixPort value, boolean updateValue) {
+		for (Integer state : ui.states.keySet()) {
+			float valueDelta = ui.reward + rlDiscountFactor * ui.valueEstAfter - ui.valueEstBefore;
+			float activation = ui.states.get(state);;
+			
+			// Update value
+			if (updateValue){
+				float currValue = value.get(state, numActions);
+				float newValue = Math.min(1000, Math.max(-1000,currValue + alpha * activation * valueDelta));
+				if (Float.isInfinite(newValue) || Float.isNaN(newValue)) {
+					System.out.println("Numeric Error");
+					System.exit(1);
+				}
+				value.set(state, numActions, newValue);
 			}
-			value.set(sBefore, updateAction, newActionValue);
+
+			// Update action value
+			if (ui.action != -1){
+				float actionDelta = ui.reward + rlDiscountFactor * ui.valueEstAfter - ui.valueEstBefore;
+				float actionVal = value.get(state, ui.action);
+				float newActionValue = actionVal + alpha * activation * (actionDelta);
+	
+				if (Debug.printDelta)
+					System.out.println("State: " + (float) state / ui.states.size() + " V Delta: " + valueDelta
+							+ " A Delta: " + actionDelta);
+	
+				if (Float.isInfinite(newActionValue) || Float.isNaN(newActionValue)) {
+					System.out.println("Numeric Error");
+					System.exit(1);
+				}
+				value.set(state, ui.action, newActionValue);
+			}
 		}
-
 	}
-
+	
 	@Override
 	public boolean usesRandom() {
 		return false;
@@ -264,14 +173,6 @@ public class MultiStateAC extends Module implements QLAlgorithm {
 
 	@Override
 	public void newEpisode() {
-		for (Integer state : activeStates) {
-			stateTraces[state] = 0;
-			// Replacing states
-			for (int i = 0; i < numActions; i++) {
-				actionTraces[state][i] = 0;
-			}
-		}
-		activeStates.clear();
 	}
-
+	
 }
