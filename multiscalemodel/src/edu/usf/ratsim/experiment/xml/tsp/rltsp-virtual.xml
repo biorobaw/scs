@@ -2,7 +2,6 @@
 	
 <experiment>
 	
-	<seed>6482520557772225973</seed>
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
@@ -28,7 +27,7 @@
 			<!-- Half the field of view of the rat -->
 			<halfFieldOfView>2.26</halfFieldOfView>
 			<!-- How long can the rat see in meters -->
-			<visionDist>.3</visionDist>
+			<visionDist>.5</visionDist>
 			<!-- How far away can the robot eat food. This should be shorter than the universe
 				threshold -->
 			<closeThrs>.1</closeThrs>
@@ -60,13 +59,13 @@
 			<!-- Reward value given when it doesnt eat -->
 			<nonFoodReward>-10</nonFoodReward>
 			<!-- Reward value estimated by the feeder module -->
-			<feederReward>100</feederReward>
+			<feederReward>1000</feederReward>
 			<!-- Lambda discount factor for the learning algorithm -->
 			<rlDiscountFactor>1</rlDiscountFactor>
 			<!-- Alpha for the learning algorithm -->
 			<alpha>.5</alpha>
 			<!-- Value assigned to exploration action-values -->
-			<explorationReward>10</explorationReward>
+			<explorationReward>0.1</explorationReward>
 			<!-- Half life value for decay exploration -->
 			<explorationHalfLifeVal>1000</explorationHalfLifeVal>
 			<!-- Number of feeders - used by intention modules -->
@@ -240,7 +239,9 @@
 				<!-- <plotter>
 					<name>edu.usf.ratsim.experiment.plot.PCPlotter</name>
 				</plotter>-->
-				
+				<plotter>
+					<name>edu.usf.experiment.plot.PlotGatherer</name>
+				</plotter>
 			</afterEpisodePlotters>
 		</episodes>
 		<!-- Tasks to perform after the trial has ended -->
@@ -252,7 +253,9 @@
 		</afterTrialLoggers>
 		<!-- Plotters to execute after the trial has ended -->
 		<afterTrialPlotters>
-
+			<plotter>
+				<name>edu.usf.experiment.plot.PlotGatherer</name>
+			</plotter>
 		</afterTrialPlotters>
 	</trial>
 	

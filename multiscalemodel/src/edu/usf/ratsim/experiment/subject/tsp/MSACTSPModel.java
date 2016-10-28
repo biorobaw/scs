@@ -166,12 +166,12 @@ public class MSACTSPModel extends Model {
 		List<Port> votesPorts = new LinkedList<Port>();
 		
 		// RL Votes
-//		Module rlVotes = new GradientVotes("RL votes", numActions, connProbs,
-//				numCCCellsPerLayer, votesNormalizer, foodReward);
-//		rlVotes.addInPort("states", stateCopy.getOutPort("copy"));
-//		rlVotes.addInPort("value", valuePort);
-//		addModule(rlVotes);
-//		votesPorts.add(rlVotes.getOutPort("votes"));
+		Module rlVotes = new GradientVotes("RL votes", numActions, connProbs,
+				numCCCellsPerLayer, votesNormalizer, foodReward);
+		rlVotes.addInPort("states", stateCopy.getOutPort("copy"));
+		rlVotes.addInPort("value", valuePort);
+		addModule(rlVotes);
+		votesPorts.add(rlVotes.getOutPort("votes"));
 		
 		// Exploration votes
 		DecayingExplorationSchema decayExpl = new DecayingExplorationSchema("Decay Explorer", subject, lRobot,
