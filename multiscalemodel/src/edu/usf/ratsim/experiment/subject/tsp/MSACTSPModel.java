@@ -26,6 +26,7 @@ import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicValueSchema;
 import edu.usf.ratsim.nsl.modules.celllayer.RndConjCellLayer;
 import edu.usf.ratsim.nsl.modules.input.ClosestFeeder;
 import edu.usf.ratsim.nsl.modules.input.LastAteFeeder;
+import edu.usf.ratsim.nsl.modules.input.LastTriedToEat;
 import edu.usf.ratsim.nsl.modules.input.SubjectAte;
 import edu.usf.ratsim.nsl.modules.input.SubjectTriedToEat;
 import edu.usf.ratsim.nsl.modules.intention.EatCountIntention;
@@ -35,10 +36,6 @@ import edu.usf.ratsim.nsl.modules.rl.Reward;
 
 public class MSACTSPModel extends Model {
 
-	// One action per feeder, 0 is invalid
-	private int numActions = 6;
-	// One intention per feeder (last eaten) + one initial intention
-	private int numIntentions = 6;
 	// Value table for actions and state-values (Actor Critic)
 	private float[][] value;
 	private LinkedList<DecayingExplorationSchema> exploration;
@@ -48,6 +45,9 @@ public class MSACTSPModel extends Model {
 
 	public MSACTSPModel(ElementWrapper params, Subject subject,
 			LocalizableRobot lRobot) {
+		/*******************************************************************/
+		/************************* PARAMS **********************************/
+		/*******************************************************************/
 		// Environment bounds
 		float xmin = params.getChildFloat("xmin");
 		float ymin = params.getChildFloat("ymin");
@@ -71,10 +71,13 @@ public class MSACTSPModel extends Model {
 		// Rewarding params
 		float foodReward = params.getChildFloat("foodReward");
 		float nonFoodReward = params.getChildFloat("nonFoodReward");
+		float feederReward = params.getChildFloat("feederReward");
+		
+		int numFeeders = params.getChildInt("numFeeders");
 		
 		// RL params
 		float rlDiscountFactor = params.getChildFloat("rlDiscountFactor");
-		float taxicDiscountFactor = params.getChildFloat("taxicDiscountFactor");
+		float taxicDiscountFactor = rlDiscountFactor;
 		float alpha = params.getChildFloat("alpha");
 		
 		/**
@@ -89,6 +92,12 @@ public class MSACTSPModel extends Model {
 		
 		Random r = RandomSingleton.getInstance();
 		
+		int numActions = subject.getPossibleAffordances().size();
+		
+		/*******************************************************************/
+		/************************* INPUT ***********************************/
+		/*******************************************************************/
+		
 		// Information to lastAteGoalDecider about the step
 		SubjectTriedToEat subTriedToEat = new SubjectTriedToEat(
 				"Subject Tried To Eat", subject);
@@ -99,9 +108,12 @@ public class MSACTSPModel extends Model {
 		// Rewarding schema
 		SubjectAte subAte = new SubjectAte("Subject Ate", subject);
 		addModule(subAte);
-		LastAteFeeder lastAteFeeder = new LastAteFeeder("Last Ate Feeder", subject);
+		LastTriedToEat lastAteFeeder = new LastTriedToEat("Last Tried Ate Feeder", subject);
 		addModule(lastAteFeeder);
 		
+		/*******************************************************************/
+		/************************* STATE ***********************************/
+		/*******************************************************************/
 		
 		// One intention per feeder, changes upon eating
 		Module intention = new EatCountIntention("Eat count intention", 5, subject);
@@ -114,7 +126,7 @@ public class MSACTSPModel extends Model {
 		// For each layer
 		for (int i = 0; i < numCCLayers; i++) {
 			RndConjCellLayer ccl = new RndConjCellLayer("CCL " + i, lRobot,
-					radius, 0, 0, numIntentions, numCCCellsPerLayer.get(i),
+					radius, 0, 0, numFeeders, numCCCellsPerLayer.get(i),
 					"ExponentialPlaceIntentionCell", xmin, ymin, xmax, ymax,
 					lRobot.getAllFeeders(), 0, layerLengths.get(i), 0);
 			ccl.addInPort("intention", intention.getOutPort("intention"));
@@ -147,16 +159,19 @@ public class MSACTSPModel extends Model {
 				value[s][a] = (float) r.nextGaussian() * .01f;
 		FloatMatrixPort valuePort = new FloatMatrixPort((Module) null, value);
 
+		/*******************************************************************/
+		/************************* VOTES ***********************************/
+		/*******************************************************************/
 		// Voting mechanism for action selection
 		List<Port> votesPorts = new LinkedList<Port>();
 		
 		// RL Votes
-		Module rlVotes = new GradientVotes("RL votes", numActions, connProbs,
-				numCCCellsPerLayer, votesNormalizer, foodReward);
-		rlVotes.addInPort("states", stateCopy.getOutPort("copy"));
-		rlVotes.addInPort("value", valuePort);
-		addModule(rlVotes);
-		votesPorts.add((Float1dPort) rlVotes.getOutPort("votes"));
+//		Module rlVotes = new GradientVotes("RL votes", numActions, connProbs,
+//				numCCCellsPerLayer, votesNormalizer, foodReward);
+//		rlVotes.addInPort("states", stateCopy.getOutPort("copy"));
+//		rlVotes.addInPort("value", valuePort);
+//		addModule(rlVotes);
+//		votesPorts.add(rlVotes.getOutPort("votes"));
 		
 		// Exploration votes
 		DecayingExplorationSchema decayExpl = new DecayingExplorationSchema("Decay Explorer", subject, lRobot,
@@ -164,20 +179,24 @@ public class MSACTSPModel extends Model {
 		exploration = new LinkedList<DecayingExplorationSchema>();
 		exploration.add(decayExpl);
 		addModule(decayExpl);
-		votesPorts.add((Float1dPort) decayExpl.getOutPort("votes"));
+		votesPorts.add(decayExpl.getOutPort("votes"));
 		
-		// Food votes
+//		// Food votes
 		TaxicFoodManyFeedersManyActionsNotLast taxicff = new TaxicFoodManyFeedersManyActionsNotLast(
-				"Taxic Food Finder", subject, lRobot, foodReward,
+				"Taxic Food Finder", subject, lRobot, feederReward,
 				nonFoodReward, taxicDiscountFactor);
-		taxicff.addInPort("lastFeeder", lastAteFeeder.getOutPort("lastAteFeeder"),true);
+		taxicff.addInPort("lastAteFeeder", lastAteFeeder.getOutPort("lastAteFeeder"),true);
 		addModule(taxicff);
-		votesPorts.add((Float1dPort) taxicff.getOutPort("votes"));
+		votesPorts.add(taxicff.getOutPort("votes"));
 
 		// Joint votes
 		Float1dSumModule jointVotes = new Float1dSumModule("Votes");
 		jointVotes.addInPorts(votesPorts);
 		addModule(jointVotes);
+		
+		/*******************************************************************/
+		/************************* ACTION PERF *****************************/
+		/*******************************************************************/
 
 		NoExploration actionPerformer = new NoExploration("Action Performer", subject);
 		actionPerformer.addInPort("votes", jointVotes.getOutPort("jointState"));
@@ -196,19 +215,28 @@ public class MSACTSPModel extends Model {
 		
 		Port takenActionPort = actionPerformer.getOutPort("takenAction");
 		
+		/*******************************************************************/
+		/************************* VALUE ***********************************/
+		/*******************************************************************/
+		// Ports to make summation
+		List<Port> valueBeforePorts = new LinkedList<Port>();
+		List<Port> valueAfterPorts = new LinkedList<Port>();
+		
 		TaxicValueSchema taxVal = new TaxicValueSchema("Taxic Value Estimator",
 				subject, lRobot, nonFoodReward, nonFoodReward,
 				taxicDiscountFactor, true);
-		taxVal.addInPort("goalFeeder",
+		taxVal.addInPort("lastAteFeeder",
 				lastAteFeeder.getOutPort("lastAteFeeder"));
 		taxVal.addInPort("takenAction", takenActionPort); // just for dependency
 		addModule(taxVal);
+		valueAfterPorts.add(taxVal.getOutPort("value"));
 		
 		Float1dCopyModule taxicValueCopy = new Float1dCopyModule(
 				"Taxic Value Estimation Before");
 		taxicValueCopy.addInPort("toCopy",
 				(Float1dPort) taxVal.getOutPort("value"), true);
 		addModule(taxicValueCopy);
+		valueBeforePorts.add(taxicValueCopy.getOutPort("copy"));
 		
 		// Value estimation
 		GradientValue rlValue = new GradientValue("RL value estimation", numActions,
@@ -218,15 +246,30 @@ public class MSACTSPModel extends Model {
 		rlValue.addInPort("value", valuePort);
 		rlValue.addInPort("takenAction", takenActionPort);
 		addModule(rlValue);
+		valueAfterPorts.add(rlValue.getOutPort("valueEst"));
 		
 		Float1dCopyModule rlValueCopy = new Float1dCopyModule(
 				"RL Value Estimation Before");
 		rlValueCopy.addInPort("toCopy",
 				(Float1dPort) rlValue.getOutPort("valueEst"), true);
 		addModule(rlValueCopy);
+		valueBeforePorts.add(rlValueCopy.getOutPort("copy"));
 		
+		Float1dSumModule sumValueBefore = new Float1dSumModule(
+				"Joint value estimation Before");
+		sumValueBefore.addInPorts(valueBeforePorts);
+		addModule(sumValueBefore);
+		
+		Float1dSumModule sumValueAfter = new Float1dSumModule(
+				"Joint value estimation after");
+		sumValueAfter.addInPorts(valueAfterPorts);
+		addModule(sumValueAfter);
+		
+		/*******************************************************************/
+		/**************************** RL ***********************************/
+		/*******************************************************************/
 		Reward reward = new Reward("Reward", foodReward, nonFoodReward);
-		reward.addInPort("subAte", subAte.getOutPort("subAte"));
+		reward.addInPort("rewardingEvent", subAte.getOutPort("subAte"));
 		addModule(reward);
 	
 		// Actor Critic setup
@@ -241,9 +284,9 @@ public class MSACTSPModel extends Model {
 				jointPCLActivation.getOutPort("jointState"));
 		mspac.addInPort("value", valuePort);
 		mspac.addInPort("rlValueEstimationAfter",
-				rlValue.getOutPort("valueEst"));
+				sumValueAfter.getOutPort("jointState"));
 		mspac.addInPort("rlValueEstimationBefore",
-				getModule("RL Value Estimation Before").getOutPort("copy"));
+				sumValueBefore.getOutPort("jointState"));
 		addModule(mspac);
 	}
 

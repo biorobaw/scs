@@ -60,17 +60,17 @@ public class DecayingExplorationSchema extends Module {
 
 		if (!performableAffs.isEmpty()) {
 			Affordance pickedAffordance = null;
-			if (containsEat(performableAffs))
+			if (containsEat(performableAffs) && robot.getClosestFeeder().hasFood())
 				pickedAffordance = getEat(performableAffs);
 			else {
 				// If last was forward we can turn or forward
-				if (lastPicked == null || lastPicked instanceof ForwardAffordance)
+				if (lastPicked == null || !(lastPicked instanceof TurnAffordance))
 					if (containsForward(performableAffs) && r.nextFloat() < FORWARD_BIAS)
 						pickedAffordance = getForward(performableAffs);
 					else
 						pickedAffordance = performableAffs.get(r.nextInt(performableAffs.size()));
 				// But if last was turn, we have to forward or keep turning that way
-				else if (lastPicked instanceof TurnAffordance)
+				else 
 					do {
 						if (containsForward(performableAffs) && r.nextFloat() < FORWARD_BIAS)
 							pickedAffordance = getForward(performableAffs);
@@ -80,8 +80,7 @@ public class DecayingExplorationSchema extends Module {
 							((TurnAffordance)pickedAffordance).getAngle() != ((TurnAffordance)lastPicked).getAngle() );
 			}
 			
-			
-			votes[pickedAffordance.getIndex()] = (float) explorationValue;
+			votes[affs.indexOf(pickedAffordance)] = (float) explorationValue;
 
 			lastPicked = pickedAffordance;
 		}

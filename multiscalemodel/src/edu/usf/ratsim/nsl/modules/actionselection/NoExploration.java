@@ -69,8 +69,6 @@ public class NoExploration extends Module {
 		List<Affordance> aff = robot.checkAffordances(sub.getPossibleAffordances());
 
 		List<Affordance> possible = new LinkedList<Affordance>();
-		float totalPossible = 0f;
-		float minVal = 0;
 		for (int action = 0; action < aff.size(); action++) {
 			aff.get(action).setValue(votes.get(action));
 			if (aff.get(action).isRealizable() && votes.get(action) > 0) {
@@ -79,9 +77,6 @@ public class NoExploration extends Module {
 						|| !(aff.get(action) instanceof TurnAffordance)
 						|| ((TurnAffordance) lastAction).getAngle() == ((TurnAffordance) aff.get(action)).getAngle()) {
 					possible.add(aff.get(action));
-					totalPossible += votes.get(action);
-					if (votes.get(action) < minVal)
-						minVal = votes.get(action);
 				}
 			}
 
