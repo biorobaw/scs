@@ -1,24 +1,23 @@
 package edu.usf.ratsim.nsl.modules.goaldecider;
 
-import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 public class LastTriedToEatGoalDecider extends Module {
 
-	public int[] goalFeeder;
+	public Int0dPort goalFeeder;
 
 	public LastTriedToEatGoalDecider(String name) {
 		super(name);
+		
+		goalFeeder = new Int0dPort(this);
 
-		goalFeeder = new int[2];
-		addOutPort("goalFeeder", new Int1dPortArray(this, goalFeeder));
+		addOutPort("goalFeeder", goalFeeder);
 
-		goalFeeder[0] = -1;
-		goalFeeder[1] = -1;
+		// Initially in 0 - no last feeder eaten
+		goalFeeder.set(0);
 	}
 
 	public void run() {
@@ -26,23 +25,14 @@ public class LastTriedToEatGoalDecider extends Module {
 		Int0dPort closestFeeder = (Int0dPort) getInPort("closestFeeder");
 		
 		if (subTriedToEat.get()) {
-//			goalFeeder[1] = goalFeeder[0];
-//			goalFeeder[0] = closestFeeder.get();
-			int newGoal;
-			do{
-				newGoal = RandomSingleton.getInstance().nextInt(3);
-			} while (newGoal == goalFeeder[0]);
-			goalFeeder[0] = newGoal;
+			int newGoal = closestFeeder.get();
+			goalFeeder.set(newGoal);
 		}
-
-		if (Debug.printActiveGoal)
-			System.out.println("LastTriedToEat GD: " + goalFeeder[0] + " "
-					+ goalFeeder[1]);
 	}
 
 	public void newTrial() {
-		goalFeeder[0] = -1;
-		goalFeeder[1] = -1;
+		// Initially in 0 - no last feeder eaten
+		goalFeeder.set(0);
 	}
 
 	@Override

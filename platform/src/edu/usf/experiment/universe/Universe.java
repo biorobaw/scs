@@ -208,7 +208,7 @@ public abstract class Universe {
 
 		Point3f robotPos = getRobotPosition();
 		for (Feeder f : feeders.values()) {
-			if (robotPos.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS)
+			if (robotPos.distance(f.getPosition()) <= CLOSE_TO_FOOD_THRS)
 				if (f.hasFood())
 					feedingFeeder = f.getId();
 		}
@@ -425,6 +425,11 @@ public abstract class Universe {
 
 	public float shortestDistanceToRobot(LineSegment wall) {
 		return (float) wall.distance(new Coordinate(getRobotPosition().x, getRobotPosition().y));
+		
+	}
+	
+	public void addFeeder(Feeder f) {
+		feeders.put(f.getId(), f);
 	}
 
 }

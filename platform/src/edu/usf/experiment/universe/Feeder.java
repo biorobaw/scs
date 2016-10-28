@@ -83,4 +83,8 @@ public class Feeder {
 	public void setPosition(Point3f relFPos) {
 		this.position = new Point3f(relFPos);
 	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 }

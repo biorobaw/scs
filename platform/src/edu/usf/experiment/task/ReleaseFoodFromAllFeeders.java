@@ -7,9 +7,17 @@ import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
 /**
+<<<<<<< HEAD
  * Task to activate all enabled feeders
  * @author ludo
  *
+=======
+ * Task to release food from all active feeders, regardless of whether the robot
+ * is close or not
+ * 
+ * @author ludo
+ * 
+>>>>>>> KnownIdTSP
  */
 public class ReleaseFoodFromAllFeeders extends Task {
 
@@ -32,7 +40,7 @@ public class ReleaseFoodFromAllFeeders extends Task {
 		perform(episode.getUniverse());
 	}
 	
-	private void perform(Universe u){
+	private void perform(Universe u) {
 		for (Integer f : u.getEnabledFeeders())
 			u.releaseFood(f);
 	}
