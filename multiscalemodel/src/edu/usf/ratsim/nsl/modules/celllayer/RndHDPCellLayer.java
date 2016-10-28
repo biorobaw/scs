@@ -148,10 +148,10 @@ public class RndHDPCellLayer extends Module {
 			directionRadius = (float) Math.exp(s / k + Math.log(minDirectionRadius));
 			
 
-//			if (placeCellType.equals("ExponentialHDPC") && placeRadius < .1f) {
+			if (placeCellType.equals("ExponentialHDPC") && placeRadius < .1f) {
 				cells.add(new ExponentialHDPC(prefLocation, preferredDirection, placeRadius, directionRadius));
-//			} else if (placeCellType.equals("ExponentialHDPC"))
-//				cells.add(new ExponentialPlaceCell(prefLocation, placeRadius));
+			} else if (placeCellType.equals("ExponentialHDPC"))
+				cells.add(new ExponentialHDPC(prefLocation, preferredDirection, placeRadius, .39f));
 
 			i++;
 		} while (i < numCells);

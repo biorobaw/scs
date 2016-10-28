@@ -25,6 +25,7 @@ import edu.usf.ratsim.nsl.modules.actionselection.DecayingExplorationSchema;
 import edu.usf.ratsim.nsl.modules.actionselection.GradientValue;
 import edu.usf.ratsim.nsl.modules.actionselection.GradientVotes;
 import edu.usf.ratsim.nsl.modules.actionselection.NoExploration;
+import edu.usf.ratsim.nsl.modules.actionselection.ValueHillClimber;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicFoodManyFeedersManyActionsNotLast;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicValueSchema;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
@@ -190,6 +191,7 @@ public class MSACTSPModel extends Model {
 		rlVotes.addInPort("value", valuePort);
 		addModule(rlVotes);
 		votesPorts.add(rlVotes.getOutPort("votes"));
+	
 		
 		// Exploration votes
 		DecayingExplorationSchema decayExpl = new DecayingExplorationSchema("Decay Explorer", subject, lRobot,

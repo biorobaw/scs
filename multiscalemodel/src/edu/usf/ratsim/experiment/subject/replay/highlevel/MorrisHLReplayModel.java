@@ -25,6 +25,7 @@ import edu.usf.ratsim.nsl.modules.actionselection.DecayingExplorationSchema;
 import edu.usf.ratsim.nsl.modules.actionselection.GradientValue;
 import edu.usf.ratsim.nsl.modules.actionselection.GradientVotes;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalExplorer;
+import edu.usf.ratsim.nsl.modules.actionselection.ValueHillClimber;
 import edu.usf.ratsim.nsl.modules.actionselection.Voter;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 import edu.usf.ratsim.nsl.modules.celllayer.RndHDPCellLayer;
@@ -86,12 +87,12 @@ public class MorrisHLReplayModel extends Model {
 		 * Learning rate
 		 */
 		float alpha = params.getChildFloat("alpha");
-		
+
 		/**
 		 * Number of replay episodes
 		 */
 		int numReplay = params.getChildInt("numReplay");
-		
+
 		/**
 		 * Reward given upon eating
 		 */
@@ -110,6 +111,10 @@ public class MorrisHLReplayModel extends Model {
 		 * Half life parameter for the decaying exploration
 		 */
 		float explorationHalfLifeVal = params.getChildFloat("explorationHalfLifeVal");
+
+		valueConnProbs = params.getChildFloatList("valueConnProbs");
+		float valueNormalizer = params.getChildFloat("valueNormalizer");
+
 		/**
 		 * Bounding box for place cell locations
 		 */
@@ -165,6 +170,13 @@ public class MorrisHLReplayModel extends Model {
 		addModule(rlVotes);
 		votesPorts.add((Float1dPort) rlVotes.getOutPort("votes"));
 
+		Module valueHillClimber = new ValueHillClimber("Hill Climber", conjCellLayers, valueConnProbs,
+				numCCCellsPerLayer, numActions, nonFoodReward, lRobot);
+		valueHillClimber.addInPort("states", stateCopy.getOutPort("copy"));
+		valueHillClimber.addInPort("value", valuePort);
+		addModule(valueHillClimber);
+		votesPorts.add((Float1dPort) rlVotes.getOutPort("votes"));
+
 		// Exploration module
 		DecayingExplorationSchema decayExpl = new DecayingExplorationSchema("Decay Explorer", subject, lRobot,
 				explorationReward, explorationHalfLifeVal);
@@ -195,8 +207,7 @@ public class MorrisHLReplayModel extends Model {
 		// else if (voteType.equals("proportional"))
 		// rlValue = new ProportionalValue("RL estimation", numActions);
 		// else if (voteType.equals("gradient")) {
-		valueConnProbs = params.getChildFloatList("valueConnProbs");
-		float valueNormalizer = params.getChildFloat("valueNormalizer");
+
 		rlValue = new GradientValue("RL value estimation", numActions, valueConnProbs, numCCCellsPerLayer,
 				valueNormalizer, foodReward);
 		// } else
