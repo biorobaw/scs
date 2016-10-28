@@ -1,4 +1,4 @@
-package edu.usf.ratsim.experiment.subject.morris;
+package edu.usf.ratsim.experiment.subject.morris.multiscale;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -16,15 +16,15 @@ import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 
-public class MorrisSubject extends Subject {
+public class ActorCriticSubject extends Subject {
 
 	private float step;
 	private float leftAngle;
 	private float rightAngle;
 	
-	private MorrisModel model;
+	private ActorCriticModel model;
 
-	public MorrisSubject(String name, String group,
+	public ActorCriticSubject(String name, String group,
 			ElementWrapper params, Robot robot) {
 		super(name, group, params, robot);
 		
@@ -37,7 +37,7 @@ public class MorrisSubject extends Subject {
 					+ "needs a Localizable Robot");
 		LocalizableRobot lRobot = (LocalizableRobot) robot;
 
-		model = new MorrisModel(params, this, lRobot);
+		model = new ActorCriticModel(params, this, lRobot);
 	}
 
 	@Override
@@ -128,6 +128,18 @@ public class MorrisSubject extends Subject {
 	@Override
 	public void reactivateHPCLayers(LinkedList<Integer> indexList) {
 		model.reactivatePCL(indexList);
+	}
+
+	@Override
+	public void endEpisode() {
+//		for (int i = 0; i < 10; i++)
+//			model.replay();
+		model.clearPath();
+	}
+
+	@Override
+	public Map<Point3f, Float> getValuePoints() {
+		return model.getValuePoints();
 	}
 
 	@Override

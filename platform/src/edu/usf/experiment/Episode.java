@@ -153,6 +153,8 @@ public class Episode {
 		}
 
 		System.out.println();
+		
+		getSubject().endEpisode();
 
 		
 		// Finalize loggers

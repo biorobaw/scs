@@ -10,6 +10,7 @@ import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.Debug;
+import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
@@ -35,6 +36,7 @@ public class NoExploration extends Module {
 	 * The output port describing the action taken by the module
 	 */
 	private Int0dPort takenAction;
+	private Affordance lastAction;
 
 	/**
 	 * Create the module
@@ -52,6 +54,8 @@ public class NoExploration extends Module {
 
 		robot = sub.getRobot();
 
+		lastAction = null;
+
 		this.sub = sub;
 	}
 
@@ -64,50 +68,72 @@ public class NoExploration extends Module {
 		Affordance selectedAction;
 		List<Affordance> aff = robot.checkAffordances(sub.getPossibleAffordances());
 
+		List<Affordance> possible = new LinkedList<Affordance>();
+		float totalPossible = 0f;
+		float minVal = 0;
 		for (int action = 0; action < aff.size(); action++) {
 			aff.get(action).setValue(votes.get(action));
-			if (votes.get(action) >= 1500)
-				aff.get(action).setOverride(true);
+			if (aff.get(action).isRealizable() && votes.get(action) > 0) {
+				// Dont do different turns consecutively
+				if (lastAction == null || !(lastAction instanceof TurnAffordance)
+						|| !(aff.get(action) instanceof TurnAffordance)
+						|| ((TurnAffordance) lastAction).getAngle() == ((TurnAffordance) aff.get(action)).getAngle()) {
+					possible.add(aff.get(action));
+					totalPossible += votes.get(action);
+					if (votes.get(action) < minVal)
+						minVal = votes.get(action);
+				}
+			}
+
 			if (Debug.printSelectedValues)
 				System.out.println("votes for aff " + action + ": " + votes.get(action));
 		}
 
-		// Select best action
-		List<Affordance> sortedAff = new LinkedList<Affordance>(aff);
-		Collections.sort(sortedAff);
-//		
+		if (!possible.isEmpty()) {
 
-		// Only execute realizable actions unless rotation (rotations are always
-		// truly realizable and still explorer might vote for "non-realizable"
-		// rotations
-//		int i = sortedAff.size() - 1;
-//		while (i > 0 && !(sortedAff.get(i) instanceof TurnAffordance || sortedAff.get(i).isRealizable()))
-//			i--;
-//		if (i >= 0){
-//			takenAction.set(aff.indexOf(sortedAff.get(i)));
-//			if (Debug.printSelectedValues)
-//				System.out.println(sortedAff.get(i).toString());
-//
-//			robot.executeAffordance(sortedAff.get(i), sub);
-//		} else {
-//			System.err.println("No realizable affordances, skiping execution");
-//		}
-			
-			
-			
-			
-			
-			
-		selectedAction = sortedAff.get(aff.size() - 1);	
-		if (selectedAction.isOverride() || selectedAction.isRealizable()) {
-			takenAction.set(aff.indexOf(selectedAction));
-			if (Debug.printSelectedValues)
-				System.out.println(selectedAction.toString());
+			Collections.sort(possible);
 
-			robot.executeAffordance(selectedAction, sub);
+			selectedAction = possible.get(possible.size()-1);
+
+			List<Affordance> fwd = new LinkedList<Affordance>();
+			fwd.add(sub.getForwardAffordance());
+			if (selectedAction instanceof TurnAffordance) {
+				do {
+					robot.executeAffordance(selectedAction, sub);
+					robot.checkAffordances(fwd);
+				} while (!fwd.get(0).isRealizable());
+				// robot.executeAffordance(new ForwardAffordance(.05f), sub);
+			} else {
+				robot.executeAffordance(selectedAction, sub);
+			}
 		} else {
-			System.err.println("No realizable affordances, skiping execution");
+			List<Affordance> fwd = new LinkedList<Affordance>();
+			fwd.add(sub.getForwardAffordance());
+			robot.checkAffordances(fwd);
+			if (fwd.get(0).isRealizable())
+				selectedAction = fwd.get(0);
+			else if (RandomSingleton.getInstance().nextBoolean())
+				selectedAction = sub.getLeftAffordance();
+			else
+				selectedAction = sub.getRightAffordance();
+			robot.executeAffordance(selectedAction, sub);
+
 		}
+
+		takenAction.set(aff.indexOf(selectedAction));
+		if (Debug.printSelectedValues)
+			System.out.println(selectedAction.toString());
+
+		// Select best action
+		// List<Affordance> sortedAff = new LinkedList<Affordance>(aff);
+		// Collections.sort(sortedAff);
+		// selectedAction = sortedAff.get(aff.size() - 1);
+
+		// Publish the taken action
+		// if (selectedAction.getValue() > 0) {
+
+		lastAction = selectedAction;
+
 		// } else {
 		// takenAction.set(-1);
 		// }

@@ -189,4 +189,5 @@ public abstract class Module extends DependencyRunnable {
 	public List<Port> getInPorts() {
 		return inPortsList;
 	}
+
 }

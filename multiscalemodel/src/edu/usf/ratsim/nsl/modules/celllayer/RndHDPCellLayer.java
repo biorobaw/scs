@@ -11,14 +11,10 @@ import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
-import edu.usf.ratsim.nsl.modules.cell.ExponentialConjCell;
-import edu.usf.ratsim.nsl.modules.cell.ExponentialHDCell;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialHDPC;
-import edu.usf.ratsim.nsl.modules.cell.ExponentialWallConjCell;
-import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
+import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceCell;
 
 public class RndHDPCellLayer extends Module {
 
@@ -152,9 +148,10 @@ public class RndHDPCellLayer extends Module {
 			directionRadius = (float) Math.exp(s / k + Math.log(minDirectionRadius));
 			
 
-			if (placeCellType.equals("ExponentialHDPC")) {
+//			if (placeCellType.equals("ExponentialHDPC") && placeRadius < .1f) {
 				cells.add(new ExponentialHDPC(prefLocation, preferredDirection, placeRadius, directionRadius));
-			} 
+//			} else if (placeCellType.equals("ExponentialHDPC"))
+//				cells.add(new ExponentialPlaceCell(prefLocation, placeRadius));
 
 			i++;
 		} while (i < numCells);
