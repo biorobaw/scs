@@ -7,7 +7,6 @@ require(dunn.test, quietly = TRUE)
 
 plotArrival <- function(pathData, plotName){
   #pathData <- pathData[pathData$runtime < 10000,]
-  #  pathData$runtime <- pathData$runtime / stepsPerSec
   summarizedRunTimes <- ddply(pathData, .(group, repetition), summarise, sdRT = sd(runtime)/sqrt(length(runtime)), mRT = mean(runtime))
   #   print(head(summarizedRunTimes))
   summarizedRunTimes <- ddply(summarizedRunTimes, .(group), summarise, repetition=repetition, mRT=mRT, sdRT=sdRT, runmedian = runmed(mRT, 31))

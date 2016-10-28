@@ -55,8 +55,8 @@ public class FlashingOrAnyGoalDecider extends Module {
 		// TODO: why do we need the second term?
 		if (subject.hasEaten() || subject.hasTriedToEat()) {
 			lastFeeder = currentGoal;
-			Feeder newFeeder = subject.getRobot().getClosestFeeder(lastFeeder);
-			if (newFeeder == null)
+			Feeder newFeeder = subject.getRobot().getClosestFeeder();
+			if (!subject.getRobot().isFeederClose() || newFeeder.getId() == lastFeeder)
 				currentGoal = -1;
 			else
 				currentGoal = newFeeder.getId();

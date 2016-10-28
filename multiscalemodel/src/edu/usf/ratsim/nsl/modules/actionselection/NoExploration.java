@@ -38,8 +38,11 @@ public class NoExploration extends Module {
 
 	/**
 	 * Create the module
-	 * @param name The module's name
-	 * @param sub The subject to use
+	 * 
+	 * @param name
+	 *            The module's name
+	 * @param sub
+	 *            The subject to use
 	 */
 	public NoExploration(String name, Subject sub) {
 		super(name);
@@ -59,41 +62,52 @@ public class NoExploration extends Module {
 		Float1dPort votes = (Float1dPort) getInPort("votes");
 
 		Affordance selectedAction;
-		List<Affordance> aff = robot.checkAffordances(sub
-				.getPossibleAffordances());
+		List<Affordance> aff = robot.checkAffordances(sub.getPossibleAffordances());
 
 		for (int action = 0; action < aff.size(); action++) {
 			aff.get(action).setValue(votes.get(action));
+			if (votes.get(action) >= 1500)
+				aff.get(action).setOverride(true);
 			if (Debug.printSelectedValues)
-				System.out.println("votes for aff " + action + ": "
-						+ votes.get(action));
+				System.out.println("votes for aff " + action + ": " + votes.get(action));
 		}
 
 		// Select best action
 		List<Affordance> sortedAff = new LinkedList<Affordance>(aff);
 		Collections.sort(sortedAff);
-		selectedAction = sortedAff.get(aff.size() - 1);
+//		
 
-		// Publish the taken action
-		// if (selectedAction.getValue() > 0) {
-		takenAction.set(aff.indexOf(selectedAction));
-		if (Debug.printSelectedValues)
-			System.out.println(selectedAction.toString());
-
-		
-		
-		List<Affordance> fwd = new LinkedList<Affordance>();
-		fwd.add(new ForwardAffordance(10));
-		if (selectedAction instanceof TurnAffordance){
-			do {
-				robot.executeAffordance(selectedAction, sub);
-				robot.checkAffordances(fwd);
-			} while (!fwd.get(0).isRealizable());
+		// Only execute realizable actions unless rotation (rotations are always
+		// truly realizable and still explorer might vote for "non-realizable"
+		// rotations
+//		int i = sortedAff.size() - 1;
+//		while (i > 0 && !(sortedAff.get(i) instanceof TurnAffordance || sortedAff.get(i).isRealizable()))
+//			i--;
+//		if (i >= 0){
+//			takenAction.set(aff.indexOf(sortedAff.get(i)));
+//			if (Debug.printSelectedValues)
+//				System.out.println(sortedAff.get(i).toString());
+//
+//			robot.executeAffordance(sortedAff.get(i), sub);
+//		} else {
+//			System.err.println("No realizable affordances, skiping execution");
+//		}
 			
-		} else {
+			
+			
+			
+			
+			
+		selectedAction = sortedAff.get(aff.size() - 1);	
+		if (selectedAction.isOverride() || selectedAction.isRealizable()) {
+			takenAction.set(aff.indexOf(selectedAction));
+			if (Debug.printSelectedValues)
+				System.out.println(selectedAction.toString());
+
 			robot.executeAffordance(selectedAction, sub);
+		} else {
+			System.err.println("No realizable affordances, skiping execution");
 		}
-			
 		// } else {
 		// takenAction.set(-1);
 		// }

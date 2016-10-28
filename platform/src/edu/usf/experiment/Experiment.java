@@ -38,6 +38,8 @@ public class Experiment implements Runnable {
 	private List<Task> afterTasks;
 	private Universe universe;
 	private Subject subject;
+	private boolean makePlots;
+	private Robot robot;
 
 	protected Experiment(){
 		
@@ -103,8 +105,14 @@ public class Experiment implements Runnable {
 
 		universe = UniverseLoader.getInstance().load(root, logPath);
 
-		Robot robot = RobotLoader.getInstance().load(root);
-
+		robot = RobotLoader.getInstance().load(root, universe);
+		robot.startRobot();
+		
+		if (root.getChild("plot") != null)
+			makePlots = root.getChildBoolean("plot");
+		else
+			makePlots = true;
+		
 		long seed;
 		if (root.getChildText("seed") != null) {
 			seed = root.getChildLong("seed");
@@ -127,7 +135,7 @@ public class Experiment implements Runnable {
 
 		// Load trials that apply to the subject
 		trials = XMLExperimentParser.loadTrials(root, logPath, subject,
-				universe);
+				universe, makePlots);
 
 		// Load tasks and plotters
 		ElementWrapper params = root;
@@ -141,7 +149,7 @@ public class Experiment implements Runnable {
 	 * Runs the experiment for the especified subject. Just goes over trials and
 	 * runs them all. It also executes tasks and plotters.
 	 */
-	public void run() {
+	public void run() {		
 		// Do all before trial tasks
 		for (Task task : beforeTasks)
 			task.perform(this);
@@ -153,6 +161,9 @@ public class Experiment implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		
+		//robot.startRobot();
+		
 		// Run each trial in order
 		for (Trial t : trials)
 			t.run();

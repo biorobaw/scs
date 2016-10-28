@@ -1,7 +1,12 @@
+untitled.sublime*
 *.RData
+<<<<<<< HEAD
 morseout.txt
 *__pycache__*
 *.pyc
+=======
+out
+>>>>>>> proposalexperiments
 *~
 javadocs/*
 InterLabFunctionality/*

@@ -7,6 +7,7 @@ import javax.vecmath.Point3f;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
 /**
@@ -20,6 +21,10 @@ import edu.usf.experiment.utils.ElementWrapper;
 public abstract class Robot {
 	
 	public Robot(ElementWrapper params){
+		
+	}
+	
+	public Robot(ElementWrapper params, Universe u){
 		
 	}
 	
@@ -55,20 +60,22 @@ public abstract class Robot {
 	 */
 	public abstract void rotate(float degrees);
 
-	/**
-	 * Get a list of all visible landmarks
-	 * @return
-	 */
-	public abstract List<Landmark> getLandmarks();
-
 	public abstract Feeder getFlashingFeeder();
 
 	public abstract boolean seesFlashingFeeder();
 
-	public abstract Feeder getClosestFeeder(int lastFeeder);
-	
 	public Feeder getClosestFeeder(){
-		return getClosestFeeder(-1);
+		List<Feeder> feeders = getVisibleFeeders(null);
+		float minDist = Float.MAX_VALUE;
+		Feeder closest = null;
+		for (Feeder f : feeders){
+			float dist = f.getPosition().distance(new Point3f());
+			if (dist < minDist){
+				closest = f;
+				minDist = dist;
+			}
+		}
+		return closest;	
 	}
 
 	public abstract boolean isFeederClose();
@@ -103,6 +110,12 @@ public abstract class Robot {
 	public abstract int getLastAteFeeder();
 
 	public abstract int getLastTriedToEatFeeder() ;
-	
 	public abstract boolean hasFoundPlatform();
+
+	/**
+	 * Move the robot in a continous fashion, as opposed to step motions
+	 * @param lVel Linear velocity, positive values produce forward motions
+	 * @param angVel Angular velocity, positive values mean left rotations
+	 */
+	public abstract void moveContinous(float lVel, float angVel);
 }

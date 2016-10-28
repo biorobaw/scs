@@ -55,12 +55,12 @@ public class PlaceRobotInitally extends Task{
 
 	@Override
 	public void perform(Experiment experiment) {
-		
+		perform(experiment.getUniverse());
 	}
 
 	@Override
 	public void perform(Trial trial) {
-		
+		perform(trial.getUniverse());
 	}
 
 	@Override

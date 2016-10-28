@@ -16,9 +16,10 @@ public class GradientValue extends Module implements Voter {
 	public float[] valueEst;
 	private int numActions;
 	private boolean[] connected;
+	private float foodReward;
 
 	public GradientValue(String name, int numActions, List<Float> connProbs,
-			List<Integer> statesPerLayer, float normalizer) {
+			List<Integer> statesPerLayer, float normalizer, float foodReward) {
 		super(name);
 
 		valueEst = new float[1];
@@ -43,6 +44,7 @@ public class GradientValue extends Module implements Voter {
 		}
 		
 		this.normalizer = normalizer;
+		this.foodReward = foodReward;
 	}
 
 	public void run() {
@@ -70,6 +72,8 @@ public class GradientValue extends Module implements Voter {
 
 		// Normalize
 		valueEst[0] = (float) (valueEst[0] / normalizer);
+		if (valueEst[0] > foodReward)
+			valueEst[0] = foodReward;
 		
 		if (Float.isInfinite(valueEst[0]) || Float.isNaN(valueEst[0])) {
 			System.out.println("Numeric Error in Gradient value");
