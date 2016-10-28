@@ -20,9 +20,9 @@
 		<name>edu.usf.ratsim.robot.virtual.VirtualRobot</name>
 		<params>
 			<!-- Percentual translational noise -->
-			<noise>.05</noise>
+			<noise>.00</noise>
 			<!-- Rotation noise added after translation -->
-			<translationRotationNoise>.05</translationRotationNoise>
+			<translationRotationNoise>.00</translationRotationNoise>
 			<!-- How many steps are projected for obstacle avoidance purpose -->
 			<lookaheadSteps>1</lookaheadSteps>
 			<!-- Half the field of view of the rat -->
@@ -310,6 +310,7 @@
 				<logger>
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
+
 					</params>
 				</logger> 
 			</afterEpisodeLoggers>

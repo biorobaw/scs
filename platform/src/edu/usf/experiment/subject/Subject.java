@@ -133,4 +133,8 @@ public abstract class Subject {
 	public abstract Affordance getLeftAffordance();
 	
 	public abstract Affordance getRightAffordance();
+
+	public Map<Point3f, Float> getValuePoints(int intention) {
+		throw new NotImplementedException();
+	}
 }

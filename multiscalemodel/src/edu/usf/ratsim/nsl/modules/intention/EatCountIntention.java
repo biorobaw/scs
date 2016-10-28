@@ -57,4 +57,8 @@ public class EatCountIntention extends Module implements Intention {
 		return false;
 	}
 
+	public void reset() {
+		ate = 0;
+	}
+
 }

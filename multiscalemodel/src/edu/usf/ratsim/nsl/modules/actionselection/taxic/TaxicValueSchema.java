@@ -57,10 +57,17 @@ public class TaxicValueSchema extends Module {
 		// Get the value of the current position
 		else if (estimateValue) {
 			value[0] = Float.NEGATIVE_INFINITY;
+			float feederValue;
 			for (Feeder f : robot.getVisibleFeeders(except)) {
-//				if (robot.isFeederClose()
-//						&& robot.getClosestFeeder().getId() == f.getId())
-				float feederValue = getFeederValue(f.getPosition());
+				if (robot.isFeederClose())
+					if (robot.getClosestFeeder().hasFood()){
+						feederValue = reward;
+					} else {
+						feederValue = 0;
+					}
+				else {
+					feederValue = getFeederValue(f.getPosition());
+				}
 				if (feederValue > value[0])
 					value[0] = feederValue;
 					

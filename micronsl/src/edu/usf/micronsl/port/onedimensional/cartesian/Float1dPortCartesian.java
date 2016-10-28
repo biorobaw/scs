@@ -149,7 +149,7 @@ public class Float1dPortCartesian extends Float1dPort {
 		}
 
 		if (Float.isNaN(jointActivation))
-			System.out.println("Numeric Error");
+			System.out.println("Numeric Error in " + getOwner().getName() );
 
 		return jointActivation;
 	}
@@ -192,7 +192,7 @@ public class Float1dPortCartesian extends Float1dPort {
 
 			currVal *= sources.get(listNum).get(index);
 			if (Float.isNaN(currVal)) {
-				System.out.println("Numeric Error");
+				System.out.println("Numeric Error in " + getOwner().getName() );
 				System.exit(1);
 			}
 			if (optimize && currVal <= eps) {

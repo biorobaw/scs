@@ -280,7 +280,7 @@ public class VirtualRobot extends LocalizableRobot {
 						* lookaheadSteps);
 			else if (af instanceof EatAffordance) {
 				// realizable = hasRobotFoundFood();
-				if (getClosestFeeder() != null)
+				if (getClosestFeeder() != null && getClosestFeeder().hasFood())
 					realizable = getClosestFeeder().getPosition().distance(
 							new Point3f()) < closeThrs;
 				else

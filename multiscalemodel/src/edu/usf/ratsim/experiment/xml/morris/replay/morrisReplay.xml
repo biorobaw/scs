@@ -2,7 +2,7 @@
 	
 <experiment>
 	
-<!--	<seed>23423423</seed-->
+	<seed>-2804674614977644818</seed>
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
@@ -20,9 +20,9 @@
 		<name>edu.usf.ratsim.robot.virtual.VirtualRobot</name>
 		<params>
 			<!-- Percentual translational noise -->
-			<noise>.2</noise>
+			<noise>.00</noise>
 			<!-- Rotation noise added after translation -->
-			<translationRotationNoise>.195</translationRotationNoise>
+			<translationRotationNoise>0</translationRotationNoise>
 			<!-- How many steps are projected for obstacle avoidance purpose -->
 			<lookaheadSteps>1</lookaheadSteps>
 			<!-- Half the field of view of the rat -->
@@ -81,7 +81,7 @@
 			<!-- Reward value for food -->
 			<foodReward>1000</foodReward>
 			<!-- Reward value given when it doesnt eat -->
-			<nonFoodReward>-10</nonFoodReward>
+			<nonFoodReward>-1</nonFoodReward>
 			<!-- Lambda discount factor for the taxic module-->
 			<taxicDiscountFactor>1</taxicDiscountFactor>
 			<!-- Lambda discount factor for the learning algorithm -->
@@ -89,7 +89,7 @@
 			<!-- Alpha for the learning algorithm -->
 			<alpha>.5</alpha>
 			<!-- Number of replay events after reward -->
-			<numReplay>100</numReplay>
+			<numReplay>10000</numReplay>
 			<!-- Cell contribution when not using normalization -->
 			<!-- TODO: take out -->
 			<cellContribution>1</cellContribution>

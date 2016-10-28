@@ -149,10 +149,11 @@ public class MultiStateACNoTraces extends Module implements QLAlgorithm {
 
 			// Update action value
 			if (ui.action != -1){
+				
 				float actionDelta = ui.reward + rlDiscountFactor * ui.valueEstAfter - ui.valueEstBefore;
 				float actionVal = value.get(state, ui.action);
 				float newActionValue = actionVal + alpha * activation * (actionDelta);
-	
+//				System.out.println("Updating action " + ui.action + " to value " + newActionValue);
 				if (Debug.printDelta)
 					System.out.println("State: " + (float) state / ui.states.size() + " V Delta: " + valueDelta
 							+ " A Delta: " + actionDelta);

@@ -54,8 +54,6 @@ public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 		Int0dPort lastAte = (Int0dPort) getInPort("lastAteFeeder");
 		int except[] = {lastAte.get()};
 		
-		System.out.println("Last ate feeder " + lastAte.get() + " and closest " + robot.getClosestFeeder());
-		
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;
 
@@ -117,8 +115,6 @@ public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 			voteIndex++;
 		}
 		
-		System.out.println("Voting taxic for " + maxIndex + " with " + maxVal);
-
 		if (maxIndex != -1)
 			votes[maxIndex] = maxVal;
 

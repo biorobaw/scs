@@ -228,7 +228,7 @@ public class MultiStateAC extends Module implements QLAlgorithm {
 			activation = stateTraces[sBefore];
 		float newValue = currValue + alpha * activation * valueDelta;
 		if (Float.isInfinite(newValue) || Float.isNaN(newValue)) {
-			System.out.println("Numeric Error");
+			System.out.println("Numeric Error in RL computation");
 			System.exit(1);
 		}
 		value.set(sBefore, numActions, newValue);

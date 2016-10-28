@@ -269,7 +269,7 @@ public class RndConjCellLayer extends Module {
 		}
 
 		if (Float.isNaN(total))
-			System.out.println("Numeric error");
+			System.out.println("Numeric error in RndConjCellLayer");
 	}
 
 	public List<ConjCell> getCells() {

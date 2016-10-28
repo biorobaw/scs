@@ -178,6 +178,7 @@ public class MultiStateACReplay extends Module implements QLAlgorithm {
 				value.set(state, ui.action, newActionValue);
 			}
 		}
+		
 	}
 	
 	public void replay(){

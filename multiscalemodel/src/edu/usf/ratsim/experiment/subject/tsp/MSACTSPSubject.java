@@ -143,5 +143,10 @@ public class MSACTSPSubject extends Subject {
 
 	}
 	
+	@Override
+	public Map<Point3f, Float> getValuePoints(int intention) {
+		return model.getValuePoints(intention);
+	}
+
 
 }

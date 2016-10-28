@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-	
+	<seed>-3732348487212825031</seed>
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
@@ -23,11 +23,11 @@
 			<!-- Rotation noise added after translation -->
 			<translationRotationNoise>0</translationRotationNoise>
 			<!-- How many steps are projected for obstacle avoidance purpose -->
-			<lookaheadSteps>1</lookaheadSteps>
+			<lookaheadSteps>3</lookaheadSteps>
 			<!-- Half the field of view of the rat -->
 			<halfFieldOfView>2.26</halfFieldOfView>
 			<!-- How long can the rat see in meters -->
-			<visionDist>.5</visionDist>
+			<visionDist>3</visionDist>
 			<!-- How far away can the robot eat food. This should be shorter than the universe
 				threshold -->
 			<closeThrs>.1</closeThrs>
@@ -49,9 +49,13 @@
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>0.0,1</valueConnProbs>
 			<!-- Minimum conjuntive layer cell radius -->
-			<minPCRadius>.0682</minPCRadius>
+			<minPCRadius>.0628</minPCRadius>
 			<!-- Maximum conjuntive layer cell radius -->
-			<maxPCRadius>.1428</maxPCRadius>
+			<maxPCRadius>.3</maxPCRadius>
+			<!-- Minimum angular radius of conjuntive cells -->
+			<minHDRadius>0.195</minHDRadius>
+			<!-- Maximum angular radius of conjuntive cells -->
+			<maxHDRadius>1.57</maxHDRadius>
 			<votesNormalizer>50</votesNormalizer>
 			<valueNormalizer>50</valueNormalizer>
 			<!-- Reward value for food -->
@@ -59,15 +63,17 @@
 			<!-- Reward value given when it doesnt eat -->
 			<nonFoodReward>-10</nonFoodReward>
 			<!-- Reward value estimated by the feeder module -->
-			<feederReward>1000</feederReward>
+			<feederReward>100</feederReward>
+			<feederNegReward>-1</feederNegReward>
 			<!-- Lambda discount factor for the learning algorithm -->
 			<rlDiscountFactor>1</rlDiscountFactor>
 			<!-- Alpha for the learning algorithm -->
-			<alpha>.5</alpha>
+			<alpha>0.1</alpha>
+			<numReplay>10</numReplay>
 			<!-- Value assigned to exploration action-values -->
-			<explorationReward>0.1</explorationReward>
+			<explorationReward>10</explorationReward>
 			<!-- Half life value for decay exploration -->
-			<explorationHalfLifeVal>1000</explorationHalfLifeVal>
+			<explorationHalfLifeVal>2</explorationHalfLifeVal>
 			<!-- Number of feeders - used by intention modules -->
 			<numFeeders>5</numFeeders>			
 			<!-- Step length in meters -->
@@ -194,6 +200,12 @@
 				<logger>
 					<name>edu.usf.experiment.log.FeederLogger</name>
 				</logger>
+				<logger>
+					<name>edu.usf.experiment.log.ValueLoggerWithIntention</name>
+					<params>
+						<numIntentions>5</numIntentions>
+					</params>
+				</logger> 
 				<!--<logger>
 					<name>edu.usf.ratsim.experiment.log.PCLogger</name>
 				</logger>-->
@@ -207,7 +219,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>100000</max>
+						<max>1000</max>
 					</params>
 				</condition>
 				<!-- Has eaten from 5 feeders -->
@@ -236,6 +248,9 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.ValuePlotterWithIntention</name>
+				</plotter>
 				<!-- <plotter>
 					<name>edu.usf.ratsim.experiment.plot.PCPlotter</name>
 				</plotter>-->
@@ -254,8 +269,12 @@
 		<!-- Plotters to execute after the trial has ended -->
 		<afterTrialPlotters>
 			<plotter>
+				<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
+			</plotter>
+			<plotter>
 				<name>edu.usf.experiment.plot.PlotGatherer</name>
 			</plotter>
+			
 		</afterTrialPlotters>
 	</trial>
 	
@@ -267,9 +286,7 @@
 	</afterExperimentLoggers>
 	<!-- Plotters to execute after the experiment is over -->
 	<afterExperimentPlotters>
-		<plotter>
-			<name>edu.usf.experiment.plot.RuntimePerTrialPlotter</name>
-		</plotter>
+		
 		
 	</afterExperimentPlotters>
 </experiment>
