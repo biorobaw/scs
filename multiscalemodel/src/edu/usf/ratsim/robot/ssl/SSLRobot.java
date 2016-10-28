@@ -306,4 +306,9 @@ public class SSLRobot extends LocalizableRobot {
 		pilot.sendVels(leftVInt, leftVInt, rightVInt, rightVInt);
 	}
 
+	@Override
+	public boolean hasFoundPlatform() {
+		return false;
+	}
+
 }

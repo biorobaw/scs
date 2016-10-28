@@ -87,11 +87,6 @@ public class MorseRobot extends LocalizableRobot {
 	}
 
 	@Override
-	public Quat4f getOrientation() {
-		return GeomUtils.angleToRot(getOrientationAngle());
-	}
-
-	@Override
 	public boolean seesFeeder() {
 		// TODO Auto-generated method stub
 		return false;
@@ -149,11 +144,6 @@ public class MorseRobot extends LocalizableRobot {
 	}
 
 	@Override
-	public List<Landmark> getLandmarks() {
-		return new LinkedList<Landmark>();
-	}
-
-	@Override
 	public Feeder getFlashingFeeder() {
 		return null;
 	}
@@ -161,11 +151,6 @@ public class MorseRobot extends LocalizableRobot {
 	@Override
 	public boolean seesFlashingFeeder() {
 		return false;
-	}
-
-	@Override
-	public Feeder getClosestFeeder(int lastFeeder) {
-		return null;
 	}
 
 	@Override
@@ -240,6 +225,11 @@ public class MorseRobot extends LocalizableRobot {
 	public boolean hasFoundPlatform() {
 		// TODO: make it generic
 		return posSensor.getPosition().distance(new Point3f(.3f, .3f, 0)) < .15f;
+	}
+
+	@Override
+	public void moveContinous(float lVel, float angVel) {
+		
 	}
 
 }

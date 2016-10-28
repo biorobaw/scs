@@ -150,7 +150,7 @@ public class ActorCriticModel extends Model {
 		Module rlVotes;
 		List<Float> connProbs = params.getChildFloatList("votesConnProbs");
 		float votesNormalizer = params.getChildFloat("votesNormalizer");
-		rlVotes = new GradientVotes("RL votes", numActions, connProbs, numCCCellsPerLayer, votesNormalizer);
+		rlVotes = new GradientVotes("RL votes", numActions, connProbs, numCCCellsPerLayer, votesNormalizer, foodReward);
 		// RL votes are based on previous state
 		rlVotes.addInPort("states", stateCopy.getOutPort("copy"));
 		rlVotes.addInPort("value", valuePort);
@@ -191,7 +191,7 @@ public class ActorCriticModel extends Model {
 		valueConnProbs = params.getChildFloatList("valueConnProbs");
 		float valueNormalizer = params.getChildFloat("valueNormalizer");
 		rlValue = new GradientValue("RL value estimation", numActions, valueConnProbs, numCCCellsPerLayer,
-				valueNormalizer);
+				valueNormalizer,foodReward);
 		// } else
 		// throw new RuntimeException("Vote mechanism not implemented");
 		rlValue.addInPort("states", jointPCHDIntentionState.getOutPort("jointState"));
