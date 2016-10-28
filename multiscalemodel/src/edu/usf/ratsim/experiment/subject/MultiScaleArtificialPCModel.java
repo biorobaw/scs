@@ -215,7 +215,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		// universe, numActions, flashingReward, nonFlashingReward);
 		TaxicFoodManyFeedersManyActionsNotLast taxicff = new TaxicFoodManyFeedersManyActionsNotLast(
 				"Taxic Food Finder", subject, lRobot, nonFlashingReward,
-				nonFlashingNegReward, taxicDiscountFactor, estimateValue);
+				nonFlashingNegReward, taxicDiscountFactor);
 		taxicff.addInPort("goalFeeder",
 				lastTriedToEatGoalDecider.getOutPort("goalFeeder"), true);
 		addModule(taxicff);

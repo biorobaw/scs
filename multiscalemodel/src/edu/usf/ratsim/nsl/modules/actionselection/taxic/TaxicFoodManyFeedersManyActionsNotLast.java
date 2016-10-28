@@ -15,7 +15,7 @@ import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
-import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
+import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 
@@ -28,7 +28,7 @@ public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 
 	public TaxicFoodManyFeedersManyActionsNotLast(String name, Subject subject,
 			LocalizableRobot robot, float reward, float negReward,
-			float lambda, boolean estimateValue) {
+			float lambda) {
 		super(name);
 		this.reward = reward;
 		this.negReward = negReward;
@@ -51,6 +51,9 @@ public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 	 * goal).
 	 */
 	public void run() {
+		Int0dPort lastAte = (Int0dPort) getInPort("lastAteFeeder");
+		int except[] = {lastAte.get()};
+		
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;
 
@@ -68,7 +71,7 @@ public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 				if (af instanceof TurnAffordance
 						|| af instanceof ForwardAffordance) {
 					if (!feederToEat) {
-						for (Feeder f : robot.getVisibleFeeders(null)) {
+						for (Feeder f : robot.getVisibleFeeders(except)) {
 							if (f != null) {
 								Point3f newPos = GeomUtils.simulate(
 										f.getPosition(), af);
