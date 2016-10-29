@@ -26,7 +26,7 @@ import edu.usf.ratsim.nsl.modules.input.SubjectAte;
 import edu.usf.ratsim.nsl.modules.input.SubjectTriedToEat;
 import edu.usf.ratsim.nsl.modules.intention.LastAteIntention;
 import edu.usf.ratsim.nsl.modules.intention.NoIntention;
-import edu.usf.ratsim.nsl.modules.rl.MultiStateAC;
+import edu.usf.ratsim.nsl.modules.rl.MultiStateACNoTraces;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
 
 public class TSPModelKnownIDAC extends Model {
@@ -183,13 +183,13 @@ public class TSPModelKnownIDAC extends Model {
 		subAte.addInPort("takenAction", takenActionPort); // just for dependency
 		addModule(subAte);
 		Reward reward = new Reward("Reward", foodReward, nonFoodReward);
-		reward.addInPort("subAte", subAte.getOutPort("subAte"));
+		reward.addInPort("rewardingEvent", subAte.getOutPort("subAte"));
 		addModule(reward);
 
 		// Actor Critic setup
-		MultiStateAC mspac = new MultiStateAC(
+		MultiStateACNoTraces mspac = new MultiStateACNoTraces(
 				"RL Module",numActions, numStates,
-				rlDiscountFactor, alpha, tracesDecay);
+				rlDiscountFactor, alpha);
 		mspac.addInPort("reward", reward.getOutPort("reward"));
 		mspac.addInPort("takenAction", takenActionPort);
 		mspac.addInPort("statesBefore", getModule("States Before")
