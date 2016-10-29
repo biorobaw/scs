@@ -22,14 +22,15 @@ public class LastTriedToEat extends Module {
 		this.sub = sub;
 		
 		outPort = new Int0dPort(this);
-		addOutPort("lastAteFeeder", outPort);
+		addOutPort("lastTriedToEatFeeder", outPort);
 		
-		lastAte = -1;
+		lastAte = 0;
 	}
 
 	@Override
 	public void run() {
-		lastAte = sub.getRobot().getLastTriedToEatFeeder();
+		if (sub.hasTriedToEat())
+			lastAte = sub.getRobot().getLastTriedToEatFeeder();
 		outPort.set(lastAte);
 	}
 
