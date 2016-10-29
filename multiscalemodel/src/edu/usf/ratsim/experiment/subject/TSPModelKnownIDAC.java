@@ -32,6 +32,8 @@ public class TSPModelKnownIDAC extends Model {
 	private int numStates = 6;
 	// Value table for actions and state-values (Actor Critic)
 	private float[][] value;
+	private LastTriedToEat lastTriedToEatFeeder;
+	private Int0dCopyModule lastTriedCopy;
 
 	public TSPModelKnownIDAC() {
 	}
@@ -75,13 +77,13 @@ public class TSPModelKnownIDAC extends Model {
 		closestFeeder.addInPort("takenAction", takenActionPort);
 		addModule(closestFeeder);
 		
-		LastTriedToEat lastTriedToEatFeeder = new LastTriedToEat("Last tried to eat", subject);
+		lastTriedToEatFeeder = new LastTriedToEat("Last tried to eat", subject);
 		lastTriedToEatFeeder.addInPort("takenAction", takenActionPort);
 		addModule(lastTriedToEatFeeder);
 		gotofeeder.addInPort("lastTriedToEatFeeder", lastTriedToEatFeeder.getOutPort("lastTriedToEatFeeder"), true);
 		
 		// Copy of the last tried to eat feeder
-		Int0dCopyModule lastTriedCopy = new Int0dCopyModule("Last tried copy");
+		lastTriedCopy = new Int0dCopyModule("Last tried copy");
 		lastTriedCopy.addInPort("toCopy", lastTriedToEatFeeder.getOutPort("lastTriedToEatFeeder"), true);
 		addModule(lastTriedCopy);
 		
@@ -132,8 +134,8 @@ public class TSPModelKnownIDAC extends Model {
 	}
 
 	public void newEpisode() {
-		// TODO Auto-generated method stub
-
+		lastTriedToEatFeeder.reset();
+		lastTriedCopy.run();
 	}
 
 }

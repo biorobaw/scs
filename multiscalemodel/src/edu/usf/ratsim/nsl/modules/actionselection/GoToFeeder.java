@@ -47,33 +47,36 @@ public class GoToFeeder extends Module {
 		
 		if (subTriedToEat.get() || desiredFeederId == -1){
 			float maxVotes = Float.NEGATIVE_INFINITY;
+//			System.out.print("State: " + lastTriedToEatFeeder.get() + " ");
 			for (int a = 0; a < numActions; a++){
-				System.out.print(a + ": " + value.get(lastTriedToEatFeeder.get(), a) + " ");
+//				System.out.print(a + ": " + value.get(lastTriedToEatFeeder.get(), a) + " ");
 				if (value.get(lastTriedToEatFeeder.get(), a) > maxVotes){
 					maxVotes = value.get(lastTriedToEatFeeder.get(), a);
 					desiredFeederId = a + 1;
 				}
 			}
-			System.out.println();	
+//			System.out.println();	
 		}
 		
-		System.out.println("Desired feeder id " + desiredFeederId);
+//		System.out.println("Desired feeder id " + desiredFeederId);
 		
 		if (lRobot.isFeederClose()
 				&& lRobot.getClosestFeeder().getId() == desiredFeederId){
 			lRobot.executeAffordance(new EatAffordance(), sub);
-			System.out.println("Trying to eat");
+//			System.out.println("Trying to eat");
 		} else {
 			Feeder desiredFeeder = null;
 			for (Feeder f : lRobot.getVisibleFeeders(null))
 				if (f.getId() == desiredFeederId)
 					desiredFeeder = f;
 			// Todo: make it a step
-			System.out.println("Desired feeder " + desiredFeeder);
+//			System.out.println("Desired feeder " + desiredFeeder);
 			lRobot.rotate(GeomUtils.rotToAngle(GeomUtils
 					.angleToPoint(desiredFeeder.getPosition())));
 			// Parametrize
 			lRobot.forward(.1f);
+			
+			
 		}
 		
 		takenActionPort.set(desiredFeederId-1);

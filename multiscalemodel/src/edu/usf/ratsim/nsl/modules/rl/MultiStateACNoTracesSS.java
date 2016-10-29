@@ -153,7 +153,7 @@ public class MultiStateACNoTracesSS extends Module implements QLAlgorithm {
 			// System.out.println("Updating action " + ui.action + " to value "
 			// + newActionValue);
 			if (Debug.printDelta)
-				System.out.println("State: " + ui.state + " V Delta: " + valueDelta
+				System.out.println("State: " + ui.state + " Action: " + ui.action + " V Delta: " + valueDelta
 						+ " A Delta: " + actionDelta);
 
 			if (Float.isInfinite(newActionValue) || Float.isNaN(newActionValue)) {

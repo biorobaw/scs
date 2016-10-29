@@ -39,5 +39,10 @@ public class LastTriedToEat extends Module {
 		return false;
 	}
 
+	public void reset() {
+		lastAte = 0;
+		outPort.set(lastAte);
+	}
+
 	
 }

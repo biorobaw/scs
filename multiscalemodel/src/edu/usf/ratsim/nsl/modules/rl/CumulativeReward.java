@@ -26,7 +26,7 @@ public class CumulativeReward extends Module {
 		accReward += instantReward.get();
 		reward.set(accReward);
 		
-		System.out.println("Cumm reward " + accReward);
+//		System.out.println("Cumm reward " + accReward);
 
 		if (subTriedToEat.get()) {
 			accReward = 0;

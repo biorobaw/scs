@@ -2,7 +2,6 @@
 	
 <experiment>
 	
-	
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
@@ -60,7 +59,7 @@
 			<!-- Reward value for food -->
 			<foodReward>1000</foodReward>
 			<!-- Reward value given when it doesnt eat -->
-			<nonFoodReward>-50</nonFoodReward>
+			<nonFoodReward>-25</nonFoodReward>
 			<!-- Lambda discount factor for the learning algorithm -->
 			<rlDiscountFactor>1</rlDiscountFactor>
 			<!-- Alpha for the learning algorithm -->
@@ -232,10 +231,10 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
 				</plotter>
-				<!-- Plot path for each episode -->
+				<!-- Plot path for each episode 
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
-				</plotter>
+				</plotter>-->
 				<!-- <plotter>
 					<name>edu.usf.ratsim.experiment.plot.PCPlotter</name>
 				</plotter>-->
