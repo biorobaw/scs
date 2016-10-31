@@ -95,7 +95,7 @@ public class TmazeRandomPlaceCellLayer extends Module {
 				throw new RuntimeException("Place cell type not implemented");
 		}
 
-		activationPort = new Float1dSparsePortMap(this, cells.size(), 4000);
+		activationPort = new Float1dSparsePortMap(this, cells.size(), 1f/8);
 		addOutPort("activation", activationPort);
 
 	}
@@ -115,7 +115,7 @@ public class TmazeRandomPlaceCellLayer extends Module {
 
 		this.cells = cells;		
 
-		activationPort = new Float1dSparsePortMap(this, cells.size(), 4000);
+		activationPort = new Float1dSparsePortMap(this, cells.size(), 1f/8);
 		addOutPort("activation", activationPort);
 
 	}
