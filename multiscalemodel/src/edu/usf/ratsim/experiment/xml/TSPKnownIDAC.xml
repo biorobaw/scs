@@ -19,9 +19,9 @@
 		<name>edu.usf.ratsim.robot.virtual.VirtualRobot</name>
 		<params>
 			<!-- Percentual translational noise -->
-			<noise>.0</noise>
+			<noise>.2</noise>
 			<!-- Rotation noise added after translation -->
-			<translationRotationNoise>0</translationRotationNoise>
+			<translationRotationNoise>.75</translationRotationNoise>
 			<!-- How many steps are projected for obstacle avoidance purpose -->
 			<lookaheadSteps>1</lookaheadSteps>
 			<!-- Half the field of view of the rat -->
@@ -229,12 +229,15 @@
 				</plotter>
 				<!-- Get time info from position information -->
 				<plotter>
-					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
+					<name>edu.usf.experiment.plot.RPlotter</name>
+					<params>
+						<plotScript>/edu/usf/experiment/plot/summarizeProRated.r</plotScript>
+					</params>
 				</plotter>
 				<!-- Plot path for each episode 
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
-				</plotter>-->
+				</plotter> -->
 				<!-- <plotter>
 					<name>edu.usf.ratsim.experiment.plot.PCPlotter</name>
 				</plotter>-->

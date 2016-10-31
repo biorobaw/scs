@@ -19,6 +19,7 @@ public class RPlotter extends Plotter {
 	@Override
 	public void plot() {
 		String logPath = getLogPath();
+		
 		IOUtils.copyResource(getClass().getResource(plotScript), logPath + filename);
 		IOUtils.exec("Rscript " + filename, logPath);
 	}
