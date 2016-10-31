@@ -342,8 +342,7 @@ public class VirtUniverse extends Universe {
 		boolean intesectsWall = false;
 		LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
 		for (Wall wall : getWalls()) {
-			intesectsWall = intesectsWall
-					|| (path.intersection(wall.s) != null) || (path.distance(wall.s) < MIN_DISTANCE_TO_WALLS);
+			intesectsWall = intesectsWall || (path.distance(wall.s) < MIN_DISTANCE_TO_WALLS);
 		}
 
 		return !intesectsWall;
@@ -364,12 +363,42 @@ public class VirtUniverse extends Universe {
 		boolean intesectsWall = false;
 		LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
 		for (Wall wall : getWalls()) {
-			intesectsWall = intesectsWall
-					|| (path.intersection(wall.s) != null) || (path.distance(wall.s) < MIN_DISTANCE_TO_WALLS);
+			intesectsWall = intesectsWall || (path.distance(wall.s) < MIN_DISTANCE_TO_WALLS);
 		}
 
 		return !intesectsWall;
 	}
+
+	/**
+	 * Gives distance to nearest intersecting wall with the path  (current pos, pos + Vector(rayX,raY))
+	 * @param dx
+	 * @param dy
+	 * @return
+	 */
+	
+	public double distanceToNearestWall(float dx, float dy,float maxDistance ){
+		// The current position with rotation
+		
+		Vector3f p = new Vector3f();
+		robot.getT().get(p);
+		
+		Coordinate initCoordinate  = new Coordinate(p.x, p.y);
+		Coordinate finalCoordinate = new Coordinate(p.x+dx, p.y+dy);
+		
+		//System.out.println("movement: "+initCoordinate + " " + finalCoordinate);
+				
+		double minDistance = maxDistance;
+		LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
+		Coordinate inter;
+		double distance;
+		for (Wall wall : getWalls()) {
+			
+			if ((inter= path.intersection(wall.s))!=null && (distance = inter.distance(initCoordinate)) < minDistance ) minDistance = distance;
+		}
+
+		return minDistance;
+	}
+	
 
 	// public boolean isRobotParallelToWall() {
 	// boolean aff[] = getRobotAffordances();

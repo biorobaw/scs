@@ -24,7 +24,7 @@
 			<tSide>1.8</tSide>
 			
 			<bufferedWalls>
-				<buffereRadius>0.6</buffereRadius> <!-- small=0.19, big=0.6 -->
+				<buffereRadius>0.19</buffereRadius> <!-- small=0.19, big=0.6 -->
 				<showWalls>true</showWalls>
 			</bufferedWalls>
 			

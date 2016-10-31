@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-	<seed>-59875563504154406</seed>
+	<!-- <seed>-59875563504154406</seed> -->
 	
 	 <!-- load will load the subject (indicated by the input to the program) as saved after the specified episode  of the specified  trial-->
 	<!-- <load>
-		<episode>3777</episode>
+		<episode>3624</episode>
 		<trial>Travel</trial>
 	</load>  -->
 	
@@ -59,7 +59,7 @@
 			<!-- Type of learning -->
 			<!--  <rlType>actorCritic</rlType> -->
 			<!-- discount factor in rl -->
-			<discountFactor>0.99</discountFactor>
+			<discountFactor>0.999</discountFactor>
 			<!-- rl learning rate -->
 			<learningRate>0.6</learningRate>
 			<!-- reward when eating -->
@@ -67,24 +67,32 @@
 			<!-- transition matrix learning rate -->
 			<wTransitionLR>1.0</wTransitionLR>
 			
-			<!-- number of replays done during sleep state -->
-			<cantReplay>8</cantReplay>
+			<!-- sessions, laps, and replay -->
+			<noFoodLaps>6</noFoodLaps>
+			<laps>25</laps>
+			<cantReplay>200</cantReplay>
 			<!-- threshold to propagate PC activation during 
 			     sleep state. Should be numPC/50           -->
-			<replayThres>86</replayThres>
+			<replayThres>1.0</replayThres>
 			
 			<!-- number of directions the rat con move towards -->
 			<numActions>8</numActions>
 			<sameActionBias>0.85</sameActionBias>
 			
 			<!-- Minimum conjuntive layer cell radius -->
-			<PCRadius>.2</PCRadius><!-- small = 0.08, big=0.2 -->
+			<PCRadius>.08</PCRadius><!-- small = 0.08, big=0.2 -->
 			<!-- Cells per side of the square -->
-			<numPC>430</numPC>
+			<numPC>1300</numPC><!-- 430 -->
 			<!-- Type of conjunctive cell -->
 			<placeCells>exponentialMultipleT</placeCells>
 			<!-- Map dimensions for conjuntive cell placing -->
 			
+			
+			<maxDistanceSensorDistance>2</maxDistanceSensorDistance>
+			
+			<awakeFoodDistanceThreshold>0.1</awakeFoodDistanceThreshold>
+			<asleepFoodDistanceThreshold>0.4</asleepFoodDistanceThreshold>
+
 			<!-- Order in which feeders are visited -->
 			<!--  <feederOrder>$(feederOrder)</feederOrder> -->
 			<!--<feederOrder>1,2</feederOrder>-->
@@ -109,12 +117,14 @@
 				<feederFile>multiscalemodel/src/edu/usf/ratsim/experiment/feederPositions/positionsTSP21Feeders</feederFile>
 			</params>
 		</task> -->
+		
+		<!-- x: left arm: 0, right arm: 3.6 ~~ (lab_origin, lab_origin + length), y=10.5 -->
 		<task>
 			<name>edu.usf.experiment.task.AddFeederTask</name>
 			<params>
 				<id>1</id>
-				<x>0</x> <!-- left arm: 0, right arm: 3.6 ~~ (lab_origin, lab_origin + length) -->
-				<y>10.5</y><!-- y=10.5 -->
+				 <x>0</x> 
+				<y>10.5</y> 
 			</params>
 		</task>
 
@@ -152,14 +162,14 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>4000</number>
+			<number>4825</number><!-- 24 session * (80 + 80 laps * 8 replays) =   -->
 			<!-- Sleep between cycles for visualization -->
-			<sleep>00</sleep>
+			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
-				<task>
+				<!-- <task>
 					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
-				</task>
+				</task> -->
 				<!-- Place the animat in a given place -->
 				<task>
 					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
@@ -204,9 +214,9 @@
 					<params>
 					</params>
 				</logger>
-				<logger>
+				<!--  <logger>
 					<name>edu.usf.ratsim.experiment.log.PCActivityLogger</name>
-				</logger>
+				</logger>-->
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->
 			<afterEpisodeLoggers>
@@ -253,28 +263,38 @@
 					<params>
 					</params>
 				</condition>
+				<condition>
+					<name>edu.usf.ratsim.experiment.subject.multipleT.PCActivationBelowThresholdCondition</name>
+					<params>
+					</params>
+				</condition>
+				<condition>
+					<name>edu.usf.ratsim.experiment.subject.multipleT.LoopInPathCondition</name>
+					<params>
+					</params>
+				</condition>
 			</stopConditions>
 			<!-- Plotters to execute after each episode -->
 			<afterEpisodePlotters>
 				<!-- Copy the maze file to the episode folder -->
-				<plotter>
+				<!--<plotter>
 					<name>edu.usf.experiment.plot.CopyMazeFile</name>
-				</plotter>
+				</plotter>-->
 				<!-- Convert csv to rdata -->
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.experiment.plot.CSVConverter</name>
-				</plotter>
+				</plotter>-->
 				<!-- Get time info from position information -->
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
-				</plotter>
+				</plotter>-->
 				<!-- Plot path for each episode -->
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
 				<plotter>
 					<name>edu.usf.ratsim.experiment.plot.PCPlotter</name>
-				</plotter>
+				</plotter>-->
 				
 			</afterEpisodePlotters>
 		</episodes>
@@ -287,9 +307,9 @@
 		</afterTrialLoggers>
 		<!-- Plotters to execute after the trial has ended -->
 		<afterTrialPlotters>
-			<plotter>
+			<!-- <plotter>
 				<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
-			</plotter>
+			</plotter> -->
 		</afterTrialPlotters>
 	</trial>
 	

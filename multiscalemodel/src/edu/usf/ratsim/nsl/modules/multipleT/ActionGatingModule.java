@@ -16,24 +16,29 @@ public class ActionGatingModule extends Module {
 	int numActions;	
 	
 	public float[] probabilities;
-	float stepSize;
-	
-	Point3f[] actions; 
+	float minDistance;
+	float maxDistance;
+
+	Point3f[] endPoints;
 	
 
-	public ActionGatingModule(String name,int numActions,float stepSize) {
+	public ActionGatingModule(String name,int numActions,float minDistance,float maxDistance) {
 		super(name);
 
 		this.numActions = numActions;
+		this.minDistance = minDistance;
+		this.maxDistance = maxDistance;
+		
 		probabilities = new float[numActions];
 		this.addOutPort("probabilities", new Float1dPortArray(this, probabilities));
-		actions = new Point3f[numActions];
+		endPoints = new Point3f[numActions];
 		
 		double deltaAngle = 2*Math.PI/numActions;
 		float angle = 0;
 		for (int i=0;i<numActions;i++)
 		{	
-			actions[i] =new Point3f((float)Math.cos(angle)*stepSize,(float)Math.sin(angle)*stepSize,0);
+			double dx = Math.cos(angle), dy = Math.sin(angle);
+			endPoints[i] = new Point3f((float)dx*maxDistance,(float)dy*maxDistance,0);
 			angle+=deltaAngle;
 		}
 
@@ -47,15 +52,11 @@ public class ActionGatingModule extends Module {
 		float sum = 0;
 		for (int i =0;i<numActions;i++)
 		{
-			probabilities[i] = input.get(i);
-			if (!universe.canRobotMoveDeltaPos(actions[i])){
-				
-			
-				probabilities[i]=0;
-				//System.out.println("action "+i+" impossible");
-			}
+			double distance = universe.distanceToNearestWall(endPoints[i].x,endPoints[i].y, maxDistance);
+			if(distance <= minDistance) probabilities[i] = 0;
 			else{
 				//System.out.println("action "+i+" posible");
+				probabilities[i] =  (float)(input.get(i)*distance);
 				sum += probabilities[i];
 			}
 			

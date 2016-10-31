@@ -37,6 +37,8 @@ public class Trial implements Runnable {
 	private List<Plotter> beforePlotters;
 	private List<Plotter> afterPlotters;
 	private List<Logger> afterLoggers;
+	
+	Globals g = Globals.getInstance();
 
 	public Trial(ElementWrapper trialNode, String parentLogPath, Subject subject, Universe universe) {
 		super();
@@ -94,6 +96,7 @@ public class Trial implements Runnable {
 			// Run each episode
 			for (Episode episode : episodes) {
 				episode.run();
+				g.put("episode", (int)g.get("episode")+1);
 			}
 			
 			

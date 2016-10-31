@@ -50,6 +50,10 @@ public class VirtualRobot extends LocalizableRobot {
 	private int lastAteFeeder;
 
 	private int lastTriedToEat;
+	
+	public void setCloseThreshold(float value){
+		this.closeThrs=value;
+	}
 
 	public VirtualRobot(ElementWrapper params) {
 		super(params);

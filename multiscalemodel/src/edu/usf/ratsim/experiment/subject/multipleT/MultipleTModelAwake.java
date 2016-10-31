@@ -10,12 +10,15 @@ import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.micronsl.Datatypes.SparseMatrix;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.module.copy.Float1dCopyModule;
 import edu.usf.micronsl.module.copy.Float1dSparseCopyModule;
 import edu.usf.micronsl.module.copy.Int0dCopyModule;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
+import edu.usf.micronsl.port.twodimensional.sparse.SparseMatrixPort;
+import edu.usf.ratsim.experiment.subject.NotImplementedException;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.experiment.universe.virtual.drawingUtilities.DrawPolarGraph;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromProbabilities;
@@ -27,6 +30,7 @@ import edu.usf.ratsim.nsl.modules.input.Position;
 import edu.usf.ratsim.nsl.modules.input.SubjectAte;
 import edu.usf.ratsim.nsl.modules.multipleT.ActionGatingModule;
 import edu.usf.ratsim.nsl.modules.multipleT.DontGoBackBiasModule;
+import edu.usf.ratsim.nsl.modules.multipleT.Last2ActionsActionGating;
 import edu.usf.ratsim.nsl.modules.multipleT.MultipleTActionPerformer;
 import edu.usf.ratsim.nsl.modules.multipleT.PlaceCellTransitionMatrixUpdater;
 import edu.usf.ratsim.nsl.modules.multipleT.UpdateQModule;
@@ -58,6 +62,7 @@ public class MultipleTModelAwake extends MultipleTModel {
 		float foodReward		= params.getChildFloat("foodReward");
 		
 		float sameActionBias 	= params.getChildFloat("sameActionBias");
+		float maxDistanceSensorDistnace = params.getChildFloat("maxDistanceSensorDistance");
 		
 		
 		
@@ -77,7 +82,7 @@ public class MultipleTModelAwake extends MultipleTModel {
 		 * activate cell
 		 * propagate activity
 		 * 
-		 * 																									              Copy of Action and placeCells
+		 * 																									              Copy of Action and pcCopy
 		 * 																											                \/
 		 * Reward-------------------------------->*---->*------------------------------------------->*--------->*->deltaSignal----->UpdateQ
 		 * 			                             /\    /\                              	  			/\         /\
@@ -90,8 +95,6 @@ public class MultipleTModelAwake extends MultipleTModel {
 		 * 
 		 * NOTES:
 		 * 		-The model is only a reference to understand the flow, modules do not correspond 1 to 1 with the model components
-		 * 		-Sleep Action should only get calculated when SLEEPING
-		 * 		-calcCombinedQ, SoftMax and updataW should only be performed while awake
 		 * 		-subAte = subjectAte (already existing module)
 		 * 		-backDep = backward dependency
 		 * 		-actionGating checks weather an action can be performed or not before action selection
@@ -166,13 +169,14 @@ public class MultipleTModelAwake extends MultipleTModel {
 		
 		
 		//Create ActionGatingModule -- sets the probabilities of impossible actions to 0 and then normalizes them
-		ActionGatingModule actionGating = new ActionGatingModule("actionGating", numActions, ((MultipleTSubject)subject).step);
+		ActionGatingModule actionGating = new ActionGatingModule("actionGating", numActions, ((MultipleTSubject)subject).step,maxDistanceSensorDistnace);
 		actionGating.addInPort("input", softmax.getOutPort("probabilities"));
 		addModule(actionGating);
 		
 		
 		//Add bias module to probabilities
-		DontGoBackBiasModule biasModule = new DontGoBackBiasModule("bias", numActions, 7, 0.01f);
+		//DontGoBackBiasModule biasModule = new DontGoBackBiasModule("bias", numActions, 7, 0.01f);
+		Last2ActionsActionGating biasModule = new Last2ActionsActionGating("bias", numActions, 1.5f, 0.001f);
 		biasModule.addInPort("input", actionGating.getOutPort("probabilities"));
 		addModule(biasModule);
 		
@@ -237,6 +241,7 @@ public class MultipleTModelAwake extends MultipleTModel {
 		universe.addDrawingFunction(new DrawPolarGraph("gated probs",50, 170, 50, actionGating.probabilities,true));
 		universe.addDrawingFunction(new DrawPolarGraph("biased probs",50, 290, 50, biasModule.probabilities,true));
 		
+		universe.addDrawingFunction(new DrawPolarGraph("bias ring",50, 410, 50, biasModule.chosenRing,true));
 		
 				
 		
@@ -252,7 +257,7 @@ public class MultipleTModelAwake extends MultipleTModel {
 		
 		
 		//need to let the bias module know that a new episode started (do not bias on fisrt turn)
-		((DontGoBackBiasModule)getModule("bias")).newTrial();
+		((Last2ActionsActionGating)getModule("bias")).newTrial();
 		
 		
 		
@@ -272,7 +277,7 @@ public class MultipleTModelAwake extends MultipleTModel {
 		((PlaceCellTransitionMatrixUpdater)getModule("wUpdater")).newEpisode();
 		
 		//need to let the bias module know that a new episode started (do not bias on fisrt turn)
-		((DontGoBackBiasModule)getModule("bias")).newEpisode();
+		((Last2ActionsActionGating)getModule("bias")).newEpisode();
 		
 	}
 
@@ -281,6 +286,10 @@ public class MultipleTModelAwake extends MultipleTModel {
 		activation.putAll(((Float1dSparsePortMap) placeCells
 					.getOutPort("activation")).getNonZero());
 		return activation;
+	}
+	
+	public float getMaxActivation(){
+		throw new NotImplementedException();
 	}
 
 

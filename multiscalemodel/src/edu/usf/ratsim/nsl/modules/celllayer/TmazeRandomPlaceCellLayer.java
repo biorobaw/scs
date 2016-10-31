@@ -100,6 +100,26 @@ public class TmazeRandomPlaceCellLayer extends Module {
 
 	}
 	
+	
+	/**
+	 * Creates pc layer using the given cells
+	 * @param name
+	 * @param radius
+	 * @param numCells
+	 * @param placeCellType
+	 */
+	public TmazeRandomPlaceCellLayer(String name, LinkedList<PlaceCell> cells) {
+		super(name);
+
+		active = true;
+
+		this.cells = cells;		
+
+		activationPort = new Float1dSparsePortMap(this, cells.size(), 4000);
+		addOutPort("activation", activationPort);
+
+	}
+	
 	/**
 	 * Computes the current activation of all cells
 	 */

@@ -12,5 +12,7 @@ public abstract class MultipleTModel extends Model {
 	public abstract void newTrial();
 	public abstract List<PlaceCell> getPlaceCells();
 	public abstract Map<Integer, Float> getCellActivation();
+	
+	public abstract float getMaxActivation();
 
 }

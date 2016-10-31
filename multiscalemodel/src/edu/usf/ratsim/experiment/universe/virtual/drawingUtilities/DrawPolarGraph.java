@@ -25,6 +25,7 @@ public class DrawPolarGraph extends DrawingFunction {
 	String title;
 	
 	boolean normalize;
+	boolean active = true; //indicates if its activated, if not, do not draw
 	
 	
 	/**
@@ -66,6 +67,7 @@ public class DrawPolarGraph extends DrawingFunction {
 
 	@Override
 	public void run() {
+		if(!active) return;
 		// TODO Auto-generated method stub
 		
 		graphics.setColor(Color.white);
@@ -102,6 +104,10 @@ public class DrawPolarGraph extends DrawingFunction {
 		graphics.flush(false);
 		
 		
+	}
+	
+	public void setActive(boolean active){
+		this.active = active;
 	}
 
 }

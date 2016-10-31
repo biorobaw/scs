@@ -1,4 +1,4 @@
-package edu.usf.micronsl.port.onedimensional.sparse;
+package edu.usf.micronsl.port.twodimensional.sparse;
 
 import java.util.Map;
 
@@ -12,9 +12,9 @@ import edu.usf.micronsl.port.twodimensional.Float2dPort;
  * @author Martin Llofriu
  *
  */
-public abstract class Float1dSparsePort extends Float1dPort {
+public abstract class Float2dSparsePort extends Float2dPort {
 
-	public Float1dSparsePort(Module owner) {
+	public Float2dSparsePort(Module owner) {
 		super(owner);
 	}
 
@@ -23,13 +23,17 @@ public abstract class Float1dSparsePort extends Float1dPort {
 	 * 
 	 * @return A map from the index of the element to the value stored
 	 */
-	public abstract Map<Integer, Float> getNonZero();
-
+	public abstract Map<Integer, Map<Integer, Float>> getNonZeroRows();
+	
+	public abstract Map<Integer, Float> getNonZeroRowElements();
+	
 	/**
 	 * Get the expected proportion of non-zero elements
 	 * 
 	 * @return The expected number of non-zero elements
 	 */
 	public abstract float getSparseness();
+
+
 
 }

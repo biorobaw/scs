@@ -148,6 +148,10 @@ public class Experiment implements Runnable {
 			//pop episodes from the trial until we reach the episode being loaded (remove that episode to since we have already executed that one)
 			for(int i=0;i<=e;i++)
 				trials.get(0).episodes.remove(0);
+			g.put("episode",e+1);
+			
+		}else{
+			g.put("episode",0);
 		}
 		
 
