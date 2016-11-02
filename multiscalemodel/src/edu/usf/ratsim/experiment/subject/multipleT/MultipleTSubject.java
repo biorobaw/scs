@@ -17,6 +17,7 @@ import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
+import edu.usf.experiment.utils.BinaryFile;
 import edu.usf.experiment.utils.CSVReader;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
@@ -105,16 +106,27 @@ public class MultipleTSubject extends Subject {
 			episode = loadEpisode;
 			String loadPath = (String)g.get("logPath")  +"/"+(String)g.get("loadTrial")+ "/" + loadEpisode + "/" + (String)g.get("groupName") + "/" + g.get("subName") + "/";
 			
-			String[][] qStringValues = CSVReader.loadCSV(loadPath+"QTable.txt",";");
-			String[][] wStringValues = CSVReader.loadCSV(loadPath+"WTable.txt",";");
 			
-			for (int i =0;i<numPC;i++)
-			{
-				for(int j = 0; j<numActions;j++)
-					QTable[i][j] = Float.parseFloat(qStringValues[i][j]);
-				for(int j = 0; j<numPC;j++)
-					WTable[i][j] = Float.parseFloat(wStringValues[i][j]);
+			if(g.get("loadType").equals("bin")){
+				QTable = BinaryFile.loadMatrix(loadPath+"QTable.bin");
+				WTable = BinaryFile.loadSparseMatrix(loadPath+"WTable.bin");
+				
+			}else{
+				
+				String[][] qStringValues = CSVReader.loadCSV(loadPath+"QTable.txt",";");
+				String[][] wStringValues = CSVReader.loadCSV(loadPath+"WTable.txt",";");
+				
+				for (int i =0;i<numPC;i++)
+				{
+					for(int j = 0; j<numActions;j++)
+						QTable[i][j] = Float.parseFloat(qStringValues[i][j]);
+					for(int j = 0; j<numPC;j++)
+						WTable[i][j] = Float.parseFloat(wStringValues[i][j]);
+				}
+				
 			}
+			
+			
 				
 			//QTable = new SparseMatrix<Float>(QTableCopy);
 			//WTable = new SparseMatrix<Float>(WTableCopy);
@@ -163,25 +175,32 @@ public class MultipleTSubject extends Subject {
 		try {
 			//save WTable if not asleep:
 			if(state != State.ASLEEP){
-				writer = new PrintWriter(logPath + "WTable.txt", "UTF-8");
-				for(int i=0;i<numPC;i++){
-					for(int j=0;j<numPC;j++){
-						writer.print(WTable[i][j]+";");
-					}
-					writer.println();
-				}
-				writer.close();
+				String filename = logPath + "WTable.bin";
+				BinaryFile.saveSparseBinaryMatrix(WTable, filename);
+				
+//				writer = new PrintWriter(logPath + "WTable.txt", "UTF-8");
+//				for(int i=0;i<numPC;i++){
+//					for(int j=0;j<numPC;j++){
+//						writer.print(WTable[i][j]+";");
+//					}
+//					writer.println();
+//				}
+//				writer.close();
 			}
 			
 			//save QTable
-			writer = new PrintWriter(logPath + "QTable.txt", "UTF-8");
-			for(int i=0;i<numPC;i++){
-				for(int j=0;j<numActions;j++){
-					writer.print(QTable[i][j]+";");
-				}
-				writer.println();
-			}
-			writer.close();
+			String filename = logPath + "QTable.bin";
+			BinaryFile.saveBinaryMatrix(QTable, filename);
+			
+			
+//			writer = new PrintWriter(logPath + "QTable.txt", "UTF-8");
+//			for(int i=0;i<numPC;i++){
+//				for(int j=0;j<numActions;j++){
+//					writer.print(QTable[i][j]+";");
+//				}
+//				writer.println();
+//			}
+//			writer.close();
 			
 			//save cells
 			writer = new PrintWriter(logPath + "cellCenters.txt", "UTF-8");

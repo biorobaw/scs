@@ -106,13 +106,13 @@ public class Last2ActionsActionGating extends Module {
 					
 					for(int k=0;k<numActions;k++){
 						
-						System.out.println(""+i+","+j+","+k+": ");
-						System.out.println("ang "+ang+", theta3 "+theta3);
-						System.out.println();
+						//System.out.println(""+i+","+j+","+k+": ");
+//						System.out.println("ang "+ang+", theta3 "+theta3);
+//						System.out.println();
 						float rel = Math.abs(GeomUtils.relativeAngle(theta3, ang));
 						float rel2= Math.abs(GeomUtils.relativeAngle(theta3, theta));
 						float rel3= Math.abs(GeomUtils.relativeAngle(theta3, theta2));
-						System.out.println("r: "+rel+", "+rel2+", "+rel3);
+//						System.out.println("r: "+rel+", "+rel2+", "+rel3);
 						if(rel2 > Math.PI*(91.0/180.0) || rel3 > Math.PI*(91.0/180.0) ) precalculatedValues[i][j][k]=0;
 						else {
 							precalculatedValues[i][j][k] = (float)Math.pow(1-rel/(float)Math.PI,exponent);
@@ -139,15 +139,15 @@ public class Last2ActionsActionGating extends Module {
 		//System.out.println("PRECALCULATED Values");
 		//for (int i =0;i<numActions;i++)
 			//System.out.println("Bias "+i+" "+precalculatedValues[i]);
-		System.out.println("PRECALCULATED Values");
-		for (int i =0;i<numActions;i++)
-			for(int j =0;j<numActions;j++){
-				System.out.print(""+i+","+j+":  ");
-				for(int k=0;k<numActions;k++)
-					System.out.print(""+precalculatedValues[i][j][k]+";");
-				System.out.println("");
-			}
-		
+//		System.out.println("PRECALCULATED Values");
+//		for (int i =0;i<numActions;i++)
+//			for(int j =0;j<numActions;j++){
+//				System.out.print(""+i+","+j+":  ");
+//				for(int k=0;k<numActions;k++)
+//					System.out.print(""+precalculatedValues[i][j][k]+";");
+//				System.out.println("");
+//			}
+//		
 		
 
 	}
