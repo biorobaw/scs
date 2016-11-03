@@ -7,7 +7,6 @@
 	<!-- <load>
 		<episode>3624</episode>
 		<trial>Travel</trial>
-		<type>bin</type>
 	</load>  -->
 	
 	<universe>
@@ -18,7 +17,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/multipleTmaze.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>true</display>
+			<display>false</display>
 		</params>
 	</universe>
 	
@@ -69,12 +68,12 @@
 			<wTransitionLR>1.0</wTransitionLR>
 			
 			<!-- sessions, laps, and replay -->
-			<noFoodLaps>10</noFoodLaps>
-			<laps>25</laps>
-			<cantReplay>200</cantReplay>
+			<noFoodLaps>0</noFoodLaps>
+			<laps>100</laps>
+			<cantReplay>0</cantReplay>
 			<!-- threshold to propagate PC activation during 
 			     sleep state. Should be numPC/50           -->
-			<replayThres>.001</replayThres>
+			<replayThres>1.0</replayThres>
 			
 			<!-- number of directions the rat con move towards -->
 			<numActions>8</numActions>
@@ -83,7 +82,7 @@
 			<!-- Minimum conjuntive layer cell radius -->
 			<PCRadius>.08</PCRadius><!-- small = 0.08, big=0.2 -->
 			<!-- Cells per side of the square -->
-			<numPC>2000</numPC><!-- 430 -->
+			<numPC>1300</numPC><!-- 430 -->
 			<!-- Type of conjunctive cell -->
 			<placeCells>exponentialMultipleT</placeCells>
 			<!-- Map dimensions for conjuntive cell placing -->
@@ -124,7 +123,7 @@
 			<name>edu.usf.experiment.task.AddFeederTask</name>
 			<params>
 				<id>1</id>
-				 <x>1.8</x> 
+				 <x>0</x> 
 				<y>10.5</y> 
 			</params>
 		</task>
@@ -165,7 +164,7 @@
 			<!-- Number of episodes -->
 			<number>100</number><!-- 24 session * (80 + 80 laps * 8 replays) =   -->
 			<!-- Sleep between cycles for visualization -->
-			<sleep>60</sleep>
+			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- <task>
@@ -230,13 +229,9 @@
 				<logger>
 					<name>edu.usf.experiment.log.FeederLogger</name>
 				</logger>
-<<<<<<< HEAD
-				
-=======
 				<!-- <logger>
 					<name>edu.usf.ratsim.experiment.log.PCLogger</name>
 				</logger> -->
->>>>>>> 72a83936d4726a487d2d4573212266cb03be25f3
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>

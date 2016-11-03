@@ -64,6 +64,7 @@ public class Experiment implements Runnable {
 		if(load!=null) {
 			g.put("loadEpisode", load.getChildInt("episode"));
 			g.put("loadTrial", load.getChildText("trial"));
+			g.put("loadType",load.getChildText("type"));
 		}
 		g.put("pause", false);
 		g.put("simulationSpeed",9); //speed defined in xml file (sleep value)
@@ -135,9 +136,12 @@ public class Experiment implements Runnable {
 		trials = XMLExperimentParser.loadTrials(root, logPath, subject,
 				universe);
 		
+		System.out.println("[+] Trials Loaded");
+		
 		//check if we are loading from a particular trial
 		String t = (String)g.get("loadTrial");
 		Integer e = (Integer)g.get("loadEpisode");
+
 		if(t!=null){
 			//Pop trials until we get the 
 			for(int i =0;;i++){
@@ -159,8 +163,14 @@ public class Experiment implements Runnable {
 		ElementWrapper params = root;
 		beforeTasks = TaskLoader.getInstance().load(
 				params.getChild("beforeExperimentTasks"));
+
+		System.out.println("[+] Before Tasks loaded");
+		
 		afterTasks = TaskLoader.getInstance().load(
 				params.getChild("afterExperimentTasks"));
+		
+		System.out.println("[+] After Tasks loaded");
+
 	}
 
 	/***
@@ -169,6 +179,9 @@ public class Experiment implements Runnable {
 	 */
 	public void run() {
 		// Do all before trial tasks
+		System.out.println(beforeTasks.size());
+		System.out.println(trials.size());
+		System.out.println(afterTasks.size());
 		for (Task task : beforeTasks)
 			task.perform(this);
 
@@ -180,6 +193,7 @@ public class Experiment implements Runnable {
 				e.printStackTrace();
 			}
 		// Run each trial in order
+		
 		for (Trial t : trials)
 			t.run();
 
@@ -237,6 +251,8 @@ public class Experiment implements Runnable {
 		Experiment e = new Experiment(args[0],(String)g.get("logPath") , args[2], args[3]);
 		e.run();
 
+		System.out.println("[+] Finished running");
+		
 		System.exit(0);
 	}
 

@@ -48,7 +48,7 @@ public class UpdateQModule extends Module {
 			anglei+=deltaAngle;
 		}
 		
-		System.out.println("dotProduct "+dotProducts);
+		//System.out.println("dotProduct "+dotProducts);
 		
 
 	}
