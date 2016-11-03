@@ -1,0 +1,29 @@
+constant SOURCE_FOLDERS
+"./platform/src/;./multiscalemodel/src/;./bin/;./deps/*;./deps/j3dport/*"
+
+constant MAIN_CLASS
+edu.usf.experiment.Experiment
+
+constant EXPERIMENT_XML
+"./Batteries/MultipleTRuns/xml/mTNoFood5Laps40Replay200Thres1Moved.xml"
+
+variable LOG_FOLDER 
+logs/latentLearning/Moved/MultipleTNoFood5Laps40Replay200Thres1/MultipleTNoFood5Laps40Replay200Thres1K/
+logs/latentLearning/Moved/MultipleTNoFood5Laps40Replay200Thres1/MultipleTNoFood5Laps40Replay200Thres1L/
+logs/latentLearning/Moved/MultipleTNoFood5Laps40Replay200Thres1/MultipleTNoFood5Laps40Replay200Thres1M/
+logs/latentLearning/Moved/MultipleTNoFood5Laps40Replay200Thres1/MultipleTNoFood5Laps40Replay200Thres1N/
+logs/latentLearning/Moved/MultipleTNoFood5Laps40Replay200Thres1/MultipleTNoFood5Laps40Replay200Thres1O/
+logs/latentLearning/Moved/MultipleTNoFood5Laps40Replay200Thres1/MultipleTNoFood5Laps40Replay200Thres1P/
+logs/latentLearning/Moved/MultipleTNoFood5Laps40Replay200Thres1/MultipleTNoFood5Laps40Replay200Thres1Q/
+logs/latentLearning/Moved/MultipleTNoFood5Laps40Replay200Thres1/MultipleTNoFood5Laps40Replay200Thres1R/
+logs/latentLearning/Moved/MultipleTNoFood5Laps40Replay200Thres1/MultipleTNoFood5Laps40Replay200Thres1S/
+logs/latentLearning/Moved/MultipleTNoFood5Laps40Replay200Thres1/MultipleTNoFood5Laps40Replay200Thres1T/
+
+
+constant GROUP 
+Control
+
+constant RAT_NUMBER
+1
+
+combine allXall
