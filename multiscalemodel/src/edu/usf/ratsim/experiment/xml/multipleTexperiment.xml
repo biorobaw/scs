@@ -68,12 +68,12 @@
 			<wTransitionLR>1.0</wTransitionLR>
 			
 			<!-- sessions, laps, and replay -->
-			<noFoodLaps>6</noFoodLaps>
+			<noFoodLaps>10</noFoodLaps>
 			<laps>25</laps>
 			<cantReplay>200</cantReplay>
 			<!-- threshold to propagate PC activation during 
 			     sleep state. Should be numPC/50           -->
-			<replayThres>1.0</replayThres>
+			<replayThres>.001</replayThres>
 			
 			<!-- number of directions the rat con move towards -->
 			<numActions>8</numActions>
@@ -82,7 +82,7 @@
 			<!-- Minimum conjuntive layer cell radius -->
 			<PCRadius>.08</PCRadius><!-- small = 0.08, big=0.2 -->
 			<!-- Cells per side of the square -->
-			<numPC>1300</numPC><!-- 430 -->
+			<numPC>2000</numPC><!-- 430 -->
 			<!-- Type of conjunctive cell -->
 			<placeCells>exponentialMultipleT</placeCells>
 			<!-- Map dimensions for conjuntive cell placing -->
@@ -229,9 +229,7 @@
 				<logger>
 					<name>edu.usf.experiment.log.FeederLogger</name>
 				</logger>
-				<logger>
-					<name>edu.usf.ratsim.experiment.log.PCLogger</name>
-				</logger>
+				
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>

@@ -100,7 +100,9 @@ public class PlaceCellTransitionMatrixUpdater extends Module {
 					int j=indexesj[j1];
 					float val = wPort.get(i, j);
 					//val+= Math.atan(pc.get(i)*(pc.get(j)-pcCopy.get(j)));
-					val+= Math.atan((pc.get(i)+pcCopy.get(i))/2*(pc.get(j)-pcCopy.get(j)));
+//					val+= Math.atan((pc.get(i)+pcCopy.get(i))/2*(pc.get(j)-pcCopy.get(j)));
+					val+= Math.atan(pc.get(i)*pcCopy.get(i)) + 
+							Math.atan(pc.get(i)*pcCopy.get(i) * ((pc.get(j)-pcCopy.get(j))/(pc.get(j)+pcCopy.get(j))) );
 					wPort.set(i, j, val);
 				}
 			
