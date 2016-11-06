@@ -10,8 +10,13 @@ public class DummyPlotter extends Plotter {
 	}
 
 	@Override
-	public void plot() {
-		System.out.println("Plotting...");
+	public Runnable plot() {
+		return new Runnable(){
+			@Override
+			public void run() {
+				System.out.println("Plotting...");
+			}
+		};
 	}
 
 }

@@ -90,9 +90,7 @@ public class Trial implements Runnable {
 				logger.log(this);
 			for (Logger logger : beforeLoggers)
 				logger.finalizeLog();
-			for (Plotter plotter : beforePlotters)
-				plotter.plot();
-
+			Plotter.plot(beforePlotters);
 			// Run each episode
 			for (Episode episode : episodes) {
 				episode.run();
@@ -110,9 +108,7 @@ public class Trial implements Runnable {
 			for (Logger logger : afterLoggers)
 				logger.finalizeLog(); 
 			// Plot
-			for (Plotter plotter : afterPlotters)
-				plotter.plot();
-			
+			Plotter.plot(afterPlotters);
 			
 
 		}

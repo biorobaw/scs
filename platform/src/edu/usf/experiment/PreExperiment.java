@@ -79,8 +79,7 @@ public class PreExperiment extends Experiment implements Runnable {
 			logger.finalizeLog();
 		}
 		
-		for (Plotter plotter : beforePlotters)
-			plotter.plot();
+		Plotter.plot(beforePlotters);
 	}
 
 	public static void main(String[] args) {
