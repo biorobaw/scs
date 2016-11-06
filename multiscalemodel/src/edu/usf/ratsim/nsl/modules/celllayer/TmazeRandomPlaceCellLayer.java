@@ -154,7 +154,7 @@ public class TmazeRandomPlaceCellLayer extends Module {
 				i++;
 			}
 
-			if(max==0) throw new IllegalArgumentException(Globals.getInstance().get("logPath")+":\n\t\t No active place cells");
+//			if(max==0) throw new IllegalArgumentException(Globals.getInstance().get("logPath")+":\n\t\t No active place cells");
 			for(Integer key : nonZero.keySet()){
 				nonZero.put(key, nonZero.get(key)/max);
 			}

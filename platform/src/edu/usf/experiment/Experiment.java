@@ -127,8 +127,11 @@ public class Experiment implements Runnable {
 //		if (g.get("feederOrder")!=null)
 //				root.getChild("model").getChild("params").
 //					 getChild("feederOrder").setText((String)g.get("feederOrder"));
+		ElementWrapper modelParams = root.getChild("model");
+		ElementWrapper groupParams = getGroupNode(root, groupName).getChild("params");
+		modelParams.merge(root, groupParams);
 		subject = SubjectLoader.getInstance().load(subjectName, groupName,
-				root.getChild("model"), robot);
+				modelParams, robot);
 
 		System.out.println("[+] Model created");
 
@@ -171,6 +174,14 @@ public class Experiment implements Runnable {
 		
 		System.out.println("[+] After Tasks loaded");
 
+	}
+
+	private ElementWrapper getGroupNode(ElementWrapper root, String groupName) {
+		for(ElementWrapper g : root.getChildren("group"))
+			if (g.getChildText("name").equals(groupName))
+				return g;
+		
+		return null;
 	}
 
 	/***

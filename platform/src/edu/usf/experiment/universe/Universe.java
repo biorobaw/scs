@@ -405,4 +405,8 @@ public abstract class Universe {
 		feeders.put(id, new Feeder(id, new Point3f(x, y, 0)));
 	}
 
+	public void setPermanentFeeder(Integer id, boolean b) {
+		feeders.get(id).setPermanent(b);
+	}
+
 }

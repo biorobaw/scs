@@ -23,6 +23,7 @@ public abstract class PositionLogger extends Logger {
 		String subName = props.getProperty("subject");
 		String episode = props.getProperty("episode");
 		
+		System.out.println("Steps: " + poses.size());
 		synchronized (PositionLogger.class) {
 			PrintWriter writer = getWriter();
 			for (Pose pose : poses)

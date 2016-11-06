@@ -264,7 +264,7 @@ public class MultipleTModelAsleep extends MultipleTModel {
 				
 		//set random placecell active and move robot to that position:
 		int startingPlaceCell = RandomSingleton.getInstance().nextInt(numPC);
-		System.out.println("starting place cell: " + startingPlaceCell);
+//		System.out.println("starting place cell: " + startingPlaceCell);
 		visitedNodes[startingPlaceCell] = true;
 		nextActiveModule.setVisitedArray(visitedNodes);
 		((Int0dPort)nextActiveModule.getOutPort("nextActive")).set(startingPlaceCell);

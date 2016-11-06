@@ -47,8 +47,12 @@ public class NextActiveModule extends Module {
 		nextActive.set(maxId);
 		if(visited[maxId]){
 			Globals.getInstance().put("loopInReactivationPath", true);
-		} else visited[maxId] = true;
-		maxActivation.set(maxVal);
+			maxActivation.set(-Float.MAX_VALUE);
+		} else {
+			visited[maxId] = true;
+			maxActivation.set(maxVal);
+		}
+		
 		
 	}
 	
