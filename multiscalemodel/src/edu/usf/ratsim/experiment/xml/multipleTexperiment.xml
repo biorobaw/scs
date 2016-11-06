@@ -69,8 +69,6 @@
 			<wTransitionLR>1.0</wTransitionLR>
 			
 			<!-- sessions, laps, and replay -->
-			<noFoodLaps>0</noFoodLaps>
-			<laps>100</laps>
 			<cantReplay>200</cantReplay>
 			<!-- threshold to propagate PC activation during 
 			     sleep state. Should be numPC/50           -->
@@ -102,7 +100,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>8</numMembers>
+		<numMembers>4</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -111,7 +109,7 @@
 	
 	<group>
 		<name>NoHab</name>
-		<numMembers>8</numMembers>
+		<numMembers>4</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -120,7 +118,7 @@
 	
 	<group>
 		<name>NoReplay</name>
-		<numMembers>8</numMembers>
+		<numMembers>4</numMembers>
 		<params>
 			<cantReplay>0</cantReplay>
 		</params>
@@ -130,16 +128,6 @@
 	
 	<!-- Task to be performed before the eperiment -->
 	<beforeExperimentTasks>
-		<!-- Enable feeders all feeders -->
-		<!-- <task>
-			<name>edu.usf.experiment.task.AddAllFeedersTask</name>
-			<params>
-				<feederFile>multiscalemodel/src/edu/usf/ratsim/experiment/feederPositions/positionsTSP21Feeders</feederFile>
-			</params>
-		</task> -->
-		
-		<!-- x: left arm: 0, right arm: 3.6 ~~ (lab_origin, lab_origin + length), y=10.5 -->
-		
 	</beforeExperimentTasks>
 	
 	<!-- Loggers to be executed before the eperiment -->
@@ -163,7 +151,7 @@
 		<name>Habituation</name>
 		<!-- Groups to apply the trial -->
 		<groups>
-			<group>Control</group>
+<!--			<group>Control</group-->
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
@@ -171,14 +159,11 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>0</number><!-- 24 session * (80 + 80 laps * 8 replays) =   -->
+			<number>10</number><!-- 24 session * (80 + 80 laps * 8 replays) =   -->
 			<!-- Sleep between cycles for visualization -->
 			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
-				<!-- <task>
-					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
-				</task> -->
 				<!-- Place the animat in a given place -->
 				<task>
 					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
@@ -194,21 +179,12 @@
 						
 					</params>
 				</task>
-
-				
-				
 			</beforeEpisodeTasks>
 			<!-- Tasks to performe before each cycle -->
 			<beforeCycleTasks>
 			</beforeCycleTasks>
 			<!-- Tasks to performe after each cycle -->
 			<afterCycleTasks>
-				<!--<task>
-					<name>edu.usf.experiment.task.PlaceRobotFile</name>
-					<params>
-						<filename>$(ratpath)</filename>
-					</params> 
-				</task>-->
 			</afterCycleTasks>
 			<!-- Loggers to execute after each cycle -->
 			<afterCycleLoggers>
@@ -218,9 +194,6 @@
 					<params>
 					</params>
 				</logger>
-				<!--  <logger>
-					<name>edu.usf.ratsim.experiment.log.PCActivityLogger</name>
-				</logger>-->
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->
 			<afterEpisodeLoggers>
@@ -233,9 +206,6 @@
 				<logger>
 					<name>edu.usf.experiment.log.FeederLogger</name>
 				</logger>
-				<!-- <logger>
-					<name>edu.usf.ratsim.experiment.log.PCLogger</name>
-				</logger> -->
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
@@ -337,9 +307,6 @@
 				<task>
 					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
 					<params>
-						<!--<filename>$(ratpath)</filename>-->
-						<!--<pointXYW>$(startPosition)</pointXYW> -->
-						
 						<point>
 							<x>0</x>
 							<y>0.1</y>
@@ -348,9 +315,6 @@
 						
 					</params>
 				</task>
-
-				
-				
 			</beforeEpisodeTasks>
 			<!-- Tasks to performe before each cycle -->
 			<beforeCycleTasks>
