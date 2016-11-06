@@ -265,25 +265,21 @@
 			<!-- Plotters to execute after each episode -->
 			<afterEpisodePlotters>
 				<!-- Copy the maze file to the episode folder -->
-				<!--<plotter>
+				<plotter>
 					<name>edu.usf.experiment.plot.CopyMazeFile</name>
-				</plotter>-->
+				</plotter>
 				<!-- Convert csv to rdata -->
-				<!-- <plotter>
+				<plotter>
 					<name>edu.usf.experiment.plot.CSVConverter</name>
-				</plotter>-->
+				</plotter>
 				<!-- Get time info from position information -->
-				<!-- <plotter>
+				<plotter>
 					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
-				</plotter>-->
+				</plotter>
 				<!-- Plot path for each episode -->
-				<!-- <plotter>
+				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
-				<plotter>
-					<name>edu.usf.ratsim.experiment.plot.PCPlotter</name>
-				</plotter>-->
-				
 			</afterEpisodePlotters>
 		</episodes>
 		<!-- Tasks to perform after the trial has ended -->
@@ -295,9 +291,9 @@
 		</afterTrialLoggers>
 		<!-- Plotters to execute after the trial has ended -->
 		<afterTrialPlotters>
-			<!-- <plotter>
+			<plotter>
 				<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
-			</plotter> -->
+			</plotter> 
 		</afterTrialPlotters>
 	</trial>
 	
@@ -418,22 +414,22 @@
 			<!-- Plotters to execute after each episode -->
 			<afterEpisodePlotters>
 				<!-- Copy the maze file to the episode folder -->
-				<!--<plotter>
+				<plotter>
 					<name>edu.usf.experiment.plot.CopyMazeFile</name>
-				</plotter>-->
+				</plotter>
 				<!-- Convert csv to rdata -->
-				<!-- <plotter>
+				<plotter>
 					<name>edu.usf.experiment.plot.CSVConverter</name>
-				</plotter>-->
+				</plotter>
 				<!-- Get time info from position information -->
-				<!-- <plotter>
+				<plotter>
 					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
-				</plotter>-->
+				</plotter>
 				<!-- Plot path for each episode -->
-				<!-- <plotter>
+				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.ratsim.experiment.plot.PCPlotter</name>
 				</plotter>-->
 				
@@ -448,9 +444,9 @@
 		</afterTrialLoggers>
 		<!-- Plotters to execute after the trial has ended -->
 		<afterTrialPlotters>
-			<!-- <plotter>
+			<plotter>
 				<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
-			</plotter> -->
+			</plotter> 
 		</afterTrialPlotters>
 	</trial>
 	

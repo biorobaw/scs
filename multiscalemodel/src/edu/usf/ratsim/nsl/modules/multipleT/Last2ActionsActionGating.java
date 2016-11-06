@@ -1,30 +1,9 @@
 package edu.usf.ratsim.nsl.modules.multipleT;
 
-import java.util.List;
-import java.util.Random;
-
-import javax.lang.model.element.ExecutableElement;
-import javax.media.j3d.VirtualUniverse;
-import javax.vecmath.Point3f;
-
-import com.sun.xml.internal.ws.api.Cancelable;
-
-import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.affordance.Affordance;
-import edu.usf.experiment.subject.affordance.EatAffordance;
-import edu.usf.experiment.subject.affordance.ForwardAffordance;
-import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.GeomUtils;
-import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
-import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
-import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
-import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
-import javafx.scene.control.SplitPane.Divider;
 
 /**
  * Module gives preferences to actions that move the rat forward.

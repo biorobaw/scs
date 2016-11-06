@@ -85,6 +85,16 @@ public class Experiment implements Runnable {
 	 */
 	public Experiment(ElementWrapper root, String logPath, String groupName,
 			String subName) {
+		Globals g = Globals.getInstance();
+		ElementWrapper load = root.getChild("load");
+		if(load!=null) {
+			g.put("loadEpisode", load.getChildInt("episode"));
+			g.put("loadTrial", load.getChildText("trial"));
+			g.put("loadType",load.getChildText("type"));
+		}
+		g.put("pause", false);
+		g.put("simulationSpeed",0); //speed defined in xml file (sleep value)
+		
 		setup(root, logPath, groupName, subName);
 	}
 
