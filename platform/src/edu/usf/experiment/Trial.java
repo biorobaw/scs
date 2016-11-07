@@ -97,8 +97,6 @@ public class Trial implements Runnable {
 				g.put("episode", (int)g.get("episode")+1);
 			}
 			
-			
-
 			// Do all after trial tasks
 			for (Task task : afterTasks)
 				task.perform(this);
@@ -107,7 +105,12 @@ public class Trial implements Runnable {
 				logger.log(this);
 			for (Logger logger : afterLoggers)
 				logger.finalizeLog(); 
-			// Plot
+			
+      // Plot
+      // Wait until all plots are done before contuining
+      // because some plots create files used by trial plots
+      Plotter.join();  
+        
 			Plotter.plot(afterPlotters);
 			
 

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
+import edu.usf.experiment.plot.Plotter;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.RobotLoader;
 import edu.usf.experiment.subject.Subject;
@@ -221,6 +222,10 @@ public class Experiment implements Runnable {
 		// Do all after trial tasks
 		for (Task task : afterTasks)
 			task.perform(this);
+		
+    // Wait for threads
+		Plotter.join();
+
 	}
 
 	public static void main(String[] args) {

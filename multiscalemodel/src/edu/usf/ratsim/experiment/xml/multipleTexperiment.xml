@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-	<seed>-59875563504154406</seed> 
+<!--	<seed>-59875563504154406</seed>-->
 	
 	 <!-- load will load the subject (indicated by the input to the program) as saved after the specified episode  of the specified  trial-->
 	<!-- <load>
@@ -98,27 +98,11 @@
 		</params>
 	</model>
 	
-	<group>
-		<name>Control</name>
-		<numMembers>4</numMembers>
-		<params>
-		</params>
-		<tasks>
-		</tasks>
-	</group>
-	
-	<group>
-		<name>NoHab</name>
-		<numMembers>4</numMembers>
-		<params>
-		</params>
-		<tasks>
-		</tasks>
-	</group>
+
 	
 	<group>
 		<name>NoReplay</name>
-		<numMembers>4</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 			<cantReplay>0</cantReplay>
 		</params>
@@ -151,7 +135,7 @@
 		<name>Habituation</name>
 		<!-- Groups to apply the trial -->
 		<groups>
-<!--			<group>Control</group-->
+			<group>Control</group>
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
