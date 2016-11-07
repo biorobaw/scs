@@ -29,13 +29,12 @@ public class Softmax extends Module {
 
 		float sum = 0;
 		float max = 0;
-		for(int i=0;i<numActions;i++)
-			max = Math.abs(input.get(i)) > max ? Math.abs(input.get(i)) : max;
+//		for(int i=0;i<numActions;i++)
+//			max = Math.abs(input.get(i)) > max ? Math.abs(input.get(i)) : max;
 		//System.out.print("Q: ");
 		if (max==0) max=1;
 		for (int i=0;i<numActions;i++){
-//			if (input.get(i) > 100)
-//				System.out.print(""+input.get(i) + " ");
+			//System.out.print(""+input.get(i) + " ");
 			probabilities[i] = (float)Math.exp( input.get(i)/max);
 			sum+=probabilities[i];
 		}

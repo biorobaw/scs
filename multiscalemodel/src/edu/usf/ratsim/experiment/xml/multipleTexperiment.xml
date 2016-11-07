@@ -98,27 +98,11 @@
 		</params>
 	</model>
 	
-	<group>
-		<name>Control</name>
-		<numMembers>16</numMembers>
-		<params>
-		</params>
-		<tasks>
-		</tasks>
-	</group>
 
-	<group>
-		<name>NoHab</name>
-		<numMembers>16</numMembers>
-		<params>
-		</params>
-		<tasks>
-		</tasks>
-	</group>
 	
 	<group>
 		<name>NoReplay</name>
-		<numMembers>16</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 			<cantReplay>0</cantReplay>
 		</params>

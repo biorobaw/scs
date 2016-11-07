@@ -1,10 +1,12 @@
 package edu.usf.ratsim.nsl.modules.multipleT;
 
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
 import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
+import edu.usf.micronsl.port.twodimensional.sparse.SparseMatrixPort;
 
 /**
  * Module to generate random actions when the agent hasnt moved (just rotated)
@@ -17,8 +19,6 @@ public class PlaceCellTransitionMatrixUpdater extends Module {
 	int numPlaceCells;
 	float learningRate;
 	Runnable run;
-	
-	private HashMap<Integer, Float> oldPc;
 	
 	boolean[] processedi;
 	boolean[] processedj;
@@ -64,7 +64,7 @@ public class PlaceCellTransitionMatrixUpdater extends Module {
 			}
 				
 				
-			oldPc = new HashMap<Integer,Float>(pc.getNonZero());	
+				
 			
 			run = new RunGeneral();
 		}
@@ -76,6 +76,7 @@ public class PlaceCellTransitionMatrixUpdater extends Module {
 		@Override
 		public void run() {
 			Float1dSparsePort pc = (Float1dSparsePort) getInPort("PC");
+			Float1dSparsePort pcCopy = (Float1dSparsePort) getInPort("PCcopy");
 			FloatMatrixPort wPort = (FloatMatrixPort) getInPort("wPort");
 			
 			for(int i : pc.getNonZero().keySet()){
@@ -98,11 +99,8 @@ public class PlaceCellTransitionMatrixUpdater extends Module {
 					int i=indexesj[i1];
 					int j=indexesj[j1];
 					float val = wPort.get(i, j);
-					
-					float oldI = oldPc.containsKey(i) ? oldPc.get(i) : 0;
-					float oldJ = oldPc.containsKey(i) ? oldPc.get(i) : 0;
 					//val+= Math.atan(pc.get(i)*(pc.get(j)-pcCopy.get(j)));
-					val+= Math.atan((pc.get(i)+oldI)/2*(pc.get(j)-oldJ));
+					val+= Math.atan((pc.get(i)+pcCopy.get(i))/2*(pc.get(j)-pcCopy.get(j)));
 					wPort.set(i, j, val);
 				}
 			
@@ -118,7 +116,7 @@ public class PlaceCellTransitionMatrixUpdater extends Module {
 			processedi = new boolean[numPlaceCells];
 			nextI = 0;
 			
-			oldPc = new HashMap<Integer,Float>(pc.getNonZero());
+			
 		}
 		
 	}
