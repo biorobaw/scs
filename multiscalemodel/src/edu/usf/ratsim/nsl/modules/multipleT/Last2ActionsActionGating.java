@@ -25,6 +25,7 @@ public class Last2ActionsActionGating extends Module {
 	float uniformProbability;
 	
 	int last2Action;
+	private int lastLast2Action;
 	
 	public Runnable run;	
 	
@@ -144,8 +145,8 @@ public class Last2ActionsActionGating extends Module {
 							
 			float sum = 0;
 			for (int i =0;i<numActions;i++){
-				probabilities[i] = precalculatedValues[action][last2Action][i]*input.get(i);
-				chosenRing[i] = precalculatedValues[action][last2Action][i];
+				probabilities[i] = precalculatedValues[last2Action][lastLast2Action][i]*input.get(i);
+				chosenRing[i] = precalculatedValues[last2Action][lastLast2Action][i];
 				sum+=probabilities[i];
 			}
 			//System.out.println("previous: "+action);
@@ -157,6 +158,7 @@ public class Last2ActionsActionGating extends Module {
 			}
 			//System.out.println(")");
 			
+			lastLast2Action = last2Action;
 			last2Action = action;
 			
 		}
@@ -164,6 +166,8 @@ public class Last2ActionsActionGating extends Module {
 	
 	
 	public class RunSecondTime implements Runnable {
+		
+
 		public void run() {
 			Float1dPortArray input = (Float1dPortArray) getInPort("input");
 			int action = ((Int0dPort) getInPort("action")).get();
@@ -182,7 +186,7 @@ public class Last2ActionsActionGating extends Module {
 			}
 			//System.out.println(")");
 			
-			
+			lastLast2Action = last2Action;
 			last2Action = action;
 		}
 	}
@@ -191,6 +195,7 @@ public class Last2ActionsActionGating extends Module {
 		public void run(){
 			
 			Float1dPortArray input = (Float1dPortArray) getInPort("input");
+			last2Action = ((Int0dPort) getInPort("action")).get();
 			
 			for (int i =0;i<numActions;i++){
 				probabilities[i] = input.get(i);

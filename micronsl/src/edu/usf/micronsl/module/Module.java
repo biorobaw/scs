@@ -181,6 +181,11 @@ public abstract class Module extends DependencyRunnable {
 	 * @return
 	 */
 	public abstract boolean usesRandom();
+	
+	/**
+	 * Resets the state of the module.
+	 */
+	public void reset() {};
 
 	/**
 	 * Returns a list of the module's inports.

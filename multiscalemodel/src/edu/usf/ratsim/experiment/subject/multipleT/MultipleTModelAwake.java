@@ -4,20 +4,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.media.j3d.VirtualUniverse;
-
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.micronsl.Datatypes.SparseMatrix;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.module.copy.Float1dCopyModule;
-import edu.usf.micronsl.module.copy.Float1dSparseCopyModule;
-import edu.usf.micronsl.module.copy.Int0dCopyModule;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
-import edu.usf.micronsl.port.twodimensional.sparse.SparseMatrixPort;
 import edu.usf.ratsim.experiment.subject.NotImplementedException;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.experiment.universe.virtual.drawingUtilities.DrawPolarGraph;
@@ -29,7 +21,6 @@ import edu.usf.ratsim.nsl.modules.celllayer.TmazeRandomPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.input.Position;
 import edu.usf.ratsim.nsl.modules.input.SubjectAte;
 import edu.usf.ratsim.nsl.modules.multipleT.ActionGatingModule;
-import edu.usf.ratsim.nsl.modules.multipleT.DontGoBackBiasModule;
 import edu.usf.ratsim.nsl.modules.multipleT.Last2ActionsActionGating;
 import edu.usf.ratsim.nsl.modules.multipleT.MultipleTActionPerformer;
 import edu.usf.ratsim.nsl.modules.multipleT.PlaceCellTransitionMatrixUpdater;
@@ -134,29 +125,16 @@ public class MultipleTModelAwake extends MultipleTModel {
 		
 		//System.out.println("rad " + placeCells.getCells().get(0).getPlaceRadius());
 		
-		//Create PC copy module
-		Float1dSparseCopyModule pcCopy = new Float1dSparseCopyModule("PCCopy");
-		pcCopy.addInPort("toCopy",placeCells.getOutPort("activation"), true);
-		addModule(pcCopy);
-		
-		
 		//Create currentStateQ Q module
 		currentStateQ = new ProportionalVotes("currentStateQ",numActions,true);
 		currentStateQ.addInPort("states", placeCells.getOutPort("activation"));
 		currentStateQ.addInPort("value", QPort);
 		addModule(currentStateQ);
 		
-		//Create copy Q module
-		Module copyQ = new Float1dCopyModule("copyQ");
-		copyQ.addInPort("toCopy", currentStateQ.getOutPort("votes"),true);
-		addModule(copyQ);
-		
-		
 		//Create SoftMax module
 		Softmax softmax = new Softmax("softmax", numActions);
 		softmax.addInPort("input", currentStateQ.getOutPort("votes"));
 		addModule(softmax);
-		
 		
 		//create sameActionBias module:
 		//Assigns bias chance of choosing previous action and (1-bias) of using current probabilities
@@ -187,22 +165,14 @@ public class MultipleTModelAwake extends MultipleTModel {
 		addModule(actionSelection);
 		
 		
-		//Create actionCopyModule
-		Int0dCopyModule actionCopy = new Int0dCopyModule("actionCopy");
-		actionCopy.addInPort("toCopy", actionSelection.getOutPort("action"),true);
-		addModule(actionCopy);
-		
 		//Add extra input to bias Module
-		biasModule.addInPort("action", actionCopy.getOutPort("copy"));
-		
+		biasModule.addInPort("action", actionSelection.getOutPort("action"), true);
 		
 		
 		//Create deltaSignal module
 		Module deltaError = new SarsaQDeltaError("error", discountFactor);
 		deltaError.addInPort("reward", r.getOutPort("reward"));
-		deltaError.addInPort("copyQ", copyQ.getOutPort("copy"));
 		deltaError.addInPort("Q",currentStateQ.getOutPort("votes"));
-		deltaError.addInPort("copyAction", actionCopy.getOutPort("copy"));
 		deltaError.addInPort("action",actionSelection.getOutPort("action"));
 		addModule(deltaError);
 		
@@ -210,9 +180,9 @@ public class MultipleTModelAwake extends MultipleTModel {
 		//Create update Q module
 		Module updateQ = new UpdateQModule("updateQ", numActions, learningRate);
 		updateQ.addInPort("delta", deltaError.getOutPort("delta"));
-		updateQ.addInPort("action", actionCopy.getOutPort("copy"));
+		updateQ.addInPort("action", actionSelection.getOutPort("action"));
 		updateQ.addInPort("Q", QPort);
-		updateQ.addInPort("placeCells", pcCopy.getOutPort("copy"));
+		updateQ.addInPort("placeCells", placeCells.getOutPort("activation"));
 		addModule(updateQ);
 		
 		
@@ -228,7 +198,6 @@ public class MultipleTModelAwake extends MultipleTModel {
 		//Create UpdateW module
 		PlaceCellTransitionMatrixUpdater wUpdater = new PlaceCellTransitionMatrixUpdater("wUpdater", numPC, wTransitionLR);
 		wUpdater.addInPort("PC", placeCells.getOutPort("activation"));
-		wUpdater.addInPort("PCcopy", pcCopy.getOutPort("copy"));
 		wUpdater.addInPort("wPort", WPort);
 		addModule(wUpdater);
 		
@@ -250,7 +219,6 @@ public class MultipleTModelAwake extends MultipleTModel {
 
 	public void newTrial() {
 		getModule("PCLayer").getOutPort("activation").clear();
-		getModule("PCCopy").getOutPort("copy").clear();
 		//by doing this deltaQ(s_i,a_i) = nu*delta*State(s_i)*<a_i,a> = 0
 		
 		((PlaceCellTransitionMatrixUpdater)getModule("wUpdater")).newTrial();
@@ -271,7 +239,6 @@ public class MultipleTModelAwake extends MultipleTModel {
 		// TODO Auto-generated method stub
 		
 		getModule("PCLayer").getOutPort("activation").clear();
-		getModule("PCCopy").getOutPort("copy").clear();
 		//by doing this deltaQ(s_i,a_i) = nu*delta*State(s_i)*<a_i,a> = 0
 		
 		((PlaceCellTransitionMatrixUpdater)getModule("wUpdater")).newEpisode();

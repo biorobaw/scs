@@ -1,5 +1,7 @@
 package edu.usf.ratsim.nsl.modules.multipleT;
 
+import java.util.HashMap;
+
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
@@ -19,6 +21,8 @@ public class UpdateQModule extends Module {
 	private int numActions;
 		
 	float[][] dotProducts;
+	private boolean initialized;
+	private HashMap<Integer, Float> oldPCs;
 	
 
 	public UpdateQModule(String name,int numActions,float nu) {
@@ -48,9 +52,7 @@ public class UpdateQModule extends Module {
 			anglei+=deltaAngle;
 		}
 		
-		//System.out.println("dotProduct "+dotProducts);
-		
-
+		initialized = false;
 	}
 
 	
@@ -60,19 +62,20 @@ public class UpdateQModule extends Module {
 		FloatMatrixPort Q = (FloatMatrixPort)getInPort("Q");
 		Float1dSparsePort PCs = (Float1dSparsePort)getInPort("placeCells");
 		
-		if (nuDelta==0) return;
-		for (int i : PCs.getNonZero().keySet())
-			for (int j =0;j<numActions;j++)
-			{
-				Q.set(i,j, Q.get(i,j) + nuDelta*PCs.get(i)*dotProducts[j][action]);
-				
-				//if(nuDelta!=0) System.out.println("i,j,Q:"+i+","+j+","+Q.get(i, j));
-				
-			}
-
+		if (initialized){
+			if (nuDelta==0) return;
+			for (int i : oldPCs.keySet())
+				for (int j =0;j<numActions;j++)
+				{
+					Q.set(i,j, Q.get(i,j) + nuDelta*oldPCs.get(i)*dotProducts[j][action]);
+					
+					//if(nuDelta!=0) System.out.println("i,j,Q:"+i+","+j+","+Q.get(i, j));
+					
+				}
+		} 
 		
-			
-		
+		oldPCs = new HashMap<Integer, Float>(PCs.getNonZero());
+		initialized = true;
 	}
 
 
