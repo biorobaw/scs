@@ -32,6 +32,8 @@ import edu.usf.ratsim.nsl.modules.multipleT.MoveFromToActionPerformer;
 import edu.usf.ratsim.nsl.modules.multipleT.NextActiveModule;
 import edu.usf.ratsim.nsl.modules.multipleT.NextPositionModule;
 import edu.usf.ratsim.nsl.modules.multipleT.UpdateQModule;
+import edu.usf.ratsim.nsl.modules.multipleT.UpdateQModuleAC;
+import edu.usf.ratsim.nsl.modules.rl.ActorCriticDeltaError;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
 import edu.usf.ratsim.nsl.modules.rl.SarsaQDeltaError;
 
@@ -152,7 +154,7 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		
 		
 		//Create currentStateQ Q module
-		currentStateQ = new ProportionalVotes("currentStateQ",numActions,true);
+		currentStateQ = new ProportionalVotes("currentStateQ",numActions+1,true);
 		currentStateQ.addInPort("states", placeCells.getOutPort("activation"));
 		currentStateQ.addInPort("value", QPort);
 		addModule(currentStateQ);
@@ -212,17 +214,15 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		
 		
 		//Create deltaSignal module
-		Module deltaError = new SarsaQDeltaError("error", discountFactor);
+		Module deltaError = new ActorCriticDeltaError("error", discountFactor, numActions);
 		deltaError.addInPort("reward", r.getOutPort("reward"));
 		deltaError.addInPort("copyQ", copyQ.getOutPort("copy"));
 		deltaError.addInPort("Q",currentStateQ.getOutPort("votes"));
-		deltaError.addInPort("copyAction", actionCopy.getOutPort("copy"));
-		deltaError.addInPort("action",actionSelection.getOutPort("action"));
 		addModule(deltaError);
 		
 		
 		//Create update Q module
-		Module updateQ = new UpdateQModule("updateQ", numActions, learningRate);
+		Module updateQ = new UpdateQModuleAC("updateQ", numActions, learningRate);
 		updateQ.addInPort("delta", deltaError.getOutPort("delta"));
 		updateQ.addInPort("action", actionCopy.getOutPort("copy"));
 		updateQ.addInPort("Q", QPort);

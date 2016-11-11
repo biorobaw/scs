@@ -65,7 +65,8 @@ public class MultipleTSubject extends Subject {
 		awakeFoodDistanceThreshold = params.getChildFloat("awakeFoodDistanceThreshold");
 		asleepFoodDistanceThreshold = params.getChildFloat("asleepFoodDistanceThreshold");
 
-		QTable = new float[numPC][numActions];
+		// Num actions + 1 for value
+		QTable = new float[numPC][numActions+1];
 		WTable = new float[numPC][numPC];
 
 		Integer loadEpisode = (Integer) g.get("loadEpisode");
