@@ -211,7 +211,7 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		addModule(actionPerformer);
 		
 		subAte.addPreReq(actionPerformer);
-		
+		placeCells.addPreReq(actionPerformer);
 		
 		//Create deltaSignal module
 		Module deltaError = new ActorCriticDeltaError("error", discountFactor, numActions);
@@ -224,7 +224,7 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		//Create update Q module
 		Module updateQ = new UpdateQModuleAC("updateQ", numActions, learningRate);
 		updateQ.addInPort("delta", deltaError.getOutPort("delta"));
-		updateQ.addInPort("action", actionCopy.getOutPort("copy"));
+		updateQ.addInPort("action", actionSelection.getOutPort("action"));
 		updateQ.addInPort("Q", QPort);
 		updateQ.addInPort("placeCells", pcCopy.getOutPort("copy"));
 		addModule(updateQ);

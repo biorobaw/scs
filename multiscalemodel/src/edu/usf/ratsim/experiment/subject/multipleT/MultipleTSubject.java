@@ -42,8 +42,6 @@ public class MultipleTSubject extends Subject {
 	public float awakeFoodDistanceThreshold;
 	public float asleepFoodDistanceThreshold;
 
-	private boolean waitingOne;
-
 	public MultipleTSubject(String name, String group, ElementWrapper params, Robot robot) {
 		super(name, group, params, robot);
 
@@ -151,11 +149,8 @@ public class MultipleTSubject extends Subject {
 
 		// Replay after eating
 		// But first wait one extra cycle
-		if (hasEaten() && !waitingOne) 
-			waitingOne = true;
-		else if (waitingOne){
+		if (hasEaten()) {
 			// Now we are ready to execute replay
-			waitingOne = false;
 			lRobot.setCloseThreshold(asleepFoodDistanceThreshold);
 
 			// Execute replay episodes
@@ -187,7 +182,6 @@ public class MultipleTSubject extends Subject {
 	@Override
 	public void newEpisode() {
 		modelAwake.newEpisode();
-		waitingOne = false;
 	}
 
 	@Override

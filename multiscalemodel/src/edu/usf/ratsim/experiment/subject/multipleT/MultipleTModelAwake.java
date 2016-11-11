@@ -136,7 +136,6 @@ public class MultipleTModelAwake extends MultipleTModel {
 		
 		//System.out.println("rad " + placeCells.getCells().get(0).getPlaceRadius());
 		
-		//Create PC copy module
 		Float1dSparseCopyModule pcCopy = new Float1dSparseCopyModule("PCCopy");
 		pcCopy.addInPort("toCopy",placeCells.getOutPort("activation"), true);
 		addModule(pcCopy);
@@ -156,7 +155,7 @@ public class MultipleTModelAwake extends MultipleTModel {
 		
 		//Create SoftMax module
 		Softmax softmax = new Softmax("softmax", numActions);
-		softmax.addInPort("input", currentStateQ.getOutPort("votes"));
+		softmax.addInPort("input", copyQ.getOutPort("copy"));
 		addModule(softmax);
 		
 		
@@ -207,7 +206,7 @@ public class MultipleTModelAwake extends MultipleTModel {
 		//Create update Q module
 		Module updateQ = new UpdateQModuleAC("updateQ", numActions, learningRate);
 		updateQ.addInPort("delta", deltaError.getOutPort("delta"));
-		updateQ.addInPort("action", actionCopy.getOutPort("copy"));
+		updateQ.addInPort("action", actionSelection.getOutPort("action"));
 		updateQ.addInPort("Q", QPort);
 		updateQ.addInPort("placeCells", pcCopy.getOutPort("copy"));
 		addModule(updateQ);
@@ -219,7 +218,7 @@ public class MultipleTModelAwake extends MultipleTModel {
 		addModule(actionPerformer);
 		
 		subAte.addPreReq(actionPerformer);
-		
+		placeCells.addPreReq(actionPerformer);
 
 		//Create UpdateW module
 		PlaceCellTransitionMatrixUpdater wUpdater = new PlaceCellTransitionMatrixUpdater("wUpdater", numPC, wTransitionLR);
