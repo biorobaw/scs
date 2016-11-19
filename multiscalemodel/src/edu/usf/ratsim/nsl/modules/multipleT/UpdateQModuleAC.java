@@ -6,7 +6,7 @@ import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
-import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
+import edu.usf.micronsl.port.twodimensional.Float2dPort;
 
 /**
  * Module that sets the probability of an action to 0 if the action can not be
@@ -53,7 +53,7 @@ public class UpdateQModuleAC extends Module {
 	public void run() {
 		float nuDelta = nu * ((Float0dPort) getInPort("delta")).get();
 		int action = ((Int0dPort) getInPort("action")).get();
-		FloatMatrixPort Q = (FloatMatrixPort) getInPort("Q");
+		Float2dPort Q = (Float2dPort) getInPort("Q");
 
 		if (nuDelta == 0)
 			return;

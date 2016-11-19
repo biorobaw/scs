@@ -21,6 +21,7 @@ import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
+import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
@@ -45,8 +46,8 @@ public class MultipleTModelAsleep extends MultipleTModel {
 	public ProportionalVotes currentStateQ;
 	public NextActiveModule nextActiveModule;
 	
-	private float[][] QTable;
-	private float[][] WTable;
+	private Float2dSparsePort QTable;
+	private Float2dSparsePort WTable;
 	
 	public boolean[] visitedNodes;
 	
@@ -119,10 +120,8 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		
 		//Create Variables Q,W, note sleepState has already been initialized.
 		QTable = ((MultipleTSubject)subject).QTable;
-		FloatMatrixPort QPort = new FloatMatrixPort((Module) null, QTable);
 		
 		WTable = ((MultipleTSubject)subject).WTable;
-		FloatMatrixPort WPort = new FloatMatrixPort((Module)null, WTable);
 		
 		//Create pos module 
 		Position pos = new Position("position", lRobot);
@@ -136,7 +135,7 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		//Create currentStateQ Q module
 		currentStateQ = new ProportionalVotes("currentStateQ",numActions+1,true);
 		currentStateQ.addInPort("states", placeCells.getOutPort("activation"));
-		currentStateQ.addInPort("value", QPort);
+		currentStateQ.addInPort("value", QTable);
 		addModule(currentStateQ);
 		
 		//Create copy Q module
@@ -150,7 +149,7 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		addModule(active);
 		
 		nextActiveModule = new NextActiveModule("nextActive");
-		nextActiveModule.addInPort("W", WPort);
+		nextActiveModule.addInPort("W", WTable);
 		active.addInPort("toCopy", nextActiveModule.getOutPort("nextActive"),true);
 		nextActiveModule.addInPort("active", active.getOutPort("copy"));
 		addModule(nextActiveModule);
@@ -206,7 +205,7 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		Module updateQ = new UpdateQModuleAC("updateQ", numActions, learningRate);
 		updateQ.addInPort("delta", deltaError.getOutPort("delta"));
 		updateQ.addInPort("action", actionSelection.getOutPort("action"));
-		updateQ.addInPort("Q", QPort);
+		updateQ.addInPort("Q", QTable);
 		updateQ.addInPort("placeCells", placeCells.getOutPort("activation"));
 		addModule(updateQ);
 		

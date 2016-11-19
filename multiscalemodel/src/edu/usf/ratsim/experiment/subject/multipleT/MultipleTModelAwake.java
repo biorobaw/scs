@@ -4,20 +4,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.media.j3d.VirtualUniverse;
-
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.micronsl.Datatypes.SparseMatrix;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.module.copy.Float1dCopyModule;
-import edu.usf.micronsl.module.copy.Float1dSparseCopyModule;
 import edu.usf.micronsl.module.copy.Int0dCopyModule;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
-import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
-import edu.usf.micronsl.port.twodimensional.sparse.SparseMatrixPort;
+import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.ratsim.experiment.subject.NotImplementedException;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.experiment.universe.virtual.drawingUtilities.DrawPolarGraph;
@@ -29,15 +22,12 @@ import edu.usf.ratsim.nsl.modules.celllayer.TmazeRandomPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.input.Position;
 import edu.usf.ratsim.nsl.modules.input.SubjectAte;
 import edu.usf.ratsim.nsl.modules.multipleT.ActionGatingModule;
-import edu.usf.ratsim.nsl.modules.multipleT.DontGoBackBiasModule;
 import edu.usf.ratsim.nsl.modules.multipleT.Last2ActionsActionGating;
 import edu.usf.ratsim.nsl.modules.multipleT.MultipleTActionPerformer;
 import edu.usf.ratsim.nsl.modules.multipleT.PlaceCellTransitionMatrixUpdater;
-import edu.usf.ratsim.nsl.modules.multipleT.UpdateQModule;
 import edu.usf.ratsim.nsl.modules.multipleT.UpdateQModuleAC;
 import edu.usf.ratsim.nsl.modules.rl.ActorCriticDeltaError;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
-import edu.usf.ratsim.nsl.modules.rl.SarsaQDeltaError;
 
 public class MultipleTModelAwake extends MultipleTModel {
 
@@ -45,8 +35,8 @@ public class MultipleTModelAwake extends MultipleTModel {
 	
 	public ProportionalVotes currentStateQ;
 	
-	private float[][] QTable;
-	private float[][] WTable;
+	private Float2dSparsePort QTable;
+	private Float2dSparsePort WTable;
 
 	public MultipleTModelAwake() {
 	}
@@ -108,10 +98,8 @@ public class MultipleTModelAwake extends MultipleTModel {
 		//Create Variables Q,W, note sleepState has already been initialized.
 
 		QTable = ((MultipleTSubject)subject).QTable;
-		FloatMatrixPort QPort = new FloatMatrixPort((Module) null, QTable);
 		
 		WTable = ((MultipleTSubject)subject).WTable;
-		FloatMatrixPort WPort = new FloatMatrixPort((Module)null, WTable);
 		
 		//Create pos module 
 		Position pos = new Position("position", lRobot);
@@ -125,7 +113,7 @@ public class MultipleTModelAwake extends MultipleTModel {
 		//Create currentStateQ Q module
 		currentStateQ = new ProportionalVotes("currentStateQ",numActions+1,true);
 		currentStateQ.addInPort("states", placeCells.getOutPort("activation"));
-		currentStateQ.addInPort("value", QPort);
+		currentStateQ.addInPort("value", QTable);
 		addModule(currentStateQ);
 		
 		//Create SoftMax module
@@ -199,14 +187,14 @@ public class MultipleTModelAwake extends MultipleTModel {
 		Module updateQ = new UpdateQModuleAC("updateQ", numActions, learningRate);
 		updateQ.addInPort("delta", deltaError.getOutPort("delta"));
 		updateQ.addInPort("action", actionSelection.getOutPort("action"));
-		updateQ.addInPort("Q", QPort);
+		updateQ.addInPort("Q", QTable);
 		updateQ.addInPort("placeCells", placeCells.getOutPort("activation"));
 		addModule(updateQ);
 		
 		//Create UpdateW module
 		PlaceCellTransitionMatrixUpdater wUpdater = new PlaceCellTransitionMatrixUpdater("wUpdater", numPC, wTransitionLR);
 		wUpdater.addInPort("PC", placeCells.getOutPort("activation"));
-		wUpdater.addInPort("wPort", WPort);
+		wUpdater.addInPort("wPort", WTable);
 		addModule(wUpdater);
 		
 		

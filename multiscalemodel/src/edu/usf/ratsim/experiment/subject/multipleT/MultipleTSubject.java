@@ -17,6 +17,8 @@ import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.utils.BinaryFile;
 import edu.usf.experiment.utils.CSVReader;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
+import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePortMatrix;
 import edu.usf.ratsim.experiment.subject.NotImplementedException;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.robot.virtual.VirtualRobot;
@@ -28,9 +30,9 @@ public class MultipleTSubject extends Subject {
 	private MultipleTModelAsleep modelAsleep;
 	private MultipleTModelAwake modelAwake;
 
-	public float[][] QTable;
-	public float[][] WTable;
-
+	public Float2dSparsePort QTable;
+	public Float2dSparsePort WTable;
+	
 	int numActions;
 	int numPC;
 
@@ -64,38 +66,38 @@ public class MultipleTSubject extends Subject {
 		asleepFoodDistanceThreshold = params.getChildFloat("asleepFoodDistanceThreshold");
 
 		// Num actions + 1 for value
-		QTable = new float[numPC][numActions+1];
-		WTable = new float[numPC][numPC];
+		QTable = new Float2dSparsePortMatrix(null, numPC, numActions+1);
+		WTable = new Float2dSparsePortMatrix(null, numPC, numPC);
 
 		Integer loadEpisode = (Integer) g.get("loadEpisode");
 		if (loadEpisode != null) {
-			String loadPath = (String) g.get("logPath") + "/" + (String) g.get("loadTrial") + "/" + loadEpisode + "/"
-					+ (String) g.get("groupName") + "/" + g.get("subName") + "/";
-
-			if (g.get("loadType").equals("bin")) {
-				QTable = BinaryFile.loadMatrix(loadPath + "QTable.bin");
-				WTable = BinaryFile.loadSparseMatrix(loadPath + "WTable.bin");
-
-			} else {
-
-				String[][] qStringValues = CSVReader.loadCSV(loadPath + "QTable.txt", ";");
-				String[][] wStringValues = CSVReader.loadCSV(loadPath + "WTable.txt", ";");
-
-				for (int i = 0; i < numPC; i++) {
-					for (int j = 0; j < numActions; j++)
-						QTable[i][j] = Float.parseFloat(qStringValues[i][j]);
-					for (int j = 0; j < numPC; j++)
-						WTable[i][j] = Float.parseFloat(wStringValues[i][j]);
-				}
-
-			}
-
-			// QTable = new SparseMatrix<Float>(QTableCopy);
-			// WTable = new SparseMatrix<Float>(WTableCopy);
-
-			System.out.println("loadpath: " + loadPath);
-
-			modelAwake = new MultipleTModelAwake(params, this, lRobot, numActions, numPC);
+//			String loadPath = (String) g.get("logPath") + "/" + (String) g.get("loadTrial") + "/" + loadEpisode + "/"
+//					+ (String) g.get("groupName") + "/" + g.get("subName") + "/";
+//
+//			if (g.get("loadType").equals("bin")) {
+//				QTable = BinaryFile.loadMatrix(loadPath + "QTable.bin");
+//				WTable = BinaryFile.loadSparseMatrix(loadPath + "WTable.bin");
+//
+//			} else {
+//
+//				String[][] qStringValues = CSVReader.loadCSV(loadPath + "QTable.txt", ";");
+//				String[][] wStringValues = CSVReader.loadCSV(loadPath + "WTable.txt", ";");
+//
+//				for (int i = 0; i < numPC; i++) {
+//					for (int j = 0; j < numActions; j++)
+//						QTable[i][j] = Float.parseFloat(qStringValues[i][j]);
+//					for (int j = 0; j < numPC; j++)
+//						WTable[i][j] = Float.parseFloat(wStringValues[i][j]);
+//				}
+//
+//			}
+//
+//			// QTable = new SparseMatrix<Float>(QTableCopy);
+//			// WTable = new SparseMatrix<Float>(WTableCopy);
+//
+//			System.out.println("loadpath: " + loadPath);
+//
+//			modelAwake = new MultipleTModelAwake(params, this, lRobot, numActions, numPC);
 		} else {
 			modelAwake = new MultipleTModelAwake(params, this, lRobot, numActions, numPC);
 			// QTable = new SparseMatrix<Float>(numPC,numActions);
@@ -107,36 +109,36 @@ public class MultipleTSubject extends Subject {
 	}
 
 	public void save() {
-		Globals g = Globals.getInstance();
-		String logPath = (String) g.get("episodeLogPath");
-
-		// WTable.getDataAsArray(WTableCopy);
-		// QTable.getDataAsArray(QTableCopy);
-
-		PrintWriter writer;
-		try {
-			// Save transition table
-			String filename = logPath + "WTable.bin";
-			BinaryFile.saveSparseBinaryMatrix(WTable, filename);
-
-			// save QTable
-			filename = logPath + "QTable.bin";
-			BinaryFile.saveBinaryMatrix(QTable, filename);
-
-			// save cells
-			writer = new PrintWriter(logPath + "cellCenters.txt", "UTF-8");
-			for (PlaceCell pc : getPlaceCells()) {
-				Point3f p = pc.getPreferredLocation();
-				writer.println("" + p.x + ";" + p.y + ";");
-			}
-			writer.close();
-
-			System.out.println("SAVED SUBJECT");
-
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		Globals g = Globals.getInstance();
+//		String logPath = (String) g.get("episodeLogPath");
+//
+//		// WTable.getDataAsArray(WTableCopy);
+//		// QTable.getDataAsArray(QTableCopy);
+//
+//		PrintWriter writer;
+//		try {
+//			// Save transition table
+//			String filename = logPath + "WTable.bin";
+//			BinaryFile.saveSparseBinaryMatrix(WTable, filename);
+//
+//			// save QTable
+//			filename = logPath + "QTable.bin";
+//			BinaryFile.saveBinaryMatrix(QTable, filename);
+//
+//			// save cells
+//			writer = new PrintWriter(logPath + "cellCenters.txt", "UTF-8");
+//			for (PlaceCell pc : getPlaceCells()) {
+//				Point3f p = pc.getPreferredLocation();
+//				writer.println("" + p.x + ";" + p.y + ";");
+//			}
+//			writer.close();
+//
+//			System.out.println("SAVED SUBJECT");
+//
+//		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 	}
 
