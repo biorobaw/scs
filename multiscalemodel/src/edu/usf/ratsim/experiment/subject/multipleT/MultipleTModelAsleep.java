@@ -124,18 +124,6 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		WTable = ((MultipleTSubject)subject).WTable;
 		FloatMatrixPort WPort = new FloatMatrixPort((Module)null, WTable);
 		
-		
-		//create subAte module
-		SubjectAte subAte = new SubjectAte("Subject Ate",subject);
-		addModule(subAte);
-		
-		//Create reward module
-		float nonFoodReward = 0;
-		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
-		r.addInPort("subAte", subAte.getOutPort("subAte"),true); // reward must execute before subAte (the reward obtained depends if we ate in the previous action)
-		addModule(r);
-		
-		
 		//Create pos module 
 		Position pos = new Position("position", lRobot);
 		addModule(pos);
@@ -145,14 +133,6 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		placeCells.addInPort("position", pos.getOutPort("position"));
 		addModule(placeCells);
 		
-		//System.out.println("rad " + placeCells.getCells().get(0).getPlaceRadius());
-		
-		//Create PC copy module
-		Float1dSparseCopyModule pcCopy = new Float1dSparseCopyModule("PCCopy");
-		pcCopy.addInPort("toCopy",placeCells.getOutPort("activation"), true);
-		addModule(pcCopy);
-		
-		
 		//Create currentStateQ Q module
 		currentStateQ = new ProportionalVotes("currentStateQ",numActions+1,true);
 		currentStateQ.addInPort("states", placeCells.getOutPort("activation"));
@@ -160,9 +140,9 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		addModule(currentStateQ);
 		
 		//Create copy Q module
-		Module copyQ = new Float1dCopyModule("copyQ");
-		copyQ.addInPort("toCopy", currentStateQ.getOutPort("votes"),true);
-		addModule(copyQ);
+//		Module copyQ = new Float1dCopyModule("copyQ");
+//		copyQ.addInPort("toCopy", currentStateQ.getOutPort("votes"),true);
+//		addModule(copyQ);
 		
 		
 		//Create active and NextActive module:
@@ -196,27 +176,28 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		actionSelection.addInPort("nextPosition", nextPosModule.getOutPort("nextPosition"));
 		addModule(actionSelection);
 		
-		
-		//Create actionCopyModule
-		Int0dCopyModule actionCopy = new Int0dCopyModule("actionCopy");
-		actionCopy.addInPort("toCopy", actionSelection.getOutPort("action"),true);
-		addModule(actionCopy);
-		
-
-		
-		
 		Module actionPerformer = new MoveFromToActionPerformer("actionPerformer",subject);
 		actionPerformer.addInPort("position", pos.getOutPort("position"));
 		actionPerformer.addInPort("nextPosition", nextPosModule.getOutPort("nextPosition"));
 		addModule(actionPerformer);
 		
+//		placeCells.addPreReq(actionPerformer);
+		actionPerformer.addPreReq(placeCells);
+		
+		//create subAte module
+		SubjectAte subAte = new SubjectAte("Subject Ate",subject);
+		addModule(subAte);
 		subAte.addPreReq(actionPerformer);
-		placeCells.addPreReq(actionPerformer);
+		
+		//Create reward module
+		float nonFoodReward = 0;
+		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
+		r.addInPort("subAte", subAte.getOutPort("subAte")); 
+		addModule(r);
 		
 		//Create deltaSignal module
 		Module deltaError = new ActorCriticDeltaError("error", discountFactor, numActions);
 		deltaError.addInPort("reward", r.getOutPort("reward"));
-		deltaError.addInPort("copyQ", copyQ.getOutPort("copy"));
 		deltaError.addInPort("Q",currentStateQ.getOutPort("votes"));
 		addModule(deltaError);
 		
@@ -226,7 +207,7 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		updateQ.addInPort("delta", deltaError.getOutPort("delta"));
 		updateQ.addInPort("action", actionSelection.getOutPort("action"));
 		updateQ.addInPort("Q", QPort);
-		updateQ.addInPort("placeCells", pcCopy.getOutPort("copy"));
+		updateQ.addInPort("placeCells", placeCells.getOutPort("activation"));
 		addModule(updateQ);
 		
 		
@@ -259,7 +240,6 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		Globals.getInstance().put("loopInReactivationPath", false);
 		
 		getModule("PCLayer").getOutPort("activation").clear();
-		getModule("PCCopy" ).getOutPort("copy").clear();
 		//by doing this deltaQ(s_i,a_i) = nu*delta*State(s_i)*<a_i,a> = 0
 				
 		//set random placecell active and move robot to that position:

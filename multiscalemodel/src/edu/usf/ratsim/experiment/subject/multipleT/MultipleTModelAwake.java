@@ -113,18 +113,6 @@ public class MultipleTModelAwake extends MultipleTModel {
 		WTable = ((MultipleTSubject)subject).WTable;
 		FloatMatrixPort WPort = new FloatMatrixPort((Module)null, WTable);
 		
-		
-		//create subAte module
-		SubjectAte subAte = new SubjectAte("Subject Ate",subject);
-		addModule(subAte);
-		
-		//Create reward module
-		float nonFoodReward = 0;
-		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
-		r.addInPort("subAte", subAte.getOutPort("subAte"),true); // reward must execute before subAte (the reward obtained depends if we ate in the previous action)
-		addModule(r);
-		
-		
 		//Create pos module 
 		Position pos = new Position("position", lRobot);
 		addModule(pos);
@@ -134,28 +122,15 @@ public class MultipleTModelAwake extends MultipleTModel {
 		placeCells.addInPort("position", pos.getOutPort("position"));
 		addModule(placeCells);
 		
-		//System.out.println("rad " + placeCells.getCells().get(0).getPlaceRadius());
-		
-		Float1dSparseCopyModule pcCopy = new Float1dSparseCopyModule("PCCopy");
-		pcCopy.addInPort("toCopy",placeCells.getOutPort("activation"), true);
-		addModule(pcCopy);
-		
-		
 		//Create currentStateQ Q module
 		currentStateQ = new ProportionalVotes("currentStateQ",numActions+1,true);
 		currentStateQ.addInPort("states", placeCells.getOutPort("activation"));
 		currentStateQ.addInPort("value", QPort);
 		addModule(currentStateQ);
 		
-		//Create copy Q module
-		Module copyQ = new Float1dCopyModule("copyQ");
-		copyQ.addInPort("toCopy", currentStateQ.getOutPort("votes"),true);
-		addModule(copyQ);
-		
-		
 		//Create SoftMax module
 		Softmax softmax = new Softmax("softmax", numActions);
-		softmax.addInPort("input", copyQ.getOutPort("copy"));
+		softmax.addInPort("input", currentStateQ.getOutPort("votes"), true); // executes with last estimation of Q
 		addModule(softmax);
 		
 		
@@ -196,10 +171,27 @@ public class MultipleTModelAwake extends MultipleTModel {
 		//Add extra input to bias Module
 		biasModule.addInPort("action", actionCopy.getOutPort("copy"));
 		
+		//Create Action Performer module
+		MultipleTActionPerformer actionPerformer = new MultipleTActionPerformer("actionPerformer", numActions, ((MultipleTSubject)subject).step, subject);
+		actionPerformer.addInPort("action", actionSelection.getOutPort("action"));
+		addModule(actionPerformer);
+		
+		placeCells.addPreReq(actionPerformer);
+		
+		//create subAte module
+		SubjectAte subAte = new SubjectAte("Subject Ate",subject);
+		addModule(subAte);
+		subAte.addPreReq(actionPerformer);
+		
+		//Create reward module
+		float nonFoodReward = 0;
+		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
+		r.addInPort("subAte", subAte.getOutPort("subAte"),true); // reward must execute before subAte (the reward obtained depends if we ate in the previous action)
+		addModule(r);
+		
 		//Create deltaSignal module
 		Module deltaError = new ActorCriticDeltaError("error", discountFactor, numActions);
 		deltaError.addInPort("reward", r.getOutPort("reward"));
-		deltaError.addInPort("copyQ", copyQ.getOutPort("copy"));
 		deltaError.addInPort("Q",currentStateQ.getOutPort("votes"));
 		addModule(deltaError);
 		
@@ -208,22 +200,12 @@ public class MultipleTModelAwake extends MultipleTModel {
 		updateQ.addInPort("delta", deltaError.getOutPort("delta"));
 		updateQ.addInPort("action", actionSelection.getOutPort("action"));
 		updateQ.addInPort("Q", QPort);
-		updateQ.addInPort("placeCells", pcCopy.getOutPort("copy"));
+		updateQ.addInPort("placeCells", placeCells.getOutPort("activation"));
 		addModule(updateQ);
 		
-		
-		//Create Action Performer module
-		MultipleTActionPerformer actionPerformer = new MultipleTActionPerformer("actionPerformer", numActions, ((MultipleTSubject)subject).step, subject);
-		actionPerformer.addInPort("action", actionSelection.getOutPort("action"));
-		addModule(actionPerformer);
-		
-		subAte.addPreReq(actionPerformer);
-		placeCells.addPreReq(actionPerformer);
-
 		//Create UpdateW module
 		PlaceCellTransitionMatrixUpdater wUpdater = new PlaceCellTransitionMatrixUpdater("wUpdater", numPC, wTransitionLR);
 		wUpdater.addInPort("PC", placeCells.getOutPort("activation"));
-		wUpdater.addInPort("PCcopy", pcCopy.getOutPort("copy"));
 		wUpdater.addInPort("wPort", WPort);
 		addModule(wUpdater);
 		
@@ -244,7 +226,6 @@ public class MultipleTModelAwake extends MultipleTModel {
 
 	public void newTrial() {
 		getModule("PCLayer").getOutPort("activation").clear();
-		getModule("PCCopy").getOutPort("copy").clear();
 		//by doing this deltaQ(s_i,a_i) = nu*delta*State(s_i)*<a_i,a> = 0
 		
 		((PlaceCellTransitionMatrixUpdater)getModule("wUpdater")).newTrial();
@@ -259,20 +240,6 @@ public class MultipleTModelAwake extends MultipleTModel {
 
 	public List<PlaceCell> getPlaceCells() {
 		return placeCells.getCells();
-	}
-
-	public void newEpisode() {
-		// TODO Auto-generated method stub
-		
-		getModule("PCLayer").getOutPort("activation").clear();
-		getModule("PCCopy").getOutPort("copy").clear();
-		//by doing this deltaQ(s_i,a_i) = nu*delta*State(s_i)*<a_i,a> = 0
-		
-		((PlaceCellTransitionMatrixUpdater)getModule("wUpdater")).newEpisode();
-		
-		//need to let the bias module know that a new episode started (do not bias on fisrt turn)
-		((Last2ActionsActionGating)getModule("bias")).newEpisode();
-		
 	}
 
 	public Map<Integer, Float> getCellActivation() {

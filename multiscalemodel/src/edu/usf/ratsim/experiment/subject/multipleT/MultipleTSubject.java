@@ -165,7 +165,12 @@ public class MultipleTSubject extends Subject {
 			}
 
 			lRobot.setCloseThreshold(awakeFoodDistanceThreshold);
+			
+			// Trick the condition to end simulation
+			setHasEaten(true);
 		}
+		
+		
 	}
 
 	@Override
