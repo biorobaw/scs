@@ -189,4 +189,9 @@ public abstract class Module extends DependencyRunnable {
 	public List<Port> getInPorts() {
 		return inPortsList;
 	}
+	
+	/**
+	 * Resets all variables for the module
+	 */
+	public void newEpisode(){ };
 }
