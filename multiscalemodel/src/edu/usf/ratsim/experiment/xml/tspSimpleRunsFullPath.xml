@@ -11,7 +11,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/tspSimpleRuns.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>false</display>
+			<display>true</display>
 		</params>
 	</universe>
 	
@@ -61,7 +61,7 @@
 			
 			<!-- Order in which feeders are visited -->
 			<!--<feederOrder>$(feederOrder)</feederOrder>-->
-			<feederOrder></feederOrder>
+			<feederOrder></feederOrder> 
 		</params>
 	</model>
 	
@@ -80,7 +80,7 @@
 		<task>
 			<name>edu.usf.experiment.task.AddAllFeedersTask</name>
 			<params>
-				<feederFile>multiscalemodel/src/edu/usf/ratsim/experiment/feederPositions/positionsTSP21Feeders</feederFile>
+				<feederFile>InterLabFunctionality\Jan2016\FeederLocations.txt</feederFile>
 			</params>
 		</task>
 		

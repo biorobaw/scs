@@ -62,7 +62,11 @@ public class SubjectLoader {
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
+		
+		System.out.println("ERROR : Subject not created");
+		System.exit(0);
+		
 		return null;
 	}
 

@@ -21,7 +21,6 @@ import edu.usf.experiment.utils.BinaryFile;
 import edu.usf.experiment.utils.CSVReader;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
-import edu.usf.micronsl.Datatypes.SparseMatrix;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;

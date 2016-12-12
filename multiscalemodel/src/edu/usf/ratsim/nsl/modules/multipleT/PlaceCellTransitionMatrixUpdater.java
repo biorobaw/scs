@@ -6,7 +6,6 @@ import java.util.Set;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
 import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
-import edu.usf.micronsl.port.twodimensional.sparse.SparseMatrixPort;
 
 /**
  * Module to generate random actions when the agent hasnt moved (just rotated)
