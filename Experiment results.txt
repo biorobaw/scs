@@ -1,0 +1,101 @@
+Experiment conclussions and observations:
+
+	Multiple T Experiments
+		Model Description:
+			replay (transition matrix) + precondition to maze + sarsa Q with radial basis function
+			
+			Awake episodes:
+				Each episode, the rat needs to find food in 4 T maze with in 2000 steps
+				During episode transition matrix is updated
+				After completion the rat performs N episode asleep.
+				
+			Asleep episodes:
+				Choose a random cell to start replay.
+				On each step use transition matrix to find next cell to move to.
+				Use generated path to update Q, using regular sarsa Q equations.
+				End conditions: 2000 steps, reach food, detect loop in place cells
+			
+			
+		Size and distribution of radial basis functions:
+			Used constant size and uniform distribution.
+			Note here, cell = radial basis function.
+			
+			Effects of size:
+				Affects how fast Q is propageted through the space, bigger cells-> faster propagation
+					Faster propagating  might be good, but may also destabilize policy convergence.
+				Near intersections in the T, big cells might learn policies which are not good.
+					For example, cells in the following part of the path might choose one direction, 
+					and cells from previous part of the path may choose another, this might prevent learning a
+					good policy in the intersections.
+				More on general, if cells to big, at one point we might end up learning policy from another place in space.
+			
+			Effects of distribution:
+				If cells are not uniformely disributed, certain regions of space may be wheighted heavier than other.
+				The policy will tend to learn the actions of the space that is heavily weighted.
+				When using T labs, if the activation of the cells is not modulated by the walls, we need to place cells both
+				inside and outside the labyrith. Otherwise, near intersections, the intervening cells wont be equally distributed in all direction.
+				
+		Transition matrix.
+			Originally we thought of using a transition matrix such as in Johnson & redish to do replay and show latent learning.
+			We now make a distinction in two types of matrixes.
+				*Connectivity matrix: Matrix that represents connections between place cells. Can be used as a world graph.
+				*Path Matrix: Matrix that aims to sum up the route traversed by the rat in order to perform replay
+			Modifying redish formula:
+				Original formula  delta Wij = learning rate * arctan(  PC(i,t+1)               *   (PC(j,t+1)-PC(j,t))   )
+				We modified it to delta Wij = learning rate * arctan(  (PC(i,t+1)+PC(i,t))/2   *   (PC(j,t+1)-PC(j,t))   )
+				The second formula has the advantage that when the same path is traversed an even number of times back and forth,
+				the resulting change is 0 (more precisely, has expectancy 0). 
+				The other formula keeps non zero remanents, and by going back and forth many times, they add up to a big value.
+				
+			
+		Replay
+			Using the transition matrix to perform replay.
+				Since replay "replays" traversed paths, we need to use a Path Matrix rather than a connectivity matrix.
+				(We might use the connectivity matrix, but we will need something extra to remember the path taken).
+
+			Efficacy Issues:
+				*In order for replay to be effective in the way we modeled it we need to recreate a path, and reach a place where the gradient (Q) is not 0.
+				When the algorithm is starting, most replays are ineffective since Q=0 in most part of the space.
+					
+				*In the way the algorithm is implemented, "Q flows" through the taken path with the speed of  cell_radius/episode.
+				If the distance from the origin to the end of the path is d. In order for Q to flow through the end to the start, we will need
+				approximately d/cell_radius  episodes.
+				
+				*The way the algorithm is implemented, the activity theshold limits the propagation of cell activity. High thresholds mean low propagation.
+				The higher the threshold, the more episodes needed to replay whole paths.
+			
+			Relation with cell size:
+				Bigger cells, require less replay to propagte to start.
+				At same time, it makes it easier to generate paths that cut through walls, thus sometimes reinforcing impossible actions.
+				
+		Latent Learning:
+			Objective is to facilitate learning a task by pre exposing the rat to the environment.
+			
+			On our case, we expected the rat to 'prefill' the path matrix, so that more replay could be done from the start of the experiment. 
+			This works thanks to the restrictions of the T maze.
+					
+			Issues affecting latent learning:
+				*Speed at which the transition matrix is learnt (speed at which the elements overcome the theshold)
+				*Number of pre expossure trial
+					In order to observe latent learning, the matrix must overcome the threshold faster than not doing pre expossure
+					This particularly implies that the matrix must overcome the threshold relatively slow. 
+					If in the first trial, the whole path is replayed, we don't really need pre expossure
+					
+				*Speed at which Q is propagated
+				*Number of replays done per trial
+					This two items, modify how fast Q gets propagated to the starting position.
+					If the propagation is too slow, the effects of preexpossure might not be noticed.
+					Same if propagation is too fast.
+				
+		mejorar inteligencia rata en movimiento en general
+				
+				
+				
+				
+				
+			
+					
+			
+				
+		
+		

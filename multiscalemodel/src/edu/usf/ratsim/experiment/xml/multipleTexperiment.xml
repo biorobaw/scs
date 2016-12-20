@@ -18,7 +18,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/multipleTmaze.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>true</display>
+			<display>false</display>
 		</params>
 	</universe>
 	
@@ -163,9 +163,9 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>100</number><!-- 24 session * (80 + 80 laps * 8 replays) =   -->
+			<number>201</number><!-- 24 session * (80 + 80 laps * 8 replays) =   -->
 			<!-- Sleep between cycles for visualization -->
-			<sleep>60</sleep>
+			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- <task>
@@ -230,13 +230,6 @@
 				<logger>
 					<name>edu.usf.experiment.log.FeederLogger</name>
 				</logger>
-<<<<<<< HEAD
-				
-=======
-				<!-- <logger>
-					<name>edu.usf.ratsim.experiment.log.PCLogger</name>
-				</logger> -->
->>>>>>> 72a83936d4726a487d2d4573212266cb03be25f3
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
