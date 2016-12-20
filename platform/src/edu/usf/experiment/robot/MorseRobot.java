@@ -5,18 +5,17 @@ import java.util.List;
 import java.util.Map;
 
 import javax.vecmath.Point3f;
-import javax.vecmath.Quat4f;
 
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.morse.IRSensorProxy;
 import edu.usf.experiment.universe.morse.MorseUtils;
 import edu.usf.experiment.universe.morse.PosSensorProxy;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.experiment.utils.GeomUtils;
 
 public class MorseRobot extends LocalizableRobot {
 
@@ -29,7 +28,7 @@ public class MorseRobot extends LocalizableRobot {
 	private IRSensorProxy frontIR;
 	private Affordance lastAction;
 
-	public MorseRobot(ElementWrapper params) {
+	public MorseRobot(ElementWrapper params, Universe univ) {
 		super(params);
 
 		Map<String, Integer> streamPorts = MorseUtils.getStreamPorts();

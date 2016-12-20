@@ -19,7 +19,7 @@ robot.translate(0,0,.075)
 # book.translate(0.6, 0.6, 10)
 
 
-env = Environment('environments/circularMorris.blend')
+env = Environment('environments/circularMorris.blend', fastmode=True)
 env.use_internal_syncer()
 env.set_time_scale(.2)
 #env.simulator_frequency(20)  

@@ -20,7 +20,7 @@ public class MorseUtils {
 
 	public static void startSimulator() {
 
-		String[] envp = { "DISPLAY=:0.0", "MORSE_SILENT_PYTHON_CHECK=1",
+		String[] envp = { "MORSE_SILENT_PYTHON_CHECK=1",
 				"PATH=/home/martin/blender/:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games" };
 		try {
 			// Execute the process
