@@ -28,7 +28,6 @@ rat_sim.*
 *circe/
 *.DS_Store
 *.png
-*.pdf
 *.gif
 *.Rhistory
 *bin/
