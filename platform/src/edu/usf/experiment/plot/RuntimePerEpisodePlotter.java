@@ -10,11 +10,16 @@ public class RuntimePerEpisodePlotter extends Plotter {
 	}
 
 	@Override
-	public void plot() {
+	public Runnable plot() {
 		String logPath = getLogPath();
-		IOUtils.copyResource(getClass().getResource("/edu/usf/experiment/plot/plotRuntimesPerEpisode.r"), logPath + "/plotRuntimesPerEpisode.r");
 		
-		IOUtils.exec("Rscript plotRuntimesPerEpisode.r", logPath);
+		return new Runnable(){
+			@Override
+			public void run() {
+				IOUtils.copyResource(getClass().getResource("/edu/usf/experiment/plot/plotRuntimesPerEpisode.r"), logPath + "/plotRuntimesPerEpisode.r");
+				IOUtils.exec("Rscript plotRuntimesPerEpisode.r", logPath);
+			}
+		};
 	}
 
 }

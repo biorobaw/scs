@@ -12,12 +12,17 @@ public class PlotGatherer extends Plotter {
 	}
 
 	@Override
-	public void plot() {
+	public Runnable plot() {
 		String logPath = getLogPath();
-		System.out.println("Gathering plots on " + logPath);
-		new File(logPath + "/plots/").mkdir();
-		IOUtils.exec("find . -iname *.pdf -exec ln {} plots/ ;", logPath);
-		IOUtils.exec("find . -iname *.png -exec ln {} plots/ ;", logPath);
+		return new Runnable(){
+			@Override
+			public void run() {
+				System.out.println("Gathering plots on " + logPath);
+				new File(logPath + "/plots/").mkdir();
+				IOUtils.exec("find . -iname *.pdf -exec ln {} plots/ ;", logPath);
+				IOUtils.exec("find . -iname *.png -exec ln {} plots/ ;", logPath);
+			}
+		};
 	}
 
 }

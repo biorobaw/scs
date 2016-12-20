@@ -15,12 +15,14 @@ public class Feeder {
 	private boolean isFlashing;
 	private boolean enabled;
 	private int id;
+	private boolean permanent;
 
 	public Feeder(int id, Point3f position) {
 		enabled = false;
 		active = false;
 		hasFood = false;
 		isFlashing = false;
+		permanent = false;
 
 		this.position = position;
 		this.id = id;
@@ -33,6 +35,7 @@ public class Feeder {
 		this.isFlashing = feeder.isFlashing;
 		this.position = feeder.position;
 		this.id = feeder.id;
+		this.permanent = feeder.permanent;
 	}
 
 	public int getId() {
@@ -69,7 +72,7 @@ public class Feeder {
 	}
 
 	public boolean hasFood() {
-		return hasFood;
+		return hasFood || permanent;
 	}
 
 	public boolean isEnabled() {
@@ -82,5 +85,9 @@ public class Feeder {
 
 	public void setPosition(Point3f relFPos) {
 		this.position = new Point3f(relFPos);
+	}
+
+	public void setPermanent(boolean b) {
+		this.permanent = b;
 	}
 }

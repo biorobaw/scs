@@ -104,8 +104,7 @@ public class Episode {
 			logger.log(this);
 		for (Task task : beforeEpisodeTasks)
 			task.perform(this);
-		for (Plotter plotter : beforeEpisodePlotters)
-			plotter.plot();
+		Plotter.plot(beforeEpisodePlotters);
 
 		// Execute cycles until stop condition holds
 		boolean finished = false;
@@ -169,8 +168,7 @@ public class Episode {
 			task.perform(this);
 
 		// Plotters
-		for (Plotter p : afterEpisodePlotters)
-			p.plot();
+		Plotter.plot(afterEpisodePlotters);
 		
 		// reset All conditions:
 //		for (Condition sc : stopConds)

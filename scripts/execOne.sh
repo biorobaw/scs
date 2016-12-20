@@ -12,7 +12,7 @@ fi
 
 echo "Individual " $individual
 
-if [ `whoami` == "biorob" ]; then
+if [ `whoami` == "martin" ]; then
   export PATH=/work/R-3.1.1/bin:$PATH
   export R_LIBS=/work/R-3.1.1/library/
 else

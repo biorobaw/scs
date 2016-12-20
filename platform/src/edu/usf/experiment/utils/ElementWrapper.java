@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.usf.experiment.Globals;
@@ -60,19 +61,18 @@ public class ElementWrapper {
 		NodeList elems = e.getElementsByTagName(name);
 		for (int i = 0; i < elems.getLength(); i++)
 			// Only return direct sibling
-			if (elems.item(i).getParentNode() == e)
-			{
+			if (elems.item(i).getParentNode() == e) {
 				Pattern regex = Pattern.compile("\\$\\(.*\\)");
 				StringBuffer resultString = new StringBuffer();
-		        Matcher regexMatcher = regex.matcher(elems.item(i).getTextContent());
-		        while (regexMatcher.find()) {
-		        	String var = regexMatcher.group();
-		        	var = var.substring(2, var.length()-1);
-		            regexMatcher.appendReplacement(resultString, (String)g.get(var));
-		        }
-		        regexMatcher.appendTail(resultString);
-	
-		        return resultString.toString();
+				Matcher regexMatcher = regex.matcher(elems.item(i).getTextContent());
+				while (regexMatcher.find()) {
+					String var = regexMatcher.group();
+					var = var.substring(2, var.length() - 1);
+					regexMatcher.appendReplacement(resultString, (String) g.get(var));
+				}
+				regexMatcher.appendTail(resultString);
+
+				return resultString.toString();
 			}
 
 		return null;
@@ -90,15 +90,15 @@ public class ElementWrapper {
 		Globals g = Globals.getInstance();
 		Pattern regex = Pattern.compile("\\$\\(.*\\)");
 		StringBuffer resultString = new StringBuffer();
-        Matcher regexMatcher = regex.matcher(e.getTextContent());
-        while (regexMatcher.find()) {
-        	String var = regexMatcher.group();
-        	var = var.substring(2, var.length()-1);
-            regexMatcher.appendReplacement(resultString, (String)g.get(var));
-        }
-        regexMatcher.appendTail(resultString);
+		Matcher regexMatcher = regex.matcher(e.getTextContent());
+		while (regexMatcher.find()) {
+			String var = regexMatcher.group();
+			var = var.substring(2, var.length() - 1);
+			regexMatcher.appendReplacement(resultString, (String) g.get(var));
+		}
+		regexMatcher.appendTail(resultString);
 
-        return resultString.toString();
+		return resultString.toString();
 	}
 
 	public boolean getChildBoolean(String name) {
@@ -127,11 +127,9 @@ public class ElementWrapper {
 		return list;
 	}
 
-	public Map<String, List<String>> getCalibrationList(
-			ElementWrapper calibrationRoot) {
+	public Map<String, List<String>> getCalibrationList(ElementWrapper calibrationRoot) {
 		Map<String, List<String>> result = new LinkedHashMap<String, List<String>>();
-		for (ElementWrapper param : calibrationRoot.getChild("model")
-				.getChildren()) {
+		for (ElementWrapper param : calibrationRoot.getChild("model").getChildren()) {
 			result.put(param.getName(), new LinkedList<String>());
 			for (ElementWrapper value : param.getChildren("value")) {
 				result.get(param.getName()).add(value.getText());
@@ -145,11 +143,17 @@ public class ElementWrapper {
 	}
 
 	public void changeModelParam(String param, String value, ElementWrapper root) {
-		root.getChild("model").getChild("params")
-				.getChild(param).setText(value);
+		root.getChild("model").getChild("params").getChild(param).setText(value);
 	}
 
 	public void setText(String text) {
 		e.setTextContent(text);
+	}
+
+	public void merge(ElementWrapper o, ElementWrapper n) {
+		for (ElementWrapper ge : n.getChildren()) {
+			changeModelParam(ge.getName(), ge.getText(), o);
+		}
+
 	}
 }

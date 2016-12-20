@@ -23,17 +23,19 @@ public abstract class Float2dSparsePort extends Float2dPort {
 	 * 
 	 * @return A map from the index of the element to the value stored
 	 */
-	public abstract Map<Integer, Map<Integer, Float>> getNonZeroRows();
-	
-	public abstract Map<Integer, Float> getNonZeroRowElements();
+	public abstract Map<Entry, Float> getNonZero();
 	
 	/**
-	 * Get the expected proportion of non-zero elements
-	 * 
-	 * @return The expected number of non-zero elements
+	 * Get all the non zero elements for a certain row
+	 * @return
 	 */
-	public abstract float getSparseness();
+	public abstract Map<Entry, Float> getNonZeroRow(int row);
 
-
-
+	/**
+	 * Returns whether row i has non-zero elements
+	 * @param i
+	 * @return
+	 */
+	public abstract boolean isRowEmpty(int i);
+	
 }

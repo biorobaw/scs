@@ -10,10 +10,16 @@ public class RuntimePerGroupPlotter extends Plotter {
 	}
 
 	@Override
-	public void plot() {
+	public Runnable plot() {
 		String logPath = getLogPath();
-		IOUtils.copyResource(getClass().getResource("/edu/usf/experiment/plot/plotRuntimesPerGroup.r"), logPath + "/plotRuntimesPerGroup.r");
-		IOUtils.exec("Rscript plotRuntimesPerGroup.r", logPath);
+		
+		return new Runnable(){
+			@Override
+			public void run() {
+				IOUtils.copyResource(getClass().getResource("/edu/usf/experiment/plot/plotRuntimesPerGroup.r"), logPath + "/plotRuntimesPerGroup.r");
+				IOUtils.exec("Rscript plotRuntimesPerGroup.r", logPath);
+			}
+		};
 	}
 
 }

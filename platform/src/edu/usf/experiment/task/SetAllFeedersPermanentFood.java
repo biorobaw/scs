@@ -6,19 +6,15 @@ import edu.usf.experiment.Trial;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class AddFeederTask extends Task {
+/**
+ * Task to activate all enabled feeders
+ * @author ludo
+ *
+ */
+public class SetAllFeedersPermanentFood extends Task {
 
-	private int id;
-	private float x;
-	private float y;
-
-	public AddFeederTask(ElementWrapper params) {
+	public SetAllFeedersPermanentFood(ElementWrapper params) {
 		super(params);
-
-		id = params.getChildInt("id");
-		x = params.getChildFloat("x");
-		y = params.getChildFloat("y");
-		System.out.println("" + id + " " + x + " " + y );
 	}
 
 	@Override
@@ -35,10 +31,13 @@ public class AddFeederTask extends Task {
 	public void perform(Episode episode) {
 		perform(episode.getUniverse());
 	}
-
-	private void perform(Universe univ) {
-		univ.addFeeder(id, x, y);
+	
+	private void perform(Universe u){
+		for (Integer f : u.getFeederNums()){
+			u.setEnableFeeder(f, true);
+			u.setActiveFeeder(f, true);
+			u.setPermanentFeeder(f, true);
+		}
 	}
 
-	
 }

@@ -2,10 +2,9 @@ package edu.usf.ratsim.nsl.modules.actionselection;
 
 import edu.usf.experiment.utils.Debug;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
-import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
+import edu.usf.micronsl.port.twodimensional.Float2dPort;
 
 /**
  * Class to set the votes for actions depending both in the state activation and
@@ -36,7 +35,7 @@ public class ProportionalVotes extends Module implements Voter {
 
 	public void run() {
 		Float1dSparsePort states = (Float1dSparsePort) getInPort("states");
-		FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
+		Float2dPort value = (Float2dPort) getInPort("value");
 		for (int action = 0; action < numActions; action++)
 			actionVote[action] = 0f;
 
