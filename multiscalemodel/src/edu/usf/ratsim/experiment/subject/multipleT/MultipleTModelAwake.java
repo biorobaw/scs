@@ -174,7 +174,7 @@ public class MultipleTModelAwake extends MultipleTModel {
 		//Create reward module
 		float nonFoodReward = 0;
 		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
-		r.addInPort("subAte", subAte.getOutPort("subAte"),true); // reward must execute before subAte (the reward obtained depends if we ate in the previous action)
+		r.addInPort("rewardingEvent", subAte.getOutPort("subAte"),true); // reward must execute before subAte (the reward obtained depends if we ate in the previous action)
 		addModule(r);
 		
 		//Create deltaSignal module

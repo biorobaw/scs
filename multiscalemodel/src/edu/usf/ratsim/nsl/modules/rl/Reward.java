@@ -25,7 +25,6 @@ public class Reward extends Module {
 		Bool0dPort rewardingEvent = (Bool0dPort) getInPort("rewardingEvent");
 		if (rewardingEvent.get()) {
 			reward.set(foodReward);
-			System.out.println("Rewarding");
 		} else {
 			reward.set(nonFoodReward);
 		}

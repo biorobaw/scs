@@ -191,7 +191,7 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		//Create reward module
 		float nonFoodReward = 0;
 		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
-		r.addInPort("subAte", subAte.getOutPort("subAte")); 
+		r.addInPort("rewardingEvent", subAte.getOutPort("subAte")); 
 		addModule(r);
 		
 		//Create deltaSignal module
