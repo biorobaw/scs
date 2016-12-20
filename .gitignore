@@ -27,7 +27,6 @@ src/edu/usf/ratsim/experiment/plot/plots/
 rat_sim.*
 *circe/
 *.DS_Store
-*.png
 *.gif
 *.Rhistory
 *bin/
