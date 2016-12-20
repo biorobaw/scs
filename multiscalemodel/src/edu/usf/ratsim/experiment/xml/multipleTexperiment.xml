@@ -45,7 +45,7 @@
 	<model>
 		<!-- Model implementation -->
 		<name>edu.usf.ratsim.experiment.subject.multipleT.MultipleTSubject</name>
-		<params>1
+		<params>
 		
 			<!-- subject params: -->
 			<!-- Step length in meters -->

@@ -11,7 +11,7 @@ plotArrival <- function(pathData, plotName){
   #   print(head(summarizedRunTimes))
   summarizedRunTimes <- ddply(summarizedRunTimes, .(group), summarise, repetition=repetition, mRT=mRT, sdRT=sdRT, runmedian = runmed(mRT, 31))
   #   print(pathData[1,'trial'])
-  p <- ggplot(pathData, aes(x=factor(repetition), y = runtime)) 
+  p <- ggplot(pathData, aes(x=repetition, y = runtime, group = factor(repetition))) 
   #p <- p + geom_bar(data=summarizedRunTimes, mapping=aes(x=Group, y = mRT), stat='identity')
   p <- p + ylab("Completion time (num. actions)\n") + xlab("\nRepetition") 
   # p <- p + scale_fill_grey(name="Group",start = .4)
@@ -19,7 +19,7 @@ plotArrival <- function(pathData, plotName){
   p <- p + scale_y_continuous()
   p <- p + theme(legend.text = element_text(size=20), legend.title = element_text(size=20), text = element_text(size=20)) 
   p <- p + theme(legend.key.height = unit(3,"line"), legend.key.width = unit(3,"line"), legend.position = "right", legend.justification = c(1, 1), legend.background = element_rect(colour = NA, fill = NA))
-  box <- p + geom_boxplot(aes(fill=group),position=position_dodge(.5))# + geom_jitter()
+  box <- p + geom_boxplot(aes(fill=group),position="dodge")# + geom_jitter()
   #box <- p + geom_point(aes(color=group), size = 5)
   print(box)
   ggsave(plot=box,filename=paste(plotName, "box.", pathData[1,'trial'],".pdf", sep=''), width=30, height=10)
@@ -43,10 +43,3 @@ save(runtimes, file="runtimes.RData")
 load('runtimes.RData')
 # runtimes <- runtimes[runtimes$runtime != 200000,]
 ddply(runtimes, .(trial), function(x) plotArrival(x, plotName="runtimesEpisode"))
-
-c <- runtimes[runtimes$trial == "DelayedCueObs" & runtimes$group == "Control", "runtime"]
-d <- runtimes[runtimes$trial == "DelayedCueObs" & runtimes$group == "Dorsal", "runtime"]
-v <- runtimes[runtimes$trial == "DelayedCueObs" & runtimes$group == "Ventral", "runtime"]
-x <- c(c, d, v)
-g <- factor(rep(1:3, c(length(c), length(d), length(v))), labels=c("Control", "Dorsal", "Ventral"))
-dunn.test(x,g)
