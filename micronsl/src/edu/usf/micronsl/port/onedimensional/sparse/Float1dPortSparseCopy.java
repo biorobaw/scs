@@ -45,13 +45,18 @@ public class Float1dPortSparseCopy extends Float1dSparsePort implements PortCopi
 
 	@Override
 	public float get(int index) {
-		return nonZero.get(index);
+		Float ans = nonZero.get(index);
+		if(ans == null)
+			return 0;
+		else return ans;
+		
 	}
 
 	@Override
 	public void set(int i, float x) {
 		if (x != 0)
 			nonZero.put(i, x);
+		else nonZero.remove(i);
 	}
 
 	@Override

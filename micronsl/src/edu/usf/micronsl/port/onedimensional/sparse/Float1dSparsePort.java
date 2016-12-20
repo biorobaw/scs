@@ -4,6 +4,7 @@ import java.util.Map;
 
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
+import edu.usf.micronsl.port.twodimensional.Float2dPort;
 
 /**
  * A port that is able to return the non-zero elements stored

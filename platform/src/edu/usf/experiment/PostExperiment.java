@@ -63,8 +63,7 @@ public class PostExperiment extends Experiment implements Runnable {
 			logger.finalizeLog();
 		}
 		// Plot
-		for (Plotter plotter : afterPlotters)
-			plotter.plot();
+		Plotter.plot(afterPlotters);
 
 	}
 

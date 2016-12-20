@@ -12,12 +12,17 @@ public class SummarizeRuntimes extends Plotter {
 	}
 
 	@Override
-	public void plot() {
+	public Runnable plot() {
 		String logPath = getLogPath();
 		URL resource = getClass().getResource("/edu/usf/experiment/plot/summarize.r");
-		IOUtils.copyResource(resource,logPath + "summarize.r");
-		IOUtils.exec("Rscript summarize.r", logPath);
-//		IOUtils.delete(logPath + "summarize.r");
+
+		return new Runnable(){
+			@Override
+			public void run() {
+				IOUtils.copyResource(resource,logPath + "summarize.r");
+				IOUtils.exec("Rscript summarize.r", logPath);
+			}
+		};
 	}
 
 }

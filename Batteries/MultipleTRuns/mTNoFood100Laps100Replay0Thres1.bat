@@ -1,0 +1,28 @@
+constant SOURCE_FOLDERS
+"./platform/src/;./multiscalemodel/src/;./bin/;./deps/*;./deps/j3dport/*"
+
+constant MAIN_CLASS
+edu.usf.experiment.Experiment
+
+constant EXPERIMENT_XML
+"./Batteries/MultipleTRuns/xml/mTNoFood100Laps100Replay0Thres1.xml"
+
+variable LOG_FOLDER 
+#logs/MultipleTNoFoodNLaps100Replay0Thres1/MultipleTNoFood100Laps100Replay0Thres1A/
+#logs/MultipleTNoFoodNLaps100Replay0Thres1/MultipleTNoFood100Laps100Replay0Thres1B/
+logs/MultipleTNoFoodNLaps100Replay0Thres1/MultipleTNoFood100Laps100Replay0Thres1C/
+logs/MultipleTNoFoodNLaps100Replay0Thres1/MultipleTNoFood100Laps100Replay0Thres1D/
+#logs/MultipleTNoFoodNLaps100Replay0Thres1/MultipleTNoFood100Laps100Replay0Thres1E/
+#logs/MultipleTNoFoodNLaps100Replay0Thres1/MultipleTNoFood100Laps100Replay0Thres1F/
+#logs/MultipleTNoFoodNLaps100Replay0Thres1/MultipleTNoFood100Laps100Replay0Thres1G/
+#logs/MultipleTNoFoodNLaps100Replay0Thres1/MultipleTNoFood100Laps100Replay0Thres1H/
+logs/MultipleTNoFoodNLaps100Replay0Thres1/MultipleTNoFood100Laps100Replay0Thres1I/
+logs/MultipleTNoFoodNLaps100Replay0Thres1/MultipleTNoFood100Laps100Replay0Thres1J/
+
+constant GROUP 
+Control
+
+constant RAT_NUMBER
+1
+
+combine allXall

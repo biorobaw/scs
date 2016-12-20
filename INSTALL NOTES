@@ -1,6 +1,9 @@
 INSTALLATION INSTRUCTIONS FOR LINUX
 
 2 - Install R
+	For windows - make sure the command Rscript works from the console
+		add R binaries folder to the path 
+		example: D:\Program Files\R\R-3.3.1\bin\x64
 3 - Install Eclipse
 4 - run file scripts/setupExlipseProject.sh
 5 - import projects into eclipse:
@@ -15,8 +18,7 @@ INSTALLATION INSTRUCTIONS FOR LINUX
 		
 7 - On project models:
 	Properties -> ResourceFilters->AddExeption
-		Exclude all
-		folders
+		Exclude all folders
 		all children
 		Name matches  .*plots.*
 		Regular Expression
@@ -27,4 +29,8 @@ INSTALLATION INSTRUCTIONS FOR LINUX
 		-> Projects
 			Add micronsl and platform
 		
-	
+
+8 - Run the following commands in R - observe installedpackages.rda is in parent git folder
+	load("installedpackages.rda")
+	for (count in 1:length(installedpackages)) install.packages(installedpackages[count])
+

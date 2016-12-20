@@ -6,6 +6,9 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -115,6 +118,13 @@ public class ThreadDependencyExecutor extends ThreadPoolExecutor {
 	 */
 	protected synchronized void afterExecute(Runnable r, Throwable t) {
 		super.afterExecute(r, t);
+		
+		if(t != null)
+			{
+				t.printStackTrace();
+				//new java.util.Scanner(System.in).nextLine();
+				System.exit(-1);
+			}
 
 		DependencyRunnable completed = (DependencyRunnable) r;
 

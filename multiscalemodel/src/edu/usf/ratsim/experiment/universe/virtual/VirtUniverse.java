@@ -30,6 +30,7 @@ import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.Wall;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
+import edu.usf.ratsim.experiment.universe.virtual.drawingUtilities.DrawingFunction;
 import edu.usf.ratsim.support.XMLDocReader;
 
 /**
@@ -58,6 +59,8 @@ public class VirtUniverse extends Universe {
 	private List<Wall> initialWalls;
 	private List<WallNode> wallsToRevert;
 	private LinkedList<PlatformNode> platformNodes;
+	
+	UniverseFrame frame;
 
 	public VirtUniverse(ElementWrapper params, String logPath) {
 		super(params, logPath);
@@ -139,13 +142,17 @@ public class VirtUniverse extends Universe {
 			bg.addChild(new DirectionalLightNode(new Vector3f(0f, -5, 0),
 					new Color3f(1f, 1f, 1f)));
 
-			UniverseFrame frame = new UniverseFrame(this);
+			frame = new UniverseFrame(this);
 			frame.setVisible(true);
 		}
 
 		instance = this;
 		
 		wallsToRevert = new LinkedList<WallNode>();
+	}
+	
+	public void addDrawingFunction(DrawingFunction function){
+		if(display)	frame.addDrawingFunction(function);
 	}
 
 	@Override
@@ -296,6 +303,11 @@ public class VirtUniverse extends Universe {
 		rPos.mul(trans);
 		// Set the new transform
 		robot.setT(rPos);
+		
+		Vector3f p = new Vector3f();
+		robot.getT().get(p);
+		//System.out.println("New Pos: " + p);
+		
 		if (display)
 			robotNode.getTransformGroup().setTransform(rPos);
 	}
@@ -351,12 +363,63 @@ public class VirtUniverse extends Universe {
 		boolean intesectsWall = false;
 		LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
 		for (Wall wall : getWalls()) {
-			intesectsWall = intesectsWall
-					|| (path.intersection(wall.s) != null) || (path.distance(wall.s) < MIN_DISTANCE_TO_WALLS);
+			intesectsWall = intesectsWall || (path.distance(wall.s) < MIN_DISTANCE_TO_WALLS);
 		}
 
 		return !intesectsWall;
 	}
+	
+	public boolean canRobotMoveDeltaPos(Point3f deltaPos ){
+		// The current position with rotation
+		
+		Vector3f p = new Vector3f();
+		robot.getT().get(p);
+		
+		Coordinate initCoordinate  = new Coordinate(p.x, p.y);
+		Coordinate finalCoordinate = new Coordinate(p.x+deltaPos.x, p.y+deltaPos.y);
+		
+		//System.out.println("movement: "+initCoordinate + " " + finalCoordinate);
+				
+		// Check if crosses any wall
+		boolean intesectsWall = false;
+		LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
+		for (Wall wall : getWalls()) {
+			intesectsWall = intesectsWall || (path.distance(wall.s) < MIN_DISTANCE_TO_WALLS);
+		}
+
+		return !intesectsWall;
+	}
+
+	/**
+	 * Gives distance to nearest intersecting wall with the path  (current pos, pos + Vector(rayX,raY))
+	 * @param dx
+	 * @param dy
+	 * @return
+	 */
+	
+	public double distanceToNearestWall(float dx, float dy,float maxDistance ){
+		// The current position with rotation
+		
+		Vector3f p = new Vector3f();
+		robot.getT().get(p);
+		
+		Coordinate initCoordinate  = new Coordinate(p.x, p.y);
+		Coordinate finalCoordinate = new Coordinate(p.x+dx, p.y+dy);
+		
+		//System.out.println("movement: "+initCoordinate + " " + finalCoordinate);
+				
+		double minDistance = maxDistance;
+		LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
+		Coordinate inter;
+		double distance;
+		for (Wall wall : getWalls()) {
+			
+			if ((inter= path.intersection(wall.s))!=null && (distance = inter.distance(initCoordinate)) < minDistance ) minDistance = distance;
+		}
+
+		return minDistance;
+	}
+	
 
 	// public boolean isRobotParallelToWall() {
 	// boolean aff[] = getRobotAffordances();

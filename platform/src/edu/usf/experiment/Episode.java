@@ -46,6 +46,8 @@ public class Episode {
 	private List<Logger> afterCycleLoggers;
 	private List<Logger> afterEpisodeLoggers;
 	private boolean makePlots;
+	
+	private int[] sleepValues = new int[] {0,30,100,300,500,1000,2000,4000,8000,0};
 
 	public Episode(ElementWrapper episodeNode, String parentLogPath, Trial trial, int episodeNumber, boolean makePlots) {
 		this.trial = trial;
@@ -54,10 +56,13 @@ public class Episode {
 		this.makePlots = makePlots;
 		
 		
+		this.sleepValues[sleepValues.length-1] = episodeNode.getChildInt("sleep");
+
+
 		logPath = parentLogPath
-				+ File.separator + episodeNumber + File.separator
-				+ getSubject().getGroup() + File.separator
-				+ getSubject().getName() + File.separator;
+				+ episodeNumber + "/"
+				+ getSubject().getGroup() + "/"
+				+ getSubject().getName() + "/";
 
 		File file = new File(logPath);
 		file.mkdirs();
@@ -92,6 +97,8 @@ public class Episode {
 	}
 
 	public void run() {
+		Globals g = Globals.getInstance();
+		g.put("episodeLogPath", logPath);
 		PropertyHolder props = PropertyHolder.getInstance();
 		props.setProperty("episode", new Integer(episodeNumber).toString());
 		props.setProperty("log.directory", logPath);
@@ -107,13 +114,13 @@ public class Episode {
 			logger.log(this);
 		for (Task task : beforeEpisodeTasks)
 			task.perform(this);
-		for (Plotter plotter : beforeEpisodePlotters)
-			plotter.plot();
+		Plotter.plot(beforeEpisodePlotters);
 
 		// Execute cycles until stop condition holds
 		boolean finished = false;
 		int cycle = 0;
 		while (!finished) {
+			if((boolean)g.get("pause")) continue;
 			props.setProperty("cycle", new Integer(cycle).toString());
 			for (Logger l : beforeCycleLoggers)
 				l.log(this);
@@ -142,7 +149,7 @@ public class Episode {
 			if (cycle % 5000 == 0)
 				System.out.println("");
 
-			if (!finished && sleep != 0)
+			if (!finished && (sleep = sleepValues[(int)g.get("simulationSpeed")]) != 0)
 				try {
 					Thread.sleep(sleep);
 				} catch (InterruptedException e) {
@@ -174,8 +181,11 @@ public class Episode {
 			task.perform(this);
 
 		// Plotters
-		for (Plotter p : afterEpisodePlotters)
-			p.plot();
+		Plotter.plot(afterEpisodePlotters);
+		
+		// reset All conditions:
+//		for (Condition sc : stopConds)
+//			sc.reset();
 
 		System.out.println("[+] Episode " + trial.getName() + " "
 				+ trial.getGroup() + " " + trial.getSubjectName() + " "

@@ -131,4 +131,9 @@ public class Model {
 
 		return cycles;
 	}
+	
+	public void newEpisode(){
+		for (Module m : moduleList)
+			m.newEpisode();
+	}
 }

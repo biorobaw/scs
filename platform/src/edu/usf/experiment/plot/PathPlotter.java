@@ -10,10 +10,15 @@ public class PathPlotter extends Plotter {
 	}
 
 	@Override
-	public void plot() {
+	public Runnable plot() {
 		String logPath = getLogPath();
-		IOUtils.copyResource(getClass().getResource("/edu/usf/experiment/plot/plotPath.r"), logPath + "plotPath.r");
-		IOUtils.exec("Rscript plotPath.r", logPath);
+		return new Runnable(){
+			@Override
+			public void run() {
+				IOUtils.copyResource(getClass().getResource("/edu/usf/experiment/plot/plotPath.r"), logPath + "plotPath.r");
+				IOUtils.exec("Rscript plotPath.r", logPath);
+			}
+		};
 	}
 
 }

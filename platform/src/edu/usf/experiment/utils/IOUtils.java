@@ -22,6 +22,7 @@ public class IOUtils {
 
 	public static void exec(String cmd, String dir) {
 		try {
+
 			Process plot = Runtime.getRuntime().exec(cmd, null, new File(dir));
 
 			try {

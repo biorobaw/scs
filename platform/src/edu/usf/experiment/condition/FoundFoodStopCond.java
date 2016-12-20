@@ -12,5 +12,6 @@ public class FoundFoodStopCond implements Condition {
 	public boolean holds(Episode episode) {
 		return episode.getSubject().hasEaten();
 	}
+	
 
 }

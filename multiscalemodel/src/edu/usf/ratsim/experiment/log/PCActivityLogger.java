@@ -24,8 +24,7 @@ public class PCActivityLogger extends Logger {
 		if (writer == null)
 			writer = getWriter();
 
-		Map<Integer, Float> activation = ((TSPSubject) sub)
-				.getCellActivity();
+		Map<Integer, Float> activation = sub.getPCActivity();
 		PropertyHolder props = PropertyHolder.getInstance();
 		String trialName = props.getProperty("trial");
 		String groupName = props.getProperty("group");

@@ -29,7 +29,7 @@ public class Trial implements Runnable {
 	private Subject subject;
 
 	private List<Task> beforeTasks;
-	private List<Episode> episodes;
+	public List<Episode> episodes;
 	private List<Task> afterTasks;
 	private Universe universe;
 	private List<Logger> beforeLoggers;
@@ -38,6 +38,8 @@ public class Trial implements Runnable {
 	private List<Plotter> afterPlotters;
 	private List<Logger> afterLoggers;
 	private boolean makePlots;
+	
+	Globals g = Globals.getInstance();
 
 	public Trial(ElementWrapper trialNode, String parentLogPath, Subject subject, Universe universe, boolean makePlots) {
 		super();
@@ -96,16 +98,13 @@ public class Trial implements Runnable {
 				logger.log(this);
 			for (Logger logger : beforeLoggers)
 				logger.finalizeLog();
-			for (Plotter plotter : beforePlotters)
-				plotter.plot();
-
+			Plotter.plot(beforePlotters);
 			// Run each episode
 			for (Episode episode : episodes) {
 				episode.run();
+				g.put("episode", (int)g.get("episode")+1);
 			}
 			
-			
-
 			// Do all after trial tasks
 			for (Task task : afterTasks)
 				task.perform(this);
@@ -114,10 +113,13 @@ public class Trial implements Runnable {
 				logger.log(this);
 			for (Logger logger : afterLoggers)
 				logger.finalizeLog(); 
-			// Plot
-			for (Plotter plotter : afterPlotters)
-				plotter.plot();
 			
+      // Plot
+      // Wait until all plots are done before contuining
+      // because some plots create files used by trial plots
+      Plotter.join();  
+        
+			Plotter.plot(afterPlotters);
 			
 
 		}

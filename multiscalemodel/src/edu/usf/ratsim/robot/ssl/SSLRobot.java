@@ -311,4 +311,12 @@ public class SSLRobot extends LocalizableRobot {
 		return false;
 	}
 
+	@Override
+	public boolean checkAffordance(Affordance af) {
+		List<Affordance> l = new LinkedList<Affordance>();
+		l.add(af);
+		checkAffordances(l);
+		return l.get(0).isRealizable();
+	}
+
 }

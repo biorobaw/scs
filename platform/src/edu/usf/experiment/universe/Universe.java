@@ -431,5 +431,9 @@ public abstract class Universe {
 	public void addFeeder(Feeder f) {
 		feeders.put(f.getId(), f);
 	}
+	
+	public void setPermanentFeeder(Integer id, boolean b) {
+		feeders.get(id).setPermanent(b);
+	}
 
 }
