@@ -25,9 +25,13 @@ public class PlaceRobotFile extends Task {
 		// TODO Auto-generated constructor stub
 		
 		String file = params.getChild("filename").getText();
+		System.out.println("FILE: "+file);
 		String[][] strPoints = CSVReader.loadCSV(file, ",", "Place robot file not found");
 		for (String[] s : strPoints){
-			positions.add(new Point4f(Float.parseFloat(s[0]),Float.parseFloat(s[1]),0,0));
+			Float x = Float.parseFloat(s[0]);
+			Float y = Float.parseFloat(s[1]);
+			System.out.println("coord: "+x+ " "+y);
+			positions.add(new Point4f(x,y,0,0));
 		}
 		
 		for(int i=0;i<positions.size();i++)
@@ -71,6 +75,7 @@ public class PlaceRobotFile extends Task {
 
 	private void perform(Universe universe) {
 		Point4f p = positions.get(nextPos);
+		System.out.println("set to: "+p.x+" "+p.y+ " "+p.w);
 		universe.setRobotPosition(new Point2D.Float(p.x, p.y), p.w);
 		if (nextPos+1 < positions.size()) nextPos++;
 		else Globals.getInstance().put("done", true);

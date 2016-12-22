@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import edu.usf.micronsl.ModelAction.ModelAction;
 import edu.usf.micronsl.exec.Debug;
 import edu.usf.micronsl.exec.DependencyRunnable;
 import edu.usf.micronsl.exec.ThreadDependencyExecutor;
@@ -22,12 +23,33 @@ public class Model {
 	private boolean modulesChanged;
 	private List<Module> moduleList;
 	private List<Module> runOrder;
+	
+	public LinkedList<ModelAction> pendingActions = new LinkedList<ModelAction>();
+	
+	private InitialModule initialModule = new InitialModule();
+	private FinalModule finalModule = new FinalModule();
 
 	public Model() {
 		modules = new LinkedHashMap<String, Module>();
 		pool = new ThreadDependencyExecutor(10, 10, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(20));
 		modulesChanged = false;
 		moduleList = new LinkedList<Module>();
+		
+		//add initial and final modules
+		Module m = initialModule;
+		modules.put(m.getName(), m);
+		moduleList.add(m);
+		modulesChanged = true;
+		
+		m=finalModule;
+		modules.put(m.getName(), m);
+		moduleList.add(m);
+		modulesChanged = true;
+		
+		finalModule.addPreReq(initialModule);
+		
+		
+		
 	}
 
 	public void addModule(Module m) {
@@ -36,6 +58,10 @@ public class Model {
 		modules.put(m.getName(), m);
 		moduleList.add(m);
 		modulesChanged = true;
+		
+		//add dependencies with initial and final modules:
+		m.addPreReq(initialModule);
+		finalModule.addPreReq(m);
 	}
 
 	public Module getModule(String name) {
@@ -130,6 +156,49 @@ public class Model {
 		order.add(m);
 
 		return cycles;
+	}
+	
+	public void initialTask(){};
+	public void finalTask(){};
+	
+	private class InitialModule extends Module{
+		
+		public InitialModule() {
+			super("InitialTask");
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public void run() {
+			initialTask();
+			
+		}
+
+		@Override
+		public boolean usesRandom() {
+			return true;
+		}
+		
+	}
+	
+	private class FinalModule extends Module{
+		
+		public FinalModule() {
+			super("FinalTask");
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public void run() {
+			finalTask();
+			
+		}
+
+		@Override
+		public boolean usesRandom() {
+			return true;
+		}
+		
 	}
 	
 }

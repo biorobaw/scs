@@ -102,7 +102,7 @@ public class TesselatedPlaceCellLayer extends Module {
 	/**
 	 * Computes the current activation of all cells
 	 */
-	public void run() {
+	public void run() {		
 		run(robot.getPosition(), robot.getDistanceToClosestWall());
 	}
 	

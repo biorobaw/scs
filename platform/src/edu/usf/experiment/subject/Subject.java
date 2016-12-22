@@ -127,5 +127,7 @@ public abstract class Subject {
 	public Map<Integer, Float>  getPCActivity(){
 		return new HashMap<>();
 	}
+	
+	public void performActions(){};
 
 }

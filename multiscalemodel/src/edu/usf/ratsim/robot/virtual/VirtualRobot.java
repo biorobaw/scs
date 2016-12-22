@@ -345,9 +345,11 @@ public class VirtualRobot extends LocalizableRobot {
 		else if (af instanceof EatAffordance) {
 			// Updates food in universe
 			sub.setTriedToEat();
+			System.out.println("has food: "+getClosestFeeder().hasFood());
 			if (getClosestFeeder().hasFood()) {
 				eat();
 				sub.setHasEaten(true);
+				System.out.println("ATE from feeder: " + getClosestFeeder().getId());
 				lastAteFeeder = getClosestFeeder().getId();
 				if (Debug.printTryingToEat)
 					System.out.println("Ate from a feeder with food");
@@ -426,5 +428,13 @@ public class VirtualRobot extends LocalizableRobot {
 	public int getLastTriedToEatFeeder() {
 		return lastTriedToEat;
 	}
+	
+	public boolean withinEatingDistanceFromFeeder(int id){
+		return universe.isRobotCloseToFeeder(id);
+		
+			
+		
+	}
+	
 
 }

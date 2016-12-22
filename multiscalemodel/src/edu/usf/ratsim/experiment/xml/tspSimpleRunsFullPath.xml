@@ -37,7 +37,7 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.experiment.subject.TSPSubject</name>
+		<name>edu.usf.ratsim.experiment.subject.TSPFrance.TSPSubjectFrance</name>
 		<params>
 			<!-- Step length in meters -->
 			<step>.05</step>
@@ -62,6 +62,7 @@
 			<!-- Order in which feeders are visited -->
 			<!--<feederOrder>$(feederOrder)</feederOrder>-->
 			<feederOrder></feederOrder> 
+			<pathFile>$(ratpath)</pathFile>
 		</params>
 	</model>
 	
@@ -80,13 +81,20 @@
 		<task>
 			<name>edu.usf.experiment.task.AddAllFeedersTask</name>
 			<params>
-				<feederFile>InterLabFunctionality\Jan2016\FeederLocations.txt</feederFile>
+				<feederFile>InterLabFunctionality\Jan2016\FeedersFromSentFiles.txt</feederFile>
 			</params>
 		</task>
 		
 		<task>
-			<name>edu.usf.experiment.task.EnableAllFeeders</name>
+			<name>edu.usf.experiment.task.EnableFeeders</name>
+			<params>
+				<feeders>$(enabledFeeders)</feeders>
+			</params>
 		</task>
+		
+		<!--<task>
+			<name>edu.usf.experiment.task.EnableAllFeeders</name>
+		</task> -->
 	</beforeExperimentTasks>
 	
 	<!-- Loggers to be executed before the eperiment -->
@@ -113,18 +121,21 @@
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
+			
+			
 		</beforeTrialTasks>
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
 			<number>1</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>00</sleep>
+			<sleep>60</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<task>
 					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
 				</task>
+				
 				<!-- Place the animat in a given place -->
 				<task>
 					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
@@ -140,9 +151,8 @@
 						
 					</params>
 				</task>
-				<task>
-					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
-				</task>
+				
+				<task> <name>edu.usf.experiment.task.ReleaseFoodFromEnabledFeeders</name> </task>
 				
 				
 			</beforeEpisodeTasks>
@@ -151,15 +161,12 @@
 			</beforeCycleTasks>
 			<!-- Tasks to performe after each cycle -->
 			<afterCycleTasks>
-				<task>
-					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
-				</task>
-				<task>
+				<!-- <task>
 					<name>edu.usf.experiment.task.PlaceRobotFile</name>
 					<params>
 						<filename>$(ratpath)</filename>
 					</params> 
-				</task>
+				</task> -->
 			</afterCycleTasks>
 			<!-- Loggers to execute after each cycle -->
 			<afterCycleLoggers>
@@ -207,12 +214,27 @@
 						<n>$(nFoodStopCondition)</n>
 					</params>
 				</condition>-->
+				
+				<!--<condition>
+					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
+					<params>
+						<n>21</n>
+					</params>
+				</condition>-->
+				
 				<!-- Somebody sets done flag condition -->
 				<condition>
 					<name>edu.usf.experiment.condition.DoneCondition</name>
 					<params>
 					</params>
 				</condition>
+				
+				<condition>
+					<name>edu.usf.experiment.condition.FoundAllFoodStopCond</name>
+					<params>
+					</params>
+				</condition>
+				
 			</stopConditions>
 			<!-- Plotters to execute after each episode -->
 			<afterEpisodePlotters>

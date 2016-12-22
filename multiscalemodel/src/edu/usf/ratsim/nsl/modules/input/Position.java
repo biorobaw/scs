@@ -11,7 +11,7 @@ import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
  */
 public class Position extends Module {
 
-	private Point3fPort pos;
+	public Point3fPort pos;
 	private LocalizableRobot robot;
 
 	public Position(String name, LocalizableRobot robot) {

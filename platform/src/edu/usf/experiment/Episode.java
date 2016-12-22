@@ -111,7 +111,6 @@ public class Episode {
 		boolean finished = false;
 		int cycle = 0;
 		while (!finished) {
-			if((boolean)g.get("pause")) continue;
 			props.setProperty("cycle", new Integer(cycle).toString());
 			for (Logger l : beforeCycleLoggers)
 				l.log(this);
@@ -120,6 +119,11 @@ public class Episode {
 
 			getSubject().stepCycle();
 			// TODO: universe step cycle
+			
+			while((boolean)g.get("pause")); //the pause is here so that the model state can be observed before performing the actions
+			
+			getSubject().performActions();
+			
 
 			for (Logger l : afterCycleLoggers)
 				l.log(this);

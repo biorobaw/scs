@@ -12,7 +12,7 @@ import edu.usf.micronsl.port.singlevalue.Float0dPort;
  */
 public class HeadDirection extends Module {
 
-	private Float0dPort hd;
+	public Float0dPort hd;
 	private LocalizableRobot robot;
 
 	public HeadDirection(String name, LocalizableRobot robot) {
@@ -20,11 +20,12 @@ public class HeadDirection extends Module {
 		
 		this.robot = robot;
 		hd = new Float0dPort(this);
-		addOutPort("position", hd);
+		addOutPort("hd", hd);
 	}
 
 	@Override
 	public void run() {
+		//System.out.println("HD");
 		hd.set(robot.getOrientationAngle());
 	}
 
