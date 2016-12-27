@@ -11,6 +11,7 @@ import javax.vecmath.Vector3f;
 
 import edu.usf.experiment.robot.Landmark;
 import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.SonarRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
@@ -25,7 +26,7 @@ import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.ratsim.experiment.subject.NotImplementedException;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 
-public class VirtualRobot extends LocalizableRobot {
+public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 
 	private static final float ROBOT_LENGTH = .1f;
 
@@ -53,6 +54,14 @@ public class VirtualRobot extends LocalizableRobot {
 
 	private int lastTriedToEat;
 	
+	private List<Float> sonarAngles;
+	
+	private float sonarAperture;
+
+	private float sonarMaxDist;
+
+	private int sonarNumRays;
+	
 	public void setCloseThreshold(float value){
 		this.closeThrs=value;
 	}
@@ -67,6 +76,14 @@ public class VirtualRobot extends LocalizableRobot {
 		halfFieldOfView = params.getChildFloat("halfFieldOfView");
 		visionDist = params.getChildFloat("visionDist");
 		closeThrs = params.getChildFloat("closeThrs");
+		
+		// Sonar configuration
+		sonarAngles = params.getChildFloatList("sonarAngles");
+		if (!sonarAngles.isEmpty()){
+			sonarAperture = params.getChildFloat("sonarAperture");
+			sonarMaxDist = params.getChildFloat("sonarMaxDist");
+			sonarNumRays = params.getChildInt("sonarNumRays");
+		}
 
 		universe = (VirtUniverse)u;
 		if (universe == null)
@@ -432,6 +449,31 @@ public class VirtualRobot extends LocalizableRobot {
 	
 	public void moveContinous(float lVel, float angVel) {
 		throw new NotImplementedException();
+	}
+
+	@Override
+	public float[] getSonarReadings() {
+		float[] readings = new float[sonarAngles.size()];
+		
+		int i = 0;
+		for (float angle : sonarAngles)
+			readings[i++] = universe.getRobotSonarReading(angle, sonarAperture, sonarMaxDist, sonarNumRays);
+		
+		return readings;
+	}
+
+	@Override
+	public float[] getSonarAngles() {
+		float[] angles = new float[sonarAngles.size()];
+		int i = 0;
+		for(float angle : sonarAngles)
+			angles[i++] = angle;
+		return angles;
+	}
+
+	@Override
+	public float getSonarAperture() {
+		return sonarAperture;
 	}
 
 }
