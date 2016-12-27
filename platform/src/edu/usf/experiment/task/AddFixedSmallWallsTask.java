@@ -1,9 +1,5 @@
 package edu.usf.experiment.task;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-
 import javax.vecmath.Point2f;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -19,7 +15,6 @@ import edu.usf.experiment.subject.SubjectLoader;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.experiment.utils.XMLExperimentParser;
 
 public class AddFixedSmallWallsTask extends Task {

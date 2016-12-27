@@ -12,7 +12,6 @@ import edu.usf.experiment.Trial;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.CSVReader;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.experiment.utils.XMLUtils;
 
 public class PlaceRobotFile extends Task {
 	

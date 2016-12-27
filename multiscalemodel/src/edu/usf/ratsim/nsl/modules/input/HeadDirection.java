@@ -2,7 +2,6 @@ package edu.usf.ratsim.nsl.modules.input;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 
 /**

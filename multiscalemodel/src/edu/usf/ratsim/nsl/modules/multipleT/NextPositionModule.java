@@ -5,12 +5,8 @@ import java.util.LinkedList;
 import javax.vecmath.Point3f;
 
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
-import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
-import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
-import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 
 /**
  * Module that sets the probability of an action to 0 if the action can not be performed

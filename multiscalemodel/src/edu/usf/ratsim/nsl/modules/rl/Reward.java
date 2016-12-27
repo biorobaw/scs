@@ -1,7 +1,6 @@
 package edu.usf.ratsim.nsl.modules.rl;
 
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 

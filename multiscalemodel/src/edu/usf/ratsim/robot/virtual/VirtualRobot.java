@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 
 import javax.media.j3d.Transform3D;
-import javax.media.j3d.VirtualUniverse;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;

@@ -1,14 +1,14 @@
 package edu.usf.ratsim.robot.ssl;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.NoSuchPortException;
 import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
-
-import java.io.IOException;
-import java.io.OutputStream;
 
 public class SSLPilot {
 

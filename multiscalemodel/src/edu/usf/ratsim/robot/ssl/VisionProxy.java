@@ -7,7 +7,6 @@ import java.util.Scanner;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.ratsim.robot.naorobot.protobuf.VisionListener;
 import edu.usf.ratsim.support.Position;
 
 public class VisionProxy extends Thread {

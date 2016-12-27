@@ -1,19 +1,10 @@
 package edu.usf.ratsim.nsl.modules.multipleT;
 
 import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
 
-import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.affordance.EatAffordance;
-import edu.usf.experiment.subject.affordance.ForwardAffordance;
-import edu.usf.experiment.subject.affordance.TurnAffordance;
-import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
-import edu.usf.ratsim.robot.virtual.VirtualRobot;
 
 /**
  * Module that sets the probability of an action to 0 if the action can not be performed

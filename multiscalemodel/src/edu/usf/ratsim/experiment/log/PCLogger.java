@@ -10,11 +10,9 @@ import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject;
 import edu.usf.ratsim.experiment.subject.TSPSubject;
 import edu.usf.ratsim.experiment.subject.multipleT.MultipleTSubject;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
-import edu.usf.ratsim.nsl.modules.cell.ExponentialConjCell;
 
 public class PCLogger extends Logger {
 

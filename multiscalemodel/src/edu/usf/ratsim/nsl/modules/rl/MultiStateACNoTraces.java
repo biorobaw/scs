@@ -1,10 +1,5 @@
 package edu.usf.ratsim.nsl.modules.rl;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.ListIterator;
-
 import edu.usf.experiment.utils.Debug;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;

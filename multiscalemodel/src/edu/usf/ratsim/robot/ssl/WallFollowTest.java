@@ -1,11 +1,9 @@
 package edu.usf.ratsim.robot.ssl;
 
-import java.util.Random;
-import java.io.IOException;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.Thread;
-import java.lang.InterruptedException;
+import java.util.Random;
 
 public class WallFollowTest extends Thread {
 
