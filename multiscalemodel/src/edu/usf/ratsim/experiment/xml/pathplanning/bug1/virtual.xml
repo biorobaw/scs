@@ -73,10 +73,15 @@
 			<name>edu.usf.experiment.task.PlaceRobotInitally</name>
 			<params>
 				<point>
-					<x>.5</x>
+					<x>1</x>
 					<y>0</y>
 					<theta>3.14</theta>
 				</point>
+			</params>
+		</task>
+		<task>
+			<name>edu.usf.experiment.task.PublishPlatformPosition</name>
+			<params>
 			</params>
 		</task>
 	</beforeExperimentTasks>
@@ -133,7 +138,17 @@
 			</afterEpisodeTasks>
 			<!-- Conditions upon which the episode ends -->
 			<stopConditions>
-				
+				<condition>
+					<name>edu.usf.experiment.condition.MaxCycles</name>
+					<params>
+						<max>5000</max>
+					</params>
+				</condition>
+				<condition>
+					<name>edu.usf.experiment.condition.FoundPlatform</name>
+					<params>
+					</params>
+				</condition>
 			</stopConditions>
 			<!-- Plotters to execute after each episode -->
 			<afterEpisodePlotters>

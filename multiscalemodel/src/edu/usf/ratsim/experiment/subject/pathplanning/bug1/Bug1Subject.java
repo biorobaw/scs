@@ -36,9 +36,8 @@ public class Bug1Subject extends Subject {
 		if (!(robot instanceof SonarRobot))
 			throw new RuntimeException("SonarTest "
 					+ "needs a Sonar Robot");
-		SonarRobot sRobot = (SonarRobot) robot;
 
-		model = new Bug1Model(params, this, sRobot);
+		model = new Bug1Model(params, this, robot);
 	}
 
 	@Override

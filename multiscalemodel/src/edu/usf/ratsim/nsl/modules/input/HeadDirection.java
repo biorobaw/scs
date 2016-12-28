@@ -19,7 +19,7 @@ public class HeadDirection extends Module {
 		
 		this.robot = robot;
 		hd = new Float0dPort(this);
-		addOutPort("position", hd);
+		addOutPort("orientation", hd);
 	}
 
 	@Override

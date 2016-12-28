@@ -14,6 +14,17 @@
 		<x2>0</x2>		
 		<y2>-.5</y2>	
 	</wall>		
+
+	<platform>
+		<r>.1</r>
+		<h>0</h>
+		<cr>0</cr>
+		<cg>1</cg>
+		<cb>0</cb>
+		<x>-1</x>
+		<y>0</y>
+		<z>0</z>
+	</platform>				
 	
 	<!-- Views -->
 	<topview>
