@@ -1,4 +1,4 @@
-package edu.usf.ratsim.experiment.subject.pathplanning.bug0;
+package edu.usf.ratsim.experiment.subject.pathplanning.allbugs;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,18 +10,17 @@ import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.SonarRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
-import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.experiment.subject.NotImplementedException;
 
 
-public class Bug0Subject extends Subject {
+public class AllBugsSubject extends Subject {
 
-	private Bug0Model model;
+	private AllBugsModel model;
 
-	public Bug0Subject(String name, String group,
+	public AllBugsSubject(String name, String group,
 			ElementWrapper params, Robot robot) {
 		super(name, group, params, robot);
 		
@@ -29,7 +28,7 @@ public class Bug0Subject extends Subject {
 			throw new RuntimeException("SonarTest "
 					+ "needs a Sonar Robot");
 
-		model = new Bug0Model(params, this, robot);
+		model = new AllBugsModel(params, this, robot);
 	}
 
 	@Override

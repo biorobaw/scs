@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
-
 <experiment>
 	
 	<!--	<seed>23423423</seed-->
@@ -44,15 +43,37 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.experiment.subject.pathplanning.bug0.Bug0Subject</name>
+		<name>edu.usf.ratsim.experiment.subject.pathplanning.allbugs.AllBugsSubject</name>
 		<params>
+			<algorithm>none</algorithm>
 		</params>
 	</model>
 	
 	<group>
-		<name>Control</name>
+		<name>Bug0</name>
 		<numMembers>16</numMembers>
 		<params>
+			<algorithm>bug0</algorithm>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	
+	<group>
+		<name>Bug1</name>
+		<numMembers>16</numMembers>
+		<params>
+			<algorithm>bug1</algorithm>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	
+	<group>
+		<name>Bug2</name>
+		<numMembers>16</numMembers>
+		<params>
+			<algorithm>bug2</algorithm>
 		</params>
 		<tasks>
 		</tasks>
@@ -82,10 +103,12 @@
 	
 	<!-- Training trial - Non-delayed cue phase -->
 	<trial>
-		<name>Training</name>
+		<name>OneWall</name>
 		<!-- Groups to apply the trial -->
 		<groups>
-			<group>Control</group>
+			<group>Bug0</group>
+			<group>Bug1</group>
+			<group>Bug2</group>
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
@@ -168,4 +191,5 @@
 	<afterExperimentPlotters>
 	</afterExperimentPlotters>
 </experiment>
+	
 	
