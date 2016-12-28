@@ -39,9 +39,7 @@ public class SonarReadings extends Module {
 		int i = 0;
 		for (Float reading : robot.getSonarReadings()){
 			readingsData[i++] = reading;
-			System.out.print(reading + " ");
 		}
-		System.out.println();
 	}
 
 	@Override
