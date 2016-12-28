@@ -110,6 +110,7 @@ public class GeomUtils {
 		return res;
 	}
 
+	// FIXME: should add one more inverse?
 	public static float angleToPointWithOrientation(Quat4f orientation,
 			Point3f from, Point3f to) {
 		Vector3f toPoint = pointsToVector(from, to);
