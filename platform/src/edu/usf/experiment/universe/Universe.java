@@ -410,6 +410,14 @@ public abstract class Universe {
 	public List<Platform> getPlatforms() {
 		return platforms;
 	}
+	
+	public void clearPlatforms(){
+		platforms.clear();
+	}
+	
+	public void addPlatform(Point3f pos, float radius){
+		platforms.add(new Platform(pos, radius));
+	}
 
 	public boolean hasRobotFoundPlatform() {
 		Point3f pos = getRobotPosition();

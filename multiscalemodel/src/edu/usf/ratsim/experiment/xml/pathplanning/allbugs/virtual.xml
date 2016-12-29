@@ -9,7 +9,7 @@
 			<!-- Distance from which the food is accessible according to the universe -->
 			<closeToFoodThrs>0.1</closeToFoodThrs>
 			<!-- Map file -->
-			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/pathplanning/OneWall.xml</maze>
+			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/pathplanning/Empty.xml</maze>
 			<!-- Display de window or run without GUI -->
 			<display>true</display>
 		</params>
@@ -80,11 +80,6 @@
 	</group>
 	
 	<beforeExperimentTasks>
-		<task>
-			<name>edu.usf.experiment.task.PublishPlatformPosition</name>
-			<params>
-			</params>
-		</task>
 	</beforeExperimentTasks>
 	
 	<!-- Loggers to be executed before the eperiment -->
@@ -112,22 +107,37 @@
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
+			<task>
+				<name>edu.usf.experiment.task.maze.SetUpSingleWall</name>
+				<params>
+				</params>
+			</task>
+			<task>
+				<name>edu.usf.experiment.task.maze.SetUpGMaze</name>
+				<params>
+				</params>
+			</task>
+			<task>
+				<name>edu.usf.experiment.task.PublishPlatformPosition</name>
+				<params>
+				</params>
+			</task>
 		</beforeTrialTasks>
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
 			<number>40</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>0</sleep>
+			<sleep>10</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<task>
 					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
 					<params>
 						<point>
-							<x>1</x>
-							<y>0</y>
-							<theta>3.14</theta>
+							<x>.5</x>
+							<y>-.5</y>
+							<theta>1.57</theta>
 						</point>
 					</params>
 				</task>

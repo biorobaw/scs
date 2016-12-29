@@ -15,7 +15,7 @@ public class Bug0Module extends Module {
 
 	private static final float OBSTACLE_FOUND_THRS = .3f;
 	private static final float PROP_ANG_PARALLEL = .2f;
-	private static final float PROP_ANG_WALL_CLOSE = .1f;
+	private static final float PROP_ANG_WALL_CLOSE = .2f;
 	private static final float PROP_LINEAR_WF = 0.05f;
 	private static final float PROP_LINEAR_GS = 0.01f;
 	private static final float PROP_ANGULAR_GS = 0.1f;
@@ -27,7 +27,9 @@ public class Bug0Module extends Module {
 	private static final float WF_MIN_FW_VEL = .01f;
 	private static final float CLOSE_THRS = .2f;
 	private static final float MIN_ANGLE_DIFF_THRS = (float) (Math.PI / 16);
-	private static final float FREE_PASSAGE_THRS = 3f * OBSTACLE_FOUND_THRS;
+	private static final float FREE_PASSAGE_THRS = 1.5f * OBSTACLE_FOUND_THRS;
+	private static final float WF_OBSTACLE_FRONT_TARGET = 1.5f * OBSTACLE_FOUND_THRS;
+	private static final float WF_ROT_VEL_OBS_FRONT = .2f;
 
 	private VirtualRobot r;
 
@@ -97,17 +99,23 @@ public class Bug0Module extends Module {
 		case WALL_FOLLOWING:
 			float left = readings.get(0);
 			float leftfw = readings.get(1);
+			front = readings.get(2);
 
-			// Get the current relation and the target relation (wall parallel
-			// to robot)
-			float quot = left / leftfw;
-			float targetquot = (float) Math.cos(Math.PI / 8);
-
-			float close_prop = left - WL_FW_TARGET;
-
-			angular = PROP_ANG_PARALLEL * (targetquot - quot) + PROP_ANG_WALL_CLOSE * close_prop;
-
-			linear = Math.min(PROP_LINEAR_WF * (front - WL_FW_TARGET), WF_MIN_FW_VEL);
+			if (front < OBSTACLE_FOUND_THRS){
+				angular = -WF_ROT_VEL_OBS_FRONT;
+				linear = 0;
+			} else {
+				// Get the current relation and the target relation (wall parallel
+				// to robot)
+				float quot = left / leftfw;
+				float targetquot = (float) Math.cos(Math.PI / 8);
+	
+				float close_prop = left - WL_FW_TARGET;
+				
+				angular = PROP_ANG_PARALLEL * (targetquot - quot) + PROP_ANG_WALL_CLOSE * close_prop;
+	
+				linear = Math.min(PROP_LINEAR_WF * (front - WL_FW_TARGET), WF_MIN_FW_VEL);
+			}
 			break;
 		}
 

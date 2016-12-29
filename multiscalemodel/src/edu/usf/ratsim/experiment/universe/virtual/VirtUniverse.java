@@ -212,7 +212,31 @@ public class VirtUniverse extends Universe {
 	}
 
 	public void clearWalls() {
+		super.clearWalls();
+		
+		for (WallNode wn : wallNodes)
+			bg.removeChild(wn);
+		
 		wallNodes.clear();
+	}
+
+	@Override
+	public void clearPlatforms() {
+		super.clearPlatforms();
+		
+		for (PlatformNode pn : platformNodes)
+			bg.removeChild(pn);
+		
+		platformNodes.clear();
+	}
+
+	@Override
+	public void addPlatform(Point3f pos, float radius) {
+		super.addPlatform(pos, radius);
+		
+		PlatformNode p = new PlatformNode(pos.x, pos.y, radius);
+		platformNodes.add(p);
+		bg.addChild(p);
 	}
 
 	public View getTopView() {
