@@ -135,8 +135,8 @@
 					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
 					<params>
 						<point>
-							<x>.5</x>
-							<y>-.5</y>
+							<x>0</x>
+							<y>-2</y>
 							<theta>1.57</theta>
 						</point>
 					</params>

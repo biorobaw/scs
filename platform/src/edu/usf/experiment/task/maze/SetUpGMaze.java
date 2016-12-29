@@ -18,13 +18,13 @@ public class SetUpGMaze extends Task {
 		u.clearWalls();
 		u.clearPlatforms();
 		
-		u.addWall(.5f, 0.5f, 1, 0.5f);
-		u.addWall(1f, 0.5f, 1, 1);
-		u.addWall(1, 1, 0, 1);
-		u.addWall(0, 1, 0, 0f);
-		u.addWall(0, 0f, .7f, 0f);
+		u.addWall(0f, 0f, 1, 0f);
+		u.addWall(1, 0f, 1, 1);
+		u.addWall(1, 1, -1, 1);
+		u.addWall(-1, 1, -1, -1f);
+		u.addWall(-1, -1f, .5f, -1f);
 		
-		u.addPlatform(new Point3f(.5f, .75f, 0), .05f);
+		u.addPlatform(new Point3f(0f, .5f, 0), .1f);
 	}
 
 }
