@@ -10,6 +10,7 @@ import com.vividsolutions.jts.geom.LineSegment;
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -32,22 +33,7 @@ public class AddRandomWallsTask extends Task {
 		length = params.getChildFloat("wallLength");
 	}
 
-	@Override
-	public void perform(Experiment experiment) {
-		perform(experiment.getUniverse());
-	}
-
-	@Override
-	public void perform(Trial trial) {
-		perform(trial.getUniverse());
-	}
-
-	@Override
-	public void perform(Episode episode) {
-		perform(episode.getUniverse());
-	}
-
-	private void perform(Universe univ) {
+	public void perform(Universe u, Subject s){
 		Random random = RandomSingleton.getInstance();
 
 		for (int i = 0; i < numWalls; i++) {
@@ -63,7 +49,7 @@ public class AddRandomWallsTask extends Task {
 								- (RADIUS);
 						x1.y = random.nextFloat() * 2 * (RADIUS)
 								- (RADIUS);
-					} while (x1.distance(new Point2f()) > RADIUS || univ.shortestDistanceToWalls(x1) > MAX_DIST_TO_PREV_WALLS);
+					} while (x1.distance(new Point2f()) > RADIUS || u.shortestDistanceToWalls(x1) > MAX_DIST_TO_PREV_WALLS);
 					
 					Point2f translation;
 					float orientation;
@@ -101,14 +87,14 @@ public class AddRandomWallsTask extends Task {
 					wall2 = new LineSegment(new Coordinate(x2.x, x2.y),
 							new Coordinate(x3.x, x3.y));
 
-				} while (univ.shortestDistanceToWalls(wall) < MIN_DIST_BETWEEN_WALLS
-						|| univ.shortestDistanceToWalls(wall2) < MIN_DIST_BETWEEN_WALLS
-						|| univ.wallDistanceToFeeders(wall) < MIN_DIST_TO_FEEDERS
-						|| univ.wallDistanceToFeeders(wall2) < MIN_DIST_TO_FEEDERS);
+				} while (u.shortestDistanceToWalls(wall) < MIN_DIST_BETWEEN_WALLS
+						|| u.shortestDistanceToWalls(wall2) < MIN_DIST_BETWEEN_WALLS
+						|| u.wallDistanceToFeeders(wall) < MIN_DIST_TO_FEEDERS
+						|| u.wallDistanceToFeeders(wall2) < MIN_DIST_TO_FEEDERS);
 
-				univ.addWall(x1.x, x1.y, x2.x, x2.y);
+				u.addWall(x1.x, x1.y, x2.x, x2.y);
 
-				univ.addWall(x2.x, x2.y, x3.x, x3.y);
+				u.addWall(x2.x, x2.y, x3.x, x3.y);
 			} else {
 
 				LineSegment wall = null;
@@ -133,10 +119,10 @@ public class AddRandomWallsTask extends Task {
 							new Coordinate(x2.x, x2.y));
 
 					// } while (univ.wallIntersectsOtherWalls(wall));
-				} while (univ.shortestDistanceToWalls(wall) < MIN_DIST_BETWEEN_WALLS
-						|| univ.wallDistanceToFeeders(wall) < MIN_DIST_TO_FEEDERS);
+				} while (u.shortestDistanceToWalls(wall) < MIN_DIST_BETWEEN_WALLS
+						|| u.wallDistanceToFeeders(wall) < MIN_DIST_TO_FEEDERS);
 
-				univ.addWall(x1.x, x1.y, x2.x, x2.y);
+				u.addWall(x1.x, x1.y, x2.x, x2.y);
 
 			}
 		}

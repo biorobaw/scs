@@ -45,31 +45,14 @@ public class AddSmallWallsTask extends Task {
 
 	}
 
-	@Override
-	public void perform(Experiment experiment) {
+	public void perform(Universe u, Subject s){
 		System.out.println("[+] Adding wmall walls");
-		while (!perform(experiment.getUniverse(), experiment.getSubject()))
+		while (!placeWalls(u, s))
 			;
 		System.out.println("[+] Small walls added");
 	}
 
-	@Override
-	public void perform(Trial trial) {
-		System.out.println("[+] Adding wmall walls");
-		while (!perform(trial.getUniverse(), trial.getSubject()))
-			;
-		System.out.println("[+] Small walls added");
-	}
-
-	@Override
-	public void perform(Episode episode) {
-		System.out.println("[+] Adding wmall walls");
-		while (!perform(episode.getUniverse(), episode.getSubject()))
-			;
-		System.out.println("[+] Small walls added");
-	}
-
-	public boolean perform(Universe univ, Subject sub) {
+	public boolean placeWalls(Universe univ, Subject sub) {
 		Random random = RandomSingleton.getInstance();
 		List<LineSegment> outerWalls = new LinkedList<LineSegment>();
 		watchDogCount = 0;
@@ -205,7 +188,7 @@ public class AddSmallWallsTask extends Task {
 			Subject subject = SubjectLoader.getInstance().load("a", "a",
 					root.getChild("model"), robot);
 			AddSmallWallsTask t = new AddSmallWallsTask(null);
-			while (!t.perform(univ, subject))
+			while (!t.placeWalls(univ, subject))
 				;
 			System.out.println("walls added");
 			// try {

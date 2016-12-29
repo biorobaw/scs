@@ -33,22 +33,7 @@ public class AddFixedSmallWallsTask extends Task {
 
 	}
 
-	@Override
-	public void perform(Experiment experiment) {
-		perform(experiment.getUniverse(), experiment.getSubject());
-	}
-
-	@Override
-	public void perform(Trial trial) {
-		perform(trial.getUniverse(), trial.getSubject());
-	}
-
-	@Override
-	public void perform(Episode episode) {
-		perform(episode.getUniverse(), episode.getSubject());
-	}
-
-	private void perform(Universe univ, Subject sub) {
+	public void perform(Universe univ, Subject s) {
 //		addOuterWall(Math.PI/8, false, univ);
 //		addOuterWall(3*Math.PI/8, true, univ);
 //		addOuterWall(7*Math.PI/8, false, univ);

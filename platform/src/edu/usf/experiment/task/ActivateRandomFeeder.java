@@ -3,9 +3,7 @@ package edu.usf.experiment.task;
 import java.util.List;
 import java.util.Random;
 
-import edu.usf.experiment.Episode;
-import edu.usf.experiment.Experiment;
-import edu.usf.experiment.Trial;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -23,22 +21,8 @@ public class ActivateRandomFeeder extends Task {
 		// TODO Auto-generated constructor stub
 	}
 
-	@Override
-	public void perform(Experiment experiment) {
-		perform(experiment.getUniverse());
-	}
-
-	@Override
-	public void perform(Trial trial) {
-		perform(trial.getUniverse());
-	}
-
-	@Override
-	public void perform(Episode episode) {
-		perform(episode.getUniverse());
-	}
 	
-	private void perform(Universe u) {
+	public void perform(Universe u, Subject s) {
 		List<Integer> enabledFeeders = u.getEnabledFeeders();
 
 		Random r = RandomSingleton.getInstance();

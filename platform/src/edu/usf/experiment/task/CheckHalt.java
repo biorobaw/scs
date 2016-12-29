@@ -8,6 +8,8 @@ import java.net.UnknownHostException;
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
+import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
 /**
@@ -37,22 +39,7 @@ public class CheckHalt extends Task implements Runnable {
 		
 	}
 
-	@Override
-	public void perform(Experiment experiment) {
-		perform();
-	}
-
-	@Override
-	public void perform(Trial trial) {
-		perform();
-	}
-
-	@Override
-	public void perform(Episode episode) {
-		perform();
-	}
-
-	private void perform() {
+	public void perform(Universe u, Subject s){
 		while (!canContinue()){
 			try	 {
 				Thread.sleep(500);
@@ -63,7 +50,6 @@ public class CheckHalt extends Task implements Runnable {
 		}
 			
 	}
-	
 	
 	public static void main(String[] args) throws UnknownHostException, IOException{
 		new Socket("odroid", 15679);
