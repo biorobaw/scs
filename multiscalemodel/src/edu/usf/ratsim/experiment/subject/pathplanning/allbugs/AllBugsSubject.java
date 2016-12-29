@@ -56,7 +56,6 @@ public class AllBugsSubject extends Subject {
 
 	@Override
 	public void newTrial() {
-		model.newTrial();
 	}
 
 	@Override

@@ -63,10 +63,4 @@ public class AllBugsModel extends Model {
 		addModule(bug);
 	}
 
-	public void newTrial() {
-	}
-
-	public void newEpisode() {
-	}
-
 }
