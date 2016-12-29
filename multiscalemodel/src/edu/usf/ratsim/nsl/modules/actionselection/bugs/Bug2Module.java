@@ -1,5 +1,7 @@
 package edu.usf.ratsim.nsl.modules.actionselection.bugs;
 
+import javax.vecmath.Point3f;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
@@ -23,6 +25,7 @@ public class Bug2Module extends Module {
 
 	private State state;
 	private LineSegment mLine;
+	private Point3f hitPoint;
 
 	public Bug2Module(String name, Subject sub) {
 		super(name);
@@ -52,6 +55,7 @@ public class Bug2Module extends Module {
 			// Check the middle sensor for obstacles
 			if (readings.get(2) < OBSTACLE_FOUND_THRS) {
 				state = State.WF_AWAY_FROM_ML;
+				hitPoint = rPos.get();
 			}
 			break;
 		case WF_AWAY_FROM_ML:
@@ -64,7 +68,8 @@ public class Bug2Module extends Module {
 		case WF_RETURN_TO_ML:
 			// Record min dist
 			distToMLine = (float) mLine.distancePerpendicular(new Coordinate(rPos.get().x, rPos.get().y));
-			if (distToMLine < CLOSE_THRS) {
+			// If it reaches the m-line and is closer than the first time
+			if (distToMLine < CLOSE_THRS && rPos.get().distance(platPos.get()) < hitPoint.distance(platPos.get())) {
 				state = State.GOAL_SEEKING;
 			}
 			break;
@@ -100,5 +105,16 @@ public class Bug2Module extends Module {
 	public boolean usesRandom() {
 		return false;
 	}
+
+	@Override
+	public void newEpisode() {
+		super.newEpisode();
+		
+		mLine = null;
+		hitPoint = null;
+		state = State.GOAL_SEEKING;
+	}
+	
+	
 
 }
