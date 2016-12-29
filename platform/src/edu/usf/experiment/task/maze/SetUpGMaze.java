@@ -18,7 +18,7 @@ public class SetUpGMaze extends Task {
 		u.clearWalls();
 		u.clearPlatforms();
 		
-		u.addWall(0f, 0f, 1, 0f);
+		u.addWall(-.3f, 0f, 1, 0f);
 		u.addWall(1, 0f, 1, 1);
 		u.addWall(1, 1, -1, 1);
 		u.addWall(-1, 1, -1, -1f);
