@@ -62,7 +62,6 @@ public class Bug2Module extends Module {
 		}
 
 		// State switching criteria
-		System.out.println(state);
 		switch (state) {
 		case GOAL_SEEKING:
 			// Check the middle sensor for obstacles
