@@ -10,10 +10,8 @@ import edu.usf.ratsim.robot.virtual.VirtualRobot;
 
 public class Bug0Module extends Module {
 
-	private static final float OBSTACLE_FOUND_THRS = .3f;
-
 	private static final float MIN_ANGLE_DIFF_THRS = (float) (Math.PI / 16);
-	private static final float FREE_PASSAGE_THRS = 1.5f * OBSTACLE_FOUND_THRS;
+	private static final float FREE_PASSAGE_THRS = 1.5f * BugUtilities.OBSTACLE_FOUND_THRS;
 
 	private VirtualRobot r;
 
@@ -28,7 +26,7 @@ public class Bug0Module extends Module {
 
 		this.r = (VirtualRobot) sub.getRobot();
 
-		state = State.GOAL_SEEKING;
+		
 	}
 
 	@Override
@@ -43,7 +41,7 @@ public class Bug0Module extends Module {
 		switch (state) {
 		case GOAL_SEEKING:
 			// Check the middle sensor for obstacles
-			if (readings.get(2) < OBSTACLE_FOUND_THRS) {
+			if (readings.get(2) < BugUtilities.OBSTACLE_FOUND_THRS) {
 				state = State.WALL_FOLLOWING;
 			}
 			break;
@@ -102,4 +100,12 @@ public class Bug0Module extends Module {
 		return false;
 	}
 
+	@Override
+	public void newEpisode() {
+		super.newEpisode();
+		
+		state = State.GOAL_SEEKING;
+	}
+
+	
 }

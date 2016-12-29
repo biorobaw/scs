@@ -6,7 +6,9 @@ import edu.usf.experiment.utils.GeomUtils;
 
 public class BugUtilities {
 	
-	private static final float OBSTACLE_FOUND_THRS = .3f;
+	public static final float OBSTACLE_FOUND_THRS = .15f;
+	public static final float CLOSE_THRS = .15f;
+	
 	private static final float PROP_ANG_PARALLEL = .2f;
 	private static final float PROP_ANG_WALL_CLOSE = .2f;
 	private static final float PROP_LINEAR_WF = 0.05f;

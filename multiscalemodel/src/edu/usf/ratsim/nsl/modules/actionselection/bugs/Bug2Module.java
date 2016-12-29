@@ -14,9 +14,6 @@ import edu.usf.ratsim.robot.virtual.VirtualRobot;
 
 public class Bug2Module extends Module {
 
-	private static final float OBSTACLE_FOUND_THRS = .3f;
-	private static final float CLOSE_THRS = .2f;
-
 	private VirtualRobot r;
 
 	private enum State {
@@ -53,7 +50,7 @@ public class Bug2Module extends Module {
 		switch (state) {
 		case GOAL_SEEKING:
 			// Check the middle sensor for obstacles
-			if (readings.get(2) < OBSTACLE_FOUND_THRS) {
+			if (readings.get(2) < BugUtilities.OBSTACLE_FOUND_THRS) {
 				state = State.WF_AWAY_FROM_ML;
 				hitPoint = rPos.get();
 			}
@@ -61,7 +58,7 @@ public class Bug2Module extends Module {
 		case WF_AWAY_FROM_ML:
 			// Record min dist
 			float distToMLine = (float) mLine.distancePerpendicular(new Coordinate(rPos.get().x, rPos.get().y));
-			if (distToMLine > CLOSE_THRS) {
+			if (distToMLine > BugUtilities.CLOSE_THRS) {
 				state = State.WF_RETURN_TO_ML;
 			}
 			break;
@@ -69,7 +66,7 @@ public class Bug2Module extends Module {
 			// Record min dist
 			distToMLine = (float) mLine.distancePerpendicular(new Coordinate(rPos.get().x, rPos.get().y));
 			// If it reaches the m-line and is closer than the first time
-			if (distToMLine < CLOSE_THRS && rPos.get().distance(platPos.get()) < hitPoint.distance(platPos.get())) {
+			if (distToMLine < BugUtilities.CLOSE_THRS && rPos.get().distance(platPos.get()) < (hitPoint.distance(platPos.get()) - BugUtilities.CLOSE_THRS)) {
 				state = State.GOAL_SEEKING;
 			}
 			break;

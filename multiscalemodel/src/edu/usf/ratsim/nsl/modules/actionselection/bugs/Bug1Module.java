@@ -11,9 +11,6 @@ import edu.usf.ratsim.robot.virtual.VirtualRobot;
 
 public class Bug1Module extends Module {
 
-	private static final float OBSTACLE_FOUND_THRS = .3f;
-	private static final float CLOSE_THRS = .2f;
-
 	private VirtualRobot r;
 
 	private enum State {
@@ -44,7 +41,7 @@ public class Bug1Module extends Module {
 		switch (state) {
 		case GOAL_SEEKING:
 			// Check the middle sensor for obstacles
-			if (readings.get(2) < OBSTACLE_FOUND_THRS * 1.1f) {
+			if (readings.get(2) < BugUtilities.OBSTACLE_FOUND_THRS * 1.1f) {
 				state = State.WF_AWAY_FROM_HP;
 				minDistToGoal = rPos.get().distance(platPos.get());
 				minDistPlace = rPos.get();
@@ -60,7 +57,7 @@ public class Bug1Module extends Module {
 			}
 
 			float distToHP = rPos.get().distance(hitPoint);
-			if (distToHP > CLOSE_THRS) {
+			if (distToHP > BugUtilities.CLOSE_THRS) {
 				state = State.WF_RETURN_TO_HP;
 			}
 			break;
@@ -73,13 +70,13 @@ public class Bug1Module extends Module {
 			}
 
 			distToHP = rPos.get().distance(hitPoint);
-			if (distToHP < CLOSE_THRS) {
+			if (distToHP < BugUtilities.CLOSE_THRS) {
 				state = State.WF_GO_TO_CP;
 			}
 			break;
 		case WF_GO_TO_CP:
 			float distToCP = rPos.get().distance(minDistPlace);
-			if (distToCP < CLOSE_THRS) {
+			if (distToCP < BugUtilities.CLOSE_THRS) {
 				state = State.GOAL_SEEKING;
 			}
 			break;
@@ -115,6 +112,12 @@ public class Bug1Module extends Module {
 	@Override
 	public boolean usesRandom() {
 		return false;
+	}
+	
+	public void newEpisode(){
+		state = State.GOAL_SEEKING;
+		hitPoint = null;
+		minDistPlace = null;
 	}
 
 }
