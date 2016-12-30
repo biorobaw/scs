@@ -1,13 +1,16 @@
 package edu.usf.ratsim.nsl.modules.pathplanning;
 
+import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.WindowEvent;
+import java.awt.Paint;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.vecmath.Point3f;
+
+import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
@@ -21,6 +24,8 @@ import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 public class ExperienceRoadMap extends Module {
 
 	private static final float MIN_ACTIVATION = 2f;
+
+	private static final float MAX_SINGLE_ACTIVATION = .8f;
 
 	private UndirectedGraph<PointNode, Edge> g;
 
@@ -47,20 +52,28 @@ public class ExperienceRoadMap extends Module {
 
 		// Get the total activation of all nodes
 		float totalActivation = 0;
+		float maxActivation = Float.NEGATIVE_INFINITY;
 		for (PointNode n : g.getVertices()) {
-			float activation = n.getActivation(rPos.get());
+			n.updateActivation(rPos.get());
+			
+			float activation = n.getActivation();
 			totalActivation += activation;
 			if (activation > 0)
 				active.add(n);
+			
+			if (activation > maxActivation){
+				maxActivation = activation;
+			}
 		}
 
 		// If not enough activation
-		if (totalActivation < MIN_ACTIVATION) {
+		if (totalActivation < MIN_ACTIVATION && maxActivation < MAX_SINGLE_ACTIVATION) {
 			System.out.println("Creating a node");
 			// Create new node
 			PointNode nv = new PointNode(rPos.get());
 			g.addVertex(nv);
 			// Add to the active set
+			nv.updateActivation(rPos.get());
 			active.add(nv);
 		}
 
@@ -90,6 +103,12 @@ public class ExperienceRoadMap extends Module {
 		layout.setSize(new Dimension(600, 600));
 		vv = new BasicVisualizationServer<PointNode, Edge>(layout);
 		vv.setPreferredSize(new Dimension(650, 650));
+		vv.getRenderContext().setVertexFillPaintTransformer(new Transformer<PointNode, Paint>(){
+			public Paint transform(PointNode pn) {
+				return Color.GREEN;
+			}
+			
+		});
 
 		frame = new JFrame("Topological map");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -131,17 +150,22 @@ class PointNode {
 	private static final float MAX_RADIUS = .5f;
 
 	public Point3f prefLoc;
+	public float activation;
 
 	public PointNode(Point3f prefLoc) {
 		this.prefLoc = prefLoc;
 	}
 
-	public float getActivation(Point3f loc) {
+	public void updateActivation(Point3f loc){
 		float dist = prefLoc.distance(loc);
 		if (dist > MAX_RADIUS)
-			return 0;
+			activation = 0;
 		else
-			return (float) Math.exp(-Math.pow(dist, 2));
+			activation = (float) Math.exp(-Math.pow(dist, 2));
+	}
+	
+	public float getActivation() {
+		return activation;
 	}
 
 	public String toString() {
@@ -177,7 +201,7 @@ class VertextPosLayout<E> extends AbstractLayout<PointNode, E> {
 
 	@Override
 	public Point2D transform(PointNode pn) {
-		return new Point2D.Double(pn.prefLoc.x * 100 + 300, pn.prefLoc.y * 100 + 300);
+		return new Point2D.Double(pn.prefLoc.x * 100 + 300, -pn.prefLoc.y * 100 + 300);
 	}
 
 }
