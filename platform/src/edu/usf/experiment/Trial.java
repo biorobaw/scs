@@ -72,7 +72,7 @@ public class Trial implements Runnable {
 		afterLoggers = LoggerLoader.getInstance().load(
 				trialNode.getChild("afterTrialLoggers"), logPath);
 
-		subject.newTrial();
+//		subject.newTrial();
 
 		episodes = new LinkedList<Episode>();
 		int numEpisodes = trialNode.getChild("episodes").getChildInt("number");
