@@ -19,6 +19,7 @@ import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.usf.micronsl.module.Module;
+import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 
 public class ExperienceRoadMap extends Module {
@@ -46,7 +47,14 @@ public class ExperienceRoadMap extends Module {
 
 	@Override
 	public void run() {
+		Float1dPort readings = (Float1dPort) getInPort("sonarReadings");
 		Point3fPort rPos = (Point3fPort) getInPort("position");
+		
+		// Get the min distance to obstacles
+		float minDistance = Float.MAX_VALUE;
+		for (int i = 0; i < readings.getSize(); i++)
+			if (readings.get(i) < minDistance)
+				minDistance = readings.get(i);
 
 		List<PointNode> active = new LinkedList<PointNode>();
 
@@ -54,7 +62,7 @@ public class ExperienceRoadMap extends Module {
 		float totalActivation = 0;
 		float maxActivation = Float.NEGATIVE_INFINITY;
 		for (PointNode n : g.getVertices()) {
-			n.updateActivation(rPos.get());
+			n.updateActivation(rPos.get(), minDistance);
 			
 			float activation = n.getActivation();
 			totalActivation += activation;
@@ -73,7 +81,7 @@ public class ExperienceRoadMap extends Module {
 			PointNode nv = new PointNode(rPos.get());
 			g.addVertex(nv);
 			// Add to the active set
-			nv.updateActivation(rPos.get());
+			nv.updateActivation(rPos.get(), minDistance);
 			active.add(nv);
 		}
 
@@ -156,9 +164,9 @@ class PointNode {
 		this.prefLoc = prefLoc;
 	}
 
-	public void updateActivation(Point3f loc){
+	public void updateActivation(Point3f loc, float distToObs){
 		float dist = prefLoc.distance(loc);
-		if (dist > MAX_RADIUS)
+		if (dist > MAX_RADIUS || dist > distToObs)
 			activation = 0;
 		else
 			activation = (float) Math.exp(-Math.pow(dist, 2));

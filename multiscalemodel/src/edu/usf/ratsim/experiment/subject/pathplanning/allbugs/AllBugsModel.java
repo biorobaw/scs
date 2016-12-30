@@ -46,6 +46,7 @@ public class AllBugsModel extends Model {
 		addModule(platPos);
 		
 		ExperienceRoadMap erm = new ExperienceRoadMap("Experience road map");
+		erm.addInPort("sonarReadings", sReadings.getOutPort("sonarReadings"));
 		erm.addInPort("position", rPos.getOutPort("position"));
 		addModule(erm);		
 		
