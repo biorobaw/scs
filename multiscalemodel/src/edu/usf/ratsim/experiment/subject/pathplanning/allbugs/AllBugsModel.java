@@ -15,6 +15,7 @@ import edu.usf.ratsim.nsl.modules.input.HeadDirection;
 import edu.usf.ratsim.nsl.modules.input.PlatformPosition;
 import edu.usf.ratsim.nsl.modules.input.Position;
 import edu.usf.ratsim.nsl.modules.input.SonarReadings;
+import edu.usf.ratsim.nsl.modules.pathplanning.ExperienceRoadMap;
 
 /**
  * This model allows to switch between bug algorithms depending on the 'algorithm' parameter
@@ -44,6 +45,9 @@ public class AllBugsModel extends Model {
 		PlatformPosition platPos = new PlatformPosition("Plat Pos");
 		addModule(platPos);
 		
+		ExperienceRoadMap erm = new ExperienceRoadMap("Experience road map");
+		erm.addInPort("position", rPos.getOutPort("position"));
+		addModule(erm);		
 		
 		Module bug = null;
 		if (algorithm.equals("bug0"))

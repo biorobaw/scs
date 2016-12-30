@@ -11,6 +11,7 @@ import edu.usf.ratsim.nsl.modules.input.HeadDirection;
 import edu.usf.ratsim.nsl.modules.input.PlatformPosition;
 import edu.usf.ratsim.nsl.modules.input.Position;
 import edu.usf.ratsim.nsl.modules.input.SonarReadings;
+import edu.usf.ratsim.nsl.modules.pathplanning.ExperienceRoadMap;
 
 public class Bug1Model extends Model {
 

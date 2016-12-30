@@ -122,7 +122,7 @@
 			<!-- Number of episodes -->
 			<number>2</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>1</sleep>
+			<sleep>10</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<task>

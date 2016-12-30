@@ -191,7 +191,12 @@ public abstract class Module extends DependencyRunnable {
 	}
 	
 	/**
-	 * Resets all variables for the module
+	 * Method called before each new episode
 	 */
 	public void newEpisode(){ };
+	
+	/**
+	 * Method called before each new trial
+	 */
+	public void newTrial() { };
 }
