@@ -113,7 +113,7 @@ public class ExperienceRoadMap extends Module {
 		vv.setPreferredSize(new Dimension(650, 650));
 		vv.getRenderContext().setVertexFillPaintTransformer(new Transformer<PointNode, Paint>(){
 			public Paint transform(PointNode pn) {
-				return Color.GREEN;
+				return new Color(pn.activation,0, 1 - pn.activation, 1);
 			}
 			
 		});
