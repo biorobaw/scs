@@ -8,16 +8,19 @@
 			<h>1</h>
 		</boundingRect>	
         
- 		<pool>
- 			<r>.5</r>
- 			<h>.025</h>
- 			<cr>1</cr>
- 			<cg>0</cg>
- 			<cb>0</cb>
- 			<x>0</x>
- 			<y>0</y>
- 			<z>0</z>								
- 		</pool> 
+ 		<mazeElement>
+		<name>Pool</name>
+		<params>
+			<r>.5</r>
+			<h>.025</h>
+			<cr>1</cr>
+			<cg>0</cg>
+			<cb>0</cb>
+			<x>0</x>
+			<y>0</y>
+			<z>0</z>
+		</params>
+		</mazeElement>
  		
 		<floor>
 			<r>.5</r>

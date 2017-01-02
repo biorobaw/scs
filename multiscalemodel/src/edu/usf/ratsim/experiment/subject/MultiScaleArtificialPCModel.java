@@ -368,7 +368,7 @@ public class MultiScaleArtificialPCModel extends Model {
 				subTriedToEat.getOutPort("subTriedToEat"));
 		
 		Reward reward = new Reward("Reward", foodReward, nonFoodReward);
-		reward.addInPort("subAte", subAte.getOutPort("subAte"));
+		reward.addInPort("rewardingEvent", subAte.getOutPort("subAte"));
 		addModule(reward);
 
 		if (rlType.equals("proportionalQl")) {

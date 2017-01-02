@@ -83,7 +83,7 @@ public class StillExplorer extends Module {
 			else
 				timeToExplore--;
 			
-			System.out.println("Still explorer executing " + turning);
+//			System.out.println("Still explorer executing " + turning);
 
 			List<Affordance> affs = robot.checkAffordances(sub
 					.getPossibleAffordances());

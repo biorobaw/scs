@@ -9,6 +9,7 @@ import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
+import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 public class TaxicValueSchema extends Module {
 
@@ -48,15 +49,16 @@ public class TaxicValueSchema extends Module {
 	 * goal).
 	 */
 	public void run() {
-		Int1dPortArray goalFeeder = (Int1dPortArray) getInPort("goalFeeder");
+		Int0dPort goalFeeder = (Int0dPort) getInPort("goalFeeder");
 
+		int exclude[] = {goalFeeder.get()};
 
-		if (robot.getVisibleFeeders(goalFeeder.getData()).isEmpty())
+		if (robot.getVisibleFeeders(exclude).isEmpty())
 			value[0] = 0;
 		// Get the value of the current position
 		else if (estimateValue) {
 			value[0] = Float.NEGATIVE_INFINITY;
-			for (Feeder f : robot.getVisibleFeeders(goalFeeder.getData())) {
+			for (Feeder f : robot.getVisibleFeeders(exclude)) {
 //				if (robot.isFeederClose()
 //						&& robot.getClosestFeeder().getId() == f.getId())
 				float feederValue = getFeederValue(f.getPosition());
