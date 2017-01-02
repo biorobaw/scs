@@ -15,7 +15,7 @@ public class BugUtilities {
 	private static final float PROP_LINEAR_GS = 0.01f;
 	private static final float PROP_ANGULAR_GS = 0.1f;
 
-	private static final float WL_FW_TARGET = OBSTACLE_FOUND_THRS - .1f;
+	private static final float WL_FW_TARGET = OBSTACLE_FOUND_THRS;
 	private static final float WF_MIN_FW_VEL = .01f;
 	private static final float WF_ROT_VEL_OBS_FRONT = .2f;
 

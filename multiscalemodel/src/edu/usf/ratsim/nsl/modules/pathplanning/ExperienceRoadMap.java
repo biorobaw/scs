@@ -27,9 +27,9 @@ import edu.usf.ratsim.support.SonarUtils;
 
 public class ExperienceRoadMap extends Module {
 
-	private static final float MIN_ACTIVATION = 2f;
+	private static final float MIN_ACTIVATION = 4f;
 
-	private static final float MAX_SINGLE_ACTIVATION = .8f;
+	private static final float MAX_SINGLE_ACTIVATION = .9f;
 
 	private UndirectedGraph<PointNode, Edge> g;
 
@@ -107,9 +107,9 @@ public class ExperienceRoadMap extends Module {
 		g = new UndirectedSparseGraph<PointNode, Edge>();
 
 		Layout<PointNode, Edge> layout = new VertextPosLayout<Edge>(g);
-		layout.setSize(new Dimension(600, 600));
+		layout.setSize(new Dimension(6000, 6000));
 		vv = new BasicVisualizationServer<PointNode, Edge>(layout);
-		vv.setPreferredSize(new Dimension(650, 650));
+		vv.setPreferredSize(new Dimension(6500, 6500));
 		vv.getRenderContext().setVertexFillPaintTransformer(new Transformer<PointNode, Paint>(){
 			public Paint transform(PointNode pn) {
 				return new Color(pn.activation,0, 1 - pn.activation, 1);
@@ -231,7 +231,7 @@ class VertextPosLayout<E> extends AbstractLayout<PointNode, E> {
 
 	@Override
 	public Point2D transform(PointNode pn) {
-		return new Point2D.Double(pn.prefLoc.x * 100 + 300, -pn.prefLoc.y * 100 + 300);
+		return new Point2D.Double(pn.prefLoc.x * 200 + 300, -pn.prefLoc.y * 200 + 300);
 	}
 
 }
