@@ -8,10 +8,10 @@ import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.ratsim.robot.virtual.VirtualRobot;
+import edu.usf.ratsim.support.SonarUtils;
 
 public class Bug0Module extends Module {
 
-	private static final float MIN_ANGLE_DIFF_THRS = (float) (Math.PI / 16);
 	private static final float FREE_PASSAGE_THRS = 1.5f * BugUtilities.OBSTACLE_FOUND_THRS;
 
 	private VirtualRobot r;
@@ -27,7 +27,6 @@ public class Bug0Module extends Module {
 
 		this.r = (VirtualRobot) sub.getRobot();
 
-		
 	}
 
 	@Override
@@ -38,6 +37,10 @@ public class Bug0Module extends Module {
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
 		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
 
+		float front = SonarUtils.getReading(0f, readings, angles);
+		float left = SonarUtils.getReading((float) (Math.PI/2), readings, angles);
+		float leftFront = SonarUtils.getReading((float) (Math.PI/4), readings, angles);
+		
 		// State switching criteria
 		switch (state) {
 		case GOAL_SEEKING:
@@ -52,31 +55,18 @@ public class Bug0Module extends Module {
 			// angles (to the left angles should be positive)
 			float angleToGoal = -GeomUtils.angleToPointWithOrientation(GeomUtils.angleToRot(rOrient.get()), rPos.get(),
 					platPos.get());
-			// Get the closest sonar
-			float minAngleDiff = Float.MAX_VALUE;
-			int minSonar = 0;
-			for (int i = 0; i < angles.getSize(); i++) {
-				float angleDiff = Math.abs(GeomUtils.angleDiff(angles.get(i), angleToGoal));
-				if (angleDiff < minAngleDiff) {
-					minAngleDiff = angleDiff;
-					minSonar = i;
-				}
-			}
+
 			// If a sonar is close enough and the reading shows free passage,
 			// switch
-			if (minAngleDiff < MIN_ANGLE_DIFF_THRS && readings.get(minSonar) > FREE_PASSAGE_THRS)
+			if (SonarUtils.validSonar(angleToGoal, readings, angles)
+					&& SonarUtils.getReading(angleToGoal, readings, angles) > FREE_PASSAGE_THRS)
 				state = State.GOAL_SEEKING;
 
 			break;
 		}
 
-		// Common variabls
-		float left = readings.get(0);
-		float leftFront = readings.get(1);
-		float front = readings.get(2);
-		Velocities v = new Velocities();
-
 		// Cmd depending on state
+		Velocities v = new Velocities();
 		switch (state) {
 		case GOAL_SEEKING:
 			v = BugUtilities.goalSeek(rPos.get(), rOrient.get(), platPos.get());
@@ -104,9 +94,8 @@ public class Bug0Module extends Module {
 	@Override
 	public void newEpisode() {
 		super.newEpisode();
-		
+
 		state = State.GOAL_SEEKING;
 	}
 
-	
 }

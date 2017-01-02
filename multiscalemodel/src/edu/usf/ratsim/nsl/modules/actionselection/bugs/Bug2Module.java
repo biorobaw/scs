@@ -11,6 +11,7 @@ import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.ratsim.robot.virtual.VirtualRobot;
+import edu.usf.ratsim.support.SonarUtils;
 
 public class Bug2Module extends Module {
 
@@ -37,6 +38,7 @@ public class Bug2Module extends Module {
 	@Override
 	public void run() {
 		Float1dPort readings = (Float1dPort) getInPort("sonarReadings");
+		Float1dPort angles = (Float1dPort) getInPort("sonarAngles");
 		Point3fPort rPos = (Point3fPort) getInPort("position");
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
 		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
@@ -46,11 +48,15 @@ public class Bug2Module extends Module {
 					new Coordinate(platPos.get().x, platPos.get().y));
 		}
 
+		float front = SonarUtils.getReading(0f, readings, angles);
+		float left = SonarUtils.getReading((float) (Math.PI / 2), readings, angles);
+		float leftFront = SonarUtils.getReading((float) (Math.PI / 4), readings, angles);
+
 		// State switching criteria
 		switch (state) {
 		case GOAL_SEEKING:
 			// Check the middle sensor for obstacles
-			if (readings.get(2) < BugUtilities.OBSTACLE_FOUND_THRS) {
+			if (front < BugUtilities.OBSTACLE_FOUND_THRS) {
 				state = State.WF_AWAY_FROM_ML;
 				hitPoint = rPos.get();
 			}
@@ -66,18 +72,15 @@ public class Bug2Module extends Module {
 			// Record min dist
 			distToMLine = (float) mLine.distancePerpendicular(new Coordinate(rPos.get().x, rPos.get().y));
 			// If it reaches the m-line and is closer than the first time
-			if (distToMLine < BugUtilities.CLOSE_THRS && rPos.get().distance(platPos.get()) < (hitPoint.distance(platPos.get()) - BugUtilities.CLOSE_THRS)) {
+			if (distToMLine < BugUtilities.CLOSE_THRS && rPos.get()
+					.distance(platPos.get()) < (hitPoint.distance(platPos.get()) - BugUtilities.CLOSE_THRS)) {
 				state = State.GOAL_SEEKING;
 			}
 			break;
 		}
 
-		// Common variabls
-		float left = readings.get(0);
-		float leftFront = readings.get(1);
-		float front = readings.get(2);
-		Velocities v = new Velocities();
 		// Cmd depending on state
+		Velocities v = new Velocities();
 		switch (state) {
 		case GOAL_SEEKING:
 			v = BugUtilities.goalSeek(rPos.get(), rOrient.get(), platPos.get());
@@ -106,12 +109,10 @@ public class Bug2Module extends Module {
 	@Override
 	public void newEpisode() {
 		super.newEpisode();
-		
+
 		mLine = null;
 		hitPoint = null;
 		state = State.GOAL_SEEKING;
 	}
-	
-	
 
 }

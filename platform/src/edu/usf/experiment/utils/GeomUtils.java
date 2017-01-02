@@ -110,7 +110,7 @@ public class GeomUtils {
 		return res;
 	}
 
-	// FIXME: should add one more inverse?
+	// FIXME: should add one more inverse? result seems negated
 	public static float angleToPointWithOrientation(Quat4f orientation,
 			Point3f from, Point3f to) {
 		Vector3f toPoint = pointsToVector(from, to);
@@ -118,6 +118,11 @@ public class GeomUtils {
 		rotTo.inverse();
 		rotTo.mul(orientation);
 		return rotToAngle(rotTo);
+	}
+	
+	// FIXME: should add one more inverse? result seems negated
+	public static float angleToPointWithOrientation(float orientation, Point3f from, Point3f to) {
+		return angleToPointWithOrientation(GeomUtils.angleToRot(orientation), from, to);
 	}
 
 	public static float angleDistance(float from, float to) {
@@ -261,4 +266,5 @@ public class GeomUtils {
 		} else 
 			throw new RuntimeException("Simulation of unknown affordance");
 	}
+
 }

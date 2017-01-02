@@ -8,6 +8,7 @@ import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.ratsim.robot.virtual.VirtualRobot;
+import edu.usf.ratsim.support.SonarUtils;
 
 public class Bug1Module extends Module {
 
@@ -33,15 +34,20 @@ public class Bug1Module extends Module {
 	@Override
 	public void run() {
 		Float1dPort readings = (Float1dPort) getInPort("sonarReadings");
+		Float1dPort angles = (Float1dPort) getInPort("sonarAngles");
 		Point3fPort rPos = (Point3fPort) getInPort("position");
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
 		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
 
+		float front = SonarUtils.getReading(0f, readings, angles);
+		float left = SonarUtils.getReading((float) (Math.PI/2), readings, angles);
+		float leftFront = SonarUtils.getReading((float) (Math.PI/4), readings, angles);
+		
 		// State switching criteria
 		switch (state) {
 		case GOAL_SEEKING:
 			// Check the middle sensor for obstacles
-			if (readings.get(2) < BugUtilities.OBSTACLE_FOUND_THRS * 1.1f) {
+			if (front < BugUtilities.OBSTACLE_FOUND_THRS * 1.1f) {
 				state = State.WF_AWAY_FROM_HP;
 				minDistToGoal = rPos.get().distance(platPos.get());
 				minDistPlace = rPos.get();
@@ -82,12 +88,8 @@ public class Bug1Module extends Module {
 			break;
 		}
 
-		// Common variabls
-		float left = readings.get(0);
-		float leftFront = readings.get(1);
-		float front = readings.get(2);
-		Velocities v = new Velocities();
 		// Cmd depending on state
+		Velocities v = new Velocities();
 		switch (state) {
 		case GOAL_SEEKING:
 			v = BugUtilities.goalSeek(rPos.get(), rOrient.get(), platPos.get());

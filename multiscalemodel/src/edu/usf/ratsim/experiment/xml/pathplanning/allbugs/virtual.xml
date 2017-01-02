@@ -33,7 +33,7 @@
 				threshold -->
 			<closeThrs>.1</closeThrs>
 			
-			<sonarAngles>1.57, 0.79, 0, -0.79, -1.57</sonarAngles>
+			<sonarAngles>0, 0.79, 1.57, 2.36, 3.14, 3.93, 4.71, 5.5</sonarAngles>
 			<sonarAperture>0.79</sonarAperture>
 			<sonarMaxDist>2</sonarMaxDist>
 			<sonarNumRays>9</sonarNumRays>
