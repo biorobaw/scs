@@ -47,7 +47,9 @@ public class AllBugsModel extends Model {
 		
 		ExperienceRoadMap erm = new ExperienceRoadMap("Experience road map");
 		erm.addInPort("sonarReadings", sReadings.getOutPort("sonarReadings"));
+		erm.addInPort("sonarAngles", sReadings.getOutPort("sonarAngles"));
 		erm.addInPort("position", rPos.getOutPort("position"));
+		erm.addInPort("orientation", orientation.getOutPort("orientation"));
 		addModule(erm);		
 		
 		Module bug = null;

@@ -18,9 +18,12 @@ import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
+import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
+import edu.usf.micronsl.port.singlevalue.Float0dPort;
+import edu.usf.ratsim.support.SonarUtils;
 
 public class ExperienceRoadMap extends Module {
 
@@ -47,14 +50,10 @@ public class ExperienceRoadMap extends Module {
 
 	@Override
 	public void run() {
-		Float1dPort readings = (Float1dPort) getInPort("sonarReadings");
+		Float1dPort sonarReadings = (Float1dPort) getInPort("sonarReadings");
+		Float1dPort sonarAngles = (Float1dPort) getInPort("sonarAngles");
 		Point3fPort rPos = (Point3fPort) getInPort("position");
-		
-		// Get the min distance to obstacles
-		float minDistance = Float.MAX_VALUE;
-		for (int i = 0; i < readings.getSize(); i++)
-			if (readings.get(i) < minDistance)
-				minDistance = readings.get(i);
+		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
 
 		List<PointNode> active = new LinkedList<PointNode>();
 
@@ -62,7 +61,7 @@ public class ExperienceRoadMap extends Module {
 		float totalActivation = 0;
 		float maxActivation = Float.NEGATIVE_INFINITY;
 		for (PointNode n : g.getVertices()) {
-			n.updateActivation(rPos.get(), minDistance);
+			n.updateActivation(rPos.get(), rOrient.get(), sonarReadings, sonarAngles);
 			
 			float activation = n.getActivation();
 			totalActivation += activation;
@@ -81,7 +80,7 @@ public class ExperienceRoadMap extends Module {
 			PointNode nv = new PointNode(rPos.get());
 			g.addVertex(nv);
 			// Add to the active set
-			nv.updateActivation(rPos.get(), minDistance);
+			nv.updateActivation(rPos.get(), rOrient.get(), sonarReadings, sonarAngles);
 			active.add(nv);
 		}
 
@@ -155,6 +154,8 @@ public class ExperienceRoadMap extends Module {
 }
 
 class PointNode {
+	
+	// TODO: make these parameters
 	private static final float MAX_RADIUS = .5f;
 
 	public Point3f prefLoc;
@@ -164,12 +165,33 @@ class PointNode {
 		this.prefLoc = prefLoc;
 	}
 
-	public void updateActivation(Point3f loc, float distToObs){
-		float dist = prefLoc.distance(loc);
-		if (dist > MAX_RADIUS || dist > distToObs)
+	/**
+	 * Updates the activation value of the node
+	 * @param rPos the position of the robot 
+	 * @param sonarReadings the sonar sensor readings
+	 * @param sonarAngles the angles of the sonar sensors in the robot frame of reference
+	 * @param orientation 
+	 */
+	public void updateActivation(Point3f rPos, float orientation, Float1dPort sonarReadings, Float1dPort sonarAngles) {
+		float angle = -GeomUtils.angleToPointWithOrientation(orientation, rPos, prefLoc);
+		
+		// No good sensor for the angle, or obstacle closer than the unit's center
+		float dist = prefLoc.distance(rPos);
+		if (!SonarUtils.validSonar(angle, sonarReadings, sonarAngles)
+				|| SonarUtils.getReading(angle, sonarReadings, sonarAngles) < dist)
 			activation = 0;
-		else
-			activation = (float) Math.exp(-Math.pow(dist, 2));
+		else {
+			if (dist > MAX_RADIUS)
+				activation = 0;
+			else
+				activation = (float) Math.exp(-Math.pow(dist, 2));
+		}
+		
+		
+	}
+
+	public void updateActivation(Point3f loc, float distToObs){
+		
 	}
 	
 	public float getActivation() {
