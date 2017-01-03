@@ -11,7 +11,7 @@ public class RuntimePerTrialPlotter extends Plotter {
 
 	@Override
 	public Runnable plot() {
-		String logPath = getLogPath();
+		final String logPath = getLogPath();
 		
 		IOUtils.exec("Rscript plotRuntimesPerTrial.r", logPath);
 		return new Runnable(){

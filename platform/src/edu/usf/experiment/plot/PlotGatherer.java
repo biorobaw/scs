@@ -13,7 +13,7 @@ public class PlotGatherer extends Plotter {
 
 	@Override
 	public Runnable plot() {
-		String logPath = getLogPath();
+		final String logPath = getLogPath();
 		return new Runnable(){
 			@Override
 			public void run() {
