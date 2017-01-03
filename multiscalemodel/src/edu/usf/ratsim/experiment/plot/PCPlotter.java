@@ -12,7 +12,7 @@ public class PCPlotter extends Plotter {
 
 	@Override
 	public Runnable plot() {
-		String logPath = getLogPath();
+		final String logPath = getLogPath();
 		return new Runnable() {
 			public void run() {
 				IOUtils.copyResource(getClass().getResource("/edu/usf/ratsim/experiment/plot/plotPlaceCells.r"), logPath + "plotPlaceCells.r");
