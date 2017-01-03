@@ -42,20 +42,21 @@ public class Bug0Module extends Module {
 		float leftFront = SonarUtils.getReading((float) (Math.PI/4), readings, angles);
 		
 		// State switching criteria
+		
+		// Get the relative angle to the goal
+		// TODO: angleToPointWithOrientation seems to be returning negated
+		// angles (to the left angles should be positive)
+		float angleToGoal = -GeomUtils.angleToPointWithOrientation(GeomUtils.angleToRot(rOrient.get()), rPos.get(),
+				platPos.get());
 		switch (state) {
 		case GOAL_SEEKING:
 			// Check the middle sensor for obstacles
-			if (readings.get(2) < BugUtilities.OBSTACLE_FOUND_THRS) {
+			if (SonarUtils.validSonar(angleToGoal, readings, angles)
+					&& SonarUtils.getReading(angleToGoal, readings, angles) < FREE_PASSAGE_THRS) {
 				state = State.WALL_FOLLOWING;
 			}
 			break;
 		case WALL_FOLLOWING:
-			// Get the relative angle to the goal
-			// TODO: angleToPointWithOrientation seems to be returning negated
-			// angles (to the left angles should be positive)
-			float angleToGoal = -GeomUtils.angleToPointWithOrientation(GeomUtils.angleToRot(rOrient.get()), rPos.get(),
-					platPos.get());
-
 			// If a sonar is close enough and the reading shows free passage,
 			// switch
 			if (SonarUtils.validSonar(angleToGoal, readings, angles)

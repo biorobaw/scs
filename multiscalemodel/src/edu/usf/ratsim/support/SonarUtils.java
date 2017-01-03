@@ -33,4 +33,15 @@ public class SonarUtils {
 		
 		return minAngleDiff < MIN_ANGLE_MAX_DIFF_THRS;
 	}
+
+	public static float getSmallerReading(Float1dPort readings) {
+		float smaller = Float.MAX_VALUE;
+		for (int i = 0; i < readings.getSize(); i++) {
+			float reading = readings.get(i);
+			if (reading < smaller) {
+				smaller = reading;
+			}
+		}
+		return smaller;
+	}
 }
