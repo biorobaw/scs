@@ -14,6 +14,7 @@ import org.apache.commons.collections15.Transformer;
 
 import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
@@ -32,7 +33,6 @@ public class ExperienceRoadMap extends Module {
 	private static final float MAX_SINGLE_ACTIVATION = .9f;
 
 	private static final float DIST_TO_GOAL_THRS = .15f;
-	
 
 	private UndirectedGraph<PointNode, Edge> g;
 
@@ -53,33 +53,33 @@ public class ExperienceRoadMap extends Module {
 
 	@Override
 	public void run() {
+		// Get info
 		Float1dPort sonarReadings = (Float1dPort) getInPort("sonarReadings");
 		Float1dPort sonarAngles = (Float1dPort) getInPort("sonarAngles");
 		Point3fPort rPos = (Point3fPort) getInPort("position");
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
 		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
 
+		// Compute active nodes
 		List<PointNode> active = new LinkedList<PointNode>();
-
-		// Get the total activation of all nodes
 		float totalActivation = 0;
 		float maxActivation = Float.NEGATIVE_INFINITY;
 		for (PointNode n : g.getVertices()) {
 			n.updateActivation(rPos.get(), rOrient.get(), sonarReadings, sonarAngles);
-			
+
 			float activation = n.getActivation();
 			totalActivation += activation;
 			if (activation > 0)
 				active.add(n);
-			
-			if (activation > maxActivation){
+
+			if (activation > maxActivation) {
 				maxActivation = activation;
 			}
 		}
 
-		// If not enough activation
-		if ((totalActivation < MIN_ACTIVATION && maxActivation < MAX_SINGLE_ACTIVATION) || 
-				platPos.get().distance(rPos.get()) < DIST_TO_GOAL_THRS) {
+		// Creation of new nodes
+		if ((totalActivation < MIN_ACTIVATION && maxActivation < MAX_SINGLE_ACTIVATION)
+				|| (platPos.get().distance(rPos.get()) < DIST_TO_GOAL_THRS && totalActivation < MIN_ACTIVATION)) {
 			System.out.println("Creating a node");
 			// Create new node
 			PointNode nv = new PointNode(rPos.get());
@@ -89,7 +89,7 @@ public class ExperienceRoadMap extends Module {
 			active.add(nv);
 		}
 
-		// Connect all the active ones
+		// Connectivity of all active nodes
 		for (int i = 0; i < active.size() - 1; i++)
 			for (int j = i + 1; j < active.size(); j++) {
 				PointNode n1 = active.get(i);
@@ -98,8 +98,37 @@ public class ExperienceRoadMap extends Module {
 					g.addEdge(new Edge(n1.prefLoc.distance(n2.prefLoc)), n1, n2);
 			}
 
-//		System.out.println(g.toString());
-//		vv.repaint();
+		// Compute dijsktra
+		// Get the current node
+		PointNode mostActive = active.get(0);
+		for (PointNode pn : active)
+			if (pn.activation > mostActive.activation)
+				mostActive = pn;
+		// Get the goal node
+		PointNode goalNode = null;
+		for (PointNode pn : g.getVertices())
+			if (pn.prefLoc.distance(platPos.get()) < DIST_TO_GOAL_THRS)
+				if (goalNode == null)
+					goalNode = pn;
+				else 
+					if (goalNode.prefLoc.distance(platPos.get()) > pn.prefLoc.distance(platPos.get()))
+						goalNode = pn;
+		if (goalNode != null) {
+			// Compute the shortest path					
+			Transformer<Edge, Float> wtTransformer = new Transformer<Edge, Float>() {
+				public Float transform(Edge link) {
+					return link.weight;
+				}
+			};
+			DijkstraShortestPath<PointNode, Edge> alg = new DijkstraShortestPath(g, wtTransformer);
+			List<Edge> l = alg.getPath(mostActive, goalNode);
+			Number dist = alg.getDistance(mostActive, goalNode);
+			System.out.println("The shortest path from" + mostActive + " to " + goalNode + " is:");
+			System.out.println(l.toString());
+			System.out.println("and the length of the path is: " + dist);
+		}
+		
+
 	}
 
 	@Override
@@ -108,18 +137,18 @@ public class ExperienceRoadMap extends Module {
 	}
 
 	public void newTrial() {
-		
+
 		g = new UndirectedSparseGraph<PointNode, Edge>();
 
 		Layout<PointNode, Edge> layout = new VertextPosLayout<Edge>(g);
 		layout.setSize(new Dimension(6000, 6000));
 		vv = new BasicVisualizationServer<PointNode, Edge>(layout);
 		vv.setPreferredSize(new Dimension(6500, 6500));
-		vv.getRenderContext().setVertexFillPaintTransformer(new Transformer<PointNode, Paint>(){
+		vv.getRenderContext().setVertexFillPaintTransformer(new Transformer<PointNode, Paint>() {
 			public Paint transform(PointNode pn) {
-				return new Color(pn.activation,0, 1 - pn.activation, 1);
+				return new Color(pn.activation, 0, 1 - pn.activation, 1);
 			}
-			
+
 		});
 
 		frame = new JFrame("Topological map");
@@ -127,8 +156,8 @@ public class ExperienceRoadMap extends Module {
 		frame.getContentPane().add(vv);
 		frame.pack();
 		frame.setVisible(true);
-		
-		if (repainter != null){
+
+		if (repainter != null) {
 			continueRepainting = false;
 			try {
 				repainter.join(1000);
@@ -137,12 +166,12 @@ public class ExperienceRoadMap extends Module {
 				e.printStackTrace();
 			}
 		}
-		
+
 		continueRepainting = true;
 		repainter = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				while(continueRepainting) {
+				while (continueRepainting) {
 					vv.repaint();
 					try {
 						Thread.sleep(100);
@@ -159,7 +188,7 @@ public class ExperienceRoadMap extends Module {
 }
 
 class PointNode {
-	
+
 	// TODO: make these parameters
 	private static final float MAX_RADIUS = .5f;
 
@@ -172,15 +201,21 @@ class PointNode {
 
 	/**
 	 * Updates the activation value of the node
-	 * @param rPos the position of the robot 
-	 * @param sonarReadings the sonar sensor readings
-	 * @param sonarAngles the angles of the sonar sensors in the robot frame of reference
-	 * @param orientation 
+	 * 
+	 * @param rPos
+	 *            the position of the robot
+	 * @param sonarReadings
+	 *            the sonar sensor readings
+	 * @param sonarAngles
+	 *            the angles of the sonar sensors in the robot frame of
+	 *            reference
+	 * @param orientation
 	 */
 	public void updateActivation(Point3f rPos, float orientation, Float1dPort sonarReadings, Float1dPort sonarAngles) {
 		float angle = -GeomUtils.angleToPointWithOrientation(orientation, rPos, prefLoc);
-		
-		// No good sensor for the angle, or obstacle closer than the unit's center
+
+		// No good sensor for the angle, or obstacle closer than the unit's
+		// center
 		float dist = prefLoc.distance(rPos);
 		if (!SonarUtils.validSonar(angle, sonarReadings, sonarAngles)
 				|| SonarUtils.getReading(angle, sonarReadings, sonarAngles) < dist)
@@ -191,14 +226,13 @@ class PointNode {
 			else
 				activation = (float) Math.exp(-Math.pow(dist, 2));
 		}
-		
-		
+
 	}
 
-	public void updateActivation(Point3f loc, float distToObs){
-		
+	public void updateActivation(Point3f loc, float distToObs) {
+
 	}
-	
+
 	public float getActivation() {
 		return activation;
 	}
