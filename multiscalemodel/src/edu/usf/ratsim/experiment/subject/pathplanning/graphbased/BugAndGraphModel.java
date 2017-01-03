@@ -1,4 +1,4 @@
-package edu.usf.ratsim.experiment.subject.pathplanning.allbugs;
+package edu.usf.ratsim.experiment.subject.pathplanning.graphbased;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
@@ -22,13 +22,13 @@ import edu.usf.ratsim.nsl.modules.pathplanning.ExperienceRoadMap;
  * @author ludo
  *
  */
-public class AllBugsModel extends Model {
+public class BugAndGraphModel extends Model {
 
 
-	public AllBugsModel() {
+	public BugAndGraphModel() {
 	}
 
-	public AllBugsModel(ElementWrapper params, Subject subject,
+	public BugAndGraphModel(ElementWrapper params, Subject subject,
 			Robot robot) {
 		
 		String algorithm = params.getChildText("algorithm");
@@ -43,24 +43,15 @@ public class AllBugsModel extends Model {
 		addModule(orientation);
 		
 		PlatformPosition platPos = new PlatformPosition("Plat Pos");
-		addModule(platPos);		
+		addModule(platPos);
 		
-		Module bug = null;
-		if (algorithm.equals("bug0"))
-			bug = new Bug0Module("Bug0", subject);
-		else if (algorithm.equals("bug1"))
-			bug = new Bug1Module("Bug1", subject);
-		else if (algorithm.equals("bug2"))
-			bug = new Bug2Module("Bug2", subject);
-		else
-			throw new NotImplementedException();
-		
-		bug.addInPort("sonarReadings", sReadings.getOutPort("sonarReadings"));
-		bug.addInPort("sonarAngles", sReadings.getOutPort("sonarAngles"));
-		bug.addInPort("position", rPos.getOutPort("position"));
-		bug.addInPort("orientation", orientation.getOutPort("orientation"));
-		bug.addInPort("platformPosition", platPos.getOutPort("platformPosition"));
-		addModule(bug);
+		ExperienceRoadMap erm = new ExperienceRoadMap("Experience road map", subject, algorithm);
+		erm.addInPort("sonarReadings", sReadings.getOutPort("sonarReadings"));
+		erm.addInPort("sonarAngles", sReadings.getOutPort("sonarAngles"));
+		erm.addInPort("position", rPos.getOutPort("position"));
+		erm.addInPort("orientation", orientation.getOutPort("orientation"));
+		erm.addInPort("platformPosition", platPos.getOutPort("platformPosition"));
+		addModule(erm);		
 	}
 
 }

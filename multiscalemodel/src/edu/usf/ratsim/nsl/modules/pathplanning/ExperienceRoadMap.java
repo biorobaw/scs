@@ -19,11 +19,16 @@ import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
+import edu.usf.ratsim.experiment.subject.NotImplementedException;
+import edu.usf.ratsim.nsl.modules.actionselection.bugs.Bug0Module;
+import edu.usf.ratsim.nsl.modules.actionselection.bugs.Bug1Module;
+import edu.usf.ratsim.nsl.modules.actionselection.bugs.Bug2Module;
 import edu.usf.ratsim.support.SonarUtils;
 
 public class ExperienceRoadMap extends Module {
@@ -33,6 +38,8 @@ public class ExperienceRoadMap extends Module {
 	private static final float MAX_SINGLE_ACTIVATION = .9f;
 
 	private static final float DIST_TO_GOAL_THRS = .15f;
+
+	private static final float NEXT_NODE_DIST_THRS = 0.5f;
 
 	private UndirectedGraph<PointNode, Edge> g;
 
@@ -44,11 +51,27 @@ public class ExperienceRoadMap extends Module {
 
 	private boolean continueRepainting;
 
-	public ExperienceRoadMap(String name) {
+	private Point3fPort intermediateGoal;
+
+	private Subject subject;
+
+	private Module bug;
+
+	private Bug0Module bug0;
+
+	private String algorithm;
+
+	public ExperienceRoadMap(String name, Subject subject, String algorithm) {
 		super(name);
 
 		frame = null;
 		repainter = null;
+		
+		intermediateGoal = new Point3fPort(this);
+		addOutPort("intermediateGoal", intermediateGoal);
+		
+		this.subject = subject;
+		this.algorithm = algorithm;
 	}
 
 	@Override
@@ -79,7 +102,7 @@ public class ExperienceRoadMap extends Module {
 
 		// Creation of new nodes
 		if ((totalActivation < MIN_ACTIVATION && maxActivation < MAX_SINGLE_ACTIVATION)
-				|| (platPos.get().distance(rPos.get()) < DIST_TO_GOAL_THRS && totalActivation < MIN_ACTIVATION)) {
+				|| (platPos.get().distance(rPos.get()) < DIST_TO_GOAL_THRS && totalActivation < 3 * MIN_ACTIVATION)) {
 			System.out.println("Creating a node");
 			// Create new node
 			PointNode nv = new PointNode(rPos.get());
@@ -113,6 +136,8 @@ public class ExperienceRoadMap extends Module {
 				else 
 					if (goalNode.prefLoc.distance(platPos.get()) > pn.prefLoc.distance(platPos.get()))
 						goalNode = pn;
+		
+		List<Edge> l = new LinkedList<Edge>();
 		if (goalNode != null) {
 			// Compute the shortest path					
 			Transformer<Edge, Float> wtTransformer = new Transformer<Edge, Float>() {
@@ -121,14 +146,31 @@ public class ExperienceRoadMap extends Module {
 				}
 			};
 			DijkstraShortestPath<PointNode, Edge> alg = new DijkstraShortestPath(g, wtTransformer);
-			List<Edge> l = alg.getPath(mostActive, goalNode);
+			l = alg.getPath(mostActive, goalNode);
 			Number dist = alg.getDistance(mostActive, goalNode);
 			System.out.println("The shortest path from" + mostActive + " to " + goalNode + " is:");
 			System.out.println(l.toString());
 			System.out.println("and the length of the path is: " + dist);
 		}
 		
-
+		// Publish a closer goal if there is a valid path
+		if (l.isEmpty()){
+			intermediateGoal.set(platPos.get());
+			bug.run();
+		} else {
+			Point3f next = g.getEndpoints(l.get(0)).getSecond().prefLoc;
+			if (next.distance(rPos.get()) > NEXT_NODE_DIST_THRS)
+				intermediateGoal.set(next);
+			else {
+				if (l.size() > 1)
+					intermediateGoal.set(g.getEndpoints(l.get(1)).getSecond().prefLoc);
+				else 
+					intermediateGoal.set(platPos.get());
+			}
+			bug0.run();
+		}
+			
+			
 	}
 
 	@Override
@@ -141,9 +183,9 @@ public class ExperienceRoadMap extends Module {
 		g = new UndirectedSparseGraph<PointNode, Edge>();
 
 		Layout<PointNode, Edge> layout = new VertextPosLayout<Edge>(g);
-		layout.setSize(new Dimension(6000, 6000));
+		layout.setSize(new Dimension(400, 400));
 		vv = new BasicVisualizationServer<PointNode, Edge>(layout);
-		vv.setPreferredSize(new Dimension(6500, 6500));
+		vv.setPreferredSize(new Dimension(650, 650));
 		vv.getRenderContext().setVertexFillPaintTransformer(new Transformer<PointNode, Paint>() {
 			public Paint transform(PointNode pn) {
 				return new Color(pn.activation, 0, 1 - pn.activation, 1);
@@ -183,7 +225,51 @@ public class ExperienceRoadMap extends Module {
 			}
 		});
 		repainter.start();
+		
+		
+		// Create the delegate bug algorithms
+		Float1dPort sonarReadings = (Float1dPort) getInPort("sonarReadings");
+		Float1dPort sonarAngles = (Float1dPort) getInPort("sonarAngles");
+		Point3fPort rPos = (Point3fPort) getInPort("position");
+		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
+		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
+		
+		bug = null;
+		if (algorithm.equals("bug0"))
+			bug = new Bug0Module("Bug0", subject);
+		else if (algorithm.equals("bug1"))
+			bug = new Bug1Module("Bug1", subject);
+		else if (algorithm.equals("bug2"))
+			bug = new Bug2Module("Bug2", subject);
+		else
+			throw new NotImplementedException();
+		
+		bug.addInPort("sonarReadings", sonarReadings);
+		bug.addInPort("sonarAngles", sonarAngles);
+		bug.addInPort("position", rPos);
+		bug.addInPort("orientation", rOrient);
+		bug.addInPort("platformPosition", intermediateGoal);
+		
+		bug0 = new Bug0Module("ERMBug0", subject);
+		bug0.addInPort("sonarReadings", sonarReadings);
+		bug0.addInPort("sonarAngles", sonarAngles);
+		bug0.addInPort("position", rPos);
+		bug0.addInPort("orientation", rOrient);
+		bug0.addInPort("platformPosition", intermediateGoal); 
+		
+		bug.newTrial();
+		bug0.newTrial();
 	}
+
+	@Override
+	public void newEpisode() {
+		super.newEpisode();
+		
+		bug.newEpisode();
+		bug0.newEpisode();
+	}
+	
+	
 
 }
 
@@ -270,7 +356,7 @@ class VertextPosLayout<E> extends AbstractLayout<PointNode, E> {
 
 	@Override
 	public Point2D transform(PointNode pn) {
-		return new Point2D.Double(pn.prefLoc.x * 200 + 300, -pn.prefLoc.y * 200 + 300);
+		return new Point2D.Double(pn.prefLoc.x * 100 + 300, -pn.prefLoc.y * 100 + 300);
 	}
 
 }

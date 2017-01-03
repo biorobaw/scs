@@ -88,6 +88,7 @@ public class Bug1Module extends Module {
 			break;
 		}
 
+		
 		// Cmd depending on state
 		Velocities v = new Velocities();
 		switch (state) {
