@@ -13,8 +13,8 @@ public class CSVConverter extends Plotter {
 
 	@Override
 	public Runnable plot() {
-		String logPath = getLogPath();
-		URL resource = getClass().getResource("/edu/usf/experiment/plot/convert.r");
+		final String logPath = getLogPath();
+		final URL resource = getClass().getResource("/edu/usf/experiment/plot/convert.r");
 		return new Runnable(){
 			@Override
 			public void run() {

@@ -11,7 +11,7 @@ public class PolicyPlotter extends Plotter {
 
 	@Override
 	public Runnable plot() {
-		String logPath = getLogPath();
+		final String logPath = getLogPath();
 		
 		return new Runnable(){
 			@Override

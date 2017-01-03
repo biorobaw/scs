@@ -13,8 +13,8 @@ public class SummarizeRuntimes extends Plotter {
 
 	@Override
 	public Runnable plot() {
-		String logPath = getLogPath();
-		URL resource = getClass().getResource("/edu/usf/experiment/plot/summarize.r");
+		final String logPath = getLogPath();
+		final URL resource = getClass().getResource("/edu/usf/experiment/plot/summarize.r");
 
 		return new Runnable(){
 			@Override

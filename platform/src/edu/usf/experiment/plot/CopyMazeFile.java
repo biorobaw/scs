@@ -13,8 +13,8 @@ public class CopyMazeFile extends Plotter {
 	@Override
 	public Runnable plot() {
 		PropertyHolder props = PropertyHolder.getInstance();
-		String logPath = getLogPath();
-		String mazeFile = props.getProperty("maze.file");
+		final String logPath = getLogPath();
+		final String mazeFile = props.getProperty("maze.file");
 		return new Runnable(){
 			@Override
 			public void run() {
