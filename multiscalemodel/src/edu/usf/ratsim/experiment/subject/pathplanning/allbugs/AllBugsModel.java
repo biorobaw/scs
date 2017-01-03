@@ -50,7 +50,9 @@ public class AllBugsModel extends Model {
 		erm.addInPort("sonarAngles", sReadings.getOutPort("sonarAngles"));
 		erm.addInPort("position", rPos.getOutPort("position"));
 		erm.addInPort("orientation", orientation.getOutPort("orientation"));
+		erm.addInPort("platformPosition", platPos.getOutPort("platformPosition"));
 		addModule(erm);		
+		
 		
 		Module bug = null;
 		if (algorithm.equals("bug0"))

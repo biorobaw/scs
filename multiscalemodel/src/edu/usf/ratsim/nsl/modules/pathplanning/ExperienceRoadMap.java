@@ -31,6 +31,9 @@ public class ExperienceRoadMap extends Module {
 
 	private static final float MAX_SINGLE_ACTIVATION = .9f;
 
+	private static final float DIST_TO_GOAL_THRS = .15f;
+	
+
 	private UndirectedGraph<PointNode, Edge> g;
 
 	private BasicVisualizationServer<PointNode, Edge> vv;
@@ -54,6 +57,7 @@ public class ExperienceRoadMap extends Module {
 		Float1dPort sonarAngles = (Float1dPort) getInPort("sonarAngles");
 		Point3fPort rPos = (Point3fPort) getInPort("position");
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
+		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
 
 		List<PointNode> active = new LinkedList<PointNode>();
 
@@ -74,7 +78,8 @@ public class ExperienceRoadMap extends Module {
 		}
 
 		// If not enough activation
-		if (totalActivation < MIN_ACTIVATION && maxActivation < MAX_SINGLE_ACTIVATION) {
+		if ((totalActivation < MIN_ACTIVATION && maxActivation < MAX_SINGLE_ACTIVATION) || 
+				platPos.get().distance(rPos.get()) < DIST_TO_GOAL_THRS) {
 			System.out.println("Creating a node");
 			// Create new node
 			PointNode nv = new PointNode(rPos.get());
