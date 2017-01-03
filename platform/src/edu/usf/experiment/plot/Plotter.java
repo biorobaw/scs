@@ -26,7 +26,7 @@ public abstract class Plotter {
 
 	public abstract Runnable plot();
 
-	public static synchronized void plot(List<Plotter> plotters) {
+	public static synchronized void plot(final List<Plotter> plotters) {
 		Thread t = new Thread(new Runnable() {
 			public void run() {
 				for (Plotter p : plotters)
