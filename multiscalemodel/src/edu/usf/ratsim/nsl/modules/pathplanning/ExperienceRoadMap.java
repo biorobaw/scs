@@ -234,6 +234,7 @@ public class ExperienceRoadMap extends Module {
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
 		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
 		
+		// algorithm comes from group parameters
 		bug = null;
 		if (algorithm.equals("bug0"))
 			bug = new Bug0Module("Bug0", subject);
