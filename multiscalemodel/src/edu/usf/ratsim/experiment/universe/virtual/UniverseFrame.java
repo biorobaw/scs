@@ -1,12 +1,18 @@
 package edu.usf.ratsim.experiment.universe.virtual;
 
-import java.awt.Color;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
+import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
 
 import javax.media.j3d.Canvas3D;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.vecmath.Vector3f;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
@@ -16,28 +22,27 @@ import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.ratsim.experiment.universe.virtual.drawingUtilities.DrawPolarGraph;
 import edu.usf.ratsim.experiment.universe.virtual.drawingUtilities.DrawingFunction;
 
-public class UniverseFrame extends java.awt.Frame {
+public class UniverseFrame extends JFrame {
 
 	private static final long serialVersionUID = -698020368303861261L;
 
 	private Canvas3D topViewCanvas, robotViewCanvas;
 	private Canvas3D[] robotViewsCanvas;
 
-	private java.awt.Button button1;
-	private java.awt.Button leftBtn;
-	private java.awt.Button button3;
-	private java.awt.Button rightBtn;
-	private java.awt.Button forwardBtn;
-	private java.awt.Button backBtn;
-	private java.awt.Button button9;
-	private java.awt.Button turnRightBtn;
-	private java.awt.Button turnLeftBtn;
+	private JButton button1;
+	private JButton leftBtn;
+	private JButton button3;
+	private JButton rightBtn;
+	private JButton forwardBtn;
+	private JButton backBtn;
+	private JButton button9;
+	private JButton turnRightBtn;
+	private JButton turnLeftBtn;
 
-	private java.awt.Panel panel1;
-	private java.awt.Panel topViewPanel;
-	private java.awt.Panel wideViewPanel;
+	private JPanel panel1;
+	private JPanel topViewPanel;
 
-	private java.awt.Label posRat;
+	private JLabel posRat;
 
 	private VirtUniverse expUniv;
 	
@@ -52,16 +57,7 @@ public class UniverseFrame extends java.awt.Frame {
 		// Create the canvases
 		GraphicsConfiguration config = SimpleUniverse
 				.getPreferredConfiguration();
-
-		// Wide view canvases
-		robotViewsCanvas = new Canvas3D[RobotNode.NUM_ROBOT_VIEWS];
-		for (int i = 0; i < RobotNode.NUM_ROBOT_VIEWS; i++) {
-			robotViewsCanvas[i] = new Canvas3D(config);
-			robotViewsCanvas[i].setSize(80, 80);
-			world.getRobotViews()[i].addCanvas3D(robotViewsCanvas[i]);
-			wideViewPanel.add(robotViewsCanvas[i]);
-		}
-
+		
 		// Main robot view canvas
 		// robotViewCanvas = new Canvas3D(config);
 		// robotViewCanvas.setSize(240, 240);
@@ -85,8 +81,10 @@ public class UniverseFrame extends java.awt.Frame {
 			
 		};
 		world.getTopView().addCanvas3D(topViewCanvas);
-		topViewCanvas.setSize(500, 500);
+		topViewCanvas.setSize(new Dimension(100,100));
 		topViewPanel.add(topViewCanvas);
+		
+		setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
 
 	}
 	
@@ -100,21 +98,20 @@ public class UniverseFrame extends java.awt.Frame {
 
 		java.awt.GridBagConstraints gridBagConstraints;
 
-		panel1 = new java.awt.Panel();
-		button1 = new java.awt.Button();
-		button3 = new java.awt.Button();
-		leftBtn = new java.awt.Button();
-		rightBtn = new java.awt.Button();
-		forwardBtn = new java.awt.Button();
-		backBtn = new java.awt.Button();
-		button9 = new java.awt.Button();
-		turnRightBtn = new java.awt.Button();
+		panel1 = new JPanel();
+		button1 = new JButton();
+		button3 = new JButton();
+		leftBtn = new JButton();
+		rightBtn = new JButton();
+		forwardBtn = new JButton();
+		backBtn = new JButton();
+		button9 = new JButton();
+		turnRightBtn = new JButton();
 
-		posRat = new java.awt.Label();
+		posRat = new JLabel();
 
-		turnLeftBtn = new java.awt.Button();
-		topViewPanel = new java.awt.Panel();
-		wideViewPanel = new java.awt.Panel();
+		turnLeftBtn = new JButton();
+		topViewPanel = new JPanel(new BorderLayout());
 
 		setLayout(new java.awt.GridBagLayout());
 
@@ -248,32 +245,25 @@ public class UniverseFrame extends java.awt.Frame {
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 2;
-		gridBagConstraints.gridwidth = 2;
+		gridBagConstraints.gridy = 1;
+		gridBagConstraints.gridwidth = 1;
+		gridBagConstraints.weightx = 1;
+		gridBagConstraints.weighty = 0;
+		gridBagConstraints.fill = GridBagConstraints.BOTH;
 		add(panel1, gridBagConstraints);
 
 		// panel1 es el de los botones
 		// panel2 -> world1, panel3 -> world2, panel4 -> world3
 
 		topViewPanel.setBackground(new java.awt.Color(153, 244, 51));
-		gridBagConstraints = new java.awt.GridBagConstraints();
+		gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = 0;
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.gridwidth = 1;
+		gridBagConstraints.weightx = 1;
+		gridBagConstraints.weighty = 1;
+		gridBagConstraints.fill = GridBagConstraints.BOTH;
 		add(topViewPanel, gridBagConstraints);
-
-		wideViewPanel.setBackground(new java.awt.Color(204, 153, 0));
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 0;
-		gridBagConstraints.gridy = 1;
-		gridBagConstraints.gridwidth = 3;
-		add(wideViewPanel, gridBagConstraints);
-
-		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit()
-				.getScreenSize();
-		int size = 800;
-		setBounds((screenSize.width - size) / 2,
-				(screenSize.height - size) / 2, size, size);
 
 	}
 
