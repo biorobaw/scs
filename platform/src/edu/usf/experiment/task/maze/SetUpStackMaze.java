@@ -15,8 +15,8 @@ import edu.usf.experiment.utils.ElementWrapper;
 
 public class SetUpStackMaze extends Task {
 
-	private static final int NUM_WALLS = 10;
-	private static final float INTER_WALL_SPACE = .4f;
+	private static final int NUM_WALLS = 8;
+	private static final float INTER_WALL_SPACE = .5f;
 	private static final float WALL_LENGHT = 2;
 	private static final float HALF_HEIGHT = (NUM_WALLS + 1)/ 2f * INTER_WALL_SPACE;
 
