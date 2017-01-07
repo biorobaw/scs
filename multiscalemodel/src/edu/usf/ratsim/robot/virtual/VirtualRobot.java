@@ -53,47 +53,47 @@ public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 	private int lastAteFeeder;
 
 	private int lastTriedToEat;
-	
+
 	private List<Float> sonarAngles;
-	
+
 	private float sonarAperture;
 
 	private float sonarMaxDist;
 
 	private int sonarNumRays;
-	
-	public void setCloseThreshold(float value){
-		this.closeThrs=value;
+
+	public void setCloseThreshold(float value) {
+		this.closeThrs = value;
 	}
 
 	public VirtualRobot(ElementWrapper params, Universe u) {
 		super(params);
 
 		noise = params.getChildFloat("noise");
-		translationRotationNoise = params
-				.getChildFloat("translationRotationNoise");
+		translationRotationNoise = params.getChildFloat("translationRotationNoise");
 		lookaheadSteps = params.getChildFloat("lookaheadSteps");
 		halfFieldOfView = params.getChildFloat("halfFieldOfView");
 		visionDist = params.getChildFloat("visionDist");
 		closeThrs = params.getChildFloat("closeThrs");
-		
+
 		// Sonar configuration
-		sonarAngles = params.getChildFloatList("sonarAngles");
-		if (!sonarAngles.isEmpty()){
-			sonarAperture = params.getChildFloat("sonarAperture");
-			sonarMaxDist = params.getChildFloat("sonarMaxDist");
-			sonarNumRays = params.getChildInt("sonarNumRays");
+		if (params.getChild("sonarAngles") != null) {
+			sonarAngles = params.getChildFloatList("sonarAngles");
+			if (!sonarAngles.isEmpty()) {
+				sonarAperture = params.getChildFloat("sonarAperture");
+				sonarMaxDist = params.getChildFloat("sonarMaxDist");
+				sonarNumRays = params.getChildInt("sonarNumRays");
+			}
 		}
 
-		universe = (VirtUniverse)u;
+		universe = (VirtUniverse) u;
 		if (universe == null)
-			throw new RuntimeException("A virtual universe must be created"
-					+ " before Virtual Robot is created");
+			throw new RuntimeException("A virtual universe must be created" + " before Virtual Robot is created");
 
 		r = RandomSingleton.getInstance();
 
 		closestFeederValid = false;
-		lastAteFeeder = -1;	
+		lastAteFeeder = -1;
 		lastTriedToEat = -1;
 	}
 
@@ -110,8 +110,7 @@ public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 	}
 
 	public void forward(float dist) {
-		universe.moveRobot(new Vector3f(dist + dist * r.nextFloat() * noise,
-				0f, 0f));
+		universe.moveRobot(new Vector3f(dist + dist * r.nextFloat() * noise, 0f, 0f));
 		universe.rotateRobot((2 * r.nextFloat() - 1) * translationRotationNoise);
 
 		closestFeederValid = false;
@@ -136,8 +135,7 @@ public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 					// Get relative position
 					Point3f fPos = universe.getFoodPosition(i);
 					Point3f rPos = universe.getRobotPosition();
-					Point3f relFPos = new Point3f(GeomUtils.pointsToVector(
-							rPos, fPos));
+					Point3f relFPos = new Point3f(GeomUtils.pointsToVector(rPos, fPos));
 					// Rotate to robots framework
 					Quat4f rRot = universe.getRobotOrientation();
 					rRot.inverse();
@@ -157,8 +155,7 @@ public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 			if (except == null || !in(i, except))
 				if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)) {
 					// Get relative position
-					Point3f relFPos = getRelativePos(universe
-							.getFoodPosition(i));
+					Point3f relFPos = getRelativePos(universe.getFoodPosition(i));
 					// Return the landmark
 					Feeder relFeeder = new Feeder(universe.getFeeder(i));
 					relFeeder.setPosition(relFPos);
@@ -190,13 +187,11 @@ public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 	@Override
 	public Feeder getFlashingFeeder() {
 		for (Integer i : universe.getFeederNums())
-			if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)
-					&& universe.isFeederFlashing(i)) {
+			if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist) && universe.isFeederFlashing(i)) {
 				// Get relative position
 				Point3f fPos = universe.getFoodPosition(i);
 				Point3f rPos = universe.getRobotPosition();
-				Point3f relFPos = new Point3f(GeomUtils.pointsToVector(rPos,
-						fPos));
+				Point3f relFPos = new Point3f(GeomUtils.pointsToVector(rPos, fPos));
 				// Rotate to robots framework
 				Quat4f rRot = universe.getRobotOrientation();
 				rRot.inverse();
@@ -217,25 +212,25 @@ public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 		return getFlashingFeeder() != null;
 	}
 
-//	@Override
-//	public Feeder getClosestFeeder(int lastFeeder) {
-//		// If feeder was invalidated - re compute it
-//		// if (!closestFeederValid){
-//		// previouslyFoundFeeder = getClosestFeederImpl(-1);
-//		// closestFeederValid = true;
-//		// }
-//		//
-//		// // No feeder visible at all
-//		// if (previouslyFoundFeeder == null)
-//		// return null;
-//		//
-//		// // Optimize to return previously computed if hasnt moved
-//		// if (previouslyFoundFeeder.getId() == lastFeeder){
-//		return getClosestFeederImpl(lastFeeder);
-//		// } else
-//		// return previouslyFoundFeeder;
-//
-//	}
+	// @Override
+	// public Feeder getClosestFeeder(int lastFeeder) {
+	// // If feeder was invalidated - re compute it
+	// // if (!closestFeederValid){
+	// // previouslyFoundFeeder = getClosestFeederImpl(-1);
+	// // closestFeederValid = true;
+	// // }
+	// //
+	// // // No feeder visible at all
+	// // if (previouslyFoundFeeder == null)
+	// // return null;
+	// //
+	// // // Optimize to return previously computed if hasnt moved
+	// // if (previouslyFoundFeeder.getId() == lastFeeder){
+	// return getClosestFeederImpl(lastFeeder);
+	// // } else
+	// // return previouslyFoundFeeder;
+	//
+	// }
 
 	private Feeder getClosestFeederImpl(int lastFeeder) {
 		int[] except = { lastFeeder };
@@ -246,16 +241,15 @@ public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 
 		Feeder closest = feeders.get(0);
 		Point3f zero = new Point3f(0, 0, 0);
-//		System.out.println("Searching for closest feeder");
+		// System.out.println("Searching for closest feeder");
 		for (Feeder feeder : feeders) {
-//			System.out.println("Feeder " + feeder.getId() + " at dist "
-//					+ feeder.getPosition().distance(zero));
+			// System.out.println("Feeder " + feeder.getId() + " at dist "
+			// + feeder.getPosition().distance(zero));
 
-			if (feeder.getPosition().distance(zero) < closest.getPosition()
-					.distance(zero))
+			if (feeder.getPosition().distance(zero) < closest.getPosition().distance(zero))
 				closest = feeder;
 		}
-//		System.out.println("Closest " + closest.getId());
+		// System.out.println("Closest " + closest.getId());
 
 		return closest;
 	}
@@ -276,10 +270,10 @@ public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 		return universe.getRobotOrientationAngle();
 	}
 
-//	@Override
-//	public Quat4f getOrientation() {
-//		return universe.getRobotOrientation();
-//	}
+	// @Override
+	// public Quat4f getOrientation() {
+	// return universe.getRobotOrientation();
+	// }
 
 	@Override
 	public List<Affordance> checkAffordances(List<Affordance> affs) {
@@ -289,62 +283,52 @@ public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 				TurnAffordance ta = (TurnAffordance) af;
 				// Either it can move there, or it cannot move forward and the
 				// other angle is not an option
-				realizable = !universe.canRobotMove(0, ROBOT_LENGTH
-						* lookaheadSteps)
+				realizable = !universe.canRobotMove(0, ROBOT_LENGTH * lookaheadSteps)
 						// && !canRobotMove(-ta.getAngle(), ROBOT_LENGTH))
-						|| universe.canRobotMove(ta.getAngle(), ROBOT_LENGTH
-								* lookaheadSteps);
+						|| universe.canRobotMove(ta.getAngle(), ROBOT_LENGTH * lookaheadSteps);
 				// realizable = true;
 			} else if (af instanceof ForwardAffordance)
-				realizable = universe.canRobotMove(0, ROBOT_LENGTH
-						* lookaheadSteps);
+				realizable = universe.canRobotMove(0, ROBOT_LENGTH * lookaheadSteps);
 			else if (af instanceof EatAffordance) {
 				// realizable = hasRobotFoundFood();
 				if (getClosestFeeder() != null)
-					realizable = getClosestFeeder().getPosition().distance(
-							new Point3f()) < closeThrs;
+					realizable = getClosestFeeder().getPosition().distance(new Point3f()) < closeThrs;
 				else
 					realizable = false;
 			} else
-				throw new RuntimeException("Affordance "
-						+ af.getClass().getName() + " not supported by robot");
+				throw new RuntimeException("Affordance " + af.getClass().getName() + " not supported by robot");
 
 			af.setRealizable(realizable);
 		}
 
 		return affs;
 	}
-	
+
 	@Override
-	public boolean checkAffordance(Affordance af){
+	public boolean checkAffordance(Affordance af) {
 		boolean realizable;
 		if (af instanceof TurnAffordance) {
 			TurnAffordance ta = (TurnAffordance) af;
 			// Either it can move there, or it cannot move forward and the
 			// other angle is not an option
-			realizable = !universe.canRobotMove(0, ROBOT_LENGTH
-					* lookaheadSteps)
+			realizable = !universe.canRobotMove(0, ROBOT_LENGTH * lookaheadSteps)
 					// && !canRobotMove(-ta.getAngle(), ROBOT_LENGTH))
-					|| universe.canRobotMove(ta.getAngle(), ROBOT_LENGTH
-							* lookaheadSteps);
+					|| universe.canRobotMove(ta.getAngle(), ROBOT_LENGTH * lookaheadSteps);
 			// realizable = true;
 		} else if (af instanceof ForwardAffordance)
-			realizable = universe.canRobotMove(0, ROBOT_LENGTH
-					* lookaheadSteps);
+			realizable = universe.canRobotMove(0, ROBOT_LENGTH * lookaheadSteps);
 		else if (af instanceof EatAffordance) {
 			// realizable = hasRobotFoundFood();
 			if (getClosestFeeder() != null)
-				realizable = getClosestFeeder().getPosition().distance(
-						new Point3f()) < closeThrs;
+				realizable = getClosestFeeder().getPosition().distance(new Point3f()) < closeThrs;
 			else
 				realizable = false;
 		} else
-			throw new RuntimeException("Affordance "
-					+ af.getClass().getName() + " not supported by robot");
+			throw new RuntimeException("Affordance " + af.getClass().getName() + " not supported by robot");
 
 		af.setRealizable(realizable);
 		return realizable;
-		
+
 	}
 
 	@Override
@@ -372,10 +356,9 @@ public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 					System.out.println("Trying to eat from empty feeder");
 			}
 			lastTriedToEat = getClosestFeeder().getId();
-//			rotate((float) Math.PI);
+			// rotate((float) Math.PI);
 		} else
-			throw new RuntimeException("Affordance " + af.getClass().getName()
-					+ " not supported by robot");
+			throw new RuntimeException("Affordance " + af.getClass().getName() + " not supported by robot");
 	}
 
 	@Override
@@ -395,8 +378,7 @@ public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 
 	@Override
 	public List<Point3f> getVisibleWallEnds() {
-		List<Point3f> absoluteWEnds = universe.getVisibleWallEnds(
-				halfFieldOfView, visionDist);
+		List<Point3f> absoluteWEnds = universe.getVisibleWallEnds(halfFieldOfView, visionDist);
 		List<Point3f> relativeWEnds = new LinkedList<Point3f>();
 		for (Point3f p : absoluteWEnds) {
 			relativeWEnds.add(getRelativePos(p));
@@ -421,8 +403,7 @@ public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 		float angle = Float.MAX_VALUE;
 		Feeder feederInFront = null;
 		for (Feeder f : visFeeders) {
-			float angleToFeeder = GeomUtils.rotToAngle(GeomUtils.angleToPoint(f
-					.getPosition()));
+			float angleToFeeder = GeomUtils.rotToAngle(GeomUtils.angleToPoint(f.getPosition()));
 			if (Math.abs(angleToFeeder) < Math.abs(angle)) {
 				angle = angleToFeeder;
 				feederInFront = f;
@@ -446,7 +427,7 @@ public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 	public boolean hasFoundPlatform() {
 		return universe.hasRobotFoundPlatform();
 	}
-	
+
 	public void moveContinous(float lVel, float angVel) {
 		throw new NotImplementedException();
 	}
@@ -454,11 +435,11 @@ public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 	@Override
 	public float[] getSonarReadings() {
 		float[] readings = new float[sonarAngles.size()];
-		
+
 		int i = 0;
 		for (float angle : sonarAngles)
 			readings[i++] = universe.getRobotSonarReading(angle, sonarAperture, sonarMaxDist, sonarNumRays);
-		
+
 		return readings;
 	}
 
@@ -466,7 +447,7 @@ public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 	public float[] getSonarAngles() {
 		float[] angles = new float[sonarAngles.size()];
 		int i = 0;
-		for(float angle : sonarAngles)
+		for (float angle : sonarAngles)
 			angles[i++] = angle;
 		return angles;
 	}

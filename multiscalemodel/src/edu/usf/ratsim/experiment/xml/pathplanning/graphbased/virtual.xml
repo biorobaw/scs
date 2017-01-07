@@ -124,7 +124,7 @@
 			<!-- Number of episodes -->
 			<number>2</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>1</sleep>
+			<sleep>5</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<task>
@@ -212,7 +212,7 @@
 			<!-- Number of episodes -->
 			<number>2</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>1</sleep>
+			<sleep>5</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<task>
@@ -303,7 +303,7 @@
 			<!-- Number of episodes -->
 			<number>2</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>1</sleep>
+			<sleep>5</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<task>
@@ -388,9 +388,9 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>2</number>
+			<number>0</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>1</sleep>
+			<sleep>5</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<task>

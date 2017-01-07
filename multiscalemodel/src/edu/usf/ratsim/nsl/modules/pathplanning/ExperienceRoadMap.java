@@ -41,6 +41,8 @@ public class ExperienceRoadMap extends Module {
 
 	private static final float NEXT_NODE_DIST_THRS = 0.5f;
 
+	private static final int WINDOW_SIZE = 400;
+
 	private UndirectedGraph<PointNode, Edge> g;
 
 	private BasicVisualizationServer<PointNode, Edge> vv;
@@ -185,7 +187,7 @@ public class ExperienceRoadMap extends Module {
 		Layout<PointNode, Edge> layout = new VertextPosLayout<Edge>(g);
 		layout.setSize(new Dimension(400, 400));
 		vv = new BasicVisualizationServer<PointNode, Edge>(layout);
-		vv.setPreferredSize(new Dimension(650, 650));
+		vv.setPreferredSize(new Dimension(WINDOW_SIZE, WINDOW_SIZE));
 		vv.getRenderContext().setVertexFillPaintTransformer(new Transformer<PointNode, Paint>() {
 			public Paint transform(PointNode pn) {
 				return new Color(pn.activation, 0, 1 - pn.activation, 1);
@@ -341,6 +343,9 @@ class Edge {
 
 class VertextPosLayout<E> extends AbstractLayout<PointNode, E> {
 
+	private static final float DISPLAY_SCALE = 75;
+	private static final float DISPLAY_OFFSET = 200f;
+
 	protected VertextPosLayout(Graph<PointNode, E> graph) {
 		super(graph);
 	}
@@ -357,7 +362,7 @@ class VertextPosLayout<E> extends AbstractLayout<PointNode, E> {
 
 	@Override
 	public Point2D transform(PointNode pn) {
-		return new Point2D.Double(pn.prefLoc.x * 100 + 300, -pn.prefLoc.y * 100 + 300);
+		return new Point2D.Double(pn.prefLoc.x * DISPLAY_SCALE + DISPLAY_OFFSET, -pn.prefLoc.y * DISPLAY_SCALE + DISPLAY_OFFSET);
 	}
 
 }
