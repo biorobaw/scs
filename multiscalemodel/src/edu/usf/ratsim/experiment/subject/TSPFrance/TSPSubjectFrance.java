@@ -131,6 +131,24 @@ public class TSPSubjectFrance extends Subject {
 	public void reactivateHPCLayers(LinkedList<Integer> indexList) {
 		throw new NotImplementedException();
 	}
+
+	@Override
+	public Affordance getForwardAffordance() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Affordance getLeftAffordance() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Affordance getRightAffordance() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 }
