@@ -53,9 +53,9 @@ public class TSPSubject extends Subject {
 	public List<Affordance> getPossibleAffordances() {
 		List<Affordance> res = new LinkedList<Affordance>();
 		
-		res.add(new TurnAffordance(leftAngle, step));
-		res.add(new ForwardAffordance(step));
-		res.add(new TurnAffordance(rightAngle, step));
+		res.add(getLeftAffordance());
+		res.add(getForwardAffordance());
+		res.add(getRightAffordance());
 		res.add(new EatAffordance());
 		
 		return res;
@@ -131,5 +131,21 @@ public class TSPSubject extends Subject {
 		throw new NotImplementedException();
 	}
 	
+	
+	@Override
+	public Affordance getForwardAffordance() {
+		return new ForwardAffordance(step);
+	}
+
+	@Override
+	public Affordance getLeftAffordance() {
+		return new TurnAffordance(leftAngle, step);
+	}
+
+	@Override
+	public Affordance getRightAffordance() {
+		return new TurnAffordance(rightAngle, step);
+	}
+
 
 }

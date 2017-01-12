@@ -9,12 +9,14 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
+import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 
 public class DecayingExplorationSchema extends Module {
 
+	private static final float FORWARD_BIAS = 0.3f;
 	public float[] votes;
 	private float maxReward;
 	private Random r;
@@ -57,34 +59,65 @@ public class DecayingExplorationSchema extends Module {
 				performableAffs.add(a);
 
 		if (!performableAffs.isEmpty()) {
-			Affordance pickedAffordance;
+			Affordance pickedAffordance = null;
 			if (containsEat(performableAffs))
 				pickedAffordance = getEat(performableAffs);
-			else
-				pickedAffordance = performableAffs.get(r.nextInt(performableAffs.size()));
-
+			else {
+				// If last was forward/eat we can turn or forward
+				if (lastPicked == null || lastPicked instanceof EatAffordance || lastPicked instanceof ForwardAffordance)
+					if (containsForward(performableAffs) && r.nextFloat() < FORWARD_BIAS)
+						pickedAffordance = getForward(performableAffs);
+					else
+						pickedAffordance = performableAffs.get(r.nextInt(performableAffs.size()));
+				// But if last was turn, we have to forward or keep turning that way
+				else if (lastPicked instanceof TurnAffordance)
+					do {
+						if (containsForward(performableAffs) && r.nextFloat() < FORWARD_BIAS)
+							pickedAffordance = getForward(performableAffs);
+						else
+							pickedAffordance = performableAffs.get(r.nextInt(performableAffs.size()));
+					} while (performableAffs.size() != 1 && pickedAffordance instanceof TurnAffordance &&
+							((TurnAffordance)pickedAffordance).getAngle() != ((TurnAffordance)lastPicked).getAngle() );
+			}
+			
 			votes[pickedAffordance.getIndex()] = (float) explorationValue;
 
 			lastPicked = pickedAffordance;
 		}
 	}
 
-	private boolean containsEat(List<Affordance> affs) {
-		for(Affordance aff : affs)
-			if (aff instanceof EatAffordance)
+	private boolean containsForward(List<Affordance> affs) {
+		for (Affordance aff : affs)
+			if (aff instanceof ForwardAffordance)
 				return true;
-		
+
 		return false;
 	}
-	
+
+	private boolean containsEat(List<Affordance> affs) {
+		for (Affordance aff : affs)
+			if (aff instanceof EatAffordance)
+				return true;
+
+		return false;
+	}
+
 	private Affordance getEat(List<Affordance> affs) {
-		for(Affordance aff : affs)
+		for (Affordance aff : affs)
 			if (aff instanceof EatAffordance)
 				return aff;
-		
+
 		return null;
 	}
 
+	private Affordance getForward(List<Affordance> affs) {
+		for (Affordance aff : affs)
+			if (aff instanceof ForwardAffordance)
+				return aff;
+
+		return null;
+	}
+	
 	public void newEpisode() {
 		episodeCount++;
 	}

@@ -10,10 +10,16 @@ public class ValuePlotter extends Plotter {
 	}
 
 	@Override
-	public void plot() {
-		String logPath = getLogPath();
-		IOUtils.copyResource(getClass().getResource("/edu/usf/experiment/plot/plotValue.r"), logPath + "plotValue.r");
-		IOUtils.exec("Rscript plotValue.r", logPath);
+	public Runnable plot() {
+		final String logPath = getLogPath();
+		
+		return new Runnable(){
+			@Override
+			public void run() {
+				IOUtils.copyResource(getClass().getResource("/edu/usf/experiment/plot/plotValue.r"), logPath + "plotValue.r");
+				IOUtils.exec("Rscript plotValue.r", logPath);
+			}
+		};
 	}
 
 }

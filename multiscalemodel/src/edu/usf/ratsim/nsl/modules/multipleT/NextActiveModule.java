@@ -4,7 +4,8 @@ import edu.usf.experiment.Globals;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
-import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
+import edu.usf.micronsl.port.twodimensional.sparse.Entry;
+import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 
 /**
  * Module that sets the probability of an action to 0 if the action can not be performed
@@ -28,27 +29,29 @@ public class NextActiveModule extends Module {
 	
 	public void run() {
 		int active = ((Int0dPort)getInPort("active")).get();
-		FloatMatrixPort W = (FloatMatrixPort)getInPort("W");
+		Float2dSparsePort W = (Float2dSparsePort)getInPort("W");
 		
 //		System.out.println("active: "+active);
 //		System.out.println("cols: "+W.getNCols());
 		
 		int maxId = 0;
 		float maxVal = -Float.MAX_VALUE;
-		for (int j =0;j<W.getNCols();j++)
-		{
-			if(j!=active && W.get(active,j) > maxVal){
-				maxVal = W.get(active,j);
-				maxId = j;
-			}
-
-		}
+		if (!W.isRowEmpty(active))
+			for (Entry e : W.getNonZeroRow(active).keySet())
+				if (e.j != active && W.get(e.i,e.j) > maxVal){
+					maxVal = W.get(e.i,e.j);
+					maxId = e.j;
+				}
 
 		nextActive.set(maxId);
 		if(visited[maxId]){
 			Globals.getInstance().put("loopInReactivationPath", true);
-		} else visited[maxId] = true;
-		maxActivation.set(maxVal);
+			maxActivation.set(-Float.MAX_VALUE);
+		} else {
+			visited[maxId] = true;
+			maxActivation.set(maxVal);
+		}
+		
 		
 	}
 	

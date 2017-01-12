@@ -63,14 +63,14 @@ public class PostExperiment extends Experiment implements Runnable {
 			logger.finalizeLog();
 		}
 		// Plot
-		for (Plotter plotter : afterPlotters)
-			plotter.plot();
+		Plotter.plot(afterPlotters);
 
+		Plotter.join();
 	}
 
 	public static void main(String[] args) {
-		if (args.length < 2)
-			System.out.println("Usage: java edu.usf.experiment "
+		if (args.length < 1)
+			System.out.println("Usage: java edu.usf.experiment.PostExperiment "
 					+ "exprimentLayout");
 
 		PostExperiment e = new PostExperiment(args[0]);

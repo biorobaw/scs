@@ -35,6 +35,7 @@ public class Debug {
 	public static boolean printSilentSynapses = print && false;
 	public static boolean printValueAfter = print && false;
 	public static boolean printAvoidWallValues = print && false;
-	public static boolean printMaps = print && false;	
+	public static boolean printMaps = print && false;
+	public static boolean printMorseErr = print && true;	
 	
 }

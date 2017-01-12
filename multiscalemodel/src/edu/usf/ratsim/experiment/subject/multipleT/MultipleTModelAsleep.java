@@ -21,6 +21,7 @@ import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
+import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
@@ -32,6 +33,8 @@ import edu.usf.ratsim.nsl.modules.multipleT.MoveFromToActionPerformer;
 import edu.usf.ratsim.nsl.modules.multipleT.NextActiveModule;
 import edu.usf.ratsim.nsl.modules.multipleT.NextPositionModule;
 import edu.usf.ratsim.nsl.modules.multipleT.UpdateQModule;
+import edu.usf.ratsim.nsl.modules.multipleT.UpdateQModuleAC;
+import edu.usf.ratsim.nsl.modules.rl.ActorCriticDeltaError;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
 import edu.usf.ratsim.nsl.modules.rl.SarsaQDeltaError;
 
@@ -43,8 +46,8 @@ public class MultipleTModelAsleep extends MultipleTModel {
 	public ProportionalVotes currentStateQ;
 	public NextActiveModule nextActiveModule;
 	
-	private float[][] QTable;
-	private float[][] WTable;
+	private Float2dSparsePort QTable;
+	private Float2dSparsePort WTable;
 	
 	public boolean[] visitedNodes;
 	
@@ -117,22 +120,8 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		
 		//Create Variables Q,W, note sleepState has already been initialized.
 		QTable = ((MultipleTSubject)subject).QTable;
-		FloatMatrixPort QPort = new FloatMatrixPort((Module) null, QTable);
 		
 		WTable = ((MultipleTSubject)subject).WTable;
-		FloatMatrixPort WPort = new FloatMatrixPort((Module)null, WTable);
-		
-		
-		//create subAte module
-		SubjectAte subAte = new SubjectAte("Subject Ate",subject);
-		addModule(subAte);
-		
-		//Create reward module
-		float nonFoodReward = 0;
-		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
-		r.addInPort("subAte", subAte.getOutPort("subAte"),true); // reward must execute before subAte (the reward obtained depends if we ate in the previous action)
-		addModule(r);
-		
 		
 		//Create pos module 
 		Position pos = new Position("position", lRobot);
@@ -143,24 +132,16 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		placeCells.addInPort("position", pos.getOutPort("position"));
 		addModule(placeCells);
 		
-		//System.out.println("rad " + placeCells.getCells().get(0).getPlaceRadius());
-		
-		//Create PC copy module
-		Float1dSparseCopyModule pcCopy = new Float1dSparseCopyModule("PCCopy");
-		pcCopy.addInPort("toCopy",placeCells.getOutPort("activation"), true);
-		addModule(pcCopy);
-		
-		
 		//Create currentStateQ Q module
-		currentStateQ = new ProportionalVotes("currentStateQ",numActions,true);
+		currentStateQ = new ProportionalVotes("currentStateQ",numActions+1,true);
 		currentStateQ.addInPort("states", placeCells.getOutPort("activation"));
-		currentStateQ.addInPort("value", QPort);
+		currentStateQ.addInPort("value", QTable);
 		addModule(currentStateQ);
 		
 		//Create copy Q module
-		Module copyQ = new Float1dCopyModule("copyQ");
-		copyQ.addInPort("toCopy", currentStateQ.getOutPort("votes"),true);
-		addModule(copyQ);
+//		Module copyQ = new Float1dCopyModule("copyQ");
+//		copyQ.addInPort("toCopy", currentStateQ.getOutPort("votes"),true);
+//		addModule(copyQ);
 		
 		
 		//Create active and NextActive module:
@@ -168,7 +149,7 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		addModule(active);
 		
 		nextActiveModule = new NextActiveModule("nextActive");
-		nextActiveModule.addInPort("W", WPort);
+		nextActiveModule.addInPort("W", WTable);
 		active.addInPort("toCopy", nextActiveModule.getOutPort("nextActive"),true);
 		nextActiveModule.addInPort("active", active.getOutPort("copy"));
 		addModule(nextActiveModule);
@@ -194,39 +175,38 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		actionSelection.addInPort("nextPosition", nextPosModule.getOutPort("nextPosition"));
 		addModule(actionSelection);
 		
-		
-		//Create actionCopyModule
-		Int0dCopyModule actionCopy = new Int0dCopyModule("actionCopy");
-		actionCopy.addInPort("toCopy", actionSelection.getOutPort("action"),true);
-		addModule(actionCopy);
-		
-
-		
-		
 		Module actionPerformer = new MoveFromToActionPerformer("actionPerformer",subject);
 		actionPerformer.addInPort("position", pos.getOutPort("position"));
 		actionPerformer.addInPort("nextPosition", nextPosModule.getOutPort("nextPosition"));
 		addModule(actionPerformer);
 		
+//		placeCells.addPreReq(actionPerformer);
+		actionPerformer.addPreReq(placeCells);
+		
+		//create subAte module
+		SubjectAte subAte = new SubjectAte("Subject Ate",subject);
+		addModule(subAte);
 		subAte.addPreReq(actionPerformer);
 		
+		//Create reward module
+		float nonFoodReward = 0;
+		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
+		r.addInPort("rewardingEvent", subAte.getOutPort("subAte")); 
+		addModule(r);
 		
 		//Create deltaSignal module
-		Module deltaError = new SarsaQDeltaError("error", discountFactor);
+		Module deltaError = new ActorCriticDeltaError("error", discountFactor, numActions);
 		deltaError.addInPort("reward", r.getOutPort("reward"));
-		deltaError.addInPort("copyQ", copyQ.getOutPort("copy"));
 		deltaError.addInPort("Q",currentStateQ.getOutPort("votes"));
-		deltaError.addInPort("copyAction", actionCopy.getOutPort("copy"));
-		deltaError.addInPort("action",actionSelection.getOutPort("action"));
 		addModule(deltaError);
 		
 		
 		//Create update Q module
-		Module updateQ = new UpdateQModule("updateQ", numActions, learningRate);
+		Module updateQ = new UpdateQModuleAC("updateQ", numActions, learningRate);
 		updateQ.addInPort("delta", deltaError.getOutPort("delta"));
-		updateQ.addInPort("action", actionCopy.getOutPort("copy"));
-		updateQ.addInPort("Q", QPort);
-		updateQ.addInPort("placeCells", pcCopy.getOutPort("copy"));
+		updateQ.addInPort("action", actionSelection.getOutPort("action"));
+		updateQ.addInPort("Q", QTable);
+		updateQ.addInPort("placeCells", placeCells.getOutPort("activation"));
 		addModule(updateQ);
 		
 		
@@ -259,12 +239,11 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		Globals.getInstance().put("loopInReactivationPath", false);
 		
 		getModule("PCLayer").getOutPort("activation").clear();
-		getModule("PCCopy" ).getOutPort("copy").clear();
 		//by doing this deltaQ(s_i,a_i) = nu*delta*State(s_i)*<a_i,a> = 0
 				
 		//set random placecell active and move robot to that position:
 		int startingPlaceCell = RandomSingleton.getInstance().nextInt(numPC);
-		System.out.println("starting place cell: " + startingPlaceCell);
+//		System.out.println("starting place cell: " + startingPlaceCell);
 		visitedNodes[startingPlaceCell] = true;
 		nextActiveModule.setVisitedArray(visitedNodes);
 		((Int0dPort)nextActiveModule.getOutPort("nextActive")).set(startingPlaceCell);

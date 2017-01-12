@@ -37,16 +37,19 @@ public class Trial implements Runnable {
 	private List<Plotter> beforePlotters;
 	private List<Plotter> afterPlotters;
 	private List<Logger> afterLoggers;
+	private boolean makePlots;
 	
 	Globals g = Globals.getInstance();
 
-	public Trial(ElementWrapper trialNode, String parentLogPath, Subject subject, Universe universe) {
+	public Trial(ElementWrapper trialNode, String parentLogPath, Subject subject, Universe universe, boolean makePlots) {
 		super();
 		this.name = trialNode.getChildText("name");
 		this.subject = subject;
 		this.universe = universe;
 		
-		logPath = parentLogPath + name + "/";
+		this.makePlots = makePlots;
+		
+		logPath = parentLogPath + File.separator + name + File.separator;
 		
 		File file = new File(logPath);
 		file.mkdirs();
@@ -55,10 +58,15 @@ public class Trial implements Runnable {
 				trialNode.getChild("beforeTrialTasks"));
 		afterTasks = TaskLoader.getInstance().load(
 				trialNode.getChild("afterTrialTasks"));
-		beforePlotters = PlotterLoader.getInstance().load(
-				trialNode.getChild("beforeTrialPlotters"), logPath);
-		afterPlotters = PlotterLoader.getInstance().load(
-				trialNode.getChild("afterTrialPlotters"), logPath);
+		if (makePlots){
+			beforePlotters = PlotterLoader.getInstance().load(
+					trialNode.getChild("beforeTrialPlotters"), logPath);
+			afterPlotters = PlotterLoader.getInstance().load(
+					trialNode.getChild("afterTrialPlotters"), logPath);
+		} else {
+			beforePlotters = new LinkedList<Plotter>();
+			afterPlotters = new LinkedList<Plotter>();;
+		}
 		beforeLoggers = LoggerLoader.getInstance().load(
 				trialNode.getChild("beforeTrialLoggers"), logPath);
 		afterLoggers = LoggerLoader.getInstance().load(
@@ -69,7 +77,7 @@ public class Trial implements Runnable {
 		episodes = new LinkedList<Episode>();
 		int numEpisodes = trialNode.getChild("episodes").getChildInt("number");
 		for (int i = 0; i < numEpisodes; i++)
-			episodes.add(new Episode(trialNode.getChild("episodes"), logPath, this, i));
+			episodes.add(new Episode(trialNode.getChild("episodes"), logPath, this, i, makePlots));
 	}
 
 	public void run() {
@@ -90,17 +98,13 @@ public class Trial implements Runnable {
 				logger.log(this);
 			for (Logger logger : beforeLoggers)
 				logger.finalizeLog();
-			for (Plotter plotter : beforePlotters)
-				plotter.plot();
-
+			Plotter.plot(beforePlotters);
 			// Run each episode
 			for (Episode episode : episodes) {
 				episode.run();
 				g.put("episode", (int)g.get("episode")+1);
 			}
 			
-			
-
 			// Do all after trial tasks
 			for (Task task : afterTasks)
 				task.perform(this);
@@ -109,10 +113,13 @@ public class Trial implements Runnable {
 				logger.log(this);
 			for (Logger logger : afterLoggers)
 				logger.finalizeLog(); 
-			// Plot
-			for (Plotter plotter : afterPlotters)
-				plotter.plot();
 			
+      // Plot
+      // Wait until all plots are done before contuining
+      // because some plots create files used by trial plots
+      Plotter.join();  
+        
+			Plotter.plot(afterPlotters);
 			
 
 		}

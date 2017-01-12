@@ -10,6 +10,7 @@ import javax.vecmath.Point3f;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.utils.ElementWrapper;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public abstract class Subject {
 
@@ -18,10 +19,10 @@ public abstract class Subject {
 	private Robot robot;
 	private boolean hasEaten;
 	private boolean triedToEat;
+	private boolean rewarded;
 	
 	public void save(){};
 	
-
 	public Subject(String name, String group, ElementWrapper modelParams, Robot robot) {
 		this.name = name;
 		this.group = group;
@@ -123,6 +124,18 @@ public abstract class Subject {
 	public abstract float getValueEntropy();
 
 	public abstract void reactivateHPCLayers(LinkedList<Integer> indexList);
+
+	public void endEpisode(){}
+
+	public Map<Point3f, Float> getValuePoints(){
+		throw new NotImplementedException();
+	}
+
+	public abstract Affordance getForwardAffordance();
+	
+	public abstract Affordance getLeftAffordance();
+	
+	public abstract Affordance getRightAffordance();
 	
 	public Map<Integer, Float>  getPCActivity(){
 		return new HashMap<>();

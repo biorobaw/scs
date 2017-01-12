@@ -17,10 +17,11 @@ public class XMLExperimentParser {
 	 * @param root
 	 * @param subject
 	 * @param universe
+	 * @param makePlots 
 	 * @return
 	 */
 	public static List<Trial> loadTrials(ElementWrapper root, String logPath, Subject subject,
-			Universe universe) {
+			Universe universe, boolean makePlots) {
 		List<Trial> res = new LinkedList<Trial>();
 
 		List<ElementWrapper> trialNodes = root.getChildren("trial");
@@ -33,7 +34,7 @@ public class XMLExperimentParser {
 				String groupName = groupNode.getText();
 				// For each subject in the group
 				if (groupName.equals(subject.getGroup())) {
-					res.add(new Trial(trialNode, logPath, subject, universe));
+					res.add(new Trial(trialNode, logPath, subject, universe, makePlots));
 				}
 			}
 		}

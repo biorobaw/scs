@@ -52,10 +52,9 @@ public class MorrisSubject extends Subject {
 	public List<Affordance> getPossibleAffordances() {
 		List<Affordance> res = new LinkedList<Affordance>();
 		
-		res.add(new TurnAffordance(leftAngle, step));
-		res.add(new ForwardAffordance(step));
-		res.add(new TurnAffordance(rightAngle, step));
-		res.add(new EatAffordance());
+		res.add(getLeftAffordance());
+		res.add(getForwardAffordance());
+		res.add(getRightAffordance());
 		
 		return res;
 	}
@@ -130,6 +129,20 @@ public class MorrisSubject extends Subject {
 	public void reactivateHPCLayers(LinkedList<Integer> indexList) {
 		model.reactivatePCL(indexList);
 	}
-	
+
+	@Override
+	public Affordance getForwardAffordance() {
+		return new ForwardAffordance(step);
+	}
+
+	@Override
+	public Affordance getLeftAffordance() {
+		return new TurnAffordance(leftAngle, step);
+	}
+
+	@Override
+	public Affordance getRightAffordance() {
+		return new TurnAffordance(rightAngle, step);
+	}
 
 }

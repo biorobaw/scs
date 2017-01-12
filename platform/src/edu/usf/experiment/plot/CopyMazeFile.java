@@ -11,11 +11,17 @@ public class CopyMazeFile extends Plotter {
 	}
 
 	@Override
-	public void plot() {
+	public Runnable plot() {
 		PropertyHolder props = PropertyHolder.getInstance();
-		String logPath = getLogPath();
-		String mazeFile = props.getProperty("maze.file");
-		IOUtils.copyFile(mazeFile,logPath + "maze.xml");
+		final String logPath = getLogPath();
+		final String mazeFile = props.getProperty("maze.file");
+		return new Runnable(){
+			@Override
+			public void run() {
+				IOUtils.copyFile(mazeFile,logPath + "maze.xml");				
+			}
+		};
+		
 	}
 
 }

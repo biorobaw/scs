@@ -1,7 +1,8 @@
-<project name="MyProject" default="dist" basedir=".">
-  <description> simple example build file </description>
-  
-  <!-- set global properties for this build -->
+<project name="MyProject" default="compile" basedir=".">
+  <description>
+      simple example build file
+        </description>
+          <!-- set global properties for this build -->
   <property name="platformsrc" location="platform/src"/>
   <property name="modelsrc" location="multiscalemodel/src"/>
   <property name="micronslsrc" location="micronsl/src"/>
@@ -18,7 +19,7 @@
           description="compile the source">
               <!-- Compile the java code from ${src} into ${build} -->
     
-    <javac srcdir="${platformsrc}" destdir="${build}">
+    <javac debug="true" srcdir="${platformsrc}" destdir="${build}">
     <classpath>
        <fileset dir="deps/">
             <include name="**/*.jar" />                       
@@ -27,7 +28,7 @@
     </classpath>
 	
     </javac>
-    <javac srcdir="${micronslsrc}" destdir="${build}">
+    <javac debug="true" srcdir="${micronslsrc}" destdir="${build}">
     <classpath>
        <fileset dir="deps/">
             <include name="**/*.jar" />                       
@@ -35,7 +36,7 @@
        </fileset>
     </classpath>
     </javac>
-    <javac srcdir="${modelsrc}" destdir="${build}">
+    <javac debug="true" srcdir="${modelsrc}" destdir="${build}">
 	<classpath>
        <fileset dir="deps/">
             <include name="**/*.jar" />                       

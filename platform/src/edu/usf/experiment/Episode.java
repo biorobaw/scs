@@ -1,6 +1,7 @@
 package edu.usf.experiment;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 import edu.usf.experiment.condition.Condition;
@@ -44,16 +45,20 @@ public class Episode {
 	private List<Logger> beforeCycleLoggers;
 	private List<Logger> afterCycleLoggers;
 	private List<Logger> afterEpisodeLoggers;
+	private boolean makePlots;
 	
 	private int[] sleepValues = new int[] {0,30,100,300,500,1000,2000,4000,8000,0};
 
-	public Episode(ElementWrapper episodeNode, String parentLogPath, Trial trial, int episodeNumber) {
+	public Episode(ElementWrapper episodeNode, String parentLogPath, Trial trial, int episodeNumber, boolean makePlots) {
 		this.trial = trial;
 		this.episodeNumber = episodeNumber;
+		this.sleep = episodeNode.getChildInt("sleep");
+		this.makePlots = makePlots;
+		
+		
 		this.sleepValues[sleepValues.length-1] = episodeNode.getChildInt("sleep");
 
 
-//		System.out.println("parent " + parentLogPath);
 		logPath = parentLogPath
 				+ episodeNumber + "/"
 				+ getSubject().getGroup() + "/"
@@ -72,10 +77,15 @@ public class Episode {
 				episodeNode.getChild("afterEpisodeTasks"));
 		stopConds = ConditionLoader.getInstance().load(
 				episodeNode.getChild("stopConditions"));
-		beforeEpisodePlotters = PlotterLoader.getInstance().load(
-				episodeNode.getChild("beforeEpisodePlotters"), logPath);
-		afterEpisodePlotters = PlotterLoader.getInstance().load(
-				episodeNode.getChild("afterEpisodePlotters"), logPath);
+		if (makePlots){
+			beforeEpisodePlotters = PlotterLoader.getInstance().load(
+					episodeNode.getChild("beforeEpisodePlotters"), logPath);
+			afterEpisodePlotters = PlotterLoader.getInstance().load(
+					episodeNode.getChild("afterEpisodePlotters"), logPath);
+		} else {
+			beforeEpisodePlotters = new LinkedList<Plotter>();
+			afterEpisodePlotters = new LinkedList<Plotter>();
+		}
 		beforeEpisodeLoggers = LoggerLoader.getInstance().load(
 				episodeNode.getChild("beforeEpisodeLoggers"), logPath);
 		beforeCycleLoggers = LoggerLoader.getInstance().load(
@@ -104,8 +114,7 @@ public class Episode {
 			logger.log(this);
 		for (Task task : beforeEpisodeTasks)
 			task.perform(this);
-		for (Plotter plotter : beforeEpisodePlotters)
-			plotter.plot();
+		Plotter.plot(beforeEpisodePlotters);
 
 		// Execute cycles until stop condition holds
 		boolean finished = false;
@@ -118,6 +127,7 @@ public class Episode {
 				t.perform(this);
 
 			getSubject().stepCycle();
+//			System.out.println("cycle");
 			// TODO: universe step cycle
 			
 			while((boolean)g.get("pause")); //the pause is here so that the model state can be observed before performing the actions
@@ -154,6 +164,8 @@ public class Episode {
 		}
 
 		System.out.println();
+		
+		getSubject().endEpisode();
 
 		
 		// Finalize loggers
@@ -173,8 +185,7 @@ public class Episode {
 			task.perform(this);
 
 		// Plotters
-		for (Plotter p : afterEpisodePlotters)
-			p.plot();
+		Plotter.plot(afterEpisodePlotters);
 		
 		// reset All conditions:
 //		for (Condition sc : stopConds)

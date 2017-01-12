@@ -35,7 +35,7 @@ import edu.usf.ratsim.nsl.modules.actionselection.Voter;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.FlashingTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.FlashingTaxicValueSchema;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.ObstacleEndTaxic;
-import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicFoodManyFeedersManyActions;
+import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicFoodManyFeedersManyActionsNotLast;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicValueSchema;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 import edu.usf.ratsim.nsl.modules.celllayer.RndConjCellLayer;
@@ -197,7 +197,7 @@ public class MultiScaleArtificialPCModel extends Model {
 			List<Float> connProbs = params.getChildFloatList("votesConnProbs");
 			float votesNormalizer = params.getChildFloat("votesNormalizer");
 			rlVotes = new GradientVotes("RL votes", numActions, connProbs,
-					numCCCellsPerLayer, votesNormalizer);
+					numCCCellsPerLayer, votesNormalizer, foodReward);
 		} else if (voteType.equals("halfAndHalfConnection"))
 			rlVotes = new HalfAndHalfConnectionVotes("RL votes", numActions,
 					cellContribution);
@@ -213,7 +213,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
-		TaxicFoodManyFeedersManyActions taxicff = new TaxicFoodManyFeedersManyActions(
+		TaxicFoodManyFeedersManyActionsNotLast taxicff = new TaxicFoodManyFeedersManyActionsNotLast(
 				"Taxic Food Finder", subject, lRobot, nonFlashingReward,
 				nonFlashingNegReward, taxicDiscountFactor, estimateValue);
 		taxicff.addInPort("goalFeeder",
@@ -323,7 +323,7 @@ public class MultiScaleArtificialPCModel extends Model {
 			List<Float> connProbs = params.getChildFloatList("valueConnProbs");
 			float valueNormalizer = params.getChildFloat("valueNormalizer");
 			rlValue = new GradientValue("RL value estimation", numActions,
-					connProbs, numCCCellsPerLayer, valueNormalizer);
+					connProbs, numCCCellsPerLayer, valueNormalizer, foodReward);
 		} else
 			throw new RuntimeException("Vote mechanism not implemented");
 		rlValue.addInPort("states",
@@ -368,7 +368,7 @@ public class MultiScaleArtificialPCModel extends Model {
 				subTriedToEat.getOutPort("subTriedToEat"));
 		
 		Reward reward = new Reward("Reward", foodReward, nonFoodReward);
-		reward.addInPort("subAte", subAte.getOutPort("subAte"));
+		reward.addInPort("rewardingEvent", subAte.getOutPort("subAte"));
 		addModule(reward);
 
 		if (rlType.equals("proportionalQl")) {

@@ -10,11 +10,17 @@ public class RuntimePerTrialPlotter extends Plotter {
 	}
 
 	@Override
-	public void plot() {
-		String logPath = getLogPath();
-		IOUtils.copyResource(getClass().getResource("/edu/usf/experiment/plot/plotRuntimesPerTrial.r"), logPath + "/plotRuntimesPerTrial.r");
+	public Runnable plot() {
+		final String logPath = getLogPath();
 		
 		IOUtils.exec("Rscript plotRuntimesPerTrial.r", logPath);
+		return new Runnable(){
+			@Override
+			public void run() {
+				IOUtils.copyResource(getClass().getResource("/edu/usf/experiment/plot/plotRuntimesPerTrial.r"), logPath + "/plotRuntimesPerTrial.r");
+				
+			}
+		};
 	}
 
 }

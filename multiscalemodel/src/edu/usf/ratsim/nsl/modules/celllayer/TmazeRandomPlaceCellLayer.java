@@ -7,18 +7,16 @@ import java.util.Map;
 import javax.vecmath.Point3f;
 
 import edu.usf.experiment.Globals;
-import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.universe.element.MultipleT;
 import edu.usf.experiment.utils.CSVReader;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
+import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceCell;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceCellForMultipleT;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.nsl.modules.cell.ProportionalPlaceCell;
-import edu.usf.ratsim.nsl.modules.input.Position;
 
 /**
  * This layer locates place cells in a tesselated grid laid over the
@@ -154,7 +152,7 @@ public class TmazeRandomPlaceCellLayer extends Module {
 				i++;
 			}
 
-			if(max==0) throw new IllegalArgumentException(Globals.getInstance().get("logPath")+":\n\t\t No active place cells");
+//			if(max==0) throw new IllegalArgumentException(Globals.getInstance().get("logPath")+":\n\t\t No active place cells");
 			for(Integer key : nonZero.keySet()){
 				nonZero.put(key, nonZero.get(key)/max);
 			}
@@ -198,7 +196,11 @@ public class TmazeRandomPlaceCellLayer extends Module {
 	}
 
 	public void clear() {
-		((Float1dPortArray) getOutPort("activation")).clear();
+		((Float1dPort) getOutPort("activation")).clear();
+	}
+	
+	public void newEpisode() {
+		clear();
 	}
 
 }

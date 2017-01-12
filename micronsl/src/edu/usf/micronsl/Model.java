@@ -201,4 +201,9 @@ public class Model {
 		
 	}
 	
+	public void newEpisode(){
+		for (Module m : moduleList)
+			m.newEpisode();
+	}
+	
 }

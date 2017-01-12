@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.media.j3d.Transform3D;
+import javax.media.j3d.VirtualUniverse;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
@@ -17,10 +18,12 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.experiment.utils.RandomSingleton;
+import edu.usf.ratsim.experiment.subject.NotImplementedException;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 
 public class VirtualRobot extends LocalizableRobot {
@@ -55,7 +58,7 @@ public class VirtualRobot extends LocalizableRobot {
 		this.closeThrs=value;
 	}
 
-	public VirtualRobot(ElementWrapper params) {
+	public VirtualRobot(ElementWrapper params, Universe u) {
 		super(params);
 
 		noise = params.getChildFloat("noise");
@@ -66,7 +69,7 @@ public class VirtualRobot extends LocalizableRobot {
 		visionDist = params.getChildFloat("visionDist");
 		closeThrs = params.getChildFloat("closeThrs");
 
-		universe = VirtUniverse.getInstance();
+		universe = (VirtUniverse)u;
 		if (universe == null)
 			throw new RuntimeException("A virtual universe must be created"
 					+ " before Virtual Robot is created");
@@ -198,25 +201,25 @@ public class VirtualRobot extends LocalizableRobot {
 		return getFlashingFeeder() != null;
 	}
 
-	@Override
-	public Feeder getClosestFeeder(int lastFeeder) {
-		// If feeder was invalidated - re compute it
-		// if (!closestFeederValid){
-		// previouslyFoundFeeder = getClosestFeederImpl(-1);
-		// closestFeederValid = true;
-		// }
-		//
-		// // No feeder visible at all
-		// if (previouslyFoundFeeder == null)
-		// return null;
-		//
-		// // Optimize to return previously computed if hasnt moved
-		// if (previouslyFoundFeeder.getId() == lastFeeder){
-		return getClosestFeederImpl(lastFeeder);
-		// } else
-		// return previouslyFoundFeeder;
-
-	}
+//	@Override
+//	public Feeder getClosestFeeder(int lastFeeder) {
+//		// If feeder was invalidated - re compute it
+//		// if (!closestFeederValid){
+//		// previouslyFoundFeeder = getClosestFeederImpl(-1);
+//		// closestFeederValid = true;
+//		// }
+//		//
+//		// // No feeder visible at all
+//		// if (previouslyFoundFeeder == null)
+//		// return null;
+//		//
+//		// // Optimize to return previously computed if hasnt moved
+//		// if (previouslyFoundFeeder.getId() == lastFeeder){
+//		return getClosestFeederImpl(lastFeeder);
+//		// } else
+//		// return previouslyFoundFeeder;
+//
+//	}
 
 	private Feeder getClosestFeederImpl(int lastFeeder) {
 		int[] except = { lastFeeder };
@@ -243,7 +246,7 @@ public class VirtualRobot extends LocalizableRobot {
 
 	@Override
 	public boolean isFeederClose() {
-		Feeder f = getClosestFeeder(-1);
+		Feeder f = getClosestFeeder();
 		return f != null && f.getPosition().distance(new Point3f()) < closeThrs;
 	}
 
@@ -257,10 +260,10 @@ public class VirtualRobot extends LocalizableRobot {
 		return universe.getRobotOrientationAngle();
 	}
 
-	@Override
-	public Quat4f getOrientation() {
-		return universe.getRobotOrientation();
-	}
+//	@Override
+//	public Quat4f getOrientation() {
+//		return universe.getRobotOrientation();
+//	}
 
 	@Override
 	public List<Affordance> checkAffordances(List<Affordance> affs) {
@@ -334,17 +337,14 @@ public class VirtualRobot extends LocalizableRobot {
 			TurnAffordance ta = (TurnAffordance) af;
 			List<Affordance> forward = new LinkedList<Affordance>();
 			forward.add(new ForwardAffordance(ta.getDistance()));
-			// Turn until can move forward (there is no wall on front)
-//			do {
-				rotate(ta.getAngle());
-//				forward = checkAffordances(forward);
-//			} while (!forward.get(0).isRealizable());
+			rotate(ta.getAngle());
 
 		} else if (af instanceof ForwardAffordance)
 			forward(((ForwardAffordance) af).getDistance());
 		else if (af instanceof EatAffordance) {
 			// Updates food in universe
 			sub.setTriedToEat();
+
 			System.out.println("has food: "+getClosestFeeder().hasFood());
 			if (getClosestFeeder().hasFood()) {
 				eat();
@@ -367,7 +367,7 @@ public class VirtualRobot extends LocalizableRobot {
 
 	@Override
 	public boolean seesFeeder() {
-		return getClosestFeeder(-1) != null;
+		return getClosestFeeder() != null;
 	}
 
 	@Override
@@ -436,5 +436,14 @@ public class VirtualRobot extends LocalizableRobot {
 		
 	}
 	
+
+	@Override
+	public boolean hasFoundPlatform() {
+		return universe.hasRobotFoundPlatform();
+	}
+	
+	public void moveContinous(float lVel, float angVel) {
+		throw new NotImplementedException();
+	}
 
 }

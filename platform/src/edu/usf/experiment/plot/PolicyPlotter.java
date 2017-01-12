@@ -10,10 +10,16 @@ public class PolicyPlotter extends Plotter {
 	}
 
 	@Override
-	public void plot() {
-		String logPath = getLogPath();
-		IOUtils.copyResource(getClass().getResource("/edu/usf/experiment/plot/plotPolicy.r"), logPath + "plotPolicy.r");
-		IOUtils.exec("Rscript plotPolicy.r", logPath);
+	public Runnable plot() {
+		final String logPath = getLogPath();
+		
+		return new Runnable(){
+			@Override
+			public void run() {
+				IOUtils.copyResource(getClass().getResource("/edu/usf/experiment/plot/plotPolicy.r"), logPath + "plotPolicy.r");
+				IOUtils.exec("Rscript plotPolicy.r", logPath);
+			}
+		};
 	}
 
 }

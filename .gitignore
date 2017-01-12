@@ -1,4 +1,13 @@
+untitled.sublime*
 *.RData
+<<<<<<< HEAD
+morseout.txt
+*__pycache__*
+*.pyc
+=======
+out
+>>>>>>> proposalexperiments
+*~
 javadocs/*
 InterLabFunctionality/*
 multiscalemodel/logs
@@ -18,8 +27,6 @@ src/edu/usf/ratsim/experiment/plot/plots/
 rat_sim.*
 *circe/
 *.DS_Store
-*.png
-*.pdf
 *.gif
 *.Rhistory
 *bin/

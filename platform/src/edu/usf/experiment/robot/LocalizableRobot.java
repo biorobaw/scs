@@ -30,7 +30,7 @@ public abstract class LocalizableRobot extends Robot {
 	 * Returns the orientation of the animal as thought by the subject
 	 * @return
 	 */
-	public abstract Quat4f getOrientation();
+//	public abstract Quat4f getOrientation();
 
 	public abstract boolean seesFeeder();
 	
@@ -47,4 +47,5 @@ public abstract class LocalizableRobot extends Robot {
 	public abstract int closeToNoseWalls(float distToConsider);
 
 	public abstract Feeder getFeederInFront() ;
+
 }

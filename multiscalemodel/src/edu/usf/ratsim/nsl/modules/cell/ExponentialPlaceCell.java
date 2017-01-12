@@ -11,7 +11,7 @@ import javax.vecmath.Point3f;
  * @author Martin Llofriu
  *
  */
-public class ExponentialPlaceCell implements PlaceCell {
+public class ExponentialPlaceCell implements PlaceCell, ConjCell {
 
 	/**
 	 * The minimum distance to the center for the cell to fire. Below this
@@ -69,5 +69,46 @@ public class ExponentialPlaceCell implements PlaceCell {
 	@Override
 	public float getActivation(Point3f currLocation, float distanceToWall) {
 		return getActivation(currLocation);
+	}
+
+	@Override
+	public float getActivation(Point3f currLocation, float currAngle, int currIntention, float distanceToWall) {
+		return getActivation(currLocation);
+	}
+
+	@Override
+	public void setPreferredLocation(Point3f prefLocation) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public float getPreferredDirection() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setPreferredDirection(float preferredDirection) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public float getDirectionRadius() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getPreferredIntention() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setBupiModulation(float f) {
+		// TODO Auto-generated method stub
+		
 	}
 }

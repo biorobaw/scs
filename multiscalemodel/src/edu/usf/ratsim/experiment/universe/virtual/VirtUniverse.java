@@ -25,6 +25,7 @@ import org.w3c.dom.Document;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
+import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.Wall;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -57,6 +58,7 @@ public class VirtUniverse extends Universe {
 	private boolean display;
 	private List<Wall> initialWalls;
 	private List<WallNode> wallsToRevert;
+	private LinkedList<PlatformNode> platformNodes;
 	
 	UniverseFrame frame;
 
@@ -106,6 +108,14 @@ public class VirtUniverse extends Universe {
 				feederNodes.put(feeder.getId(), feeder);
 				bg.addChild(feeder);
 			}
+			
+			list = maze.getChildren("platform");
+			platformNodes = new LinkedList<PlatformNode>();
+			for (ElementWrapper pn : list) {
+				PlatformNode p = new PlatformNode(pn);
+				platformNodes.add(p);
+				bg.addChild(p);
+			}
 
 			ElementWrapper floor = maze.getChild("floor");
 			if (floor != null)
@@ -152,6 +162,17 @@ public class VirtUniverse extends Universe {
 		if (display) {
 			FeederNode feeder = new FeederNode(id, x, y);
 			feederNodes.put(id, feeder);
+			bg.addChild(feeder);
+		}
+	}
+	
+	@Override
+	public void addFeeder(Feeder f) {
+		super.addFeeder(f);
+		
+		if (display) {
+			FeederNode feeder = new FeederNode(f.getId(), f.getPosition().x, f.getPosition().y);
+			feederNodes.put(f.getId(), feeder);
 			bg.addChild(feeder);
 		}
 	}

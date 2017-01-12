@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
+import edu.usf.experiment.plot.Plotter;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.RobotLoader;
 import edu.usf.experiment.subject.Subject;
@@ -38,6 +39,8 @@ public class Experiment implements Runnable {
 	private List<Task> afterTasks;
 	private Universe universe;
 	private Subject subject;
+	private boolean makePlots;
+	private Robot robot;
 
 	protected Experiment(){
 		
@@ -85,6 +88,16 @@ public class Experiment implements Runnable {
 	 */
 	public Experiment(ElementWrapper root, String logPath, String groupName,
 			String subName) {
+		Globals g = Globals.getInstance();
+		ElementWrapper load = root.getChild("load");
+		if(load!=null) {
+			g.put("loadEpisode", load.getChildInt("episode"));
+			g.put("loadTrial", load.getChildText("trial"));
+			g.put("loadType",load.getChildText("type"));
+		}
+		g.put("pause", false);
+		g.put("simulationSpeed",0); //speed defined in xml file (sleep value)
+		
 		setup(root, logPath, groupName, subName);
 	}
 
@@ -110,8 +123,14 @@ public class Experiment implements Runnable {
 
 		universe = UniverseLoader.getInstance().load(root, logPath);
 
-		Robot robot = RobotLoader.getInstance().load(root);
-
+		robot = RobotLoader.getInstance().load(root, universe);
+		robot.startRobot();
+		
+		if (root.getChild("plot") != null)
+			makePlots = root.getChildBoolean("plot");
+		else
+			makePlots = true;
+		
 		long seed;
 		if (root.getChildText("seed") != null) {
 			seed = root.getChildLong("seed");
@@ -127,14 +146,17 @@ public class Experiment implements Runnable {
 //		if (g.get("feederOrder")!=null)
 //				root.getChild("model").getChild("params").
 //					 getChild("feederOrder").setText((String)g.get("feederOrder"));
+		ElementWrapper modelParams = root.getChild("model");
+		ElementWrapper groupParams = getGroupNode(root, groupName).getChild("params");
+		modelParams.merge(root, groupParams);
 		subject = SubjectLoader.getInstance().load(subjectName, groupName,
-				root.getChild("model"), robot);
+				modelParams, robot);
 
 		System.out.println("[+] Model created");
 
 		// Load trials that apply to the subject
 		trials = XMLExperimentParser.loadTrials(root, logPath, subject,
-				universe);
+				universe, makePlots);
 		
 		System.out.println("[+] Trials Loaded");
 		
@@ -173,11 +195,19 @@ public class Experiment implements Runnable {
 
 	}
 
+	private ElementWrapper getGroupNode(ElementWrapper root, String groupName) {
+		for(ElementWrapper g : root.getChildren("group"))
+			if (g.getChildText("name").equals(groupName))
+				return g;
+		
+		return null;
+	}
+
 	/***
 	 * Runs the experiment for the especified subject. Just goes over trials and
 	 * runs them all. It also executes tasks and plotters.
 	 */
-	public void run() {
+	public void run() {		
 		// Do all before trial tasks
 		System.out.println(beforeTasks.size());
 		System.out.println(trials.size());
@@ -192,6 +222,9 @@ public class Experiment implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		
+		//robot.startRobot();
+		
 		// Run each trial in order
 		
 		for (Trial t : trials)
@@ -200,6 +233,10 @@ public class Experiment implements Runnable {
 		// Do all after trial tasks
 		for (Task task : afterTasks)
 			task.perform(this);
+		
+    // Wait for threads
+		Plotter.join();
+
 	}
 
 	public static void main(String[] args) {

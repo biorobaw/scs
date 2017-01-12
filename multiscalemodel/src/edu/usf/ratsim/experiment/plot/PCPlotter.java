@@ -11,10 +11,15 @@ public class PCPlotter extends Plotter {
 	}
 
 	@Override
-	public void plot() {
-		String logPath = getLogPath();
-		IOUtils.copyResource(getClass().getResource("/edu/usf/ratsim/experiment/plot/plotPlaceCells.r"), logPath + "plotPlaceCells.r");
-		IOUtils.exec("Rscript plotPlaceCells.r", logPath);
+	public Runnable plot() {
+		final String logPath = getLogPath();
+		return new Runnable() {
+			public void run() {
+				IOUtils.copyResource(getClass().getResource("/edu/usf/ratsim/experiment/plot/plotPlaceCells.r"), logPath + "plotPlaceCells.r");
+				IOUtils.exec("Rscript plotPlaceCells.r", logPath);
+			}
+		};
+		
 	}
 
 }
