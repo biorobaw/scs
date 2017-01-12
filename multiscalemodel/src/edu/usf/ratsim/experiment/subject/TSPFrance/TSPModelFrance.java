@@ -2,6 +2,7 @@ package edu.usf.ratsim.experiment.subject.TSPFrance;
 
 import java.awt.geom.Point2D;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import edu.usf.micronsl.ModelAction.ModelAction;
 import edu.usf.micronsl.ModelAction.SpecificActions.MoveToAction;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
+import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromPathModule;
 import edu.usf.ratsim.nsl.modules.actionselection.FeederTraveler;
@@ -34,9 +36,14 @@ import edu.usf.ratsim.robot.virtual.VirtualRobot;
 
 public class TSPModelFrance extends Model {
 
+	public LinkedList<Boolean> ateHistory = new LinkedList<Boolean>();
+	public LinkedList<float[]> pcActivationHistory = new LinkedList<float[]>();
+	
 	private int numActions;
 	private TesselatedPlaceCellLayer placeCells;
 	private FeederTraveler feederTraveler;
+	
+	private int numPCs;
 	
 	//INPUT MODULES
 	HeadDirection hdModule;
@@ -56,6 +63,7 @@ public class TSPModelFrance extends Model {
 	//REFERENCES for ease of access
 	TSPSubjectFrance subject;
 	VirtUniverse universe = VirtUniverse.getInstance();
+	
 	
 
 	public TSPModelFrance() {
@@ -92,7 +100,7 @@ public class TSPModelFrance extends Model {
 		
 		// Get some configuration values for place cells + qlearning
 		float PCRadius = params.getChildFloat("PCRadius");
-		int numCCCellsPerSide = params.getChildInt("numPCCellsPerSide");
+		int numPCellsPerSide = params.getChildInt("numPCCellsPerSide");
 		String placeCellType = params.getChildText("placeCells");
 		float xmin = params.getChildFloat("xmin");
 		float ymin = params.getChildFloat("ymin");
@@ -139,8 +147,9 @@ public class TSPModelFrance extends Model {
 		
 		// palce cells
 		placeCells = new TesselatedPlaceCellLayer(
-				"PCLayer", lRobot, PCRadius, numCCCellsPerSide, placeCellType,
+				"PCLayer", lRobot, PCRadius, numPCellsPerSide, placeCellType,
 				xmin, ymin, xmax, ymax);
+		numPCs = placeCells.getCells().size();
 		addModule(placeCells);
 		
 		
@@ -195,6 +204,22 @@ public class TSPModelFrance extends Model {
 	}
 	
 	public void finalTask(){
+		
+		//append history:
+		//number of pace cells : numPCs;
+		Boolean ate = ((Bool0dPort)subAte.getOutPort("subAte")).get();
+		float[] pcVals = ((Float1dSparsePortMap)placeCells.getOutPort("activation")).getData();
+		
+		ateHistory.add(ate);
+		pcActivationHistory.add(pcVals);
+		
+		System.out.println("subject ate? "+ ate);
+		
+		
+		
+		
+		
+		
 		//System.out.println("Final Task");
 		
 		
