@@ -73,6 +73,15 @@ public class TSPSubjectFrance extends Subject {
 	}
 
 	@Override
+	public void endEpisode() {
+		// TODO Auto-generated method stub
+		super.endEpisode();
+		
+		model.endEpisode();
+		
+	}
+	
+	@Override
 	public void newTrial() {
 		model.newTrial();
 	}

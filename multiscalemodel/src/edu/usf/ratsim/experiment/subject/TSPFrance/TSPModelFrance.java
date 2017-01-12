@@ -188,6 +188,14 @@ public class TSPModelFrance extends Model {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void endEpisode(){
+		//number of pace cells : numPCs;
+		//ateHistory.add(ate);
+		// pcActivationHistory.add(pcVals);
+		
+		
+	}
 
 	public Map<Integer, Float> getCellActivation() {
 		Map<Integer, Float> activation = new LinkedHashMap<Integer, Float>();
