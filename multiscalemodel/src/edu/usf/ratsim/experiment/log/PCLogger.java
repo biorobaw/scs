@@ -8,6 +8,7 @@ import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.Logger;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject;
@@ -25,7 +26,7 @@ public class PCLogger extends Logger {
 		super(params, logPath);
 	}
 
-	public void log(SubjectOld sub) {
+	public void log(Subject sub) {
 		if (sub instanceof TSPSubject)
 			cells = ((TSPSubject) sub).getPlaceCells();
 		else if (sub instanceof MultipleTSubject)
@@ -42,12 +43,12 @@ public class PCLogger extends Logger {
 
 	@Override
 	public void log(Episode episode) {
-		log((SubjectOld)episode.getSubject());
+		log((Subject)episode.getSubject());
 	}
 
 	@Override
 	public void log(Trial trial) {
-		log((SubjectOld)trial.getSubject());
+		log((Subject)trial.getSubject());
 	}
 
 	public String getFileName() {
@@ -86,7 +87,7 @@ public class PCLogger extends Logger {
 
 	@Override
 	public void log(Experiment experiment) {
-		log((SubjectOld)experiment.getSubject());
+		log((Subject)experiment.getSubject());
 	}
 
 }

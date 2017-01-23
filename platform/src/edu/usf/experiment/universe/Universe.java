@@ -208,7 +208,7 @@ public abstract class Universe {
 		return false;
 	}
 
-	public void robotEat() {
+	public boolean robotEat() {
 		int feedingFeeder = -1;
 
 		Point3f robotPos = getRobotPosition();
@@ -224,8 +224,10 @@ public abstract class Universe {
 			lastAteFeeder = feedingFeeder;
 			if (Debug.printRobotEaten)
 				System.out.println("Robot has eaten");
+			return true;
 		} else {
 			System.out.println("Robot tried to eat far from food");
+			return false;
 		}
 	}
 

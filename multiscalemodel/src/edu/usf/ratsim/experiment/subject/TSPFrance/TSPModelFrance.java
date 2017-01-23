@@ -33,13 +33,13 @@ import edu.usf.ratsim.nsl.modules.input.SubjectAte;
 import edu.usf.ratsim.nsl.modules.input.HighLevelCognition.CurrentFeederModule;
 import edu.usf.ratsim.nsl.modules.input.Vision.VisibleFeedersModule;
 import edu.usf.ratsim.robot.virtual.VirtualRobot;
+import platform.simulatorVirtual.robots.PuckRobot;
 
 public class TSPModelFrance extends Model {
 
 	public LinkedList<Boolean> ateHistory = new LinkedList<Boolean>();
 	public LinkedList<float[]> pcActivationHistory = new LinkedList<float[]>();
 	
-	private int numActions;
 	private TesselatedPlaceCellLayer placeCells;
 	private FeederTraveler feederTraveler;
 	
@@ -69,8 +69,7 @@ public class TSPModelFrance extends Model {
 	public TSPModelFrance() {
 	}
 
-	public TSPModelFrance(ElementWrapper params, TSPSubjectFrance subject,
-			LocalizableRobot lRobot) {
+	public TSPModelFrance(ElementWrapper params, TSPSubjectFrance subject,PuckRobot robot) {
 		
 //		 ////////////////////      MODULES DIAGRAM           //////////////////////////////////////////////// 
 //		
@@ -116,7 +115,6 @@ public class TSPModelFrance extends Model {
 		
 		String pathFile = params.getChild("pathFile").getText();
 
-		numActions = subject.getPossibleAffordances().size();
 		
 		this.subject = subject;
 
@@ -125,10 +123,10 @@ public class TSPModelFrance extends Model {
 		
 		//      INPUT MODULES
 		
-		hdModule = new HeadDirection("hd", (LocalizableRobot)subject.getRobot());
+		hdModule = new HeadDirection("hd", subject.getRobot());
 		addModule(hdModule);
 		
-		posModule = new Position("pos", (LocalizableRobot)subject.getRobot());
+		posModule = new Position("pos", subject.getRobot());
 		addModule(posModule);
 		
 		subAte = new SubjectAte("subAte", subject);
@@ -147,9 +145,10 @@ public class TSPModelFrance extends Model {
 		
 		// palce cells
 		placeCells = new TesselatedPlaceCellLayer(
-				"PCLayer", lRobot, PCRadius, numPCellsPerSide, placeCellType,
+				"PCLayer", PCRadius, numPCellsPerSide, placeCellType,
 				xmin, ymin, xmax, ymax);
 		numPCs = placeCells.getCells().size();
+		placeCells.addInPort("position", posModule.getOutPort("position"));
 		addModule(placeCells);
 		
 		
@@ -221,7 +220,7 @@ public class TSPModelFrance extends Model {
 		ateHistory.add(ate);
 		pcActivationHistory.add(pcVals);
 		
-		System.out.println("subject ate? "+ ate);
+		if(ate) System.out.println("subject ate? "+ ate);
 		
 		
 		
@@ -239,45 +238,10 @@ public class TSPModelFrance extends Model {
 		
 		//PERFORM ACTION OF TAXIC MODULE
 		//randomFeederTaxicActionModule.outport.data
-		int destinyId = randomFeederTaxicActionModule.action.id();
-		if(destinyId==-1){
-			System.out.println("ERROR: CANT FIND A NEW FEEDER TO GO TO");
-			System.exit(0);
-			
-		}else{
-			
-			Point3f feederPos = universe.getFeeder(destinyId).getPosition();		
-			
-			float hd = hdModule.hd.get();
-			Point3f pos = posModule.pos.get();
-			
-			float angleToFeeder = (float)Math.atan2(feederPos.y - pos.y, feederPos.x - pos.x);
-			angleToFeeder = GeomUtils.relativeAngle(angleToFeeder, hd);
-			
-			
-			if(Math.abs(angleToFeeder) > subject.leftAngle){
-				//must spin towards goal
-				if(angleToFeeder < 0)
-					subject.getRobot().executeAffordance(new TurnAffordance(subject.rightAngle, subject.step), subject);
-				else
-					subject.getRobot().executeAffordance(new TurnAffordance(subject.leftAngle, subject.step), subject);
-				
-			}else{
-				//must move towards goal
-				subject.getRobot().executeAffordance(new ForwardAffordance(subject.step), subject);
-				//check if reached goal, and eat
-				if( ((VirtualRobot)subject.getRobot()).withinEatingDistanceFromFeeder(destinyId)  ){
-					subject.getRobot().executeAffordance(new EatAffordance(), subject);
-					System.out.println("Try to eat from: "+destinyId);
-					//disable feeder:
-					universe.setEnableFeeder(destinyId, false);
-				}
-				
-				
-				
-			}
-			
-		}
+		
+		subject.robot.pendingActions.add(randomFeederTaxicActionModule.action);
+		
+		
 			
 		
 		

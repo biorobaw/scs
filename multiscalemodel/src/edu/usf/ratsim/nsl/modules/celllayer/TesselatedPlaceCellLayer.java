@@ -10,6 +10,7 @@ import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
+import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceCell;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.nsl.modules.cell.ProportionalPlaceCell;
@@ -33,10 +34,6 @@ public class TesselatedPlaceCellLayer extends Module {
 	 */
 	private boolean active;
 
-	/**
-	 * A robot to provide localization information
-	 */
-	private LocalizableRobot robot;
 
 	/**
 	 * The activation output port. A sparse port is used for efficiency.
@@ -49,8 +46,6 @@ public class TesselatedPlaceCellLayer extends Module {
 	 * 
 	 * @param name
 	 *            The module's name
-	 * @param robot
-	 *            A robot capable of providing localization information
 	 * @param radius
 	 *            The radius of the place cells
 	 * @param numCellsPerSide
@@ -71,7 +66,7 @@ public class TesselatedPlaceCellLayer extends Module {
 	 *            The maximum y value of the box in which place cells are
 	 *            located
 	 */
-	public TesselatedPlaceCellLayer(String name, LocalizableRobot robot, float radius, int numCellsPerSide,
+	public TesselatedPlaceCellLayer(String name, float radius, int numCellsPerSide,
 			String placeCellType, float xmin, float ymin, float xmax, float ymax) {
 		super(name);
 
@@ -96,14 +91,13 @@ public class TesselatedPlaceCellLayer extends Module {
 		activationPort = new Float1dSparsePortMap(this, cells.size(), 4000);
 		addOutPort("activation", activationPort);
 
-		this.robot = robot;
 	}
 	
 	/**
 	 * Computes the current activation of all cells
 	 */
 	public void run() {		
-		run(robot.getPosition(), robot.getDistanceToClosestWall());
+		run(((Point3fPort)getInPort("position")).get(), 0);
 	}
 	
 	/**
@@ -142,7 +136,7 @@ public class TesselatedPlaceCellLayer extends Module {
 	 * @return An array of the activation values
 	 */
 	public float[] getActivationValues(Point3f pos) {
-		float distanceToClosestWall = robot.getDistanceToClosestWall();
+		float distanceToClosestWall = 0f; //robot.getDistanceToClosestWall();
 		float[] res = new float[cells.size()];
 
 		for (int i = 0; i < cells.size(); i++) {

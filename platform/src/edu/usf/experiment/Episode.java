@@ -48,6 +48,7 @@ public class Episode {
 	private List<Logger> afterEpisodeLoggers;
 	private boolean makePlots;
 	
+	public float timeStep;
 	private int[] sleepValues = new int[] {0,30,100,300,500,1000,2000,4000,8000,0};
 
 	public Episode(ElementWrapper episodeNode, String parentLogPath, Trial trial, int episodeNumber, boolean makePlots) {
@@ -55,6 +56,7 @@ public class Episode {
 		this.episodeNumber = episodeNumber;
 		this.sleep = episodeNode.getChildInt("sleep");
 		this.makePlots = makePlots;
+		this.timeStep = episodeNode.getChildFloat("timeStep");
 		
 		
 		this.sleepValues[sleepValues.length-1] = episodeNode.getChildInt("sleep");
@@ -137,7 +139,7 @@ public class Episode {
 			while((boolean)g.get("pause")); //the pause is here so that the model state can be observed before performing the actions
 			
 			getSubject().getRobot().processPendingActions();
-			getSubject().getRobot().executeTimeStep(0.1f);
+			getSubject().getRobot().executeTimeStep(timeStep);
 			
 
 			for (Logger l : afterCycleLoggers)

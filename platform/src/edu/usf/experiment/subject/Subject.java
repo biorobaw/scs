@@ -11,12 +11,15 @@ public abstract class Subject {
 	
 	public Subject(){};
 	
+	static public Subject instance;
+	
 	public Subject(String name, String group, ElementWrapper modelParams,Robot robot) {
 		this.name = name;
 		this.group = group;
 		this.robot = robot;
 		System.out.println("group: " + group);
 		hasEaten = false;
+		instance = this;
 
 	}
 	

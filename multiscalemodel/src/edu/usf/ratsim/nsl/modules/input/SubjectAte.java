@@ -1,5 +1,6 @@
 package edu.usf.ratsim.nsl.modules.input;
 
+import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
@@ -11,10 +12,10 @@ import edu.usf.micronsl.port.singlevalue.Bool0dPort;
  */
 public class SubjectAte extends Module {
 
-	private SubjectOld sub;
+	private Subject sub;
 	private Bool0dPort outPort;
 
-	public SubjectAte(String name, SubjectOld sub) {
+	public SubjectAte(String name, Subject sub) {
 		super(name);
 		
 		this.sub = sub;

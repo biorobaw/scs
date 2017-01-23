@@ -1,7 +1,5 @@
 package platform.simulatorVirtual.components;
 
-import javax.vecmath.Point3f;
-
 import edu.usf.experiment.robot.componentInterfaces.DifferentialNavigationInterface;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -15,12 +13,11 @@ public class DifferentialNavigation implements DifferentialNavigationInterface {
 	//I assume center of robot coincides with the center of the differential navigation
 	
 	//precalculated values:
-	float deltaV;
-	float deltaW;
-	float v;
-	float w;
-	float r;
-	boolean isGoingStraight;
+	public float deltaV;
+	public float v;
+	public float w;
+	public float r;
+	public boolean isGoingStraight;
 	
 	
 	public DifferentialNavigation(ElementWrapper params) {
@@ -36,13 +33,15 @@ public class DifferentialNavigation implements DifferentialNavigationInterface {
 		this.right = maxSpeed*right;
 		
 		//precalculate values to save time each iteration
-		deltaV = right - left;
+		deltaV = this.right - this.left;
 		isGoingStraight = Math.abs(deltaV) < 0.001;
-		v = (right + left)/2;
+		v = (this.right + this.left)/2;
+		w=0;
+		r=0;
 		
 		if(!isGoingStraight){
 			
-			w = deltaV / ((float)Math.PI * wheelSeparation);
+			w = 2 * deltaV /  wheelSeparation;
 			r = v/w;
 		}
 
@@ -50,25 +49,26 @@ public class DifferentialNavigation implements DifferentialNavigationInterface {
 	
 	public void setPolarSpeeds(float w,float v){
 		isGoingStraight = Math.abs(w) < 0.01;
-		this.v = v;
+		this.v = v*maxSpeed;
 		if(isGoingStraight){
-			right = left = v;
+			right = left = this.v;
 		} else {
 			this.w = w;
-			r = v/w;
-			right = r - wheelSeparation/2;
-			left = r +wheelSeparation/2;
+			r = this.v/w;
+			right = r - w*wheelSeparation/4;
+			left = r +w*wheelSeparation/4;
 		}
 		
 	}
 	
 	public float[] getDisplacement(float deltaT){
 
+		//System.out.println("W "+ w);
 		if (isGoingStraight)
 			return new float[] {0,v * deltaT,0};
 		else
-			return new float[] {r*(float)Math.cos(deltaW) - r,
-								r*(float)Math.sin(deltaW),
+			return new float[] {r*(float)Math.cos(w*deltaT) - r,
+								r*(float)Math.sin(w*deltaT),
 								w*deltaT};
 			
 	}

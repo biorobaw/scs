@@ -36,7 +36,7 @@ public class SubjectLoader {
 //		}
 	}
 
-	public SubjectOld load(String subjectName, String groupName,
+	public Subject load(String subjectName, String groupName,
 			ElementWrapper modelNode, Robot robot) {
 		try {
 			Constructor constructor;
@@ -44,10 +44,14 @@ public class SubjectLoader {
 //			constructor = classBySimpleName.get(name).getConstructor(
 //					String.class, String.class, ElementWrapper.class,
 //					Robot.class);
+			System.out.println(name);
 			constructor = Class.forName(name).getConstructor(
 					String.class, String.class, ElementWrapper.class,
-					RobotOld.class);
-			SubjectOld sub = (SubjectOld) constructor.newInstance(subjectName,
+					Robot.class);
+			
+			System.out.println("ROBOT: " +robot);
+			
+			Subject sub = (Subject)constructor.newInstance(subjectName,
 					groupName, modelNode.getChild("params"), robot);
 			return sub;
 		} catch (NoSuchMethodException e) {

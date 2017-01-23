@@ -5,10 +5,11 @@ import java.util.List;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
+import edu.usf.experiment.robot.componentInterfaces.LocalizationInterface;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public abstract class LocalizableRobot extends RobotOld {
+public abstract class LocalizableRobot extends RobotOld implements LocalizationInterface{
 
 	public LocalizableRobot(ElementWrapper params) {
 		super(params);
@@ -25,6 +26,11 @@ public abstract class LocalizableRobot extends RobotOld {
 	 * @return
 	 */
 	public abstract float getOrientationAngle();
+	
+	public float getHD(){
+		return getOrientationAngle();
+	}
+	
 	
 	/**
 	 * Returns the orientation of the animal as thought by the subject

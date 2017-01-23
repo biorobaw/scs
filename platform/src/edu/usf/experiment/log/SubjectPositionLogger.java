@@ -6,6 +6,8 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.componentInterfaces.LocalizationInterface;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -15,23 +17,27 @@ public class SubjectPositionLogger extends PositionLogger {
 		super(params, logPath);
 	}
 
-	public void log(SubjectOld sub) {
-		if (!(sub.getRobot() instanceof LocalizableRobot))
+	public void log(Subject sub) {
+		if (!(sub.getRobot() instanceof LocalizationInterface))
 			throw new RuntimeException("SubjectPositionLogger needs a localizable robot to work");
 		
-		LocalizableRobot r = (LocalizableRobot) sub.getRobot();
+		LocalizationInterface r = (LocalizationInterface) sub.getRobot();
 		Point3f pos = r.getPosition();
-		addPose(new Pose(pos.x, pos.y, false, sub.hasTriedToEat(), sub.hasEaten()));
+		
+		if(sub instanceof SubjectOld)
+			addPose(new Pose(pos.x, pos.y, false, ((SubjectOld)sub).hasTriedToEat(), sub.hasEaten()));
+		else
+			addPose(new Pose(pos.x, pos.y, false, false, sub.hasEaten()));
 	}
 	
 	@Override
 	public void log(Trial trial) {
-		log((SubjectOld)trial.getSubject());
+		log(trial.getSubject());
 	}
 	
 	@Override
 	public void log(Episode episode) {
-		log((SubjectOld)episode.getSubject());
+		log(episode.getSubject());
 	}
 
 	@Override
@@ -46,7 +52,7 @@ public class SubjectPositionLogger extends PositionLogger {
 
 	@Override
 	public void log(Experiment experiment) {
-		log((SubjectOld)experiment.getSubject());		
+		log(experiment.getSubject());		
 	}
 
 }

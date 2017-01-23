@@ -65,7 +65,7 @@ public class RobotLoader {
 		return null;
 	}
 
-	public RobotOld load(ElementWrapper root, Universe universe) {
+	public Robot load(ElementWrapper root, Universe universe) {
 		ElementWrapper robotNode = root.getChild("robot");
 		try {
 			Constructor constructor;
@@ -75,7 +75,7 @@ public class RobotLoader {
 			constructor = Class.forName(
 					robotNode.getChildText("name")).getConstructor(
 					ElementWrapper.class, Universe.class);
-			RobotOld robot = (RobotOld) constructor.newInstance(robotNode
+			Robot robot = (Robot) constructor.newInstance(robotNode
 					.getChild("params"), universe);
 			return robot;
 		} catch (NoSuchMethodException e) {

@@ -121,7 +121,7 @@ public class AddFixedSmallWallsTask extends Task {
 					.loadRoot("src/edu/usf/ratsim/experiment/xml/multiFeedersTrainRecallSmallObs.xml");
 			Universe univ = UniverseLoader.getInstance().load(root, ".");
 			RobotOld robot = RobotLoader.getInstance().load(root);
-			SubjectOld subject = SubjectLoader.getInstance().load("a", "a",
+			SubjectOld subject = (SubjectOld)SubjectLoader.getInstance().load("a", "a",
 					root.getChild("model"), robot);
 			new AddFixedSmallWallsTask(null).perform(univ, subject);
 			System.out.println("walls added");

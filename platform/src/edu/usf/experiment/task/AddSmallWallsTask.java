@@ -202,7 +202,7 @@ public class AddSmallWallsTask extends Task {
 					.loadRoot("multiscalemodel/src/edu/usf/ratsim/experiment/xml/multiFeedersTrainRecallSmallObs.xml");
 			Universe univ = UniverseLoader.getInstance().load(root, ".");
 			RobotOld robot = RobotLoader.getInstance().load(root);
-			SubjectOld subject = SubjectLoader.getInstance().load("a", "a",
+			SubjectOld subject = (SubjectOld)SubjectLoader.getInstance().load("a", "a",
 					root.getChild("model"), robot);
 			AddSmallWallsTask t = new AddSmallWallsTask(null);
 			while (!t.perform(univ, subject))

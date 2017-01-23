@@ -239,7 +239,7 @@ public class AddLargeWallsTask extends Task {
 		Universe univ = UniverseLoader.getInstance().load(root,
 				"logs/Experiment/");
 		RobotOld robot = RobotLoader.getInstance().load(root);
-		SubjectOld subject = SubjectLoader.getInstance().load("a", "a",
+		SubjectOld subject = (SubjectOld)SubjectLoader.getInstance().load("a", "a",
 				root.getChild("model"), robot);
 		AddLargeWallsTask t = new AddLargeWallsTask(null);
 		while (!t.perform(univ, subject))

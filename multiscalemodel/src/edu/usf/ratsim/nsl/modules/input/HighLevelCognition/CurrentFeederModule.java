@@ -1,10 +1,11 @@
 package edu.usf.ratsim.nsl.modules.input.HighLevelCognition;
 
-import edu.usf.experiment.subject.SubjectOld;
+import edu.usf.experiment.robot.componentInterfaces.FeederVisibilityInterface;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
-import edu.usf.ratsim.robot.virtual.VirtualRobot;
+import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 
 /**
  * Provides an output port with the identifier of the feeder currently being visited (-1 otherwise)
@@ -13,10 +14,10 @@ import edu.usf.ratsim.robot.virtual.VirtualRobot;
  */
 public class CurrentFeederModule extends Module {
 
-	private SubjectOld sub;
+	private Subject sub;
 	private Int0dPort outPort;
 
-	public CurrentFeederModule(String name, SubjectOld sub) {
+	public CurrentFeederModule(String name, Subject sub) {
 		super(name);
 		
 		this.sub = sub;
@@ -28,9 +29,10 @@ public class CurrentFeederModule extends Module {
 	@Override
 	public void run() {
 		//System.out.println("Done current feeders");
-		Feeder closest = sub.getRobot().getClosestFeeder();
+		FeederVisibilityInterface fvi = (FeederVisibilityInterface)sub.getRobot();
+		Feeder closest = fvi.getClosestFeeder();
 		//System.out.println("id closest" + closest.getId());
-		if (closest == null || !((VirtualRobot)sub.getRobot()).withinEatingDistanceFromFeeder(closest.getId()))
+		if (closest == null || !VirtUniverse.getInstance().isRobotCloseToFeeder(closest.getId()))
 			outPort.set(-1);
 		else
 			outPort.set(closest.getId());

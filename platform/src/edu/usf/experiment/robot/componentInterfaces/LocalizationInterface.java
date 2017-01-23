@@ -5,5 +5,6 @@ import javax.vecmath.Point3f;
 public interface LocalizationInterface {
 	
 	public Point3f getPosition();
+	public float getHD();
 
 }

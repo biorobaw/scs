@@ -3,6 +3,8 @@
 <experiment>
 	<seed>-59875563504154406</seed>
 	
+	
+	
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
@@ -17,21 +19,21 @@
 	
 	<robot>
 		<!-- Robot to use. Use full name of the class -->
-		<name>edu.usf.ratsim.robot.virtual.VirtualRobot</name>
+		<name>platform.simulatorVirtual.robots.PuckRobot</name>
 		<params>
-			<!-- Percentual translational noise -->
-			<noise>.0</noise>
-			<!-- Rotation noise added after translation -->
-			<translationRotationNoise>0</translationRotationNoise>
-			<!-- How many steps are projected for obstacle avoidance purpose -->
-			<lookaheadSteps>1</lookaheadSteps>
-			<!-- Half the field of view of the rat -->
-			<halfFieldOfView>4</halfFieldOfView>
-			<!-- How long can the rat see in meters -->
-			<visionDist>10</visionDist>
-			<!-- How far away can the robot eat food. This should be shorter than the universe
-				threshold -->
-			<closeThrs>.1</closeThrs>
+			
+			<feederVisibility>
+				<!-- Half the field of view of the rat -->
+				<halfFieldOfView>4</halfFieldOfView>
+				<!-- How long can the rat see in meters -->
+				<visionDist>10</visionDist>
+			</feederVisibility>
+				
+			<navigation>
+				<separation>0.2</separation>
+				<maxSpeed>0.3</maxSpeed>
+			</navigation>
+			
 		</params>
 	</robot>
 	
@@ -128,8 +130,10 @@
 		<episodes>
 			<!-- Number of episodes -->
 			<number>1</number>
+			<!-- time that advances on each sim cycle -->
+			<timeStep>0.1</timeStep>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>60</sleep>
+			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<task>
@@ -177,7 +181,7 @@
 					</params>
 				</logger>
 				<logger>
-					<name>edu.usf.ratsim.experiment.log.PCActivityLogger</name>
+					<name>edu.usf.ratsim.experiment.subject.TSPFrance.loggers.PCActivityLogger</name>
 				</logger>
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->

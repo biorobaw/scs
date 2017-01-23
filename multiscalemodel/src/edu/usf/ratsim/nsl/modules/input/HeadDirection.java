@@ -1,8 +1,9 @@
 package edu.usf.ratsim.nsl.modules.input;
 
 import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.componentInterfaces.LocalizationInterface;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 
 /**
@@ -14,11 +15,22 @@ public class HeadDirection extends Module {
 
 	public Float0dPort hd;
 	private LocalizableRobot robot;
+	private LocalizationInterface localization;
+	private Runnable option;
 
-	public HeadDirection(String name, LocalizableRobot robot) {
+	public HeadDirection(String name, Robot robot) {
 		super(name);
+		if(robot instanceof LocalizableRobot){
+			this.robot = (LocalizableRobot)robot;
+			option = new LocalizableRobotOption();
+		} else {
+			localization = (LocalizationInterface)robot;
+			option = new InterfaceOption();
+		}
 		
-		this.robot = robot;
+		
+		
+		
 		hd = new Float0dPort(this);
 		addOutPort("hd", hd);
 	}
@@ -26,7 +38,7 @@ public class HeadDirection extends Module {
 	@Override
 	public void run() {
 		//System.out.println("HD");
-		hd.set(robot.getOrientationAngle());
+		option.run();
 	}
 
 	@Override
@@ -34,5 +46,25 @@ public class HeadDirection extends Module {
 		return false;
 	}
 
+	
+	class LocalizableRobotOption implements Runnable{
+
+		@Override
+		public void run() {
+			hd.set(robot.getOrientationAngle());
+			
+		}
+		
+	}
+	
+	class InterfaceOption implements Runnable {
+
+		@Override
+		public void run() {
+			hd.set(localization.getHD());
+			
+		}
+		
+	}
 	
 }

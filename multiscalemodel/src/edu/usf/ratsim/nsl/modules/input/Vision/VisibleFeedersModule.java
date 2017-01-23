@@ -2,13 +2,11 @@ package edu.usf.ratsim.nsl.modules.input.Vision;
 
 import java.util.List;
 
-import edu.usf.experiment.subject.SubjectOld;
+import edu.usf.experiment.robot.componentInterfaces.FeederVisibilityInterface;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.List.Int1dPortList;
-import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
-import edu.usf.micronsl.port.singlevalue.Int0dPort;
-import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 
 /**
  * Provides an output port with the identifier of the closes feeder
@@ -17,11 +15,11 @@ import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
  */
 public class VisibleFeedersModule extends Module {
 
-	private SubjectOld sub;
+	private Subject sub;
 	
 	private Int1dPortList outPort = new Int1dPortList(this);
 
-	public VisibleFeedersModule(String name, SubjectOld sub) {
+	public VisibleFeedersModule(String name, Subject sub) {
 		super(name);
 		
 		this.sub = sub;
@@ -32,9 +30,10 @@ public class VisibleFeedersModule extends Module {
 	@Override
 	public void run() {
 		
+		FeederVisibilityInterface fvi = (FeederVisibilityInterface)sub.getRobot(); 
 		
 		outPort.clear();		
-		List<Feeder> feeders = sub.getRobot().getVisibleFeeders(new int[] {});
+		List<Feeder> feeders = fvi.getVisibleFeeders(new int[] {});
 		for(Feeder f : feeders) outPort.add(f.getId());
 		
 		//System.out.println("Done visible feeders");
