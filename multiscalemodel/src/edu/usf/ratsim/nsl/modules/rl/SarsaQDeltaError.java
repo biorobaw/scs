@@ -7,8 +7,8 @@ import javax.media.j3d.VirtualUniverse;
 import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.RobotOld;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;

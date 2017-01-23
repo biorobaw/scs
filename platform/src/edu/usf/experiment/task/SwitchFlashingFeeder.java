@@ -6,7 +6,7 @@ import java.util.Random;
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -29,20 +29,20 @@ public class SwitchFlashingFeeder extends Task {
 
 	@Override
 	public void perform(Experiment experiment) {
-		perform(experiment.getSubject(), experiment.getUniverse());
+		perform((SubjectOld)experiment.getSubject(), experiment.getUniverse());
 	}
 
 	@Override
 	public void perform(Trial trial) {
-		perform(trial.getSubject(),  trial.getUniverse());
+		perform((SubjectOld)trial.getSubject(),  trial.getUniverse());
 	}
 
 	@Override
 	public void perform(Episode episode) {
-		perform(episode.getSubject(),  episode.getUniverse());
+		perform((SubjectOld)episode.getSubject(),  episode.getUniverse());
 	}
 	
-	private void perform(Subject s, Universe u) {
+	private void perform(SubjectOld s, Universe u) {
 		if(s.hasEaten()){
 			int feeder = u.getFeedingFeeder();
 			

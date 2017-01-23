@@ -6,7 +6,7 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public class SubjectPositionLogger extends PositionLogger {
@@ -15,7 +15,7 @@ public class SubjectPositionLogger extends PositionLogger {
 		super(params, logPath);
 	}
 
-	public void log(Subject sub) {
+	public void log(SubjectOld sub) {
 		if (!(sub.getRobot() instanceof LocalizableRobot))
 			throw new RuntimeException("SubjectPositionLogger needs a localizable robot to work");
 		
@@ -26,12 +26,12 @@ public class SubjectPositionLogger extends PositionLogger {
 	
 	@Override
 	public void log(Trial trial) {
-		log(trial.getSubject());
+		log((SubjectOld)trial.getSubject());
 	}
 	
 	@Override
 	public void log(Episode episode) {
-		log(episode.getSubject());
+		log((SubjectOld)episode.getSubject());
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class SubjectPositionLogger extends PositionLogger {
 
 	@Override
 	public void log(Experiment experiment) {
-		log(experiment.getSubject());		
+		log((SubjectOld)experiment.getSubject());		
 	}
 
 }

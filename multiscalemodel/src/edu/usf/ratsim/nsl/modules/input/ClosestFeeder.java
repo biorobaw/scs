@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules.input;
 
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
@@ -12,10 +12,10 @@ import edu.usf.micronsl.port.singlevalue.Int0dPort;
  */
 public class ClosestFeeder extends Module {
 
-	private Subject sub;
+	private SubjectOld sub;
 	private Int0dPort outPort;
 
-	public ClosestFeeder(String name, Subject sub) {
+	public ClosestFeeder(String name, SubjectOld sub) {
 		super(name);
 		
 		this.sub = sub;

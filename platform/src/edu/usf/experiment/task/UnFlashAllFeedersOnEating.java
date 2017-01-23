@@ -3,7 +3,7 @@ package edu.usf.experiment.task;
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -20,20 +20,20 @@ public class UnFlashAllFeedersOnEating extends Task {
 
 	@Override
 	public void perform(Experiment experiment) {
-		perform(experiment.getUniverse(), experiment.getSubject());
+		perform(experiment.getUniverse(),(SubjectOld) experiment.getSubject());
 	}
 
 	@Override
 	public void perform(Trial trial) {
-		perform(trial.getUniverse(), trial.getSubject());
+		perform(trial.getUniverse(), (SubjectOld)trial.getSubject());
 	}
 
 	@Override
 	public void perform(Episode episode) {
-		perform(episode.getUniverse(), episode.getSubject());
+		perform(episode.getUniverse(), (SubjectOld)episode.getSubject());
 	}
 	
-	private void perform(Universe u, Subject subject){
+	private void perform(Universe u, SubjectOld subject){
 		if (subject.hasEaten())
 			for (Integer f : u.getFeederNums())
 				u.setFlashingFeeder(f, false);

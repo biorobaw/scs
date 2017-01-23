@@ -6,7 +6,7 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
@@ -24,13 +24,13 @@ import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 public class ObstacleEndTaxic extends Module {
 
 	private float[] votes;
-	private Subject sub;
+	private SubjectOld sub;
 	private float taxicVal;
 	private LocalizableRobot robot;
 	private float negReward;
 	private float tooCloseDist;
 
-	public ObstacleEndTaxic(String name, Subject sub, LocalizableRobot robot,
+	public ObstacleEndTaxic(String name, SubjectOld sub, LocalizableRobot robot,
 			float taxicVal, float negReward, float tooCloseDist) {
 		super(name);
 		votes = new float[sub.getPossibleAffordances().size()];

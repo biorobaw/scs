@@ -7,7 +7,7 @@ import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.Logger;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -21,7 +21,7 @@ public class ValueEntropyLogger extends Logger {
 		writer = getWriter();
 	}
 
-	public void log(Universe univ, Subject sub) {
+	public void log(Universe univ, SubjectOld sub) {
 		PropertyHolder props = PropertyHolder.getInstance();
 		String trialName = props.getProperty("trial");
 		String groupName = props.getProperty("group");
@@ -41,12 +41,12 @@ public class ValueEntropyLogger extends Logger {
 
 	@Override
 	public void log(Trial trial) {
-		log(trial.getUniverse(), trial.getSubject());
+		log(trial.getUniverse(), (SubjectOld)trial.getSubject());
 	}
 
 	@Override
 	public void log(Episode episode) {
-		log(episode.getUniverse(), episode.getSubject());
+		log(episode.getUniverse(), (SubjectOld)episode.getSubject());
 	}
 
 	private boolean inCircle(float x, float y, double width) {
@@ -70,7 +70,7 @@ public class ValueEntropyLogger extends Logger {
 
 	@Override
 	public void log(Experiment experiment) {
-		log(experiment.getUniverse(), experiment.getSubject());
+		log(experiment.getUniverse(), (SubjectOld)experiment.getSubject());
 	}
 
 }

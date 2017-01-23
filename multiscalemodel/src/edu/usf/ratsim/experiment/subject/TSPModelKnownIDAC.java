@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.Model;
@@ -41,7 +41,7 @@ public class TSPModelKnownIDAC extends Model {
 	public TSPModelKnownIDAC() {
 	}
 
-	public TSPModelKnownIDAC(ElementWrapper params, Subject subject,
+	public TSPModelKnownIDAC(ElementWrapper params, SubjectOld subject,
 			LocalizableRobot lRobot) {
 		// Environment bounds
 		float xmin = params.getChildFloat("xmin");

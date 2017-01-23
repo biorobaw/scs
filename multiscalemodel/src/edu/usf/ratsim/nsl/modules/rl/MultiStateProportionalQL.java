@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
@@ -35,9 +35,9 @@ public class MultiStateProportionalQL extends Module implements QLAlgorithm {
 
 	private boolean update;
 
-	private Subject subject;
+	private SubjectOld subject;
 
-	public MultiStateProportionalQL(String name, Subject subject,
+	public MultiStateProportionalQL(String name, SubjectOld subject,
 			int numActions, float taxicDiscountFactor, float rlDiscountFactor, float alpha,
 			float initialValue) {
 		super(name);
@@ -154,7 +154,7 @@ public class MultiStateProportionalQL extends Module implements QLAlgorithm {
 	 * @param pcl
 	 */
 	public void dumpPolicy(String trial, String groupName, String subName,
-			String rep, int numIntentions, Universe univ, Subject sub) {
+			String rep, int numIntentions, Universe univ, SubjectOld sub) {
 		// TODO: get dumppolicy back
 		// synchronized (MultiStateProportionalQL.class) {
 		// // Deactivate updates

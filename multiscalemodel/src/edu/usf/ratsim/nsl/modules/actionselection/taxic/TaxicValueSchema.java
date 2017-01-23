@@ -3,7 +3,7 @@ package edu.usf.ratsim.nsl.modules.actionselection.taxic;
 import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
@@ -16,13 +16,13 @@ public class TaxicValueSchema extends Module {
 	public float[] value;
 	private float reward;
 
-	private Subject subject;
+	private SubjectOld subject;
 	private LocalizableRobot robot;
 	private double lambda;
 	private boolean estimateValue;
 	private float negReward;
 
-	public TaxicValueSchema(String name, Subject subject,
+	public TaxicValueSchema(String name, SubjectOld subject,
 			LocalizableRobot robot, float reward, float negReward, float lambda,
 			boolean estimateValue) {
 		super(name);

@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.RobotOld;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
@@ -27,11 +27,11 @@ public class ProportionalExplorer extends Module {
 	/**
 	 * The robot interface used to perform actions
 	 */
-	private Robot robot;
+	private RobotOld robot;
 	/**
 	 * The subject, used to get all possible affordances
 	 */
-	private Subject sub;
+	private SubjectOld sub;
 	/**
 	 * The output port describing the action taken by the module
 	 */
@@ -46,7 +46,7 @@ public class ProportionalExplorer extends Module {
 	 * @param sub
 	 *            The subject to use
 	 */
-	public ProportionalExplorer(String name, Subject sub) {
+	public ProportionalExplorer(String name, SubjectOld sub) {
 		super(name);
 
 		takenAction = new Int0dPort(this);

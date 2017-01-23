@@ -8,7 +8,7 @@ import javax.vecmath.Quat4f;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public abstract class LocalizableRobot extends Robot {
+public abstract class LocalizableRobot extends RobotOld {
 
 	public LocalizableRobot(ElementWrapper params) {
 		super(params);

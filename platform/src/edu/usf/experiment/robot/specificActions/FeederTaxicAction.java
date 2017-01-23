@@ -1,8 +1,8 @@
-package edu.usf.micronsl.ModelAction.SpecificActions;
+package edu.usf.experiment.robot.specificActions;
 
-import edu.usf.micronsl.ModelAction.ModelAction;
+import edu.usf.experiment.robot.RobotAction;
 
-public class FeederTaxicAction extends ModelAction{
+public class FeederTaxicAction extends RobotAction{
 	public FeederTaxicAction(Integer id) {
 		super("FeederTaxicAction",id);
 	}

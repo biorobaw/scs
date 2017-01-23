@@ -3,8 +3,8 @@ package edu.usf.ratsim.nsl.modules.actionselection;
 import java.util.List;
 import java.util.Random;
 
-import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.RobotOld;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
@@ -29,17 +29,17 @@ public class StillExplorer extends Module {
 
 	private static final int TIME_EXPLORING = 1;
 	private int maxActionsSinceForward;
-	private Subject sub;
+	private SubjectOld sub;
 	private int actionsSinceForward;
 	private Random r;
 	private float[] votes;
 	private float stillExploringVal;
 	public static int timeToExplore;
-	private Robot robot;
+	private RobotOld robot;
 	private boolean turning;
 	private boolean turningLeft;
 
-	public StillExplorer(String name, int maxActionsSinceForward, Subject sub,
+	public StillExplorer(String name, int maxActionsSinceForward, SubjectOld sub,
 			float stillExploringVal) {
 		super(name);
 

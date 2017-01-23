@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
@@ -184,7 +184,7 @@ public class MorseRobot extends LocalizableRobot {
 	}
 
 	@Override
-	public void executeAffordance(Affordance selectedAction, Subject sub) {
+	public void executeAffordance(Affordance selectedAction, SubjectOld sub) {
 		if (selectedAction instanceof ForwardAffordance) {
 			forward(((ForwardAffordance) selectedAction).getDistance());
 		} else if (selectedAction instanceof TurnAffordance) {

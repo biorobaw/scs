@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.RobotOld;
 import edu.usf.experiment.utils.ElementWrapper;
 
 /**
@@ -35,7 +36,7 @@ public class SubjectLoader {
 //		}
 	}
 
-	public Subject load(String subjectName, String groupName,
+	public SubjectOld load(String subjectName, String groupName,
 			ElementWrapper modelNode, Robot robot) {
 		try {
 			Constructor constructor;
@@ -45,8 +46,8 @@ public class SubjectLoader {
 //					Robot.class);
 			constructor = Class.forName(name).getConstructor(
 					String.class, String.class, ElementWrapper.class,
-					Robot.class);
-			Subject sub = (Subject) constructor.newInstance(subjectName,
+					RobotOld.class);
+			SubjectOld sub = (SubjectOld) constructor.newInstance(subjectName,
 					groupName, modelNode.getChild("params"), robot);
 			return sub;
 		} catch (NoSuchMethodException e) {

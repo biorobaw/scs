@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Random;
 
 import edu.usf.experiment.plot.Plotter;
+import edu.usf.experiment.robot.RobotOld;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.RobotLoader;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.SubjectLoader;
 import edu.usf.experiment.task.Task;
@@ -124,7 +126,8 @@ public class Experiment implements Runnable {
 		universe = UniverseLoader.getInstance().load(root, logPath);
 
 		robot = RobotLoader.getInstance().load(root, universe);
-		robot.startRobot();
+		//System.out.println("robot: "+robot);
+		//robot.startRobot();
 		
 		if (root.getChild("plot") != null)
 			makePlots = root.getChildBoolean("plot");
@@ -141,18 +144,15 @@ public class Experiment implements Runnable {
 		RandomSingleton.getInstance().setSeed(seed);
 		System.out.println("[+] Using seed " + seed);
 
-		// Load the subject using reflection and assign name and group
-//		//previously, if feederOrder is defined, set the property in the xml:
-//		if (g.get("feederOrder")!=null)
-//				root.getChild("model").getChild("params").
-//					 getChild("feederOrder").setText((String)g.get("feederOrder"));
+
 		ElementWrapper modelParams = root.getChild("model");
 		ElementWrapper groupParams = getGroupNode(root, groupName).getChild("params");
 		modelParams.merge(root, groupParams);
 		subject = SubjectLoader.getInstance().load(subjectName, groupName,
 				modelParams, robot);
+		
 
-		System.out.println("[+] Model created");
+		System.out.println("[+] Model created, subject: "+subject);
 
 		// Load trials that apply to the subject
 		trials = XMLExperimentParser.loadTrials(root, logPath, subject,
@@ -209,9 +209,9 @@ public class Experiment implements Runnable {
 	 */
 	public void run() {		
 		// Do all before trial tasks
-		System.out.println(beforeTasks.size());
-		System.out.println(trials.size());
-		System.out.println(afterTasks.size());
+		System.out.println("before tasks: "+beforeTasks.size());
+		System.out.println("trials " + trials.size());
+		System.out.println("after tasks" + afterTasks.size());
 		for (Task task : beforeTasks)
 			task.perform(this);
 

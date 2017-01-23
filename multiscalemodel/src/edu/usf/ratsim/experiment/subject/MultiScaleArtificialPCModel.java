@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
@@ -68,7 +68,7 @@ public class MultiScaleArtificialPCModel extends Model {
 	public MultiScaleArtificialPCModel() {
 	}
 
-	public MultiScaleArtificialPCModel(ElementWrapper params, Subject subject,
+	public MultiScaleArtificialPCModel(ElementWrapper params, SubjectOld subject,
 			LocalizableRobot lRobot) {
 		// Get some configuration values for place cells + qlearning
 		float minPCRadius = params.getChildFloat("minPCRadius");

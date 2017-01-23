@@ -2,7 +2,7 @@ package edu.usf.ratsim.nsl.modules.goaldecider;
 
 import java.util.Random;
 
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -22,11 +22,11 @@ public class FlashingOrAnyGoalDecider extends Module {
 	// Keep the goal as a static variable to be able to pass among iterations
 	public static int currentGoal;
 	private Random r;
-	private Subject subject;
+	private SubjectOld subject;
 	private int numIntentions;
 	private static int lastFeeder;
 
-	public FlashingOrAnyGoalDecider(String name, Subject subject,
+	public FlashingOrAnyGoalDecider(String name, SubjectOld subject,
 			int numIntentions) {
 		super(name);
 		this.subject = subject;

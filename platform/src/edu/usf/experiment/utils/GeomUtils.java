@@ -9,7 +9,7 @@ import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
@@ -199,7 +199,7 @@ public class GeomUtils {
 	}
 
 	public static float getFeederReward(Point3f position, float rotationAngle, float maxReward,
-			Subject subject, LocalizableRobot robot) {
+			SubjectOld subject, LocalizableRobot robot) {
 		Quat4f rotToFood = GeomUtils.angleToPoint(position);
 
 		Quat4f actionAngle = GeomUtils.angleToRot(rotationAngle);
@@ -223,7 +223,7 @@ public class GeomUtils {
 	 * @param subject
 	 * @return
 	 */
-	public static float getStepsToFeeder(Point3f feederPos, Subject subject) {
+	public static float getStepsToFeeder(Point3f feederPos, SubjectOld subject) {
 		Quat4f rotToFood = GeomUtils.angleToPoint(feederPos);
 
 		float angleDiff = Math.abs(GeomUtils.rotToAngle(rotToFood)); 

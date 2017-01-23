@@ -10,7 +10,7 @@ import javax.vecmath.Point3f;
 
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
@@ -54,7 +54,7 @@ public class MultipleTModelAsleep extends MultipleTModel {
 	public MultipleTModelAsleep() {
 	}
 
-	public MultipleTModelAsleep(ElementWrapper params, Subject subject,
+	public MultipleTModelAsleep(ElementWrapper params, SubjectOld subject,
 			LocalizableRobot lRobot, int numActions,int numPC,LinkedList<PlaceCell> pcList) {
 		
 		//Get parameters frorm xml file

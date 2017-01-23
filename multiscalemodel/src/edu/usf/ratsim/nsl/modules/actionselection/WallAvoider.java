@@ -2,8 +2,8 @@ package edu.usf.ratsim.nsl.modules.actionselection;
 
 import java.util.List;
 
-import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.RobotOld;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
@@ -22,14 +22,14 @@ public class WallAvoider extends Module {
 	private static final int WALL_LOOKAHEAD = 10;
 	public float[] votes;
 	private float wallFollowingValue;
-	private Robot robot;
+	private RobotOld robot;
 	private float currentValue;
 	private boolean active;
 	private int direction;
 	// private int number;
-	private Subject subject;
+	private SubjectOld subject;
 
-	public WallAvoider(String name, Subject subject, float wallFollowingValue,
+	public WallAvoider(String name, SubjectOld subject, float wallFollowingValue,
 			int numActions) {
 		super(name);
 		this.subject = subject;

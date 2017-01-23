@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
@@ -22,12 +22,12 @@ public class DecayingExplorationSchema extends Module {
 	private Random r;
 	private double alpha;
 
-	private Subject subject;
+	private SubjectOld subject;
 	private LocalizableRobot robot;
 	private int episodeCount;
 	private Affordance lastPicked;
 
-	public DecayingExplorationSchema(String name, Subject subject, LocalizableRobot robot, float maxReward,
+	public DecayingExplorationSchema(String name, SubjectOld subject, LocalizableRobot robot, float maxReward,
 			float explorationHalfLifeVal) {
 		super(name);
 		this.maxReward = maxReward;

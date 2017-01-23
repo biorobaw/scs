@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules.input.HighLevelCognition;
 
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
@@ -13,10 +13,10 @@ import edu.usf.ratsim.robot.virtual.VirtualRobot;
  */
 public class CurrentFeederModule extends Module {
 
-	private Subject sub;
+	private SubjectOld sub;
 	private Int0dPort outPort;
 
-	public CurrentFeederModule(String name, Subject sub) {
+	public CurrentFeederModule(String name, SubjectOld sub) {
 		super(name);
 		
 		this.sub = sub;

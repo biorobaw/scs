@@ -5,8 +5,8 @@ import java.util.Random;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.RobotOld;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
@@ -30,15 +30,15 @@ public class AttentionalExplorer extends Module {
 	private static final float TRACKIN_THRS = .4f;
 	private static final float CLOSE_THRS = 0.1f;
 	private float[] votes;
-	private Subject sub;
+	private SubjectOld sub;
 	private float exploringVal;
-	private Robot robot;
+	private RobotOld robot;
 	private Random r;
 	private Point3f currentInterest;
 	private int attentionRemaining;
 	private int maxAttentionSpan;
 
-	public AttentionalExplorer(String name, Subject sub, float exploringVal,
+	public AttentionalExplorer(String name, SubjectOld sub, float exploringVal,
 			int maxAttentionSpan) {
 		super(name);
 		votes = new float[sub.getPossibleAffordances().size()];

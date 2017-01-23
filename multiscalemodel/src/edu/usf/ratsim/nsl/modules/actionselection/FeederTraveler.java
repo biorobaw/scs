@@ -3,7 +3,7 @@ package edu.usf.ratsim.nsl.modules.actionselection;
 import java.util.List;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
@@ -14,10 +14,10 @@ import edu.usf.micronsl.module.Module;
 public class FeederTraveler extends Module {
 
 	private LocalizableRobot lRobot;
-	private Subject sub;
+	private SubjectOld sub;
 	private List<Integer> feedersToVisit;
 
-	public FeederTraveler(String name, List<Integer> feederOrder, Subject sub, LocalizableRobot lRobot) {
+	public FeederTraveler(String name, List<Integer> feederOrder, SubjectOld sub, LocalizableRobot lRobot) {
 		super(name);
 
 		this.lRobot = lRobot;

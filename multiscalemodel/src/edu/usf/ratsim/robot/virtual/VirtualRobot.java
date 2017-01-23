@@ -12,7 +12,7 @@ import javax.vecmath.Vector3f;
 
 import edu.usf.experiment.robot.Landmark;
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
@@ -332,7 +332,7 @@ public class VirtualRobot extends LocalizableRobot {
 	}
 
 	@Override
-	public void executeAffordance(Affordance af, Subject sub) {
+	public void executeAffordance(Affordance af, SubjectOld sub) {
 		if (af instanceof TurnAffordance) {
 			TurnAffordance ta = (TurnAffordance) af;
 			List<Affordance> forward = new LinkedList<Affordance>();

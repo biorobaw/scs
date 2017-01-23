@@ -2,7 +2,7 @@ package edu.usf.ratsim.nsl.modules.input.Vision;
 
 import java.util.List;
 
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.List.Int1dPortList;
@@ -17,11 +17,11 @@ import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
  */
 public class VisibleFeedersModule extends Module {
 
-	private Subject sub;
+	private SubjectOld sub;
 	
 	private Int1dPortList outPort = new Int1dPortList(this);
 
-	public VisibleFeedersModule(String name, Subject sub) {
+	public VisibleFeedersModule(String name, SubjectOld sub) {
 		super(name);
 		
 		this.sub = sub;

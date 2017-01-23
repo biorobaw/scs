@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
@@ -64,7 +64,7 @@ public class OneFeederObsModel extends Model {
 	public OneFeederObsModel() {
 	}
 
-	public OneFeederObsModel(ElementWrapper params, Subject subject,
+	public OneFeederObsModel(ElementWrapper params, SubjectOld subject,
 			LocalizableRobot lRobot) {
 		// Get some configuration values for place cells + qlearning
 		float minPCRadius = params.getChildFloat("minPCRadius");

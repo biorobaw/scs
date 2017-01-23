@@ -1,11 +1,11 @@
 package edu.usf.ratsim.experiment.subject.TSPFrance;
 
+import edu.usf.experiment.robot.specificActions.FeederTaxicAction;
 import edu.usf.experiment.utils.RandomSingleton;
-import edu.usf.micronsl.ModelAction.SpecificActions.FeederTaxicAction;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.ModelActionPort;
 import edu.usf.micronsl.port.onedimensional.List.Int1dPortList;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
+import edu.usf.ratsim.nsl.modules.port.ModelActionPort;
 
 public class RandomFeederTaxicActionModule extends Module {
 

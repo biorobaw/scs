@@ -8,6 +8,7 @@ import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -23,11 +24,11 @@ public class FeedingLogger extends Logger {
 
 	@Override
 	public void log(Episode episode) {
-		log(episode.getSubject(), episode.getUniverse());
+		log((SubjectOld)episode.getSubject(), episode.getUniverse());
 
 	}
 
-	private void log(Subject subject, Universe universe) {
+	private void log(SubjectOld subject, Universe universe) {
 		if (subject.hasTriedToEat()) {
 			PropertyHolder props = PropertyHolder.getInstance();
 			String cycle = props.getProperty("cycle");
@@ -44,12 +45,12 @@ public class FeedingLogger extends Logger {
 
 	@Override
 	public void log(Trial trial) {
-		log(trial.getSubject(), trial.getUniverse());
+		log((SubjectOld)trial.getSubject(), trial.getUniverse());
 	}
 
 	@Override
 	public void log(Experiment experiment) {
-		log(experiment.getSubject(), experiment.getUniverse());
+		log((SubjectOld)experiment.getSubject(), experiment.getUniverse());
 	}
 
 	@Override

@@ -3,7 +3,7 @@ package edu.usf.ratsim.nsl.modules.actionselection.taxic;
 import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
@@ -13,13 +13,13 @@ public class FlashingTaxicValueSchema extends Module {
 	public float[] value;
 	private float reward;
 
-	private Subject subject;
+	private SubjectOld subject;
 	private LocalizableRobot robot;
 	private double lambda;
 	private boolean estimateValue;
 	private float negReward;
 
-	public FlashingTaxicValueSchema(String name, Subject subject,
+	public FlashingTaxicValueSchema(String name, SubjectOld subject,
 			LocalizableRobot robot, float reward, float negReward, float lambda,
 			boolean estimateValue) {
 		super(name);

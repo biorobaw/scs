@@ -2,7 +2,7 @@ package edu.usf.ratsim.nsl.modules.goaldecider;
 
 import java.util.List;
 
-import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.RobotOld;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -14,10 +14,10 @@ public class OneThenTheOtherGoalDecider extends Module {
 
 	public Int0dPort goalFeeder;
 	private int currentGoal;
-	private Robot robot;
+	private RobotOld robot;
 	public static int lastAte;
 
-	public OneThenTheOtherGoalDecider(String name, Robot r) {
+	public OneThenTheOtherGoalDecider(String name, RobotOld r) {
 		super(name);
 
 		goalFeeder = new Int0dPort(this);

@@ -1,8 +1,8 @@
-package edu.usf.micronsl.ModelAction.SpecificActions;
+package edu.usf.experiment.robot.specificActions;
 
-import edu.usf.micronsl.ModelAction.ModelAction;
+import edu.usf.experiment.robot.RobotAction;
 
-public class MoveToAction extends ModelAction{
+public class MoveToAction extends RobotAction{
 	public MoveToAction(Float x, Float y, Float z, Float w) {
 		super("moveTo",x,y,z,w);
 	}

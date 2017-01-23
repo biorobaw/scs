@@ -8,7 +8,7 @@ import javax.vecmath.Vector3f;
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
-import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.RobotOld;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -42,20 +42,20 @@ public class GoBackToStart extends Task {
 
 	@Override
 	public void perform(Experiment experiment) {
-		perform(experiment.getUniverse(), experiment.getSubject().getRobot());
+		perform(experiment.getUniverse(), (RobotOld)experiment.getSubject().getRobot());
 	}
 
 	@Override
 	public void perform(Trial trial) {
-		perform(trial.getUniverse(), trial.getSubject().getRobot());
+		perform(trial.getUniverse(), (RobotOld)trial.getSubject().getRobot());
 	}
 
 	@Override
 	public void perform(Episode episode) {
-		perform(episode.getUniverse(), episode.getSubject().getRobot());
+		perform(episode.getUniverse(), (RobotOld)episode.getSubject().getRobot());
 	}
 
-	private void perform(Universe u, Robot r) {
+	private void perform(Universe u, RobotOld r) {
 		Point3f robot = u.getRobotPosition();
 		Point3f feeder = new Point3f(FEEDER_X, FEEDER_Y, 0);
 		Point3f start = new Point3f(START_X, START_Y, 0);
@@ -72,7 +72,7 @@ public class GoBackToStart extends Task {
 		goToPoint(START_X, START_Y, START_T, u, r);
 	}
 
-	private void goToPoint(float x, float y, float t, Universe u, Robot r) {
+	private void goToPoint(float x, float y, float t, Universe u, RobotOld r) {
 		Point3f toP = new Point3f(x, y, 0);
 		// Rotate to face
 		float angleToGoal = angleToPwithO(u.getRobotOrientation(), u.getRobotPosition(), toP);

@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.usf.experiment.Episode;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -25,7 +25,7 @@ public class FoundNFoodNoMistakesStopCond implements Condition {
 
 	@Override
 	public boolean holds(Episode episode) {
-		Subject sub = episode.getSubject();
+		SubjectOld sub = (SubjectOld)episode.getSubject();
 		Universe u = episode.getUniverse();
 		if (sub.hasTriedToEat() && u.getFoundFeeder() != -1) {
 			if (!u.isFeederEnabled(u.getFoundFeeder())) {

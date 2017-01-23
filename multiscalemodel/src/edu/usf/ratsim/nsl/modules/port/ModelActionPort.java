@@ -1,13 +1,14 @@
-package edu.usf.micronsl.port;
+package edu.usf.ratsim.nsl.modules.port;
 
-import edu.usf.micronsl.ModelAction.ModelAction;
+import edu.usf.experiment.robot.RobotAction;
 import edu.usf.micronsl.module.Module;
+import edu.usf.micronsl.port.Port;
 
 public class ModelActionPort extends Port{
 
-	public ModelAction data;
+	public RobotAction data;
 	
-	public ModelActionPort(Module owner,ModelAction data) {
+	public ModelActionPort(Module owner,RobotAction data) {
 		super(owner);
 		this.data = data;
 		// TODO Auto-generated constructor stub
@@ -30,11 +31,11 @@ public class ModelActionPort extends Port{
 		
 	}
 	
-	public void set(ModelAction data){
+	public void set(RobotAction data){
 		this.data = data;
 	}
 	
-	public ModelAction get(){
+	public RobotAction get(){
 		return data;
 	}
 

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
@@ -22,7 +22,7 @@ public class TSPModel extends Model {
 	public TSPModel() {
 	}
 
-	public TSPModel(ElementWrapper params, Subject subject,
+	public TSPModel(ElementWrapper params, SubjectOld subject,
 			LocalizableRobot lRobot) {
 		// Get some configuration values for place cells + qlearning
 		float PCRadius = params.getChildFloat("PCRadius");

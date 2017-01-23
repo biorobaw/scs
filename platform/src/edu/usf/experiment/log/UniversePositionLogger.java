@@ -5,7 +5,7 @@ import javax.vecmath.Point3f;
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -15,19 +15,19 @@ public class UniversePositionLogger extends PositionLogger {
 		super(params, logPath);
 	}
 
-	public void log(Universe univ, Subject sub) {
+	public void log(Universe univ, SubjectOld sub) {
 		Point3f pos = univ.getRobotPosition();
 		addPose(new Pose(pos.x, pos.y, false, sub.hasTriedToEat(), sub.hasEaten()));
 	}
 	
 	@Override
 	public void log(Trial trial) {
-		log(trial.getUniverse(), trial.getSubject());
+		log(trial.getUniverse(), (SubjectOld)trial.getSubject());
 	}
 	
 	@Override
 	public void log(Episode episode) {
-		log(episode.getUniverse(), episode.getSubject());
+		log(episode.getUniverse(), (SubjectOld)episode.getSubject());
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class UniversePositionLogger extends PositionLogger {
 
 	@Override
 	public void log(Experiment experiment) {
-		log(experiment.getUniverse(), experiment.getSubject());		
+		log(experiment.getUniverse(), (SubjectOld)experiment.getSubject());		
 	}
 
 }

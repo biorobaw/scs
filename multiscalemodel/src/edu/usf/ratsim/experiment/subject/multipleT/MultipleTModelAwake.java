@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.module.copy.Int0dCopyModule;
@@ -41,7 +41,7 @@ public class MultipleTModelAwake extends MultipleTModel {
 	public MultipleTModelAwake() {
 	}
 
-	public MultipleTModelAwake(ElementWrapper params, Subject subject,
+	public MultipleTModelAwake(ElementWrapper params, SubjectOld subject,
 			LocalizableRobot lRobot, int numActions,int numPC) {
 		
 		//Get parameters frorm xml file

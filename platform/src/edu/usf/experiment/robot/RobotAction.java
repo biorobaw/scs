@@ -1,13 +1,13 @@
-package edu.usf.micronsl.ModelAction;
+package edu.usf.experiment.robot;
 
 import java.util.LinkedList;
 
-public class ModelAction {
+public class RobotAction {
 
 	public String actionId;
 	public LinkedList<Object> params = new LinkedList<Object>();
 	
-	public ModelAction(String id,Object... varargs){
+	public RobotAction(String id,Object... varargs){
 		actionId = id;
 		for (Object o : varargs) params.addLast(o);		
 

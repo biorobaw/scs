@@ -8,8 +8,8 @@ import javax.vecmath.Point3f;
 
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.RobotOld;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
@@ -18,7 +18,7 @@ import edu.usf.ratsim.experiment.subject.NotImplementedException;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.robot.virtual.VirtualRobot;
 
-public class MultipleTSubject extends Subject {
+public class MultipleTSubject extends SubjectOld {
 
 	public float step;
 
@@ -39,7 +39,7 @@ public class MultipleTSubject extends Subject {
 	public float awakeFoodDistanceThreshold;
 	public float asleepFoodDistanceThreshold;
 
-	public MultipleTSubject(String name, String group, ElementWrapper params, Robot robot) {
+	public MultipleTSubject(String name, String group, ElementWrapper params, RobotOld robot) {
 		super(name, group, params, robot);
 
 		Globals g = Globals.getInstance();

@@ -7,8 +7,8 @@ import java.util.Map;
 import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.RobotOld;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
@@ -16,7 +16,7 @@ import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 
-public class ActorCriticSubject extends Subject {
+public class ActorCriticSubject extends SubjectOld {
 
 	private float step;
 	private float leftAngle;
@@ -25,7 +25,7 @@ public class ActorCriticSubject extends Subject {
 	private ActorCriticModel model;
 
 	public ActorCriticSubject(String name, String group,
-			ElementWrapper params, Robot robot) {
+			ElementWrapper params, RobotOld robot) {
 		super(name, group, params, robot);
 		
 		step = params.getChildFloat("step");

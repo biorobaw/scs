@@ -1,27 +1,11 @@
 package edu.usf.ratsim.nsl.modules.actionselection;
 
-import java.awt.geom.Point2D;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-
-import javax.vecmath.Point4f;
-
 import edu.usf.experiment.Globals;
-import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.affordance.Affordance;
-import edu.usf.experiment.subject.affordance.EatAffordance;
-import edu.usf.experiment.subject.affordance.ForwardAffordance;
+import edu.usf.experiment.robot.specificActions.MoveToAction;
 import edu.usf.experiment.utils.CSVReader;
-import edu.usf.experiment.utils.Debug;
-import edu.usf.experiment.utils.RandomSingleton;
-import edu.usf.micronsl.ModelAction.ModelAction;
-import edu.usf.micronsl.ModelAction.SpecificActions.MoveToAction;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.ModelActionPort;
-import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
-import edu.usf.micronsl.port.singlevalue.Int0dPort;
+import edu.usf.ratsim.nsl.modules.port.ModelActionPort;
 
 /**
  * 

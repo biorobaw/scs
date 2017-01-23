@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import edu.usf.micronsl.ModelAction.ModelAction;
 import edu.usf.micronsl.exec.Debug;
 import edu.usf.micronsl.exec.DependencyRunnable;
 import edu.usf.micronsl.exec.ThreadDependencyExecutor;
@@ -24,7 +23,7 @@ public class Model {
 	private List<Module> moduleList;
 	private List<Module> runOrder;
 	
-	public LinkedList<ModelAction> pendingActions = new LinkedList<ModelAction>();
+	
 	
 	private InitialModule initialModule = new InitialModule();
 	private FinalModule finalModule = new FinalModule();

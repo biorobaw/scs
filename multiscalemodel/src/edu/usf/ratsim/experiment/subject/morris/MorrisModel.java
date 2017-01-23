@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
@@ -52,7 +52,7 @@ public class MorrisModel extends Model {
 	public MorrisModel() {
 	}
 
-	public MorrisModel(ElementWrapper params, Subject subject,
+	public MorrisModel(ElementWrapper params, SubjectOld subject,
 			LocalizableRobot lRobot) {
 		/**
 		 * Place cell radius range

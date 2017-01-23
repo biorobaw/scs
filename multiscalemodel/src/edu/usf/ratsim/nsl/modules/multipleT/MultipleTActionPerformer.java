@@ -3,8 +3,8 @@ package edu.usf.ratsim.nsl.modules.multipleT;
 import javax.vecmath.Vector3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.RobotOld;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
@@ -25,10 +25,10 @@ public class MultipleTActionPerformer extends Module {
 	float stepSize;
 	//Point3f[] actions; 
 	float[] angles;
-	Robot robot;
-	Subject subject;
+	RobotOld robot;
+	SubjectOld subject;
 
-	public MultipleTActionPerformer(String name,int numActions,float stepSize,Subject subject) {
+	public MultipleTActionPerformer(String name,int numActions,float stepSize,SubjectOld subject) {
 		super(name);
 
 		this.numActions = numActions;

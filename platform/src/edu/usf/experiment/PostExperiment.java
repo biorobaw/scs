@@ -8,7 +8,7 @@ import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.log.LoggerLoader;
 import edu.usf.experiment.plot.Plotter;
 import edu.usf.experiment.plot.PlotterLoader;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.utils.ElementWrapper;

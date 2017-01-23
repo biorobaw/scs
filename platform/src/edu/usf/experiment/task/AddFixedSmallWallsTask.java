@@ -12,9 +12,9 @@ import com.vividsolutions.jts.geom.LineSegment;
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
-import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.RobotOld;
 import edu.usf.experiment.robot.RobotLoader;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.SubjectLoader;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.UniverseLoader;
@@ -40,20 +40,20 @@ public class AddFixedSmallWallsTask extends Task {
 
 	@Override
 	public void perform(Experiment experiment) {
-		perform(experiment.getUniverse(), experiment.getSubject());
+		perform(experiment.getUniverse(), (SubjectOld)experiment.getSubject());
 	}
 
 	@Override
 	public void perform(Trial trial) {
-		perform(trial.getUniverse(), trial.getSubject());
+		perform(trial.getUniverse(), (SubjectOld)trial.getSubject());
 	}
 
 	@Override
 	public void perform(Episode episode) {
-		perform(episode.getUniverse(), episode.getSubject());
+		perform(episode.getUniverse(), (SubjectOld)episode.getSubject());
 	}
 
-	private void perform(Universe univ, Subject sub) {
+	private void perform(Universe univ, SubjectOld sub) {
 //		addOuterWall(Math.PI/8, false, univ);
 //		addOuterWall(3*Math.PI/8, true, univ);
 //		addOuterWall(7*Math.PI/8, false, univ);
@@ -120,8 +120,8 @@ public class AddFixedSmallWallsTask extends Task {
 			ElementWrapper root = XMLExperimentParser
 					.loadRoot("src/edu/usf/ratsim/experiment/xml/multiFeedersTrainRecallSmallObs.xml");
 			Universe univ = UniverseLoader.getInstance().load(root, ".");
-			Robot robot = RobotLoader.getInstance().load(root);
-			Subject subject = SubjectLoader.getInstance().load("a", "a",
+			RobotOld robot = RobotLoader.getInstance().load(root);
+			SubjectOld subject = SubjectLoader.getInstance().load("a", "a",
 					root.getChild("model"), robot);
 			new AddFixedSmallWallsTask(null).perform(univ, subject);
 			System.out.println("walls added");

@@ -11,6 +11,7 @@ import edu.usf.experiment.log.LoggerLoader;
 import edu.usf.experiment.plot.Plotter;
 import edu.usf.experiment.plot.PlotterLoader;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.task.TaskLoader;
 import edu.usf.experiment.universe.Universe;
@@ -97,6 +98,9 @@ public class Episode {
 	}
 
 	public void run() {
+		
+		
+		
 		Globals g = Globals.getInstance();
 		g.put("episodeLogPath", logPath);
 		PropertyHolder props = PropertyHolder.getInstance();
@@ -132,7 +136,8 @@ public class Episode {
 			
 			while((boolean)g.get("pause")); //the pause is here so that the model state can be observed before performing the actions
 			
-			getSubject().performActions();
+			getSubject().getRobot().processPendingActions();
+			getSubject().getRobot().executeTimeStep(0.1f);
 			
 
 			for (Logger l : afterCycleLoggers)

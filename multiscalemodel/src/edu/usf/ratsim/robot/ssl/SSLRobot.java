@@ -7,7 +7,7 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
@@ -168,7 +168,7 @@ public class SSLRobot extends LocalizableRobot {
 	}
 
 	@Override
-	public void executeAffordance(Affordance af, Subject sub) {
+	public void executeAffordance(Affordance af, SubjectOld sub) {
 		if (af instanceof TurnAffordance) {
 			TurnAffordance tf = (TurnAffordance) af;
 			if (((TurnAffordance) af).getAngle() > 0) // left

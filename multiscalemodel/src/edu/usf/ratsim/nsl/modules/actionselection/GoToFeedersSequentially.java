@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.GeomUtils;
@@ -16,10 +16,10 @@ public class GoToFeedersSequentially extends Module {
 	private LocalizableRobot lRobot;
 	private Random random;
 	private Int0dPort takenActionPort;
-	private Subject sub;
+	private SubjectOld sub;
 	private int togo;
 
-	public GoToFeedersSequentially(String name, Subject sub, Random random) {
+	public GoToFeedersSequentially(String name, SubjectOld sub, Random random) {
 		super(name);
 
 		this.lRobot = (LocalizableRobot) sub.getRobot();

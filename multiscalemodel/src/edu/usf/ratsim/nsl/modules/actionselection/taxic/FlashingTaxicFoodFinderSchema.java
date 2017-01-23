@@ -6,7 +6,7 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
@@ -21,11 +21,11 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 	public float[] votes;
 	private float reward;
 
-	private Subject subject;
+	private SubjectOld subject;
 	private LocalizableRobot robot;
 	private float negReward;
 
-	public FlashingTaxicFoodFinderSchema(String name, Subject subject,
+	public FlashingTaxicFoodFinderSchema(String name, SubjectOld subject,
 			LocalizableRobot robot, float reward, float negReward,
 			float lambda, boolean estimateValue) {
 		super(name);

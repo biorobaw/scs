@@ -3,7 +3,7 @@ package edu.usf.ratsim.nsl.modules.actionselection.taxic;
 import java.util.List;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
@@ -22,12 +22,12 @@ import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 public class AvoidWallTaxic extends Module {
 
 	private float[] votes;
-	private Subject sub;
+	private SubjectOld sub;
 	private float taxicVal;
 	private LocalizableRobot robot;
 	private float distToConsider;
 
-	public AvoidWallTaxic(String name, Subject sub, LocalizableRobot robot,
+	public AvoidWallTaxic(String name, SubjectOld sub, LocalizableRobot robot,
 			float taxicVal, float distToConsider) {
 		super(name);
 		votes = new float[sub.getPossibleAffordances().size()];

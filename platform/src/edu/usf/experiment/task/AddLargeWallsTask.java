@@ -13,9 +13,9 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PreExperiment;
 import edu.usf.experiment.Trial;
-import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.RobotOld;
 import edu.usf.experiment.robot.RobotLoader;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.SubjectLoader;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.UniverseLoader;
@@ -50,7 +50,7 @@ public class AddLargeWallsTask extends Task {
 	@Override
 	public void perform(Experiment experiment) {
 		System.out.println("[+] Adding wmall walls");
-		while (!perform(experiment.getUniverse(), experiment.getSubject()))
+		while (!perform(experiment.getUniverse(), (SubjectOld)experiment.getSubject()))
 			;
 		System.out.println("[+] Large walls added");
 	}
@@ -58,7 +58,7 @@ public class AddLargeWallsTask extends Task {
 	@Override
 	public void perform(Trial trial) {
 		System.out.println("[+] Adding wmall walls");
-		while (!perform(trial.getUniverse(), trial.getSubject()))
+		while (!perform(trial.getUniverse(), (SubjectOld)trial.getSubject()))
 			;
 		System.out.println("[+] Large walls added");
 	}
@@ -66,12 +66,12 @@ public class AddLargeWallsTask extends Task {
 	@Override
 	public void perform(Episode episode) {
 		System.out.println("[+] Adding wmall walls");
-		while (!perform(episode.getUniverse(), episode.getSubject()))
+		while (!perform(episode.getUniverse(), (SubjectOld)episode.getSubject()))
 			;
 		System.out.println("[+] Large walls added");
 	}
 
-	private boolean perform(Universe univ, Subject sub) {
+	private boolean perform(Universe univ, SubjectOld sub) {
 		random = RandomSingleton.getInstance();
 		List<LineSegment> outerWalls = new LinkedList<LineSegment>();
 		watchDogCount = 0;
@@ -238,8 +238,8 @@ public class AddLargeWallsTask extends Task {
 				"logs/Experiment/");
 		Universe univ = UniverseLoader.getInstance().load(root,
 				"logs/Experiment/");
-		Robot robot = RobotLoader.getInstance().load(root);
-		Subject subject = SubjectLoader.getInstance().load("a", "a",
+		RobotOld robot = RobotLoader.getInstance().load(root);
+		SubjectOld subject = SubjectLoader.getInstance().load("a", "a",
 				root.getChild("model"), robot);
 		AddLargeWallsTask t = new AddLargeWallsTask(null);
 		while (!t.perform(univ, subject))

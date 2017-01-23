@@ -8,7 +8,7 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -28,7 +28,7 @@ public class PolicyLogger extends Logger {
 		interval = params.getChildFloat("interval");
 	}
 
-	public void log(Universe univ, Subject sub) {
+	public void log(Universe univ, SubjectOld sub) {
 		PrintWriter writer = getWriter();
 		
 		PropertyHolder props = PropertyHolder.getInstance();
@@ -87,17 +87,17 @@ public class PolicyLogger extends Logger {
 
 	@Override
 	public void log(Trial trial) {
-		log(trial.getUniverse(), trial.getSubject());
+		log(trial.getUniverse(), (SubjectOld)trial.getSubject());
 	}
 	
 	@Override
 	public void log(Episode episode) {
-		log(episode.getUniverse(), episode.getSubject());
+		log(episode.getUniverse(), (SubjectOld)episode.getSubject());
 	}
 
 	@Override
 	public void log(Experiment experiment) {
-		log(experiment.getUniverse(), experiment.getSubject());
+		log(experiment.getUniverse(), (SubjectOld)experiment.getSubject());
 	}
 
 }

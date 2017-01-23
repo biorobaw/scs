@@ -7,6 +7,7 @@ import org.w3c.dom.Document;
 
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Universe;
 
 public class XMLExperimentParser {
@@ -26,13 +27,17 @@ public class XMLExperimentParser {
 
 		List<ElementWrapper> trialNodes = root.getChildren("trial");
 		// For each trial
+		
+		System.out.println("tnodes: " + trialNodes.size());
 		for (ElementWrapper trialNode : trialNodes) {
 			// For each group
 			List<ElementWrapper> trialGroups = trialNode.getChild("groups")
 					.getChildren("group");
+			System.out.println("tgroups: " + trialGroups.size());
 			for (ElementWrapper groupNode : trialGroups) {
 				String groupName = groupNode.getText();
 				// For each subject in the group
+				System.out.println("equals: " + groupName + " " + subject.getGroup());
 				if (groupName.equals(subject.getGroup())) {
 					res.add(new Trial(trialNode, logPath, subject, universe, makePlots));
 				}
