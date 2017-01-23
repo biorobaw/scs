@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.Universe;
@@ -18,13 +18,13 @@ import edu.usf.experiment.utils.ElementWrapper;
  * @author gtejera, mllofriu
  * 
  */
-public abstract class Robot {
+public abstract class RobotOld extends Robot{
 	
-	public Robot(ElementWrapper params){
+	public RobotOld(ElementWrapper params){
 		
 	}
 	
-	public Robot(ElementWrapper params, Universe u){
+	public RobotOld(ElementWrapper params, Universe u){
 		
 	}
 	
@@ -89,7 +89,7 @@ public abstract class Robot {
 	
 	public abstract boolean checkAffordance(Affordance af);
 
-	public abstract void executeAffordance(Affordance selectedAction, Subject sub);
+	public abstract void executeAffordance(Affordance selectedAction, SubjectOld sub);
 	
 	/**
 	 * Returns the feeders visible to the robot
@@ -120,4 +120,8 @@ public abstract class Robot {
 	 * @param angVel Angular velocity, positive values mean left rotations
 	 */
 	public abstract void moveContinous(float lVel, float angVel);
+	
+	public void processAction(RobotAction action){};
+	
+	public void executeTimeStep(float deltaT){};
 }
