@@ -7,6 +7,9 @@ public abstract class Robot {
 	
 	public LinkedList<RobotAction> pendingActions = new LinkedList<RobotAction>();
 
+	/**
+	 * 
+	 */
 	public void processPendingActions(){
 		for(RobotAction a : pendingActions)
 			processAction(a);

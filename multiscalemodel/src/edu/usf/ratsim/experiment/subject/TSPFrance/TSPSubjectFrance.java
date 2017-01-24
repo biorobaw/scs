@@ -25,10 +25,6 @@ public class TSPSubjectFrance extends Subject {
 	public TSPSubjectFrance(String name, String group,
 			ElementWrapper params, Robot robot) {
 		super(name, group, params, robot);
-		
-		step = params.getChildFloat("step");
-		leftAngle = params.getChildFloat("leftAngle");
-		rightAngle = params.getChildFloat("rightAngle");
 
 		this.robot = (PuckRobot)robot;
 
