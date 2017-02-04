@@ -65,6 +65,7 @@ public class VirtUniverse extends Universe {
 	public VirtUniverse(ElementWrapper params, String logPath) {
 		super(params, logPath);
 
+		System.out.println("loading virtual universe...");
 		display = params.getChildBoolean("display");
 
 		wallNodes = new LinkedList<WallNode>();
@@ -80,16 +81,25 @@ public class VirtUniverse extends Universe {
 		// Save initial walls to differentiate from later on added ones
 		initialWalls = new LinkedList<Wall>(getWalls());
 
+		System.out.println("Loading display? " + display);
+		
 		if (display) {
+			System.out.println("About to call new VirtualUniverse()");
 			VirtualUniverse vu = new VirtualUniverse();
+			System.out.println("virtual universe vu created...");
+			
 			Locale l = new Locale(vu);
+			
+			
 
 			bg = new BranchGroup();
 			bg.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
 			bg.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
 			bg.setCapability(BranchGroup.ALLOW_DETACH);
 			l.addBranchGraph(bg);
-
+			System.out.println("new branch group created...");
+			
+			
 			// Add previously created elements, but not added to the 3d universe
 			robotNode = new RobotNode(maze.getChild("robotview"), display);
 			bg.addChild(robotNode);
@@ -100,7 +110,9 @@ public class VirtUniverse extends Universe {
 				wallNodes.add(w);
 				bg.addChild(w);
 			}
-
+			System.out.println("walss added...");
+			
+			
 			list = maze.getChildren("feeder");
 			feederNodes = new HashMap<Integer, FeederNode>();
 			for (ElementWrapper fn : list) {
@@ -108,6 +120,7 @@ public class VirtUniverse extends Universe {
 				feederNodes.put(feeder.getId(), feeder);
 				bg.addChild(feeder);
 			}
+			System.out.println("feeders added...");
 			
 			list = maze.getChildren("platform");
 			platformNodes = new LinkedList<PlatformNode>();
@@ -149,6 +162,8 @@ public class VirtUniverse extends Universe {
 		instance = this;
 		
 		wallsToRevert = new LinkedList<WallNode>();
+		
+		System.out.println("Done loading universe");
 	}
 	
 	public void addDrawingFunction(DrawingFunction function){

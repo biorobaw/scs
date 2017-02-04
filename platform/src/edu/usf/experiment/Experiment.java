@@ -122,9 +122,13 @@ public class Experiment implements Runnable {
 		props.setProperty("subject", subjectName);
 		
 		props.setProperty("maze.file", logPath + "maze.xml");
+		
+		
+		System.out.println("Loading universe...");
 
 		universe = UniverseLoader.getInstance().load(root, logPath);
 
+		System.out.println("Loading robot...");
 		robot = RobotLoader.getInstance().load(root, universe);
 		//System.out.println("robot: "+robot);
 		//robot.startRobot();
@@ -285,6 +289,7 @@ public class Experiment implements Runnable {
 		}
 			
 		
+		System.out.println("Loading experimnet...");
 		Experiment e = new Experiment(args[0],(String)g.get("logPath") , args[2], args[3]);
 		e.run();
 

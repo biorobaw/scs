@@ -55,8 +55,11 @@ public class Episode {
 		this.trial = trial;
 		this.episodeNumber = episodeNumber;
 		this.sleep = episodeNode.getChildInt("sleep");
+		System.out.println("sleep: " + this.sleep);
 		this.makePlots = makePlots;
-		this.timeStep = episodeNode.getChildFloat("timeStep");
+		String timeStepString = episodeNode.getChildText("timeStep");
+		if(timeStepString!=null) this.timeStep = Float.parseFloat(timeStepString);
+		else this.timeStep = 1;
 		
 		
 		this.sleepValues[sleepValues.length-1] = episodeNode.getChildInt("sleep");
