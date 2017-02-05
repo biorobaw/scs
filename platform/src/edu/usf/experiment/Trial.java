@@ -9,7 +9,6 @@ import edu.usf.experiment.log.LoggerLoader;
 import edu.usf.experiment.plot.Plotter;
 import edu.usf.experiment.plot.PlotterLoader;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.task.TaskLoader;
 import edu.usf.experiment.universe.Universe;
@@ -86,9 +85,12 @@ public class Trial implements Runnable {
 		// Lock on the subject to ensure mutual exclusion for the same rat
 		// Assumes is fifo
 		synchronized (getSubject()) {
-			PropertyHolder props = PropertyHolder.getInstance();
-			props.setProperty("trial", name);
-			props.setProperty("log.directory", logPath);
+//			PropertyHolder props = PropertyHolder.getInstance();
+//			props.setProperty("trial", name);
+//			props.setProperty("log.directory", logPath);
+			
+			g.put("trial", name);
+			//g.put("log.directory", logPath);
 			
 			getSubject().newTrial();
 			
@@ -103,7 +105,6 @@ public class Trial implements Runnable {
 			// Run each episode
 			for (Episode episode : episodes) {
 				episode.run();
-				g.put("episode", (int)g.get("episode")+1);
 			}
 			
 			// Do all after trial tasks

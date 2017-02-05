@@ -53,7 +53,7 @@ public class TimeoutFlashFeeder extends Task {
  
 //		System.out.println("Time since ate " + timeSinceAte + " timeout " + timeout);
 		if (timeSinceAte == timeout) {
-			List<Integer> active = u.getActiveFeeders();
+			List<Integer> active = Universe.getActiveFeeders();
 
 			// Pick an active one and flash
 			int i = random.nextInt(active.size());

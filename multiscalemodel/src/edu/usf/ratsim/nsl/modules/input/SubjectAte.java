@@ -1,7 +1,6 @@
 package edu.usf.ratsim.nsl.modules.input;
 
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 

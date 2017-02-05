@@ -3,9 +3,7 @@ package edu.usf.ratsim.experiment.subject.TSPFrance;
 import java.util.List;
 import java.util.Map;
 
-import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.robot.RobotOld;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;

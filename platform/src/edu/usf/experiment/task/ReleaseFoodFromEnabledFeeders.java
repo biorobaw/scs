@@ -33,7 +33,7 @@ public class ReleaseFoodFromEnabledFeeders extends Task {
 	}
 	
 	private void perform(Universe u){
-		for (Integer f : u.getActiveFeeders())
+		for (Integer f : Universe.getActiveFeeders())
 			if(u.isFeederEnabled(f)){
 				u.releaseFood(f);
 			}

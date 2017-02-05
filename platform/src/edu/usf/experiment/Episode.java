@@ -11,7 +11,6 @@ import edu.usf.experiment.log.LoggerLoader;
 import edu.usf.experiment.plot.Plotter;
 import edu.usf.experiment.plot.PlotterLoader;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.task.TaskLoader;
 import edu.usf.experiment.universe.Universe;
@@ -108,9 +107,15 @@ public class Episode {
 		
 		Globals g = Globals.getInstance();
 		g.put("episodeLogPath", logPath);
-		PropertyHolder props = PropertyHolder.getInstance();
-		props.setProperty("episode", new Integer(episodeNumber).toString());
-		props.setProperty("log.directory", logPath);
+		g.put("episode",episodeNumber);
+		//g.put("log.directory",logPath);
+		
+		//PropertyHolder props = PropertyHolder.getInstance();
+		//props.setProperty("episode", new Integer(episodeNumber).toString());
+		//props.setProperty("log.directory", logPath);
+		
+		
+		
 
 		System.out.println("[+] Episode " + trial.getName() + " "
 				+ trial.getGroup() + " " + trial.getSubjectName() + " "
@@ -129,7 +134,8 @@ public class Episode {
 		boolean finished = false;
 		int cycle = 0;
 		while (!finished) {
-			props.setProperty("cycle", new Integer(cycle).toString());
+			//props.setProperty("cycle", new Integer(cycle).toString());
+			g.put("cycle",cycle);
 			for (Logger l : beforeCycleLoggers)
 				l.log(this);
 			for (Task t : beforeCycleTasks)

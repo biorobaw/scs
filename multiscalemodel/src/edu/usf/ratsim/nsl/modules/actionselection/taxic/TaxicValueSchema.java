@@ -8,7 +8,6 @@ import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
-import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 public class TaxicValueSchema extends Module {

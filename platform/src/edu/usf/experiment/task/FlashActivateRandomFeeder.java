@@ -39,7 +39,7 @@ public class FlashActivateRandomFeeder extends Task {
 	}
 	
 	private void perform(Universe u) {
-		List<Integer> enabledFeeders = u.getEnabledFeeders();
+		List<Integer> enabledFeeders = Universe.getEnabledFeeders();
 
 		// Deactivate all to deactivate previous feeder
 //		for(Integer f : u.getActiveFeeders())

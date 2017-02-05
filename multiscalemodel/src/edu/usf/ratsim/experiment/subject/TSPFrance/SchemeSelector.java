@@ -1,7 +1,6 @@
 package edu.usf.ratsim.experiment.subject.TSPFrance;
 
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 
 /**
  * Module to generate random actions when the agent hasnt moved (just rotated)

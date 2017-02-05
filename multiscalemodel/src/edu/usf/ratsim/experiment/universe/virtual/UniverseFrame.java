@@ -1,6 +1,5 @@
 package edu.usf.ratsim.experiment.universe.virtual;
 
-import java.awt.Color;
 import java.awt.GraphicsConfiguration;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,8 +11,6 @@ import javax.vecmath.Vector3f;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
 import edu.usf.experiment.Globals;
-import edu.usf.experiment.utils.RandomSingleton;
-import edu.usf.ratsim.experiment.universe.virtual.drawingUtilities.DrawPolarGraph;
 import edu.usf.ratsim.experiment.universe.virtual.drawingUtilities.DrawingFunction;
 
 public class UniverseFrame extends java.awt.Frame {

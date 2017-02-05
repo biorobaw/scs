@@ -6,7 +6,7 @@ import javax.vecmath.Point3f;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
@@ -31,11 +31,17 @@ public class PolicyLogger extends Logger {
 	public void log(Universe univ, SubjectOld sub) {
 		PrintWriter writer = getWriter();
 		
-		PropertyHolder props = PropertyHolder.getInstance();
-		String trialName = props.getProperty("trial");
-		String groupName = props.getProperty("group");
-		String subName = props.getProperty("subject");
-		String episodeName = props.getProperty("episode");
+//		PropertyHolder props = PropertyHolder.getInstance();
+//		String trialName = props.getProperty("trial");
+//		String groupName = props.getProperty("group");
+//		String subName = props.getProperty("subject");
+//		String episodeName = props.getProperty("episode");
+		Globals g = Globals.getInstance();
+		String trialName = g.get("trial").toString();
+		String groupName = g.get("group").toString();
+		String subName = g.get("subName").toString();
+		String episodeName = g.get("episode").toString();
+		
 		
 		for (int intention = 0; intention < numIntentions; intention++) {
 			for (float xInc = MARGIN; xInc

@@ -1,11 +1,7 @@
 package edu.usf.ratsim.nsl.modules.actionselection;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-
-import javax.vecmath.Point3f;
 
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;

@@ -1,23 +1,11 @@
 package edu.usf.ratsim.experiment.subject.TSPFrance;
 
-import java.awt.geom.Point2D;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.vecmath.Point3f;
-
-import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.robot.RobotAction;
-import edu.usf.experiment.robot.specificActions.MoveToAction;
-import edu.usf.experiment.subject.SubjectOld;
-import edu.usf.experiment.subject.affordance.EatAffordance;
-import edu.usf.experiment.subject.affordance.ForwardAffordance;
-import edu.usf.experiment.subject.affordance.TurnAffordance;
-import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
@@ -32,7 +20,6 @@ import edu.usf.ratsim.nsl.modules.input.Position;
 import edu.usf.ratsim.nsl.modules.input.SubjectAte;
 import edu.usf.ratsim.nsl.modules.input.HighLevelCognition.CurrentFeederModule;
 import edu.usf.ratsim.nsl.modules.input.Vision.VisibleFeedersModule;
-import edu.usf.ratsim.robot.virtual.VirtualRobot;
 import platform.simulatorVirtual.robots.PuckRobot;
 
 public class TSPModelFrance extends Model {

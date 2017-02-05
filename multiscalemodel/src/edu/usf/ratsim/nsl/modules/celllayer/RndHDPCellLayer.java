@@ -14,7 +14,6 @@ import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialHDPC;
-import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceCell;
 
 public class RndHDPCellLayer extends Module {
 

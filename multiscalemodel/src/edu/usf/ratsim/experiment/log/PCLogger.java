@@ -5,18 +5,15 @@ import java.util.List;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject;
 import edu.usf.ratsim.experiment.subject.TSPSubject;
 import edu.usf.ratsim.experiment.subject.TSPFrance.TSPSubjectFrance;
 import edu.usf.ratsim.experiment.subject.multipleT.MultipleTSubject;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
-import edu.usf.ratsim.nsl.modules.cell.ExponentialConjCell;
 
 public class PCLogger extends Logger {
 
@@ -59,11 +56,17 @@ public class PCLogger extends Logger {
 	public void finalizeLog() {
 		synchronized (PCLogger.class) {
 			System.out.println("[+] Logging cells");
-			PropertyHolder props = PropertyHolder.getInstance();
-			String trialName = props.getProperty("trial");
-			String groupName = props.getProperty("group");
-			String subName = props.getProperty("subject");
-			String episode = props.getProperty("episode");
+//			PropertyHolder props = PropertyHolder.getInstance();
+//			String trialName = props.getProperty("trial");
+//			String groupName = props.getProperty("group");
+//			String subName = props.getProperty("subject");
+//			String episode = props.getProperty("episode");
+			
+			Globals g = Globals.getInstance();
+			String trialName = g.get("trial").toString();
+			String groupName = g.get("group").toString();
+			String subName = g.get("subName").toString();
+			String episode = g.get("episode").toString();
 
 			PrintWriter writer = getWriter();
 			int cellNum = 0;

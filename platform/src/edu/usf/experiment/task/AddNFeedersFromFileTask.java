@@ -65,7 +65,7 @@ public class AddNFeedersFromFileTask extends Task{
 		
 		String[][] feederData = CSVReader.loadCSV(feedersFile, ",","feedersFile");
 		if (feederData!=null){
-			IOUtils.copyFile(feedersFile, global.get("logPath") + "feeders.txt");
+			IOUtils.copyFile(feedersFile, global.get("logPath") + "/feeders.txt");
 			
 			Integer id = 0;
 			for (String[] line : feederData){

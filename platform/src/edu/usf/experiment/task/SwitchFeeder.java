@@ -48,7 +48,7 @@ public class SwitchFeeder extends Task {
 			// Deactivate the feeding one
 			u.setActiveFeeder(eatenFeeder, false);
 
-			List<Integer> enabled = u.getEnabledFeeders();
+			List<Integer> enabled = Universe.getEnabledFeeders();
 			enabled.remove(new Integer(eatenFeeder));
 			// for (Integer f : enabled){
 			// u.setActiveFeeder(f, true);

@@ -39,7 +39,7 @@ public class ActivateRandomFeeder extends Task {
 	}
 	
 	private void perform(Universe u) {
-		List<Integer> enabledFeeders = u.getEnabledFeeders();
+		List<Integer> enabledFeeders = Universe.getEnabledFeeders();
 
 		Random r = RandomSingleton.getInstance();
 		int feeder = enabledFeeders.get(r.nextInt(enabledFeeders.size()));

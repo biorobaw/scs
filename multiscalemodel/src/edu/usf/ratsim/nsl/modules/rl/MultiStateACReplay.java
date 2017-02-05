@@ -1,7 +1,5 @@
 package edu.usf.ratsim.nsl.modules.rl;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 

@@ -50,7 +50,7 @@ public class SwitchFlashingFeeder extends Task {
 			u.setActiveFeeder(feeder, false);
 			u.setFlashingFeeder(feeder, false);
 			
-			List<Integer> enabled = u.getEnabledFeeders();
+			List<Integer> enabled = Universe.getEnabledFeeders();
 			enabled.remove(new Integer(feeder));
 			for (Integer f : enabled){
 //				u.setActiveFeeder(f, true);
