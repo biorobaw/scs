@@ -293,8 +293,10 @@ public class Experiment implements Runnable {
 		}
 			
 		
+		String s0 = args[0], s2=args[2],s3=args[3];
+		args = null;
 		System.out.println("Loading experimnet...");
-		Experiment e = new Experiment(args[0],(String)g.get("logPath") , args[2], args[3]);
+		Experiment e = new Experiment(s0,(String)g.get("logPath") , s2, s3);
 		e.run();
 
 		System.out.println("[+] Finished running");

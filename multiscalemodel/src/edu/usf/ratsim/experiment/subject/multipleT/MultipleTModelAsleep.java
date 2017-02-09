@@ -46,6 +46,8 @@ public class MultipleTModelAsleep extends MultipleTModel {
 	
 	public boolean[] visitedNodes;
 	
+	public SubjectAte subAte;
+	
 	public MultipleTModelAsleep() {
 	}
 
@@ -85,23 +87,24 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		 * activate cell
 		 * propagate activity
 		 * 
-		 * 																					              Copy of Action and placeCells
-		 * 																								                \/
-		 * Reward-------------------->*---->*------------------------------------------->*--------->*->deltaSignal----->UpdateQ
-		 * 			                 /\    /\                              	  			/\         /\
-		 *                            |     |                                			 |          |
-		 * 	          PCCopy		Qcopy 	|							  			  ActionCopy    |
-		 *				 |			  |		|					  			 			 |			|	 
-		 * 				\/			 \/		|					  		 				 |          |
-		 * Pos---->	PlaceCells--->currentStateQ 										 |			|
-		 * 	  																			 |			|
-		 * 																				 |			|
-		 * 																				\/		   	|
-		 * Active , W ---------->NextActive----->getNextPos--------------------------->getClosestAction
-		 * 												   *------>MoveFromToPosActionPerformer----/\----->subAte
-		 * 																				   /\	  	|
-		 *																					|		| 
-		 * 																					Pos	----*	
+		 * 																              Copy of Action and placeCells
+		 * 																			                \/
+		 * subAte---->Reward-------------->*-----------------------------------------deltaSignal----->UpdateQ
+		 * 			                       /\                              	  			            /\
+		 *                            	    |                                			            ||
+		 * 	          					 	|							  			  			    ||
+		 *				 			  		|					  			 			 			||	 
+		 * 							   		|					  		 				            ||
+		 * Pos---->	PlaceCells--->currentStateQ 										 			||
+		 * 	  																			 			||
+		 * 																				 			||
+		 * 																						   	||
+		 * Active , W ---------->NextActive----->getNextPos----|     ----------------->getClosestAction
+		 * 												       |     |    
+		 * 													   *-----* 					   	  	
+		 *													   |	 |
+		 *											Pos--------|	 ---------------------------------------------------->MoveFromToPosActionPerformer
+		 * 																				
 		 * 
 		 * NOTES:
 		 * 		-The model is only a reference to understand the flow, modules do not correspond 1 to 1 with the model components
@@ -164,24 +167,16 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		addModule(nextPosModule);
 		
 		
-		//Create action selection module -- choose action according to probability distribution
+		//Create action selection module -- choose action most similar to translation from one pc to the next
 		Module actionSelection = new ClosestActionSelection("actionFromProbabilities",numActions);
 		actionSelection.addInPort("position", pos.getOutPort("position"));
 		actionSelection.addInPort("nextPosition", nextPosModule.getOutPort("nextPosition"));
 		addModule(actionSelection);
 		
-		Module actionPerformer = new MoveFromToActionPerformer("actionPerformer",subject);
-		actionPerformer.addInPort("position", pos.getOutPort("position"));
-		actionPerformer.addInPort("nextPosition", nextPosModule.getOutPort("nextPosition"));
-		addModule(actionPerformer);
-		
-//		placeCells.addPreReq(actionPerformer);
-		actionPerformer.addPreReq(placeCells);
-		
 		//create subAte module
-		SubjectAte subAte = new SubjectAte("Subject Ate",subject);
+		subAte = new SubjectAte("Subject Ate",subject);
 		addModule(subAte);
-		subAte.addPreReq(actionPerformer);
+		//subAte.addPreReq(actionPerformer);
 		
 		//Create reward module
 		float nonFoodReward = 0;
@@ -199,10 +194,17 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		//Create update Q module
 		Module updateQ = new UpdateQModuleAC("updateQ", numActions, learningRate);
 		updateQ.addInPort("delta", deltaError.getOutPort("delta"));
-		updateQ.addInPort("action", actionSelection.getOutPort("action"));
+		updateQ.addInPort("action", actionSelection.getOutPort("action"),true);
 		updateQ.addInPort("Q", QTable);
 		updateQ.addInPort("placeCells", placeCells.getOutPort("activation"));
 		addModule(updateQ);
+		
+		
+		Module actionPerformer = new MoveFromToActionPerformer("actionPerformer",subject);
+		actionPerformer.addInPort("position", pos.getOutPort("position"));
+		actionPerformer.addInPort("nextPosition", nextPosModule.getOutPort("nextPosition"));
+		addModule(actionPerformer);
+		actionPerformer.addPreReq(updateQ);
 		
 		
 		

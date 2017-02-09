@@ -18,7 +18,7 @@ public class Last2ActionsActionGating extends Module {
 	public float[] probabilities;	
 	float[][][] precalculatedValues;
 	
-	public float[] chosenRing;
+	public float[] chosenRing; //stores the chosen bias ring so it can be visualized - the ring is chosen from the precalculated values
 	
 	
 	float exponent;
@@ -165,13 +165,13 @@ public class Last2ActionsActionGating extends Module {
 	
 	public class RunSecondTime implements Runnable {
 		public void run() {
-			Float1dPortArray input = (Float1dPortArray) getInPort("input");
+			Float1dPortArray input = (Float1dPortArray) getInPort("input");//probability vector
 			int action = ((Int0dPort) getInPort("action")).get();
 				
 			float sum = 0;
 			for (int i =0;i<numActions;i++){
-				probabilities[i] = precalculatedValues[action][last2Action][i]*input.get(i);
-				chosenRing[i] = precalculatedValues[action][last2Action][i];
+				probabilities[i] = precalculatedValues[action][action][i]*input.get(i);
+				chosenRing[i] = precalculatedValues[action][action][i];
 				sum+=probabilities[i];
 			}
 			//System.out.println("previous: "+action);
@@ -190,7 +190,7 @@ public class Last2ActionsActionGating extends Module {
 	public class RunFirstTime implements Runnable{
 		public void run(){
 			
-			Float1dPortArray input = (Float1dPortArray) getInPort("input");
+			Float1dPortArray input = (Float1dPortArray) getInPort("input");//probability vector
 			
 			for (int i =0;i<numActions;i++){
 				probabilities[i] = input.get(i);

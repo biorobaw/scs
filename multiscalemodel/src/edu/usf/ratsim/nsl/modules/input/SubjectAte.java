@@ -32,6 +32,11 @@ public class SubjectAte extends Module {
 	public boolean usesRandom() {
 		return false;
 	}
+	
+	public boolean subAte(){
+		return outPort.get();
+	}
+	
 
 	
 }

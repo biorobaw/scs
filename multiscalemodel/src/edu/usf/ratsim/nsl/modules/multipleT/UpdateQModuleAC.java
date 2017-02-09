@@ -31,6 +31,10 @@ public class UpdateQModuleAC extends Module {
 		this.nu = nu;
 		dotProducts = new float[numActions][numActions];
 
+		
+		// precalculate table:  if action i was taken,
+		// all actions are rewarded according to their "distance" to action i.
+		// right now r = 1 if d(ai,aj)==0,  0 otherwise
 		double deltaAngle = 2 * Math.PI / numActions;
 		float anglei = 0;
 		for (int i = 0; i < numActions; i++) {

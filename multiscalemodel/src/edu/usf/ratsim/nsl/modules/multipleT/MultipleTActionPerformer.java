@@ -49,6 +49,8 @@ public class MultipleTActionPerformer extends Module {
 	
 	public void run() {
 		
+		subject.setHasEaten(false);
+		
 		int action = ((Int0dPort)getInPort("action")).get();
 		//System.out.println("performing: "+action);
 		float deltaAngle = GeomUtils.relativeAngle(angles[action], ((LocalizableRobot)robot).getOrientationAngle());

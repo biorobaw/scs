@@ -44,8 +44,7 @@ public class MultipleTSubject extends SubjectOld {
 
 		Globals g = Globals.getInstance();
 
-		if (!(robot instanceof LocalizableRobot))
-			throw new RuntimeException("TSPSubject " + "needs a Localizable Robot");
+
 		lRobot = (VirtualRobot) robot;
 
 		// load parametrs:
@@ -139,26 +138,37 @@ public class MultipleTSubject extends SubjectOld {
 
 	@Override
 	public void stepCycle() {
-		setHasEaten(false);
+//		setHasEaten(false);  -- now it is done in action performer, before executing new action
 		clearTriedToEAt();
 
 		modelAwake.simRun();
 
 		// Replay after eating
 		// But first wait one extra cycle
-		if (hasEaten()) {
+		if (modelAwake.subAte.subAte()) { //note that the reward has been computed if the module returns true
 			// Now we are ready to execute replay
 			lRobot.setCloseThreshold(asleepFoodDistanceThreshold);
 
 			// Execute replay episodes
 			for (int r = 0; r < cantReplay; r++) {
+				System.out.println("REPLAY EPISODE: " + r);
+				
 				modelAsleep.newEpisode();
 				setHasEaten(false);
 				clearTriedToEAt();
+				int iterationCount = 0;
 				do {
 					modelAsleep.simRun();
-				} while (!hasEaten() && modelAsleep.getMaxActivation() > replayThres);
+					iterationCount++;
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} while (!modelAsleep.subAte.subAte() && modelAsleep.getMaxActivation() > replayThres && iterationCount < 2000);
 
+				System.out.println("Replay done...");
 			}
 
 			lRobot.setCloseThreshold(awakeFoodDistanceThreshold);
@@ -185,6 +195,7 @@ public class MultipleTSubject extends SubjectOld {
 	public void newEpisode() {
 		modelAwake.newEpisode();
 	}
+	
 
 	@Override
 	public void newTrial() {
