@@ -1,5 +1,7 @@
 package edu.usf.ratsim.experiment.subject.TSPFrance;
 
+import TRN4JAVA.*;
+
 import java.awt.geom.Point2D;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -41,7 +43,6 @@ public class TSPModelFrance extends Model {
 	public LinkedList<float[]> pcActivationHistory = new LinkedList<float[]>();
 	
 	private TesselatedPlaceCellLayer placeCells;
-	private FeederTraveler feederTraveler;
 	
 	private int numPCs;
 	
@@ -57,6 +58,7 @@ public class TSPModelFrance extends Model {
 	//ACTION SELECTION MODULES
 	ActionFromPathModule actionFromPathModule;
 	RandomFeederTaxicActionModule randomFeederTaxicActionModule;
+	ReservoirActionSelectionModule reservoirActionSelectionModule;
 	
 	
 	
@@ -84,8 +86,8 @@ public class TSPModelFrance extends Model {
 //		visibleFeedersModule -----> RandomTaxicFeederAction-------------
 //																		|
 //		                            ActionFromPath--------------------->*----------------FinalTask (choose action)
-//		
-//		Pos--->placeCells
+//																		/\
+//		Pos--->placeCells---------> ReservoirActionSelectionModule------|
 //		
 //		hd--------
 //		
@@ -163,12 +165,26 @@ public class TSPModelFrance extends Model {
 		
 		//MOVE USING A PATH:
 		actionFromPathModule = new ActionFromPathModule("actionFromPath", pathFile);
-		//addModule(actionFromPathModule);		
+		//addModule(actionFromPathModule);	
 		
+		//Reservoir Action:
+		reservoirActionSelectionModule = new ReservoirActionSelectionModule("reservoirAction");
+		reservoirActionSelectionModule.addInPort("placeCells", placeCells.getOutPort("activation"));
+		addModule(reservoirActionSelectionModule);
 		
 		// Schme selection module:
 		Module schemeSelector = new SchemeSelector("schemeSelector");
 		addModule(schemeSelector);
+		
+		
+		//TRN4Java INITIALIZATION
+		TRN4JAVA.initialize_local(0, 0);
+//		try {
+//			TRN4JAVA.allocate(3);
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//			e.printStackTrace();
+//		}
 		
 		
 		
@@ -186,12 +202,17 @@ public class TSPModelFrance extends Model {
 	public void newEpisode() {
 		// TODO Auto-generated method stub
 		
+		//send reset signal to all modules that use memory:
+		reservoirActionSelectionModule.newEpisode();
+		
 	}
 	
 	public void endEpisode(){
 		//number of pace cells : numPCs;
 		//ateHistory.add(ate);
 		// pcActivationHistory.add(pcVals);
+		
+		System.out.println("HERE RESERVOIR TRAIN CODE SHOULD BE ADDED");
 		
 		
 	}
