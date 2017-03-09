@@ -2,31 +2,18 @@ package edu.usf.ratsim.experiment.subject.TSPFrance;
 
 import TRN4JAVA.*;
 
-import java.awt.geom.Point2D;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.vecmath.Point3f;
-
-import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.robot.RobotAction;
-import edu.usf.experiment.robot.specificActions.MoveToAction;
-import edu.usf.experiment.subject.SubjectOld;
-import edu.usf.experiment.subject.affordance.EatAffordance;
-import edu.usf.experiment.subject.affordance.ForwardAffordance;
-import edu.usf.experiment.subject.affordance.TurnAffordance;
-import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromPathModule;
-import edu.usf.ratsim.nsl.modules.actionselection.FeederTraveler;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.nsl.modules.celllayer.TesselatedPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.input.HeadDirection;
@@ -34,7 +21,6 @@ import edu.usf.ratsim.nsl.modules.input.Position;
 import edu.usf.ratsim.nsl.modules.input.SubjectAte;
 import edu.usf.ratsim.nsl.modules.input.HighLevelCognition.CurrentFeederModule;
 import edu.usf.ratsim.nsl.modules.input.Vision.VisibleFeedersModule;
-import edu.usf.ratsim.robot.virtual.VirtualRobot;
 import platform.simulatorVirtual.robots.PuckRobot;
 
 public class TSPModelFrance extends Model {
@@ -52,6 +38,7 @@ public class TSPModelFrance extends Model {
 	SubjectAte subAte;
 	CurrentFeederModule currentFeeder;
 	VisibleFeedersModule visibleFeeders;
+	Reservoir reservoir;
 	
 	//CELL MODULES
 	
@@ -83,12 +70,13 @@ public class TSPModelFrance extends Model {
 //		currentFeeder-----------------
 //		                             |
 //									\/	
-//		visibleFeedersModule -----> RandomTaxicFeederAction-------------
-//																		|
-//		                            ActionFromPath--------------------->*----------------FinalTask (choose action)
+//		visibleFeedersModule -----> RandomTaxicFeederAction-------------				Callback
+//																		|					\/
+//		                            ActionFromPath--------------------->*----------------FinalTask (choose action)--Action execution
 //																		/\
 //		Pos--->placeCells---------> ReservoirActionSelectionModule------|
-//		
+//											/\	
+//									   prediction
 //		hd--------
 //		
 //		
@@ -168,7 +156,11 @@ public class TSPModelFrance extends Model {
 		//addModule(actionFromPathModule);	
 		
 		//Reservoir Action:
-		reservoirActionSelectionModule = new ReservoirActionSelectionModule("reservoirAction");
+		//                                   id, stim_size,reservoir_size, leak_rate, initial_State_scale, lr, epochs
+		reservoir = new Reservoir( 0,  numPCs,	numPCs, 	1f, 	1f,	 0.5f,	 100);
+		
+		
+		reservoirActionSelectionModule = new ReservoirActionSelectionModule("reservoirAction", reservoir);
 		reservoirActionSelectionModule.addInPort("placeCells", placeCells.getOutPort("activation"));
 		addModule(reservoirActionSelectionModule);
 		
@@ -208,11 +200,8 @@ public class TSPModelFrance extends Model {
 	}
 	
 	public void endEpisode(){
-		//number of pace cells : numPCs;
-		//ateHistory.add(ate);
-		// pcActivationHistory.add(pcVals);
 		
-		System.out.println("HERE RESERVOIR TRAIN CODE SHOULD BE ADDED");
+		reservoir.train(pcActivationHistory, ateHistory);
 		
 		
 	}

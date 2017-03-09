@@ -1,5 +1,6 @@
 package edu.usf.ratsim.experiment.subject.TSPFrance;
 
+import TRN4JAVA.*;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -14,6 +15,8 @@ public class ReservoirActionSelectionModule extends Module {
 	RobotAction action = new RobotAction("reservoirAction");
 	//action = new DifferentialNavigationAction(leftSpeed,RightSpeed)
 	ModelActionPort outport = new ModelActionPort(this, action);
+	Reservoir reservoir;
+	float[] reservoirPrediction;
 	
 	
 	Runnable runFunction;
@@ -25,9 +28,11 @@ public class ReservoirActionSelectionModule extends Module {
 	int iteration  = 0;
 	int memorySize = 5;
 	
-	public ReservoirActionSelectionModule(String name) {
+	public ReservoirActionSelectionModule(String name, Reservoir reservoir) {
 		super(name);
 		runFunction = runFirst;
+		this.reservoir = reservoir;
+		reservoir.finishInitialization(new ReceiveLoop());
 		// TODO Auto-generated constructor stub
 	}
 
@@ -37,6 +42,8 @@ public class ReservoirActionSelectionModule extends Module {
 		
 	}
 	
+	
+	
 	class RunFirstTime implements Runnable {
 		//First time
 		@Override
@@ -44,6 +51,11 @@ public class ReservoirActionSelectionModule extends Module {
 			//System.out.println("First Tme");
 			Float1dSparsePortMap pcs = (Float1dSparsePortMap)getInPort("placeCells");
 			pcHistory.add(pcs.getNonZero());
+			
+			
+			reservoir.transmit(pcs.getData());
+			
+			//wait for receive
 						
 			if(iteration < memorySize) iteration++;
 			else runFunction = runGeneral;
@@ -61,6 +73,10 @@ public class ReservoirActionSelectionModule extends Module {
 			pcHistory.add(pcs.getNonZero());
 			pcHistory.removeFirst();
 			
+			reservoir.transmit(pcs.getData());
+			//wait for receive
+			
+			//convert prediction to position
 
 			
 		}
@@ -78,6 +94,18 @@ public class ReservoirActionSelectionModule extends Module {
 		iteration = 0;
 		pcHistory.clear();
 		runFunction = runFirst;
+		
+	}
+	
+	
+	class ReceiveLoop extends TRN4JAVA.Loop {
+
+		@Override
+		public void prediction(final float[] prediction) {
+			// TODO Auto-generated method stub
+			reservoirPrediction = prediction;
+		}
+		
 		
 	}
 
