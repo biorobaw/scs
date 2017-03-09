@@ -27,7 +27,8 @@ public class TSPSubjectFrance extends Subject {
 		super(name, group, params, robot);
 
 		this.robot = (PuckRobot)robot;
-
+		
+		
 		model = new TSPModelFrance(params, this, this.robot);
 	}
 	

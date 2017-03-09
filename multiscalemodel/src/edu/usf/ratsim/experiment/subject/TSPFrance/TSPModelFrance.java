@@ -70,8 +70,8 @@ public class TSPModelFrance extends Model {
 //		currentFeeder-----------------
 //		                             |
 //									\/	
-//		visibleFeedersModule -----> RandomTaxicFeederAction-------------				Callback
-//																		|					\/
+//		visibleFeedersModule -----> RandomTaxicFeederAction-------------				
+//																		|					
 //		                            ActionFromPath--------------------->*----------------FinalTask (choose action)--Action execution
 //																		/\
 //		Pos--->placeCells---------> ReservoirActionSelectionModule------|
@@ -164,6 +164,7 @@ public class TSPModelFrance extends Model {
 		reservoirActionSelectionModule.addInPort("placeCells", placeCells.getOutPort("activation"));
 		addModule(reservoirActionSelectionModule);
 		
+		
 		// Schme selection module:
 		Module schemeSelector = new SchemeSelector("schemeSelector");
 		addModule(schemeSelector);
@@ -196,13 +197,14 @@ public class TSPModelFrance extends Model {
 		
 		//send reset signal to all modules that use memory:
 		reservoirActionSelectionModule.newEpisode();
+
 		
 	}
 	
 	public void endEpisode(){
 		
 		reservoir.train(pcActivationHistory, ateHistory);
-		
+//		reservoir.newEpisode();
 		
 	}
 

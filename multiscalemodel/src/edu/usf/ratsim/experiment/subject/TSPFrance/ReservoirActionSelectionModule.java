@@ -48,10 +48,13 @@ public class ReservoirActionSelectionModule extends Module {
 		//First time
 		@Override
 		public void run() {
-			//System.out.println("First Tme");
+			System.out.println("First Tme");
 			Float1dSparsePortMap pcs = (Float1dSparsePortMap)getInPort("placeCells");
 			pcHistory.add(pcs.getNonZero());
 			
+			float d[] = pcs.getData();
+			for(float f : d) System.out.println(f + " ");
+			System.out.println("");
 			
 			reservoir.transmit(pcs.getData());
 			
@@ -59,6 +62,8 @@ public class ReservoirActionSelectionModule extends Module {
 						
 			if(iteration < memorySize) iteration++;
 			else runFunction = runGeneral;
+			
+			System.out.println("End First Tme");
 			
 		}
 		
