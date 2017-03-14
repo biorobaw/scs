@@ -7,6 +7,8 @@ import com.digi.xbee.api.listeners.IDataReceiveListener;
 import com.digi.xbee.api.models.XBee64BitAddress;
 import com.digi.xbee.api.models.XBeeMessage;
 
+import jdk.management.resource.internal.UnassignedContext;
+
 public class XbeeTestReceive {
 
     /* Constants */
@@ -17,6 +19,8 @@ public class XbeeTestReceive {
 
     private static final String DATA_TO_SEND = "Hello XBee World!";
 	private static final String REMOTE_NODE_IDENTIFIER = "LOCAL";
+	
+	private static byte[] data = null;
 
     public static void main(String[] args) {
     	System.out.println(" +-----------------------------------------+");
@@ -27,10 +31,9 @@ public class XbeeTestReceive {
 		
 		try {
 			myDevice.open();
-			
 			myDevice.addDataListener(new IDataReceiveListener() {
 				public void dataReceived(XBeeMessage msg) {
-					System.out.println(msg.getDataString());
+					data = msg.getData();
 				}
 			});
 			
@@ -39,6 +42,24 @@ public class XbeeTestReceive {
 		} catch (XBeeException e) {
 			e.printStackTrace();
 			System.exit(1);
+		}
+		
+		while (true){
+			if (data != null)
+				for (int i = 0; i < data.length; i+=2){
+					byte hi = data[i];
+					byte lo = data[i+1];
+					int val =  (hi & 0xff) << 8 | (lo & 0xff);
+					System.out.print(val + " ");
+				}
+				System.out.println();
+				
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
     }
 }
