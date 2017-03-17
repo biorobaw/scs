@@ -58,9 +58,10 @@ int sensors[] = {ds12, ds11, ds10, ds9, ds8, ds7,
 
 // Constants
 int NUM_SENSORS = 12;
-int COMM_PERIOD = 100;
+int COMM_PERIOD = 10;
 int CONTROL_PERIOD = 10;
 long XBEE_ADDR = 0x1111;
+float MAX_VEL = 20.0f;
 
 void setup() {
   // Initialize motors
@@ -69,23 +70,23 @@ void setup() {
   motors[2] = new PoluloMotor(m3enc1, m3enc2, m3en, m3i1, m3i2, 30.0f);
   motors[3] = new PoluloMotor(m4enc1, m4enc2, m4en, m4i1, m4i2, 30.0f);
 
-  for (int m = 0; m < 4; m++)
-    motors[m]->autoTune();
+//  for (int m = 0; m < 4; m++)
+//    motors[m]->autoTune();
     
-  for (int m = 0; m < 4; m++)
-    motors[m]->setTargetVel(3);
+//  for (int m = 0; m < 4; m++)
+//    motors[m]->setTargetVel(3);
 
-  long current = millis();
-  while (millis() - current < 2000){
-    for (int m = 0; m < 4; m++)
-    motors[m]->pid();
-    delay(10);
-  }
-    
-  for (int m = 0; m < 4; m++)
-    motors[m]->setTargetVel(0);
+//  long current = millis();
+//  while (millis() - current < 2000){
+//    for (int m = 0; m < 4; m++)
+//    motors[m]->pid();
+//    delay(10);
+//  }
+//    
+//  for (int m = 0; m < 4; m++)
+//    motors[m]->setTargetVel(0);
 
-  xbeeserial.begin(9600);
+  xbeeserial.begin(57600);
   xbee.setSerial(xbeeserial);
 }
 
@@ -107,7 +108,7 @@ void loop() {
     }
     // Send sensor data
     Tx16Request tx = Tx16Request(0x1111, sensor_vals, sizeof(sensor_vals));
-    xbee.send(tx);
+    //xbee.send(tx);
     
     // Receive motor command
     xbee.readPacket();
@@ -115,9 +116,8 @@ void loop() {
       // got a rx packet
       xbee.getResponse().getRx16Response(rx16);
       for (int m = 0; m < 4; m++){
-        uint8_t lo = rx16.getData(2*m);
-        uint8_t hi = rx16.getData(2*m+1);
-        float vel = map(word(hi, lo), 0, 1023, 0, 1200) / 1000.0f;
+        uint8_t velbyte = rx16.getData(m);
+        float vel = (velbyte-128) / 128.0f * MAX_VEL;
         motors[m]->setTargetVel(vel);
       }
     }

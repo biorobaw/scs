@@ -35,7 +35,8 @@ class PoluloMotor {
     int enablePin;
     int dirPin1;
     int dirPin2;
-    float ffModelVel;
+    // Model Vel when inputed the calibrating pwm - default value 
+    float ffModelVel = 6.0f;
 
 };
 

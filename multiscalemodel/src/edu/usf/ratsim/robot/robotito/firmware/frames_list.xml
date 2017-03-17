@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<data>
+  <loop>false</loop>
+  <repeat_times>1</repeat_times>
+  <repeat_period>500</repeat_period>
+  <frames_list>
+    <frame name="fulloneway">
+      <payload>7E000F0001000000000000222200FFFFFFFFBE</payload>
+    </frame>
+    <frame name="stop">
+      <payload>7E000F000100000000000022220080808080BA</payload>
+    </frame>
+    <frame name="fullotherway">
+      <payload>7E000F000100000000000022220000000000BA</payload>
+    </frame>
+    <frame name="steer">
+      <payload>7E000F000100000000000022220080800000BA</payload>
+    </frame>
+    <frame name="forward">
+      <payload>7E000F0001000000000000222200A0A06060BA</payload>
+    </frame>
+    <frame name="backward">
+      <payload>7E000F00010000000000002222000606A0A06E</payload>
+    </frame>
+  </frames_list>
+</data>
