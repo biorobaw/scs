@@ -69,7 +69,7 @@
 			<wTransitionLR>1.0</wTransitionLR>
 			
 			<!-- sessions, laps, and replay -->
-			<cantReplay>200</cantReplay>
+			<cantReplay>5</cantReplay>
 			<!-- threshold to propagate PC activation during 
 			     sleep state. Should be numPC/50           -->
 			<replayThres>.001</replayThres>
@@ -126,6 +126,23 @@
 		</tasks>
 	</group>
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- BEFORE EXPERIMENT LOGGER / PLOTTERS / TASK -->
+	
 	<!-- Task to be performed before the eperiment -->
 	<beforeExperimentTasks>
 	</beforeExperimentTasks>
@@ -146,7 +163,22 @@
 	</beforeExperimentPlotters>
 	
 	
-	<!-- Training trial - Non-delayed cue phase -->
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--  TRIALS -->
+	
+	
+	<!-- HABITUATION EPISODES (TRIAL) - only CONTROL -->
 	<trial>
 		<name>Habituation</name>
 		<!-- Groups to apply the trial -->
@@ -187,32 +219,15 @@
 			<afterCycleTasks>
 			</afterCycleTasks>
 			<!-- Loggers to execute after each cycle -->
-			<afterCycleLoggers>
+			<beforeCycleLoggers>
 				<!-- Log the subject position -->
 				<logger>
 					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
 					<params>
 					</params>
 				</logger>
-			</afterCycleLoggers>
-			<!-- Loggers to execute after each episode -->
-			<afterEpisodeLoggers>
-				<!-- Log each wall position -->
-				<logger>
-					<name>edu.usf.experiment.log.WallLogger</name>
-					<params>
-					</params>
-				</logger>
-				<logger>
-					<name>edu.usf.experiment.log.FeederLogger</name>
-				</logger>
-			</afterEpisodeLoggers>
-			<!-- Tasks to execute after each episode -->
-			<afterEpisodeTasks>
-				<task>
-					<name>edu.usf.experiment.task.SaveSubject</name>
-				</task>
-			</afterEpisodeTasks>
+			</beforeCycleLoggers>
+			
 			<!-- Conditions upon which the episode ends -->
 			<stopConditions>
 				<!-- Timeout cycles -->
@@ -231,6 +246,27 @@
 					</params>
 				</condition>
 			</stopConditions>
+			
+			<!-- Tasks to execute after each episode -->
+			<afterEpisodeTasks>
+				<task>
+					<name>edu.usf.experiment.task.SaveSubject</name>
+				</task>
+			</afterEpisodeTasks>
+			
+			<!-- Loggers to execute after each episode -->
+			<afterEpisodeLoggers>
+				<!-- Log each wall position -->
+				<logger>
+					<name>edu.usf.experiment.log.WallLogger</name>
+					<params>
+					</params>
+				</logger>
+				<logger>
+					<name>edu.usf.experiment.log.FeederLogger</name>
+				</logger>
+			</afterEpisodeLoggers>
+			
 			<!-- Plotters to execute after each episode -->
 			<afterEpisodePlotters>
 				<!-- Copy the maze file to the episode folder -->
@@ -267,7 +303,10 @@
 	</trial>
 	
 	
-	<!-- Training trial - Non-delayed cue phase -->
+	
+	
+	
+	<!-- LEARNING EPISODES - ALL GROUPS -->
 	<trial>
 		<name>Learning</name>
 		<!-- Groups to apply the trial -->
@@ -294,7 +333,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>40</number><!-- 24 session * (80 + 80 laps * 8 replays) =   -->
+			<number>40</number>
 			<!-- Sleep between cycles for visualization -->
 			<sleep>30</sleep>
 			<!-- Tasks to perform before each episode -->
@@ -323,7 +362,7 @@
 
 			</afterCycleTasks>
 			<!-- Loggers to execute after each cycle -->
-			<afterCycleLoggers>
+			<beforeCycleLoggers>
 				<!-- Log the subject position -->
 				<logger>
 					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
@@ -333,7 +372,7 @@
 				<!--  <logger>
 					<name>edu.usf.ratsim.experiment.log.PCActivityLogger</name>
 				</logger>-->
-			</afterCycleLoggers>
+			</beforeCycleLoggers>
 			<!-- Loggers to execute after each episode -->
 			<afterEpisodeLoggers>
 				<!-- Log each wall position -->
@@ -411,6 +450,24 @@
 			</plotter> 
 		</afterTrialPlotters>
 	</trial>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- AFTER TASK PLOTTING/LOGGING/TASKS -->
 	
 	<!-- Tasks to perform after the experiment is over -->
 	<afterExperimentTasks>

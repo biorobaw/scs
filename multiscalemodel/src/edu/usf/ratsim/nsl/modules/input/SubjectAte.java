@@ -25,7 +25,7 @@ public class SubjectAte extends Module {
 
 	@Override
 	public void run() {
-		outPort.set(sub.hasEaten());
+		outPort.set(sub.hasEaten);
 	}
 
 	@Override

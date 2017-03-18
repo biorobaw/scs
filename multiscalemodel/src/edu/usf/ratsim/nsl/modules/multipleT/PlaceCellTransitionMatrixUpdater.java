@@ -56,9 +56,10 @@ public class PlaceCellTransitionMatrixUpdater extends Module {
 			Map<Integer, Float> pcNZ = pc.getNonZero();
 			Set<Integer> pcKS = pcNZ.keySet();
 			Set<Integer> oldPCKS = oldPCs.keySet();
+			oldPCKS.addAll(pcKS);
 
 			for (Integer i : oldPCKS) {
-				for (Integer j : pcKS){
+				for (Integer j : oldPCKS){
 					float val = wPort.get(i, j);
 					float oldPCI = oldPCs.containsKey(i) ? oldPCs.get(i) : 0;
 					float oldPCJ = oldPCs.containsKey(j) ? oldPCs.get(j) : 0;

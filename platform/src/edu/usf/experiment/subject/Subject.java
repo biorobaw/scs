@@ -7,7 +7,7 @@ public abstract class Subject {
 	protected String name;
 	protected String group;
 	protected Robot robot;
-	protected boolean hasEaten;
+	public boolean hasEaten;
 	
 	public Subject(){};
 	

@@ -139,45 +139,59 @@ public class MultipleTSubject extends SubjectOld {
 	@Override
 	public void stepCycle() {
 //		setHasEaten(false);  -- now it is done in action performer, before executing new action
+		
+		System.out.println("EXECUTING");
 		clearTriedToEAt();
 
+		
+		
 		modelAwake.simRun();
 
 		// Replay after eating
 		// But first wait one extra cycle
-		if (modelAwake.subAte.subAte()) { //note that the reward has been computed if the module returns true
-			// Now we are ready to execute replay
-			lRobot.setCloseThreshold(asleepFoodDistanceThreshold);
+		
+		
+		
+	}
+	
+	@Override
+	public void endEpisode() {
+		// TODO Auto-generated method stub
+		super.endEpisode();
+		
 
-			// Execute replay episodes
-			for (int r = 0; r < cantReplay; r++) {
-				System.out.println("REPLAY EPISODE: " + r);
-				
-				modelAsleep.newEpisode();
-				setHasEaten(false);
-				clearTriedToEAt();
-				int iterationCount = 0;
-				do {
-					modelAsleep.simRun();
-					iterationCount++;
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				} while (!modelAsleep.subAte.subAte() && modelAsleep.getMaxActivation() > replayThres && iterationCount < 2000);
+		lRobot.setCloseThreshold(asleepFoodDistanceThreshold);
 
-				System.out.println("Replay done...");
-			}
-
-			lRobot.setCloseThreshold(awakeFoodDistanceThreshold);
+		// Execute replay episodes
+		for (int r = 0; r < cantReplay; r++) {
+			System.out.println("REPLAY EPISODE: " + r);
 			
-			// Trick the condition to end simulation
-			setHasEaten(true);
+			modelAsleep.newEpisode();
+
+			int iterationCount = 0;
+			do {
+				modelAsleep.simRun();
+				iterationCount++;
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} while (!modelAsleep.subAte.subAte() && modelAsleep.getMaxActivation() > replayThres && iterationCount < 2000 );
+
+			System.out.println("Replay done...");
 		}
+
+		lRobot.setCloseThreshold(awakeFoodDistanceThreshold);
+				
 		
-		
+	}
+	
+	@Override
+	public boolean hasEaten() {
+		// TODO Auto-generated method stub
+		return false;//modelAwake.subAte.subAte();
 	}
 
 	@Override

@@ -34,6 +34,7 @@ public class MultipleTModelAwake extends MultipleTModel {
 	public TmazeRandomPlaceCellLayer placeCells;
 	
 	public ProportionalVotes currentStateQ;
+	public SubjectAte subAte;
 	
 	private Float2dSparsePort QTable;
 	private Float2dSparsePort WTable;
@@ -74,41 +75,54 @@ public class MultipleTModelAwake extends MultipleTModel {
 		 * activate cell
 		 * propagate activity
 		 * 
-		 * 																									              Copy of Action and pcCopy
-		 * 																											                \/
-		 * Reward-------------------------------->*---->*------------------------------------------->*--------->*->deltaSignal----->UpdateQ
-		 * 			                             /\    /\                              	  			/\         /\
-		 *                                        |     |                                			 |          |
-		 * 	          PCCopy--*-> UpdateW		Qcopy 	|							  			  ActionCopy    |
-		 *				 |	 /     				  |		|					  			 			 |			|	 
-		 * 				\/	/	   				 \/		|					  		 				\/          |
-		 * Pos---->	PlaceCells---------------->currentStateQ-->SoftMax-->ActionGating-->bias------>ActionSelection----->ActionPerformer--->subAte
+		 * 																									              
+		 * subAte ---> reward--------------------|
+		 * 										 |--->ActorCriticDeltaError------>UpdateQ
+		 * pos ---> PCs---->currentStateQ (S)----|									/\
+		 * 																			|| (reverse dependency)
+		 * S-->Softmax-->actionGating--->last2ActionGating--->ActionSelection-------||
+		 * 
+		 * 		
+		 * PCs ---> updateW
 		 * 
 		 * 
 		 * NOTES:
 		 * 		-The model is only a reference to understand the flow, modules do not correspond 1 to 1 with the model components
-		 * 		-subAte = subjectAte (already existing module)
-		 * 		-backDep = backward dependency
 		 * 		-actionGating checks weather an action can be performed or not before action selection
-		 * 		-UpdateQ requires Qcopy and actionCopy or currentStateQ and 
-		 * 		-Reward receives input from subAte but executes before
+		 * 		-last 2 action gating gives bias towards maintaining current movement
 		 */
 		
 		
 		//Create Variables Q,W, note sleepState has already been initialized.
 
 		QTable = ((MultipleTSubject)subject).QTable;
-		
 		WTable = ((MultipleTSubject)subject).WTable;
 		
+		
+		//INPUTS TO THE CYCLE
 		//Create pos module 
 		Position pos = new Position("position", lRobot);
 		addModule(pos);
+		
+		//create subAte module
+		subAte = new SubjectAte("Subject Ate",subject);
+		addModule(subAte);
+		
+		
+		
+		//PROCESS INPUTS TO GET BASIC VAIABLES (PC, REWARDS, current state, etc)
+		//Create reward module
+		float nonFoodReward = 0;
+		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
+		r.addInPort("rewardingEvent", subAte.getOutPort("subAte")); 
+		addModule(r);
+		
 		
 		//Create Place Cells module
 		placeCells = new TmazeRandomPlaceCellLayer("PCLayer", PCRadius, numPC, placeCellType);
 		placeCells.addInPort("position", pos.getOutPort("position"));
 		addModule(placeCells);
+		
 		
 		//Create currentStateQ Q module
 		currentStateQ = new ProportionalVotes("currentStateQ",numActions+1,true);
@@ -116,9 +130,12 @@ public class MultipleTModelAwake extends MultipleTModel {
 		currentStateQ.addInPort("value", QTable);
 		addModule(currentStateQ);
 		
+		
+		//DO ACTION SELECTION USING LAST CYCLE VALUE TABLE -- avoids doing PC * V twice per cycle 
+		
 		//Create SoftMax module
 		Softmax softmax = new Softmax("softmax", numActions);
-		softmax.addInPort("input", currentStateQ.getOutPort("votes"), true); // executes with last estimation of Q
+		softmax.addInPort("input", currentStateQ.getOutPort("votes")); // executes with last estimation of Q
 		addModule(softmax);
 		
 		
@@ -151,13 +168,43 @@ public class MultipleTModelAwake extends MultipleTModel {
 		addModule(actionSelection);
 		
 		
-		//Create actionCopyModule
-		Int0dCopyModule actionCopy = new Int0dCopyModule("actionCopy");
-		actionCopy.addInPort("toCopy", actionSelection.getOutPort("action"),true);
-		addModule(actionCopy);
+//		//Create actionCopyModule
+//		Int0dCopyModule actionCopy = new Int0dCopyModule("actionCopy");
+//		actionCopy.addInPort("toCopy", actionSelection.getOutPort("action"),true);
+//		addModule(actionCopy);
 		
-		//Add extra input to bias Module
-		biasModule.addInPort("action", actionCopy.getOutPort("copy"));
+//		//Add extra input to bias Module
+//		biasModule.addInPort("action", actionCopy.getOutPort("copy"));
+		
+		
+		
+		//DO REINFORCEMENT LEARNING
+		//Create deltaSignal module
+		Module deltaError = new ActorCriticDeltaError("error", discountFactor, numActions);
+		deltaError.addInPort("reward", r.getOutPort("reward"));
+		deltaError.addInPort("Q",currentStateQ.getOutPort("votes"));
+		addModule(deltaError);
+		
+		
+		//update Q module
+		Module updateQ = new UpdateQModuleAC("updateQ", numActions, learningRate);
+		updateQ.addInPort("delta", deltaError.getOutPort("delta"));
+		updateQ.addInPort("action", actionSelection.getOutPort("action"),true);
+		updateQ.addInPort("Q", QTable);
+		updateQ.addInPort("placeCells", placeCells.getOutPort("activation"));
+		addModule(updateQ);
+		
+		
+		//UPDATE PATH MATRIX
+		PlaceCellTransitionMatrixUpdater wUpdater = new PlaceCellTransitionMatrixUpdater("wUpdater", numPC, wTransitionLR);
+		wUpdater.addInPort("PC", placeCells.getOutPort("activation"));
+		wUpdater.addInPort("wPort", WTable);
+		addModule(wUpdater);
+		
+		
+		
+		
+		//PERFORM ACTION
 		
 		//Create Action Performer module
 		MultipleTActionPerformer actionPerformer = new MultipleTActionPerformer("actionPerformer", numActions, ((MultipleTSubject)subject).step, subject);
@@ -166,39 +213,13 @@ public class MultipleTModelAwake extends MultipleTModel {
 		
 		placeCells.addPreReq(actionPerformer);
 		
-		//create subAte module
-		SubjectAte subAte = new SubjectAte("Subject Ate",subject);
-		addModule(subAte);
-		subAte.addPreReq(actionPerformer);
-		
-		//Create reward module
-		float nonFoodReward = 0;
-		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
-		r.addInPort("rewardingEvent", subAte.getOutPort("subAte"),true); // reward must execute before subAte (the reward obtained depends if we ate in the previous action)
-		addModule(r);
-		
-		//Create deltaSignal module
-		Module deltaError = new ActorCriticDeltaError("error", discountFactor, numActions);
-		deltaError.addInPort("reward", r.getOutPort("reward"));
-		deltaError.addInPort("Q",currentStateQ.getOutPort("votes"));
-		addModule(deltaError);
-		
-		//Create update Q module
-		Module updateQ = new UpdateQModuleAC("updateQ", numActions, learningRate);
-		updateQ.addInPort("delta", deltaError.getOutPort("delta"));
-		updateQ.addInPort("action", actionSelection.getOutPort("action"));
-		updateQ.addInPort("Q", QTable);
-		updateQ.addInPort("placeCells", placeCells.getOutPort("activation"));
-		addModule(updateQ);
-		
-		//Create UpdateW module
-		PlaceCellTransitionMatrixUpdater wUpdater = new PlaceCellTransitionMatrixUpdater("wUpdater", numPC, wTransitionLR);
-		wUpdater.addInPort("PC", placeCells.getOutPort("activation"));
-		wUpdater.addInPort("wPort", WTable);
-		addModule(wUpdater);
 		
 		
-		//Add drawing utilities:
+		
+		
+		
+		
+		//ADD DRAWING UTILITIES:
 		VirtUniverse universe = VirtUniverse.getInstance();
 		universe.addDrawingFunction(new DrawPolarGraph("Q softmax",50, 50, 50, softmax.probabilities,true));
 		
