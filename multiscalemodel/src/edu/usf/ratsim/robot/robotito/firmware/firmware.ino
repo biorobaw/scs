@@ -36,6 +36,12 @@ int m4enc2 = 22;
 
 PoluloMotor * motors[4];
 
+float motor_angles[4] = {60 * M_PI / 180, 120 * M_PI / 180, 300 * M_PI / 180, 240 * M_PI / 180};
+float motor_angles_cos[4] = {cos(motor_angles[0]), cos(motor_angles[1]),cos(motor_angles[2]),cos(motor_angles[3])};
+float motor_angles_sin[4]= {sin(motor_angles[0]), sin(motor_angles[1]),sin(motor_angles[2]),sin(motor_angles[3])};
+
+float WHEEL_RADIUS = .0330f;
+
 // Control variables
 long lastUpdate = 0;
 
@@ -62,6 +68,8 @@ int COMM_PERIOD = 10;
 int CONTROL_PERIOD = 10;
 long XBEE_ADDR = 0x1111;
 float MAX_VEL = 20.0f;
+float LINEAR_VEL_SCALE = 6 / 128.0f; 
+float ANGULAR_VEL_SCALE =  8 * M_PI / 128.0f;
 
 void setup() {
   // Initialize motors
@@ -82,12 +90,16 @@ void setup() {
 //    motors[m]->pid();
 //    delay(10);
 //  }
-//    
+//   
 //  for (int m = 0; m < 4; m++)
 //    motors[m]->setTargetVel(0);
 
   xbeeserial.begin(57600);
   xbee.setSerial(xbeeserial);
+
+  Serial.begin(9600);
+  Serial.println("Program loaded");
+  
 }
 
 void loop() {
@@ -115,11 +127,28 @@ void loop() {
     if (xbee.getResponse().isAvailable() && xbee.getResponse().getApiId() == RX_16_RESPONSE ) {
       // got a rx packet
       xbee.getResponse().getRx16Response(rx16);
+      // get vels from packet
+      uint8_t x_vel_uint = rx16.getData(0);
+      uint8_t y_vel_uint = rx16.getData(1);
+      uint8_t t_vel_uint = rx16.getData(2);
+
+      // 128 means zero vel
+      float x_vel = (x_vel_uint - 128) * LINEAR_VEL_SCALE;
+      float y_vel = (y_vel_uint - 128) * LINEAR_VEL_SCALE;
+      float t_vel = (t_vel_uint - 128) * ANGULAR_VEL_SCALE;
+      
+      // precompute rotational component - the same for all wheels
+      float rot_comp =  WHEEL_RADIUS * t_vel;
       for (int m = 0; m < 4; m++){
-        uint8_t velbyte = rx16.getData(m);
-        float vel = (velbyte-128) / 128.0f * MAX_VEL;
+        // get precomputed sin and cos for each motor
+        Serial.print(motor_angles_sin[m]);
+        Serial.print(" ");
+        float cosangle = motor_angles_cos[m];
+        float sinangle = motor_angles_sin[m];
+        float vel = -sinangle * x_vel + cosangle * y_vel + rot_comp;
         motors[m]->setTargetVel(vel);
       }
+      Serial.println();
     }
   }
 

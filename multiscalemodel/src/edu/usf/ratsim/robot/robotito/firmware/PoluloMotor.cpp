@@ -81,7 +81,7 @@ void PoluloMotor::pid()
   Input = encoder.getVel();
   
   // Linear feedforward model - max power / max vel 
-  float ff = targetVel * (100.0f/ffModelVel) ;
+  float ff = targetVel * 100;
 
   float ctrlSignal = ff + Output;
   // Direction setting

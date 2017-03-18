@@ -151,10 +151,15 @@ load(pathFile)
 pathData <- data
 load(wallsFile)
 wallData <- data
-load(feedersFile)
-feedersData <- data
+if (file.exists(feedersFile)) {
+	load(feedersFile)
+	feedersData <- data
+	maze <- mazePlot(feedersData)
+} else {
+	maze <- list()
+}
 
-maze <- mazePlot(feedersData)
+
 
 splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 splitWalls <- split(wallData, wallData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)

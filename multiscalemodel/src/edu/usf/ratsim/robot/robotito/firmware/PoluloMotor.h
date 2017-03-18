@@ -27,7 +27,7 @@ class PoluloMotor {
     double ki = 2;
     double kd = 0.0;
 
-    int maxPWM = 100;
+    int maxPWM = 255;
 
     //Define Variables we'll be connecting to
     double Input, Output, targetVel;
