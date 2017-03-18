@@ -43,6 +43,8 @@ public class ExperienceRoadMap extends Module {
 
 	private static final int WINDOW_SIZE = 400;
 
+	private static final boolean PLOT = false;
+
 	private UndirectedGraph<PointNode, Edge> g;
 
 	private BasicVisualizationServer<PointNode, Edge> vv;
@@ -195,38 +197,41 @@ public class ExperienceRoadMap extends Module {
 
 		});
 
-		frame = new JFrame("Topological map");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().add(vv);
-		frame.pack();
-		frame.setVisible(true);
+		if (PLOT){
+			frame = new JFrame("Topological map");
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.getContentPane().add(vv);
+			frame.pack();
+			frame.setVisible(true);
 
-		if (repainter != null) {
-			continueRepainting = false;
-			try {
-				repainter.join(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		continueRepainting = true;
-		repainter = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while (continueRepainting) {
-					vv.repaint();
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+			if (repainter != null) {
+				continueRepainting = false;
+				try {
+					repainter.join(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
-		});
-		repainter.start();
+
+			continueRepainting = true;
+			repainter = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					while (continueRepainting) {
+						vv.repaint();
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			});
+			repainter.start();
+		}
+		
 		
 		
 		// Create the delegate bug algorithms
