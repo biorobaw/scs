@@ -47,13 +47,14 @@ public class Bug1Module extends Module {
 		switch (state) {
 		case GOAL_SEEKING:
 			// Check the middle sensor for obstacles
-			if (front < BugUtilities.OBSTACLE_FOUND_THRS * 1.1f) {
+			if (front < BugUtilities.OBSTACLE_FOUND_THRS) {
 				state = State.WF_AWAY_FROM_HP;
 				minDistToGoal = rPos.get().distance(platPos.get());
 				minDistPlace = rPos.get();
 				hitPoint = rPos.get();
 			}
 			break;
+		// Wall following getting away from the hitpoint at first
 		case WF_AWAY_FROM_HP:
 			// Record min dist
 			float distToGoal = rPos.get().distance(platPos.get());
@@ -67,6 +68,7 @@ public class Bug1Module extends Module {
 				state = State.WF_RETURN_TO_HP;
 			}
 			break;
+		// Wall following until the hitpoint is found again
 		case WF_RETURN_TO_HP:
 			// Record min dist
 			distToGoal = rPos.get().distance(platPos.get());
@@ -80,6 +82,7 @@ public class Bug1Module extends Module {
 				state = State.WF_GO_TO_CP;
 			}
 			break;
+		// Wall following until the close point is found again
 		case WF_GO_TO_CP:
 			float distToCP = rPos.get().distance(minDistPlace);
 			if (distToCP < BugUtilities.CLOSE_THRS) {
@@ -87,7 +90,8 @@ public class Bug1Module extends Module {
 			}
 			break;
 		}
-
+		
+		System.out.println(state);
 		
 		// Cmd depending on state
 		Velocities v = new Velocities();
