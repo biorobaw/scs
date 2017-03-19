@@ -167,14 +167,8 @@ public class MultipleTModelAwake extends MultipleTModel {
 		actionSelection.addInPort("probabilities", biasModule.getOutPort("probabilities"));
 		addModule(actionSelection);
 		
-		
-//		//Create actionCopyModule
-//		Int0dCopyModule actionCopy = new Int0dCopyModule("actionCopy");
-//		actionCopy.addInPort("toCopy", actionSelection.getOutPort("action"),true);
-//		addModule(actionCopy);
-		
-//		//Add extra input to bias Module
-//		biasModule.addInPort("action", actionCopy.getOutPort("copy"));
+		//Add extra input to bias Module
+		biasModule.addInPort("action", actionSelection.getOutPort("action"),true);
 		
 		
 		
@@ -211,7 +205,7 @@ public class MultipleTModelAwake extends MultipleTModel {
 		actionPerformer.addInPort("action", actionSelection.getOutPort("action"));
 		addModule(actionPerformer);
 		
-		placeCells.addPreReq(actionPerformer);
+
 		
 		
 		

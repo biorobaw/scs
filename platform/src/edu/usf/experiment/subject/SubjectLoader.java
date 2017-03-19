@@ -64,6 +64,8 @@ public class SubjectLoader {
 			
 			Subject sub = (Subject)constructor.newInstance(subjectName,
 					groupName, modelNode.getChild("params"),  robot);
+			
+						
 			return sub;
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();

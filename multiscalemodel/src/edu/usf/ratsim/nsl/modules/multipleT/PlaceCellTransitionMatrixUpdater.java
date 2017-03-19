@@ -1,5 +1,6 @@
 package edu.usf.ratsim.nsl.modules.multipleT;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import edu.usf.micronsl.module.Module;
@@ -56,10 +57,12 @@ public class PlaceCellTransitionMatrixUpdater extends Module {
 			Map<Integer, Float> pcNZ = pc.getNonZero();
 			Set<Integer> pcKS = pcNZ.keySet();
 			Set<Integer> oldPCKS = oldPCs.keySet();
-			oldPCKS.addAll(pcKS);
+			
+			HashSet<Integer> allNonZero = new HashSet<Integer>(pcKS);
+			allNonZero.addAll(oldPCKS);
 
-			for (Integer i : oldPCKS) {
-				for (Integer j : oldPCKS){
+			for (Integer i : allNonZero) {
+				for (Integer j : allNonZero){
 					float val = wPort.get(i, j);
 					float oldPCI = oldPCs.containsKey(i) ? oldPCs.get(i) : 0;
 					float oldPCJ = oldPCs.containsKey(j) ? oldPCs.get(j) : 0;

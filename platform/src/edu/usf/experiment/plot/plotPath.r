@@ -144,8 +144,8 @@ pathFile <- 'subjposition.RData'
 wallsFile <- 'walls.RData'
 feedersFile <- 'feeders.RData'
 
-invisible(dir.create("plots"))
-invisible(dir.create("plots/path/"))
+invisible(dir.create("plots",showWarnings=FALSE))
+invisible(dir.create("plots/path/",showWarnings=FALSE))
 
 load(pathFile)
 pathData <- data

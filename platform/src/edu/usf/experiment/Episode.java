@@ -135,8 +135,6 @@ public class Episode {
 		while (!finished) {
 			
 			
-			System.out.println("BEFORE CYCLE");
-			
 			//props.setProperty("cycle", new Integer(cycle).toString());
 			g.put("cycle",cycle);
 			for (Logger l : beforeCycleLoggers)
@@ -144,21 +142,17 @@ public class Episode {
 			for (Task t : beforeCycleTasks)
 				t.perform(this);
 
-			System.out.println("BEFORE STEP");
 			getSubject().stepCycle();
 //			System.out.println("cycle");
 			// TODO: universe step cycle
 			
-			System.out.println("AFTER STEP");
 			
 			while((boolean)g.get("pause")); //the pause is here so that the model state can be observed before performing the actions
 			
-			System.out.println("EXECUTE ACTIONS");
 			
 			getSubject().getRobot().processPendingActions();
 			getSubject().getRobot().executeTimeStep(timeStep);
 			
-			System.out.println("BEFORE AFTER CYCLE");
 
 			for (Logger l : afterCycleLoggers)
 				l.log(this);

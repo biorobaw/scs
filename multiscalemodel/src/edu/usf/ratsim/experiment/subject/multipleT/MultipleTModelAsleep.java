@@ -191,7 +191,7 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		actionPerformer.addInPort("position", pos.getOutPort("position"));
 		actionPerformer.addInPort("nextPosition", nextPosModule.getOutPort("nextPosition"));
 		addModule(actionPerformer);
-		actionPerformer.addPreReq(updateQ);
+//		actionPerformer.addPreReq(updateQ);
 		
 		
 		

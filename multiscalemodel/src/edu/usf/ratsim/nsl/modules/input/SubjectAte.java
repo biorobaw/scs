@@ -37,6 +37,12 @@ public class SubjectAte extends Module {
 		return outPort.get();
 	}
 	
+	@Override
+	public void newEpisode(){
+		outPort.set(false);
+	
+	}
+	
 
 	
 }

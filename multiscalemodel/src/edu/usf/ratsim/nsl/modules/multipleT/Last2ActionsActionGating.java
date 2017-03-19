@@ -184,6 +184,8 @@ public class Last2ActionsActionGating extends Module {
 			
 			
 			last2Action = action;
+			
+			run = new RunGeneral();
 		}
 	}
 		

@@ -35,7 +35,7 @@ public class MoveFromToActionPerformer extends Module {
 	public void run() {
 		
 		subject.setHasEaten(false);
-		
+		subject.clearTriedToEAt();
 		Point3f pos = ((Point3fPort)getInPort("position")).get();
 		Point3f nextPos = ((Point3fPort)getInPort("nextPosition")).get();
 		

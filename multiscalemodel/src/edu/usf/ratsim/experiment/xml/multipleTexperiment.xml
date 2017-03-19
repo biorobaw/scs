@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-<!--	<seed>-59875563504154406</seed>-->
+	<seed>-59875563504154406</seed>
 	
 	 <!-- load will load the subject (indicated by the input to the program) as saved after the specified episode  of the specified  trial-->
 	<!-- <load>
@@ -18,7 +18,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/multipleTmaze.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>true</display>
+			<display>false</display>
 		</params>
 	</universe>
 	
@@ -69,7 +69,7 @@
 			<wTransitionLR>1.0</wTransitionLR>
 			
 			<!-- sessions, laps, and replay -->
-			<cantReplay>5</cantReplay>
+			<cantReplay>200</cantReplay>
 			<!-- threshold to propagate PC activation during 
 			     sleep state. Should be numPC/50           -->
 			<replayThres>.001</replayThres>
@@ -193,7 +193,7 @@
 			<!-- Number of episodes -->
 			<number>10</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>30</sleep>
+			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Place the animat in a given place -->
@@ -335,7 +335,7 @@
 			<!-- Number of episodes -->
 			<number>40</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>30</sleep>
+			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- <task>

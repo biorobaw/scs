@@ -140,8 +140,7 @@ public class MultipleTSubject extends SubjectOld {
 	public void stepCycle() {
 //		setHasEaten(false);  -- now it is done in action performer, before executing new action
 		
-		System.out.println("EXECUTING");
-		clearTriedToEAt();
+		
 
 		
 		
@@ -159,6 +158,12 @@ public class MultipleTSubject extends SubjectOld {
 		// TODO Auto-generated method stub
 		super.endEpisode();
 		
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		lRobot.setCloseThreshold(asleepFoodDistanceThreshold);
 
@@ -173,14 +178,13 @@ public class MultipleTSubject extends SubjectOld {
 				modelAsleep.simRun();
 				iterationCount++;
 				try {
-					Thread.sleep(200);
+					Thread.sleep(3);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} while (!modelAsleep.subAte.subAte() && modelAsleep.getMaxActivation() > replayThres && iterationCount < 2000 );
 
-			System.out.println("Replay done...");
 		}
 
 		lRobot.setCloseThreshold(awakeFoodDistanceThreshold);
@@ -191,7 +195,7 @@ public class MultipleTSubject extends SubjectOld {
 	@Override
 	public boolean hasEaten() {
 		// TODO Auto-generated method stub
-		return false;//modelAwake.subAte.subAte();
+		return modelAwake.subAte.subAte();
 	}
 
 	@Override

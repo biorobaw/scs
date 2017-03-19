@@ -344,7 +344,7 @@ public class VirtualRobot extends LocalizableRobot {
 			// Updates food in universe
 			sub.setTriedToEat();
 
-			System.out.println("has food: "+getClosestFeeder().hasFood());
+//			System.out.println("has food: "+getClosestFeeder().hasFood());
 			if (getClosestFeeder().hasFood()) {
 				eat();
 				sub.setHasEaten(true);
