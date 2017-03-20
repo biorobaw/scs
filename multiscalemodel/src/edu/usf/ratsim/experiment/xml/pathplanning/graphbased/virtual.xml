@@ -192,6 +192,12 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
 				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.RPlotter</name>
+					<params>
+						<plotScript>/edu/usf/experiment/plot/plotMaze.r</plotScript>
+					</params>
+				</plotter>
 				<!-- Plot path for each episode -->
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
@@ -307,6 +313,12 @@
 				<!-- Get time info from position information -->
 				<plotter>
 					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
+				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.RPlotter</name>
+					<params>
+						<plotScript>/edu/usf/experiment/plot/plotMaze.r</plotScript>
+					</params>
 				</plotter>
 				<!-- Plot path for each episode -->
 				<plotter>
@@ -427,6 +439,12 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
 				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.RPlotter</name>
+					<params>
+						<plotScript>/edu/usf/experiment/plot/plotMaze.r</plotScript>
+					</params>
+				</plotter>
 				<!-- Plot path for each episode -->
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
@@ -543,6 +561,12 @@
 				<!-- Get time info from position information -->
 				<plotter>
 					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
+				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.RPlotter</name>
+					<params>
+						<plotScript>/edu/usf/experiment/plot/plotMaze.r</plotScript>
+					</params>
 				</plotter>
 				<!-- Plot path for each episode -->
 				<plotter>

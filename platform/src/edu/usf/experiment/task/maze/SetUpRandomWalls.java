@@ -39,6 +39,11 @@ public class SetUpRandomWalls extends Task {
 		
 		u.addPlatform(new Point3f(-2f, 0, 0), .1f);
 		
+		float len = 2.5f;
+		u.addWall(len, len/2, -len, len/2);
+		u.addWall(-len, len/2, -len, -len/2);
+		u.addWall(-len, -len/2, len, -len/2);
+		u.addWall(len, -len/2, len, len/2);
 		System.out.println("[+] Adding wmall walls");
 		while (!placeWalls(u, s))
 			;

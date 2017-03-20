@@ -111,33 +111,18 @@ wallPlot <- function(wallData,p){
 plotPathOnMaze <- function (preName, name, pathData, wallData, maze){
   # Get the individual components of the plot
   p <- ggplot()
-  p <- ratPathPlot(pathData, p)
-  #  p <- ratPathPointsPlot(pathData, p)
   p <- ratStartPointPlot(pathData, p)
   p <- ratEndPointPlot(pathData, p)
-  
-  #p <- p + stopPointsPlot(pathData)
- 
-  p <- p + atePointsPlot(pathData)
-  p <- p + triedToEatPointsPlot(pathData)
   
   p <- wallPlot(wallData, p)
   p <- p + maze
 
-  # Some aesthetic stuff
   p <- mazePlotTheme(p)
-  #   list(p, paste("plots/path",name,".jpg", sep=''))
-  #   pdf(paste("plots/path",name,".pdf", sep=''))
-  #   print(p)
-  #   dev.off()
-  # Save the plot to an image
   if (name == '')
     print(p)  
   else
-    ggsave(plot=p,filename=paste("plots/path/path",preName,name,
+    ggsave(plot=p,filename=paste("plots/path/maze",preName,name,
                                  ".pdf", sep=''), width=3, height=3)
-  
-  #   saveRDS(p, paste("plots/path/",name,".obj", sep=''))
 }
 
 pathFile <- 'subjposition.RData'
