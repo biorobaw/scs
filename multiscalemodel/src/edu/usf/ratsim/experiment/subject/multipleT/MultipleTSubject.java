@@ -1,5 +1,8 @@
 package edu.usf.ratsim.experiment.subject.multipleT;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +14,7 @@ import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.RobotOld;
 import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.experiment.utils.BinaryFile;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePortMatrix;
@@ -103,53 +107,55 @@ public class MultipleTSubject extends SubjectOld {
 	}
 
 	public void save() {
-//		Globals g = Globals.getInstance();
-//		String logPath = (String) g.get("episodeLogPath");
-//
-//		// WTable.getDataAsArray(WTableCopy);
-//		// QTable.getDataAsArray(QTableCopy);
-//
-//		PrintWriter writer;
-//		try {
-//			// Save transition table
-//			String filename = logPath + "WTable.bin";
-//			BinaryFile.saveSparseBinaryMatrix(WTable, filename);
-//
-//			// save QTable
-//			filename = logPath + "QTable.bin";
-//			BinaryFile.saveBinaryMatrix(QTable, filename);
-//
-//			// save cells
-//			writer = new PrintWriter(logPath + "cellCenters.txt", "UTF-8");
-//			for (PlaceCell pc : getPlaceCells()) {
-//				Point3f p = pc.getPreferredLocation();
-//				writer.println("" + p.x + ";" + p.y + ";");
-//			}
-//			writer.close();
-//
-//			System.out.println("SAVED SUBJECT");
-//
-//		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		Globals g = Globals.getInstance();
+		String logPath = (String) g.get("episodeLogPath");
+		
+		saveW();
+		saveQ("AfterReplay");
+
+		PrintWriter writer;
+		try {
+
+			// save cells
+			writer = new PrintWriter(logPath + "cellCenters.txt", "UTF-8");
+			for (PlaceCell pc : getPlaceCells()) {
+				Point3f p = pc.getPreferredLocation();
+				writer.println("" + p.x + ";" + p.y + ";");
+			}
+			writer.close();
+
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
+	
+	public void saveW(){
+		Globals g = Globals.getInstance();
+		String logPath = (String) g.get("episodeLogPath");
+
+		// Save transition table
+		String filename = logPath + "WTable.bin";
+		BinaryFile.saveSparseBinaryMatrix(WTable.getData(), filename);
+
+	}
+	
+	public void saveQ(String suffix){
+		Globals g = Globals.getInstance();
+		String logPath = (String) g.get("episodeLogPath");
+
+		String filename = logPath + "QTable"+suffix + ".bin";
+		BinaryFile.saveBinaryMatrix(QTable.getData(), filename);
+
+	}
+	
+	
 
 	@Override
 	public void stepCycle() {
-//		setHasEaten(false);  -- now it is done in action performer, before executing new action
-		
-		
 
-		
-		
 		modelAwake.simRun();
-
-		// Replay after eating
-		// But first wait one extra cycle
-		
-		
 		
 	}
 	
@@ -158,37 +164,49 @@ public class MultipleTSubject extends SubjectOld {
 		// TODO Auto-generated method stub
 		super.endEpisode();
 		
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		saveQ("BeforeReplay");
+		
+//		try {
+//			Thread.sleep(100);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		Globals g = Globals.getInstance();
+		int[] sleepValues = (int[])g.get("sleepValues");
 
 		lRobot.setCloseThreshold(asleepFoodDistanceThreshold);
 
+		System.out.println("Doing Replay... ");
 		// Execute replay episodes
 		for (int r = 0; r < cantReplay; r++) {
-			System.out.println("REPLAY EPISODE: " + r);
+//			System.out.println("REPLAY EPISODE: " + r);
 			
+			setHasEaten(false);
 			modelAsleep.newEpisode();
 
 			int iterationCount = 0;
 			do {
 				modelAsleep.simRun();
 				iterationCount++;
-				try {
-					Thread.sleep(3);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+//				try {
+//					Thread.sleep(sleepValues[(int)g.get("simulationSpeed")]);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 			} while (!modelAsleep.subAte.subAte() && modelAsleep.getMaxActivation() > replayThres && iterationCount < 2000 );
+			
 
 		}
+		
+		System.out.println("Done with replay.");
 
 		lRobot.setCloseThreshold(awakeFoodDistanceThreshold);
 				
+		save();
 		
 	}
 	
@@ -211,6 +229,7 @@ public class MultipleTSubject extends SubjectOld {
 
 	@Override
 	public void newEpisode() {
+		super.newEpisode();
 		modelAwake.newEpisode();
 	}
 	

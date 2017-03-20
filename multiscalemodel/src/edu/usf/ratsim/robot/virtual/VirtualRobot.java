@@ -348,7 +348,7 @@ public class VirtualRobot extends LocalizableRobot {
 			if (getClosestFeeder().hasFood()) {
 				eat();
 				sub.setHasEaten(true);
-				System.out.println("ATE from feeder: " + getClosestFeeder().getId());
+//				System.out.println("ATE from feeder: " + getClosestFeeder().getId());
 				lastAteFeeder = getClosestFeeder().getId();
 				if (Debug.printTryingToEat)
 					System.out.println("Ate from a feeder with food");

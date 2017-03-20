@@ -125,6 +125,14 @@ public class ElementWrapper {
 			list.add(Integer.parseInt(tok.nextToken()));
 		return list;
 	}
+	
+	public List<String> getChildStringList(String name) {
+		String listString = getChildText(name);
+		List<String> list = new LinkedList<String>();
+		StringTokenizer tok = new StringTokenizer(listString, ",");
+		while (tok.hasMoreTokens()) list.add(tok.nextToken().trim());
+		return list;
+	}
 
 	public Map<String, List<String>> getCalibrationList(ElementWrapper calibrationRoot) {
 		Map<String, List<String>> result = new LinkedHashMap<String, List<String>>();

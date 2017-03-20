@@ -70,7 +70,10 @@ public abstract class Subject {
 	 */
 	public abstract void stepCycle();
 	
-	public abstract void newEpisode();
+	public void newEpisode(){
+		hasEaten = false;
+		
+	}
 	
 	public abstract void newTrial();
 	

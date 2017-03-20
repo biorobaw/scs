@@ -248,11 +248,11 @@
 			</stopConditions>
 			
 			<!-- Tasks to execute after each episode -->
-			<afterEpisodeTasks>
+			<!-- <afterEpisodeTasks>
 				<task>
 					<name>edu.usf.experiment.task.SaveSubject</name>
 				</task>
-			</afterEpisodeTasks>
+			</afterEpisodeTasks> -->
 			
 			<!-- Loggers to execute after each episode -->
 			<afterEpisodeLoggers>
@@ -262,9 +262,7 @@
 					<params>
 					</params>
 				</logger>
-				<logger>
-					<name>edu.usf.experiment.log.FeederLogger</name>
-				</logger>
+
 			</afterEpisodeLoggers>
 			
 			<!-- Plotters to execute after each episode -->
@@ -285,6 +283,18 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
+				
+				<plotter>
+					<name>edu.usf.ratsim.experiment.subject.multipleT.QWPlotter</name>
+					<params>
+						<skip>false</skip>
+						<Wfile>WTable.bin</Wfile>
+						<Qfiles> </Qfiles>
+					</params>
+					
+				</plotter>
+				
+				
 			</afterEpisodePlotters>
 		</episodes>
 		<!-- Tasks to perform after the trial has ended -->
@@ -389,11 +399,11 @@
 				</logger> -->
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
-			<afterEpisodeTasks>
+			<!-- <afterEpisodeTasks>
 				<task>
 					<name>edu.usf.experiment.task.SaveSubject</name>
 				</task>
-			</afterEpisodeTasks>
+			</afterEpisodeTasks> -->
 			<!-- Conditions upon which the episode ends -->
 			<stopConditions>
 				<!-- Timeout cycles -->
@@ -433,6 +443,15 @@
 				<!-- <plotter>
 					<name>edu.usf.ratsim.experiment.plot.PCPlotter</name>
 				</plotter>-->
+				<plotter>
+					<name>edu.usf.ratsim.experiment.subject.multipleT.QWPlotter</name>
+					<params>
+						<skip>false</skip>
+						<Wfile>WTable.bin</Wfile>
+						<Qfiles> QTableBeforeReplay.bin , QTableAfterReplay.bin </Qfiles>
+					</params>
+					
+				</plotter>
 				
 			</afterEpisodePlotters>
 		</episodes>

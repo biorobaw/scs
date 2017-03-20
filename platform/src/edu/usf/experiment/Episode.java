@@ -59,9 +59,17 @@ public class Episode {
 		if(timeStepString!=null) this.timeStep = Float.parseFloat(timeStepString);
 		else this.timeStep = 1;
 		
+		//put given sleep time in correct position in array:
 		
-		this.sleepValues[sleepValues.length-1] = episodeNode.getChildInt("sleep");
-
+		int xmlSleep = episodeNode.getChildInt("sleep");
+		int insertPos = sleepValues.length-1;
+		while(insertPos > 0 && sleepValues[insertPos-1]>xmlSleep){
+			sleepValues[insertPos] = sleepValues[insertPos-1];
+			insertPos--;	
+		}
+		this.sleepValues[insertPos] = xmlSleep; 		
+		Globals.getInstance().put("simulationSpeed",insertPos);
+		Globals.getInstance().put("sleepValues", sleepValues);
 
 		logPath = parentLogPath
 				+ episodeNumber + "/"
@@ -120,13 +128,16 @@ public class Episode {
 				+ trial.getGroup() + " " + trial.getSubjectName() + " "
 				+ episodeNumber + " started.");
 
-		getSubject().newEpisode();
+		
 		
 		// Do all before trial tasks
-		for (Logger logger : beforeEpisodeLoggers)
-			logger.log(this);
 		for (Task task : beforeEpisodeTasks)
 			task.perform(this);
+		for (Logger logger : beforeEpisodeLoggers)
+			logger.log(this);
+		
+		getSubject().newEpisode();
+	
 		Plotter.plot(beforeEpisodePlotters);
 
 		// Execute cycles until stop condition holds
