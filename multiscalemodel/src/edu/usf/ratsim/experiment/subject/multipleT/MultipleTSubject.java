@@ -310,5 +310,10 @@ public class MultipleTSubject extends SubjectOld {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public void changeRewardValue(float r){
+		modelAsleep.rewardModule.foodReward = r;
+		modelAwake.rewardModule.foodReward =r;
+	}
 
 }

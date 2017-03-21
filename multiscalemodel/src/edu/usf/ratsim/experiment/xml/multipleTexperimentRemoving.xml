@@ -64,7 +64,7 @@
 			<!-- rl learning rate -->
 			<learningRate>0.6</learningRate>
 			<!-- reward when eating -->
-			<foodReward>1.0</foodReward>
+			<foodReward>0</foodReward>
 			<!-- transition matrix learning rate -->
 			<wTransitionLR>1.0</wTransitionLR>
 			
@@ -187,6 +187,19 @@
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
+			<task>
+				<name>edu.usf.experiment.task.AddFeederTask</name>
+				<params>
+					<id>1</id>
+					<x>0</x> 
+					<y>10.5</y> 
+				</params>
+			</task>
+
+			<task>
+				<name>edu.usf.experiment.task.SetAllFeedersPermanentFood</name>
+			</task>
+		
 		</beforeTrialTasks>
 		<!-- Episodes definition -->
 		<episodes>
@@ -339,6 +352,14 @@
 			<task>
 				<name>edu.usf.experiment.task.SetAllFeedersPermanentFood</name>
 			</task>
+			
+			<task>
+				<name>edu.usf.ratsim.experiment.subject.multipleT.auxiliary.ChangeRewardValue</name>
+				<params>
+					<reward>1.0</reward>
+				</params>
+			</task>
+			
 		</beforeTrialTasks>
 		<!-- Episodes definition -->
 		<episodes>

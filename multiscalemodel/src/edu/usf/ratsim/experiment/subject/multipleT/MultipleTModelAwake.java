@@ -38,6 +38,8 @@ public class MultipleTModelAwake extends MultipleTModel {
 	
 	private Float2dSparsePort QTable;
 	private Float2dSparsePort WTable;
+	
+	public Reward rewardModule;
 
 	public MultipleTModelAwake() {
 	}
@@ -113,9 +115,9 @@ public class MultipleTModelAwake extends MultipleTModel {
 		//PROCESS INPUTS TO GET BASIC VAIABLES (PC, REWARDS, current state, etc)
 		//Create reward module
 		float nonFoodReward = 0;
-		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
-		r.addInPort("rewardingEvent", subAte.getOutPort("subAte")); 
-		addModule(r);
+		rewardModule = new Reward("foodReward", foodReward, nonFoodReward);
+		rewardModule.addInPort("rewardingEvent", subAte.getOutPort("subAte")); 
+		addModule(rewardModule);
 		
 		
 		//Create Place Cells module
@@ -175,7 +177,7 @@ public class MultipleTModelAwake extends MultipleTModel {
 		//DO REINFORCEMENT LEARNING
 		//Create deltaSignal module
 		Module deltaError = new ActorCriticDeltaError("error", discountFactor, numActions);
-		deltaError.addInPort("reward", r.getOutPort("reward"));
+		deltaError.addInPort("reward", rewardModule.getOutPort("reward"));
 		deltaError.addInPort("Q",currentStateQ.getOutPort("votes"));
 		addModule(deltaError);
 		

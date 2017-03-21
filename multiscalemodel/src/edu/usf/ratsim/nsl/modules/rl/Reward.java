@@ -8,7 +8,7 @@ public class Reward extends Module {
 
 	private Float0dPort reward;
 	private float nonFoodReward;
-	private float foodReward;
+	public float foodReward;
 
 	public Reward(String name, float foodReward,
 			float nonFoodReward) {
