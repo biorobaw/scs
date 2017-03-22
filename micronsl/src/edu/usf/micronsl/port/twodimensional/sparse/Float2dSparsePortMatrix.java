@@ -60,7 +60,7 @@ public class Float2dSparsePortMatrix extends Float2dSparsePort {
 		if (x == 0){
 			if (nonZero.containsKey(e)){
 				nonZero.remove(e);
-				nonZeroPerRow.get(j).remove(e);
+				nonZeroPerRow.get(i).remove(e);
 			}
 		} else {
 			nonZero.put(e, x);
