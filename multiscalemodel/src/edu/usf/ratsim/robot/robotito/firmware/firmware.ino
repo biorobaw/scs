@@ -68,8 +68,8 @@ int COMM_PERIOD = 10;
 int CONTROL_PERIOD = 10;
 long XBEE_ADDR = 0x1111;
 float MAX_VEL = 20.0f;
-float LINEAR_VEL_SCALE = 6 / 128.0f; 
-float ANGULAR_VEL_SCALE =  8 * M_PI / 128.0f;
+float LINEAR_VEL_SCALE = 4 / 128.0f; 
+float ANGULAR_VEL_SCALE =  16 * M_PI / 128.0f;
 
 void setup() {
   // Initialize motors
@@ -139,14 +139,26 @@ void loop() {
       
       // precompute rotational component - the same for all wheels
       float rot_comp =  WHEEL_RADIUS * t_vel;
+      float maxVel = 0;
       for (int m = 0; m < 4; m++){
         // get precomputed sin and cos for each motor
-        Serial.print(motor_angles_sin[m]);
-        Serial.print(" ");
+//        Serial.print(motor_angles_sin[m]);
+//        Serial.print(" ");
         float cosangle = motor_angles_cos[m];
         float sinangle = motor_angles_sin[m];
         float vel = -sinangle * x_vel + cosangle * y_vel + rot_comp;
         motors[m]->setTargetVel(vel);
+        if (abs(vel) > maxVel)
+          maxVel = abs(vel);
+      }
+
+      // Check if we have to normalize
+      if (maxVel > MAX_VEL){
+        float normalizer = MAX_VEL / maxVel;
+        for (int m = 0; m < 4; m++){
+           motors[m]->setTargetVel(
+            motors[m]->getTargetVel()/normalizer);
+        }
       }
       Serial.println();
     }

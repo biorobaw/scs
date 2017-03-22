@@ -88,10 +88,10 @@ void PoluloMotor::pid()
   if (targetVel == 0){
     digitalWrite(dirPin1, HIGH);
     digitalWrite(dirPin2, HIGH); 
-  } else if (ctrlSignal < 0){
+  } else if (ctrlSignal > 0){
     digitalWrite(dirPin1, LOW);
     digitalWrite(dirPin2, HIGH);  
-  } else if (ctrlSignal > 0) {
+  } else if (ctrlSignal < 0) {
     digitalWrite(dirPin1, HIGH);
     digitalWrite(dirPin2, LOW); 
   }

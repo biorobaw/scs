@@ -8,6 +8,7 @@ class PoluloMotor {
   public:
     PoluloMotor(int encoderPin1, int encoderPin2, int enablePin, int dirPin1, int dirPin2, float ratio);
     void setTargetVel(float targetVel);
+    float getTargetVel() { return targetVel; }
     long getTics(){ return encoder.getTics();}
     void pid();
     float getVel() {return encoder.getVel();}
