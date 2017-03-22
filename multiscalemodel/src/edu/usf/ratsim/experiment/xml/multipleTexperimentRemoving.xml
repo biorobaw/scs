@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-	<seed>-59875563504154406</seed>
+	<!-- <seed>-59875563504154406</seed> -->
 	
 	 <!-- load will load the subject (indicated by the input to the program) as saved after the specified episode  of the specified  trial-->
 	<!-- <load>
@@ -108,6 +108,15 @@
 	</group>
 	
 	<group>
+		<name>Removing</name>
+		<numMembers>8</numMembers>
+		<params>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	
+	<group>
 		<name>NoHab</name>
 		<numMembers>8</numMembers>
 		<params>
@@ -198,6 +207,13 @@
 
 			<task>
 				<name>edu.usf.experiment.task.SetAllFeedersPermanentFood</name>
+			</task>
+			
+			<task>
+				<name>edu.usf.ratsim.experiment.subject.multipleT.auxiliary.ChangeRewardValue</name>
+				<params>
+					<reward>1.0</reward>
+				</params>
 			</task>
 		
 		</beforeTrialTasks>
@@ -297,7 +313,7 @@
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
 				
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.ratsim.experiment.subject.multipleT.QWPlotter</name>
 					<params>
 						<skip>false</skip>
@@ -305,7 +321,157 @@
 						<Qfiles> </Qfiles>
 					</params>
 					
+				</plotter> -->
+				
+				
+			</afterEpisodePlotters>
+		</episodes>
+		<!-- Tasks to perform after the trial has ended -->
+		<afterTrialTasks>
+		</afterTrialTasks>
+		<!-- Loggers to execute after the trial has ended -->
+		<afterTrialLoggers>
+			
+		</afterTrialLoggers>
+		<!-- Plotters to execute after the trial has ended -->
+		<afterTrialPlotters>
+			<plotter>
+				<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
+			</plotter> 
+		</afterTrialPlotters>
+	</trial>
+	
+	
+	<!-- HABITUATION EPISODES (TRIAL) - only CONTROL -->
+	<trial>
+		<name>Removing</name>
+		<!-- Groups to apply the trial -->
+		<groups>
+			<group>Removing</group>
+		</groups>
+		<!-- Tasks to perform beforehand -->
+		<beforeTrialTasks>
+			<task>
+				<name>edu.usf.experiment.task.AddFeederTask</name>
+				<params>
+					<id>1</id>
+					<x>0</x> 
+					<y>10.5</y> 
+				</params>
+			</task>
+
+			<task>
+				<name>edu.usf.experiment.task.SetAllFeedersPermanentFood</name>
+			</task>
+			
+			
+		
+		</beforeTrialTasks>
+		<!-- Episodes definition -->
+		<episodes>
+			<!-- Number of episodes -->
+			<number>10</number>
+			<!-- Sleep between cycles for visualization -->
+			<sleep>0</sleep>
+			<!-- Tasks to perform before each episode -->
+			<beforeEpisodeTasks>
+				<!-- Place the animat in a given place -->
+				<task>
+					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<params>
+						<!--<filename>$(ratpath)</filename>-->
+						<!--<pointXYW>$(startPosition)</pointXYW> -->
+						
+						<point>
+							<x>0</x>
+							<y>0.1</y>
+							<theta>1.57</theta>
+						</point>
+						
+					</params>
+				</task>
+			</beforeEpisodeTasks>
+			<!-- Tasks to performe before each cycle -->
+			<beforeCycleTasks>
+			</beforeCycleTasks>
+			<!-- Tasks to performe after each cycle -->
+			<afterCycleTasks>
+			</afterCycleTasks>
+			<!-- Loggers to execute after each cycle -->
+			<beforeCycleLoggers>
+				<!-- Log the subject position -->
+				<logger>
+					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
+					<params>
+					</params>
+				</logger>
+			</beforeCycleLoggers>
+			
+			<!-- Conditions upon which the episode ends -->
+			<stopConditions>
+				<!-- Timeout cycles -->
+				<condition>
+					<name>edu.usf.experiment.condition.MaxCycles</name>
+					<params>
+						<max>2000</max>
+					</params>
+				</condition>
+				<!-- Has eaten from 5 feeders -->
+				<condition>
+					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
+					<params>
+						<!--  <n>$(nFoodStopCondition)</n>-->
+						<n>1</n>
+					</params>
+				</condition>
+			</stopConditions>
+			
+			<!-- Tasks to execute after each episode -->
+			<!-- <afterEpisodeTasks>
+				<task>
+					<name>edu.usf.experiment.task.SaveSubject</name>
+				</task>
+			</afterEpisodeTasks> -->
+			
+			<!-- Loggers to execute after each episode -->
+			<afterEpisodeLoggers>
+				<!-- Log each wall position -->
+				<logger>
+					<name>edu.usf.experiment.log.WallLogger</name>
+					<params>
+					</params>
+				</logger>
+
+			</afterEpisodeLoggers>
+			
+			<!-- Plotters to execute after each episode -->
+			<afterEpisodePlotters>
+				<!-- Copy the maze file to the episode folder -->
+				<plotter>
+					<name>edu.usf.experiment.plot.CopyMazeFile</name>
 				</plotter>
+				<!-- Convert csv to rdata -->
+				<plotter>
+					<name>edu.usf.experiment.plot.CSVConverter</name>
+				</plotter>
+				<!-- Get time info from position information -->
+				<plotter>
+					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
+				</plotter>
+				<!-- Plot path for each episode -->
+				<plotter>
+					<name>edu.usf.experiment.plot.PathPlotter</name>
+				</plotter>
+				
+				<!-- <plotter>
+					<name>edu.usf.ratsim.experiment.subject.multipleT.QWPlotter</name>
+					<params>
+						<skip>false</skip>
+						<Wfile>WTable.bin</Wfile>
+						<Qfiles> </Qfiles>
+					</params>
+					
+				</plotter> -->
 				
 				
 			</afterEpisodePlotters>
@@ -328,7 +494,6 @@
 	
 	
 	
-	
 	<!-- LEARNING EPISODES - ALL GROUPS -->
 	<trial>
 		<name>Learning</name>
@@ -337,6 +502,7 @@
 			<group>Control</group>
 			<group>NoHab</group>
 			<group>NoReplay</group>
+			<group>Removing</group>
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
@@ -464,7 +630,7 @@
 				<!-- <plotter>
 					<name>edu.usf.ratsim.experiment.plot.PCPlotter</name>
 				</plotter>-->
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.ratsim.experiment.subject.multipleT.QWPlotter</name>
 					<params>
 						<skip>false</skip>
@@ -472,7 +638,7 @@
 						<Qfiles> QTableBeforeReplay.bin , QTableAfterReplay.bin </Qfiles>
 					</params>
 					
-				</plotter>
+				</plotter> -->
 				
 			</afterEpisodePlotters>
 		</episodes>
