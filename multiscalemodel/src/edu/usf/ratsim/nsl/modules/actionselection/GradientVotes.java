@@ -8,7 +8,7 @@ import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
-import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
+import edu.usf.micronsl.port.twodimensional.Float2dPort;
 
 public class GradientVotes extends Module implements Voter {
 
@@ -49,7 +49,7 @@ public class GradientVotes extends Module implements Voter {
 
 	public void run() {
 		Float1dSparsePort states = (Float1dSparsePort) getInPort("states");
-		FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
+		Float2dPort value = (Float2dPort) getInPort("value");
 		for (int action = 0; action < numActions; action++)
 			actionVote[action] = 0f;
 
@@ -69,15 +69,15 @@ public class GradientVotes extends Module implements Voter {
 			}
 		}
 
-//		// Normalize
-//		for (int action = 0; action < numActions; action++)
-//			// Normalize with real value and revert previous normalization
-//			actionVote[action] = (float) (actionVote[action] / normalizer);
-		
+		// Normalize
 		for (int action = 0; action < numActions; action++)
 			// Normalize with real value and revert previous normalization
-			if (actionVote[action] > foodReward)
-				actionVote[action] = foodReward;
+			actionVote[action] = (float) (actionVote[action] / normalizer);
+		
+//		for (int action = 0; action < numActions; action++)
+//			// Normalize with real value and revert previous normalization
+//			if (actionVote[action] > foodReward)
+//				actionVote[action] = foodReward;
 
 		if (Debug.printValues) {
 			System.out.println("RL votes");

@@ -1,18 +1,14 @@
 package edu.usf.ratsim.nsl.modules.actionselection;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-
-import javax.vecmath.Point3f;
 
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
-import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
+import edu.usf.micronsl.port.twodimensional.Float2dPort;
 
 public class GradientValue extends Module implements Voter {
 
@@ -56,7 +52,7 @@ public class GradientValue extends Module implements Voter {
 
 	public void run() {
 		Float1dSparsePort states = (Float1dSparsePort) getInPort("states");
-		FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
+		Float2dPort value = (Float2dPort) getInPort("value");
 		valueEst[0] = 0f;
 
 		double sum = 0;

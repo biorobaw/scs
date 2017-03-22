@@ -8,7 +8,7 @@ import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
-import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
+import edu.usf.micronsl.port.twodimensional.Float2dPort;
 
 /**
  * This class implements the Actor Critic learning algorithm over multiple
@@ -174,7 +174,7 @@ public class MultiStateACTaxic extends Module implements QLAlgorithm {
 			Float1dPort taxicValueEstAfter = (Float1dPort) getInPort("taxicValueEstimationAfter");
 			Float1dPort rlValueEstBefore = (Float1dPort) getInPort("rlValueEstimationBefore");
 			Float1dPort rlValueEstAfter = (Float1dPort) getInPort("rlValueEstimationAfter");
-			FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
+			Float2dPort value = (Float2dPort) getInPort("value");
 			// Gets the active state as computed at the beginning of the cycle
 			int a = takenAction.get();
 
@@ -224,7 +224,7 @@ public class MultiStateACTaxic extends Module implements QLAlgorithm {
 	 * @param stateTraces The eligibility traces activation for the states
 	 * @param actionTraces The eligiblity traces activation for the state-action pairs
 	 */ 
-	private void updateLastAction(int sBefore, int a, Float1dSparsePort statesBefore, FloatMatrixPort value,
+	private void updateLastAction(int sBefore, int a, Float1dSparsePort statesBefore, Float2dPort value,
 			Float0dPort reward, Float1dPort taxicValueEstBefore, Float1dPort taxicValueEstAfter,
 			Float1dPort rlValueEstBefore, Float1dPort rlValueEstAfter, float[] stateTraces, float[][] actionTraces) {
 		// Error in estimation

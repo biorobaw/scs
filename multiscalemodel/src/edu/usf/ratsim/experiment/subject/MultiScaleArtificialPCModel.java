@@ -21,7 +21,8 @@ import edu.usf.micronsl.port.Port;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
-import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
+import edu.usf.micronsl.port.twodimensional.Float2dPort;
+import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePortMatrix;
 import edu.usf.ratsim.nsl.modules.actionselection.DecayingExplorationSchema;
 import edu.usf.ratsim.nsl.modules.actionselection.GradientValue;
 import edu.usf.ratsim.nsl.modules.actionselection.GradientVotes;
@@ -64,6 +65,7 @@ public class MultiScaleArtificialPCModel extends Model {
 	private float[][] value;
 	private int numActions;
 	private QLAlgorithm rlAlg;
+	private Float2dSparsePortMatrix valuePort;
 
 	public MultiScaleArtificialPCModel() {
 	}
@@ -183,10 +185,10 @@ public class MultiScaleArtificialPCModel extends Model {
 		// Create value matrix
 		int numStates = ((Float1dPort) jointPCHDIntentionState
 				.getOutPort("jointState")).getSize();
-		value = new float[numStates][numActions + 1];
+//		value = new float[numStates][numActions + 1];
 		// for (int i = 0; i < numStates; i++)
 		// value[i][numActions] = .5f;
-		FloatMatrixPort valuePort = new FloatMatrixPort((Module) null, value);
+		valuePort = new Float2dSparsePortMatrix((Module) null, numStates, numActions+1);
 
 		List<Port> votesPorts = new LinkedList<Port>();
 		Module rlVotes;
@@ -521,8 +523,8 @@ public class MultiScaleArtificialPCModel extends Model {
 
 	public float getValueEntropy() {
 		float entropy = 0;
-		for (int i = 0; i < value.length; i++)
-			entropy += Math.abs(value[i][numActions]);
+		for (int i = 0; i < valuePort.getNRows(); i++)
+			entropy += Math.abs(valuePort.get(i,numActions));
 		return entropy;
 	}
 
