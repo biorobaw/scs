@@ -133,7 +133,7 @@
 	<!-- Group definition. The order determines order of execution -->
 	<group>
 		<name>Ventral</name>
-		<numMembers>8</numMembers>
+		<numMembers>16</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -142,7 +142,7 @@
 	
 	<group>
 		<name>Dorsal</name>
-		<numMembers>8</numMembers>
+		<numMembers>16</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -151,7 +151,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>8</numMembers>
+		<numMembers>16</numMembers>
 		<params>
 		</params>
 		<tasks>
