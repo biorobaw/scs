@@ -121,7 +121,7 @@
 			<maxAttentionSpan>20</maxAttentionSpan>
 			<!-- Duration of still exploration actions -->
 			<maxActionsSinceForward>10</maxActionsSinceForward>
-			<stillExplorationVal>2000</stillExplorationVal>
+			<stillExplorationVal>1000</stillExplorationVal>
 			<!-- Map dimensions for conjuntive cell placing -->
 			<xmin>-.5</xmin>
 			<ymin>-.5</ymin>
