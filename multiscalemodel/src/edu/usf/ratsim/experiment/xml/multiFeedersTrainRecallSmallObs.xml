@@ -133,7 +133,7 @@
 	<!-- Group definition. The order determines order of execution -->
 	<group>
 		<name>Ventral</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -142,7 +142,7 @@
 	
 	<group>
 		<name>Dorsal</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -151,7 +151,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -257,9 +257,9 @@
 					<params>
 					</params>
 				</logger>
-				<logger>
-					<name>edu.usf.ratsim.experiment.log.ValueEntropyLogger</name>
-				</logger>
+<!--				<logger>-->
+<!--					<name>edu.usf.ratsim.experiment.log.ValueEntropyLogger</name>-->
+<!--				</logger>-->
 				<!--<logger> <name>edu.usf.experiment.log.ValueLogger</name> <params> <circle>false</circle>
 					<interval>.1</interval> <angleInterval>.78</angleInterval> <numIntentions>1</numIntentions>
 					</params> </logger>-->
@@ -424,9 +424,9 @@
 				<logger>
 					<name>edu.usf.experiment.log.FeedingLogger</name>
 				</logger>
-				<logger>
-					<name>edu.usf.ratsim.experiment.log.ValueEntropyLogger</name>
-				</logger>
+<!--				<logger>-->
+<!--					<name>edu.usf.ratsim.experiment.log.ValueEntropyLogger</name>-->
+<!--				</logger>-->
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->
 			<afterEpisodeLoggers>
@@ -617,9 +617,7 @@
 				<logger>
 					<name>edu.usf.experiment.log.FeedingLogger</name>
 				</logger>
-				<logger>
-					<name>edu.usf.ratsim.experiment.log.ValueEntropyLogger</name>
-				</logger>
+
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->
 			<afterEpisodeLoggers>
@@ -802,9 +800,7 @@
 				<logger>
 					<name>edu.usf.experiment.log.FeedingLogger</name>
 				</logger>
-				<logger>
-					<name>edu.usf.ratsim.experiment.log.ValueEntropyLogger</name>
-				</logger>
+
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->
 			<afterEpisodeLoggers>
