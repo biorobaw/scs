@@ -3,22 +3,21 @@ package edu.usf.ratsim.experiment.universe.virtual;
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
 
-import javax.media.j3d.Appearance;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.ImageComponent2D;
-import javax.media.j3d.Material;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.media.j3d.View;
 import javax.vecmath.AxisAngle4d;
-import javax.vecmath.Color3f;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
-import com.sun.j3d.utils.geometry.Cone;
-import com.sun.j3d.utils.geometry.Cylinder;
+import com.microcrowd.loader.java3d.max3ds.Loader3DS;
+import com.sun.j3d.loaders.Scene;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
 import edu.usf.experiment.utils.ElementWrapper;
@@ -41,12 +40,12 @@ public class RobotNode extends ExpUniverseNode {
 		float y = params.getChildFloat("y");
 		float z = params.getChildFloat("z");
 		float theta = params.getChildFloat("theta");
-		
+
 		// Initialize the transform group
 		// Keep it public to move the robot in the future
 		Transform3D rPos = new Transform3D();
 		rPos.setTranslation(new Vector3f(x, y, z));
-		rPos.setRotation(new AxisAngle4d(new Vector3d(0,0,1), theta));
+		rPos.setRotation(new AxisAngle4d(new Vector3d(0, 0, 1), theta));
 		tg = new TransformGroup();
 		tg.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
 		tg.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
@@ -58,21 +57,33 @@ public class RobotNode extends ExpUniverseNode {
 		BranchGroup robotBG = new BranchGroup();
 		tg.addChild(robotBG);
 
-		// Create the cylinder for the robot
-		Appearance app = new Appearance();
-		Material mat = createMaterial(new Color3f(1f, 0f, .5f));
-		app.setMaterial(mat);
-		TransformGroup cylTG = new TransformGroup();
-		Transform3D cylT = new Transform3D();
-		cylT.rotZ(Math.toRadians(90));
-		cylTG.setTransform(cylT);
-		Cylinder bodyCylinder = new Cylinder(0.05f, 0.10f, app);
-		cylTG.addChild(bodyCylinder);
-		robotBG.addChild(cylTG);
+		Loader3DS myOBJ = new Loader3DS();
+		Scene myOBJScene = null;
+
+		// Attempt to load in the OBJ content using ObjectFile.
+		try {
+			if (! new File("./rat.3ds"	).exists())
+				System.out.println("File for rat model missing");
+			myOBJScene = myOBJ.load("./rat.3ds");
+			// myOBJScene = myOBJ.load("C:\\workspace\\Java3D\\troll.obj");
+		} catch (FileNotFoundException e) {
+			System.out.println("Could not open OBJ file...exiting");
+			System.exit(1);
+		}
+
+		Transform3D scale = new Transform3D();
+		scale.setScale(.001);
+		scale.setRotation(new AxisAngle4d(new Vector3d(1, 0, 0), Math.PI / 2));
+		TransformGroup scaleTG = new TransformGroup();
+		scaleTG.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+		scaleTG.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		scaleTG.setTransform(scale);
+		tg.addChild(scaleTG);
+		scaleTG.addChild(myOBJScene.getSceneGroup());
 
 		// Transforms
 		Vector3f robotCameraOffset = new Vector3f(0.1f, 0, CAMERA_HEIGHT);
-		TransformGroup camTG = new TransformGroup(); 
+		TransformGroup camTG = new TransformGroup();
 		Transform3D camT = new Transform3D();
 		camT.setTranslation(robotCameraOffset);
 		Transform3D camRot = new Transform3D();
@@ -83,18 +94,6 @@ public class RobotNode extends ExpUniverseNode {
 		camT.mul(camRot);
 		camTG.setTransform(camT);
 		robotBG.addChild(camTG);
-
-		// Camera cone
-		TransformGroup cConeTG = new TransformGroup();
-		Transform3D cConeT = new Transform3D();
-		cConeT.rotX(Math.toRadians(90));
-		cConeTG.setTransform(cConeT);
-		app = new Appearance();
-		mat = createMaterial(new Color3f(0.5f, 0.5f, 0f));
-		app.setMaterial(mat);
-		Cone viewCone = new Cone(0.05f, 0.1f, app);
-		cConeTG.addChild(viewCone);
-		camTG.addChild(cConeTG);
 
 		// Add on-screen views
 		for (int i = 0; i < NUM_ROBOT_VIEWS; i++) {
@@ -113,24 +112,17 @@ public class RobotNode extends ExpUniverseNode {
 		if (display) {
 			offScreenCanvas = new Canvas3D[NUM_ROBOT_VIEWS];
 			offScreenImages = new ImageComponent2D[NUM_ROBOT_VIEWS];
-			GraphicsConfiguration config = SimpleUniverse
-					.getPreferredConfiguration();
+			GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
 			for (int i = 0; i < NUM_ROBOT_VIEWS; i++) {
 				offScreenCanvas[i] = new Canvas3D(config, true);
-				offScreenImages[i] = new ImageComponent2D(
-						ImageComponent2D.FORMAT_RGB, new BufferedImage(
-								IMAGE_WIDTH, IMAGE_HEIGHT,
-								BufferedImage.TYPE_INT_RGB));
-				offScreenImages[i]
-						.setCapability(ImageComponent2D.ALLOW_IMAGE_READ);
+				offScreenImages[i] = new ImageComponent2D(ImageComponent2D.FORMAT_RGB,
+						new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB));
+				offScreenImages[i].setCapability(ImageComponent2D.ALLOW_IMAGE_READ);
 				robotViews[i].addCanvas3D(offScreenCanvas[i]);
 				offScreenCanvas[i].setOffScreenBuffer(offScreenImages[i]);
-				offScreenCanvas[i].getScreen3D().setPhysicalScreenWidth(
-						0.0254d / 90.0 * IMAGE_WIDTH);
-				offScreenCanvas[i].getScreen3D().setPhysicalScreenHeight(
-						0.0254d / 90.0 * IMAGE_HEIGHT);
-				offScreenCanvas[i].getScreen3D().setSize(
-						new Dimension(IMAGE_WIDTH, IMAGE_HEIGHT));
+				offScreenCanvas[i].getScreen3D().setPhysicalScreenWidth(0.0254d / 90.0 * IMAGE_WIDTH);
+				offScreenCanvas[i].getScreen3D().setPhysicalScreenHeight(0.0254d / 90.0 * IMAGE_HEIGHT);
+				offScreenCanvas[i].getScreen3D().setSize(new Dimension(IMAGE_WIDTH, IMAGE_HEIGHT));
 			}
 		}
 	}
