@@ -17,6 +17,7 @@ import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
+
 public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 
 	public float[] votes;

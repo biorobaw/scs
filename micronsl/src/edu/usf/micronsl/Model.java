@@ -136,4 +136,9 @@ public class Model {
 		for (Module m : moduleList)
 			m.newEpisode();
 	}
+	
+	public void newTrial(){
+		for (Module m : moduleList)
+			m.newTrial();
+	}
 }

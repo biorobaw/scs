@@ -10,7 +10,6 @@ import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.ratsim.experiment.subject.TSPSubject;
 
 public class PCActivityLogger extends Logger {
 

@@ -60,11 +60,11 @@ ratPathPointsPlot <- function(pathData, p){
 }
 
 ratStartPointPlot <- function (pathData, p){
-  p + geom_point(data=head(pathData, n=1), aes(x,y), col="red", bg="red",cex=4)
+  p + geom_point(data=head(pathData, n=1), aes(x,y), col="red", bg="red",cex=1)
 }
 
 ratEndPointPlot <- function (pathData, p){
-  p + geom_point(data=tail(pathData, n=1),aes(x,y), col="blue", bg="blue", cex=1)
+  p + geom_point(data=tail(pathData, n=1),aes(x,y), col="green", bg="green", cex=1)
 }
 
 stopPointsPlot <- function (pathData) {
@@ -113,8 +113,8 @@ plotPathOnMaze <- function (preName, name, pathData, wallData, maze){
   p <- ggplot()
   p <- ratPathPlot(pathData, p)
   #  p <- ratPathPointsPlot(pathData, p)
-  #p <- ratStartPointPlot(pathData, p)
-  #p <- ratEndPointPlot(pathData, p)
+  p <- ratStartPointPlot(pathData, p)
+  p <- ratEndPointPlot(pathData, p)
   
   #p <- p + stopPointsPlot(pathData)
  
@@ -151,10 +151,18 @@ load(pathFile)
 pathData <- data
 load(wallsFile)
 wallData <- data
-load(feedersFile)
-feedersData <- data
+if (file.exists(feedersFile)) {
+	load(feedersFile)
+  feedersData <- data
+  if (nrow(feeders) > 0)
+  	maze <- mazePlot(feedersData)
+  else
+    maze <- list()
+} else {
+	maze <- list()
+}
 
-maze <- mazePlot(feedersData)
+
 
 splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 splitWalls <- split(wallData, wallData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)

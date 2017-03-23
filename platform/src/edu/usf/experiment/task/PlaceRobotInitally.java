@@ -6,8 +6,8 @@ import javax.vecmath.Point4f;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
-import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.CSVReader;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -53,23 +53,8 @@ public class PlaceRobotInitally extends Task{
 
 	}
 
-	@Override
-	public void perform(Experiment experiment) {
-		perform(experiment.getUniverse());
-	}
-
-	@Override
-	public void perform(Trial trial) {
-		perform(trial.getUniverse());
-	}
-
-	@Override
-	public void perform(Episode episode) {
-		perform(episode.getUniverse());
-	}
-
-	private void perform(Universe universe) {
-		universe.setRobotPosition(new Point2D.Float(initPos.x, initPos.y), initPos.w);
+	public void perform(Universe u, Subject s){
+		u.setRobotPosition(new Point2D.Float(initPos.x, initPos.y), initPos.w);
 	}
 
 }

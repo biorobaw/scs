@@ -13,7 +13,7 @@ import edu.usf.experiment.utils.ElementWrapper;
 public class WallNode extends ExpUniverseNode {
 
 	private static final float WALL_HEIGHT = 0.1f;
-	final float RADIO = 0.005f;
+	final float RADIO = 0.01f;
 	public float x1;
 	public float y1;
 	public float z1;

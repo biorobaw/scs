@@ -1,9 +1,7 @@
 package edu.usf.experiment.task;
 
-import edu.usf.experiment.Episode;
-import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Globals;
-import edu.usf.experiment.Trial;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.CSVReader;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -28,27 +26,7 @@ public class AddAllFeedersTask extends Task{
 		
 	}
 
-	@Override
-	public void perform(Experiment experiment) {
-		// TODO Auto-generated method stub
-		perform(experiment.getUniverse());
-		
-	}
-
-	@Override
-	public void perform(Trial trial) {
-		// TODO Auto-generated method stub
-		perform(trial.getUniverse());
-	}
-
-	@Override
-	public void perform(Episode episode) {
-		// TODO Auto-generated method stub
-		perform(episode.getUniverse());
-		
-	}
-	
-	private void perform(Universe univ){
+	public void perform(Universe u, Subject s) {
 		//parse feederfile and create feeders
 		if (feedersFile==null) return;
 		
@@ -62,7 +40,7 @@ public class AddAllFeedersTask extends Task{
 					id++;
 					Float x = Float.parseFloat(line[0]);
 					Float y = Float.parseFloat(line[1]);
-					univ.addFeeder(id, x, y);
+					u.addFeeder(id, x, y);
 					
 				}
 			}

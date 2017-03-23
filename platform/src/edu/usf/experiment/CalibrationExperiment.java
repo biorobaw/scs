@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.experiment.utils.IOUtils;
 import edu.usf.experiment.utils.XMLExperimentParser;
 
 public class CalibrationExperiment {

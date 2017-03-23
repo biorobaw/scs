@@ -6,10 +6,8 @@ import java.util.Random;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.experiment.Episode;
-import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Globals;
-import edu.usf.experiment.Trial;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.CSVReader;
@@ -35,28 +33,8 @@ public class AddNFeedersFromFileTask extends Task{
 		}
 		
 	}
-
-	@Override
-	public void perform(Experiment experiment) {
-		// TODO Auto-generated method stub
-		perform(experiment.getUniverse());
-		
-	}
-
-	@Override
-	public void perform(Trial trial) {
-		// TODO Auto-generated method stub
-		perform(trial.getUniverse());
-	}
-
-	@Override
-	public void perform(Episode episode) {
-		// TODO Auto-generated method stub
-		perform(episode.getUniverse());
-		
-	}
 	
-	private void perform(Universe univ){
+	public void perform(Universe u, Subject s){
 		//parse feederfile and create feeders
 		if (feedersFile==null) return;
 		
@@ -86,7 +64,7 @@ public class AddNFeedersFromFileTask extends Task{
 			Feeder f = allFeeders.remove(item);
 			// Set the id incremental to avoid gaps
 			f.setId(i);
-			univ.addFeeder(f);
+			u.addFeeder(f);
 		}
 			
 		

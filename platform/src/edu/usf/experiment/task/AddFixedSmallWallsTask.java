@@ -1,9 +1,5 @@
 package edu.usf.experiment.task;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-
 import javax.vecmath.Point2f;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -19,7 +15,6 @@ import edu.usf.experiment.subject.SubjectLoader;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.experiment.utils.XMLExperimentParser;
 
 public class AddFixedSmallWallsTask extends Task {
@@ -38,22 +33,7 @@ public class AddFixedSmallWallsTask extends Task {
 
 	}
 
-	@Override
-	public void perform(Experiment experiment) {
-		perform(experiment.getUniverse(), experiment.getSubject());
-	}
-
-	@Override
-	public void perform(Trial trial) {
-		perform(trial.getUniverse(), trial.getSubject());
-	}
-
-	@Override
-	public void perform(Episode episode) {
-		perform(episode.getUniverse(), episode.getSubject());
-	}
-
-	private void perform(Universe univ, Subject sub) {
+	public void perform(Universe univ, Subject s) {
 //		addOuterWall(Math.PI/8, false, univ);
 //		addOuterWall(3*Math.PI/8, true, univ);
 //		addOuterWall(7*Math.PI/8, false, univ);
