@@ -125,6 +125,8 @@ public class Experiment implements Runnable {
 //		g.put("group", groupName);
 //		g.put("subject", subjectName);
 		g.put("maze.file",logPath + "maze.xml");
+		g.put("group",groupName);
+		g.put("subName", subjectName);
 		//g.put("log.directory", logPath);
 		
 		
