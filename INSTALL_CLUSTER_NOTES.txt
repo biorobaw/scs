@@ -1,0 +1,14 @@
+HOW TO INSTALL RLIBS IN CLUSTER:
+
+ln -s /work/p/pablos/ ~/work
+cd ~/work
+mkdir rlibs
+export R_LIBS=/work/p/pablos/rlibs/
+git clone ....
+cd scs
+#load R module from list of modules in cluster
+#execute next lines in R
+R
+load("installedpackages.rda")
+for (count in 1:length(installedpackages)) install.packages(installedpackages[count])
+#choose server and leave compiling

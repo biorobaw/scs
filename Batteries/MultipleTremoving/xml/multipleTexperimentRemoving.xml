@@ -72,7 +72,7 @@
 			<cantReplay>200</cantReplay>
 			<!-- threshold to propagate PC activation during 
 			     sleep state. Should be numPC/50           -->
-			<replayThres>1.0</replayThres>
+			<replayThres>10</replayThres>
 			
 			<!-- number of directions the rat con move towards -->
 			<numActions>8</numActions>
@@ -116,7 +116,7 @@
 		</tasks>
 	</group>
 	
-	<group>
+	<!-- <group>
 		<name>NoHab</name>
 		<numMembers>8</numMembers>
 		<params>
@@ -133,7 +133,7 @@
 		</params>
 		<tasks>
 		</tasks>
-	</group>
+	</group> -->
 	
 	
 	
@@ -196,18 +196,6 @@
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
-			<task>
-				<name>edu.usf.experiment.task.AddFeederTask</name>
-				<params>
-					<id>1</id>
-					<x>0</x> 
-					<y>10.5</y> 
-				</params>
-			</task>
-
-			<task>
-				<name>edu.usf.experiment.task.SetAllFeedersPermanentFood</name>
-			</task>
 			
 		
 		</beforeTrialTasks>
@@ -358,12 +346,6 @@
 				<name>edu.usf.experiment.task.SetAllFeedersPermanentFood</name>
 			</task>
 			
-			<task>
-				<name>edu.usf.ratsim.experiment.subject.multipleT.auxiliary.ChangeRewardValue</name>
-				<params>
-					<reward>0</reward>
-				</params>
-			</task>
 			
 			
 		
