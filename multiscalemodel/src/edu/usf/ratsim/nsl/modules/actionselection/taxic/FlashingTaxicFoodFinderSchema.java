@@ -65,7 +65,8 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 //		System.out.println("Feeder close: " + robot.isFeederClose());
 //		System.out.println("Feeder to eat: " + feederToEat);
 //		if (robot.seesFlashingFeeder()){
-//			System.out.println("Seeing flashing feeder");
+//			System.out.println("Seeing flashing feeder " + robot.getFlashingFeeder().getId() + " " + robot
+//					.getClosestFeeder().getId());
 //		}
 		float maxValue = 0;
 		int index = -1;
@@ -89,6 +90,7 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 					}
 				} else if (af instanceof EatAffordance) {
 					if (feederToEat) {
+//						System.out.println("Assigning value to eat");
 						// value += getFeederValue(robot.getClosestFeeder()
 						// .getPosition());
 						value += reward;

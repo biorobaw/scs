@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.SonarRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
@@ -43,6 +44,7 @@ import edu.usf.ratsim.nsl.modules.celllayer.RndConjCellLayer;
 import edu.usf.ratsim.nsl.modules.goaldecider.LastTriedToEatGoalDecider;
 import edu.usf.ratsim.nsl.modules.goaldecider.OneThenTheOtherGoalDecider;
 import edu.usf.ratsim.nsl.modules.input.ClosestFeeder;
+import edu.usf.ratsim.nsl.modules.input.SonarReadings;
 import edu.usf.ratsim.nsl.modules.input.SubjectAte;
 import edu.usf.ratsim.nsl.modules.input.SubjectTriedToEat;
 import edu.usf.ratsim.nsl.modules.intention.Intention;
@@ -270,9 +272,14 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		// Get votes from QL and other behaviors and perform an action
 		// One vote per layer (one now) + taxic + wf
+		SonarReadings sReadings = new SonarReadings("Sonar Readings", (SonarRobot) lRobot);
+		addModule(sReadings);
+		
 		NoExploration actionPerformer = new NoExploration("Action Performer",
 				subject);
 		actionPerformer.addInPort("votes", jointVotes.getOutPort("jointState"));
+		actionPerformer.addInPort("sonarReadings", sReadings.getOutPort("sonarReadings"));
+		actionPerformer.addInPort("sonarAngles", sReadings.getOutPort("sonarAngles"));
 		addModule(actionPerformer);
 		// State calculation should be done after movement
 		for (RndConjCellLayer ccl : conjCellLayers)

@@ -18,6 +18,13 @@ public class BugUtilities {
 	private static final float WL_FW_TARGET = OBSTACLE_FOUND_THRS;   	
 	private static final float WF_MIN_FW_VEL = .01f;
 	private static final float WF_ROT_VEL_OBS_FRONT = .2f;
+	
+	public static Velocities goalSeekRelative(Point3f goalPos) {
+		float linear, angular; 
+		linear = PROP_LINEAR_GS * goalPos.distance(new Point3f());
+		angular = -PROP_ANGULAR_GS * GeomUtils.rotToAngle(GeomUtils.angleToPoint(goalPos));
+		return new Velocities(linear, angular);
+	}
 
 	public static Velocities goalSeek(Point3f rPos, float rOrient, Point3f platPos) {
 		float linear, angular; 
@@ -27,15 +34,18 @@ public class BugUtilities {
 		return new Velocities(linear, angular);
 	}
 
-	public static Velocities wallFollow(float left, float leftfw, float front) {
+	public static Velocities wallFollow(float left, float leftfw, float front, Point3f goal) {
 		float linear, angular; 
 		
 		if (front < OBSTACLE_FOUND_THRS){
-			System.out.println("Obstacle found");
-			angular = -WF_ROT_VEL_OBS_FRONT;
+//			System.out.println("Obstacle found");
+			if (GeomUtils.rotToAngle(GeomUtils.angleToPoint(goal)) > 0)
+				angular = WF_ROT_VEL_OBS_FRONT;
+			else
+				angular = -WF_ROT_VEL_OBS_FRONT;
 			linear = 0;
 		} else {
-			System.out.println("Following Wall");
+//			System.out.println("Following Wall");
 			// Get the current relation and the target relation (wall parallel
 			// to robot)
 			float quot = left / leftfw;

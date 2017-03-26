@@ -9,7 +9,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>false</display>
+			<display>true</display>
 		</params>
 	</universe>
 	
@@ -20,7 +20,7 @@
 			<!-- Percentual translational noise -->
 			<noise>.2</noise>
 			<!-- Rotation noise added after translation -->
-			<translationRotationNoise>.195</translationRotationNoise>
+			<translationRotationNoise>.0195</translationRotationNoise>
 			<!-- How many steps are projected for obstacle avoidance purpose -->
 			<lookaheadSteps>1</lookaheadSteps>
 			<!-- Half the field of view of the rat -->
@@ -30,6 +30,12 @@
 			<!-- How far away can the robot eat food. This should be shorter than the universe
 				threshold -->
 			<closeThrs>.1</closeThrs>
+			
+			<sonarAngles>0, 0.79, 1.57, 2.36, 3.14, 3.93, 4.71, 5.5</sonarAngles>
+			<sonarAperture>0.79</sonarAperture>
+			<sonarMaxDist>2</sonarMaxDist>
+			<sonarNumRays>9</sonarNumRays>
+			
 		</params>
 	</robot>
 	
@@ -214,7 +220,7 @@
 			<!-- Number of episodes -->
 			<number>1</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>0</sleep>
+			<sleep>10</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Flash one of the feeders -->

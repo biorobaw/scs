@@ -278,26 +278,7 @@ public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 	@Override
 	public List<Affordance> checkAffordances(List<Affordance> affs) {
 		for (Affordance af : affs) {
-			boolean realizable;
-			if (af instanceof TurnAffordance) {
-				TurnAffordance ta = (TurnAffordance) af;
-				// Either it can move there, or it cannot move forward and the
-				// other angle is not an option
-				realizable = !universe.canRobotMove(0, ROBOT_LENGTH * lookaheadSteps)
-						// && !canRobotMove(-ta.getAngle(), ROBOT_LENGTH))
-						|| universe.canRobotMove(ta.getAngle(), ROBOT_LENGTH * lookaheadSteps);
-				// realizable = true;
-			} else if (af instanceof ForwardAffordance)
-				realizable = universe.canRobotMove(0, ROBOT_LENGTH * lookaheadSteps);
-			else if (af instanceof EatAffordance) {
-				// realizable = hasRobotFoundFood();
-				if (getClosestFeeder() != null)
-					realizable = getClosestFeeder().getPosition().distance(new Point3f()) < closeThrs;
-				else
-					realizable = false;
-			} else
-				throw new RuntimeException("Affordance " + af.getClass().getName() + " not supported by robot");
-
+			boolean realizable = checkAffordance(af);
 			af.setRealizable(realizable);
 		}
 
@@ -323,10 +304,10 @@ public class VirtualRobot extends LocalizableRobot implements SonarRobot {
 				realizable = getClosestFeeder().getPosition().distance(new Point3f()) < closeThrs;
 			else
 				realizable = false;
+//			System.out.println("Eating realizable: " + realizable);
 		} else
 			throw new RuntimeException("Affordance " + af.getClass().getName() + " not supported by robot");
-
-		af.setRealizable(realizable);
+		
 		return realizable;
 
 	}
