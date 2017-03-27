@@ -87,7 +87,7 @@
 			<!-- Alpha for the learning algorithm -->
 			<alpha>.5</alpha>
 			<!-- Elegibility traces for the learning algorithm -->
-			<tracesDecay>.85</tracesDecay>
+			<tracesDecay>.9</tracesDecay>
 			<!-- Initial value for values and action values -->
 			<initialValue>0</initialValue>
 			<!-- Value associated with a flashing feeder -->
@@ -133,7 +133,7 @@
 	<!-- Group definition. The order determines order of execution -->
 	<group>
 		<name>Ventral</name>
-		<numMembers>16</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -142,7 +142,7 @@
 	
 	<group>
 		<name>Dorsal</name>
-		<numMembers>16</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -151,15 +151,6 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>16</numMembers>
-		<params>
-		</params>
-		<tasks>
-		</tasks>
-	</group>
-	
-	<group>
-		<name>TimeoutControl</name>
 		<numMembers>64</numMembers>
 		<params>
 		</params>
@@ -167,6 +158,15 @@
 		</tasks>
 	</group>
 	
+<!--	<group>
+		<name>TimeoutControl</name>
+		<numMembers>64</numMembers>
+		<params>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+-->	
 	<!-- <group> <name>NegControl</name> <numMembers>64</numMembers> <params> </params>
 		<tasks> </tasks> </group> <group> <name>TimeoutControl</name> <numMembers>64</numMembers>
 		<params> </params> <tasks> </tasks> </group> -->
@@ -293,7 +293,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>100000</max>
+						<max>10000</max>
 					</params>
 				</condition>
 				<!-- Has eaten from 100 feeders -->
@@ -453,7 +453,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>200000</max>
+						<max>50000</max>
 					</params>
 				</condition>
 				<!-- Has eaten from 15 feeders with no errors and only up to two flashing feeders
@@ -645,7 +645,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>200000</max>
+						<max>50000</max>
 					</params>
 				</condition>
 				<!-- Has eaten from 15 feeders with no errors and only up to two flashing feeders
@@ -828,7 +828,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>200000</max>
+						<max>50000</max>
 					</params>
 				</condition>
 				<!-- Has eaten from 15 feeders with no errors and only up to two flashing feeders
