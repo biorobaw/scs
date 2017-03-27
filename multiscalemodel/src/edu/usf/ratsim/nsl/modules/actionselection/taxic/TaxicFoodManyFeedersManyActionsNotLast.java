@@ -15,7 +15,7 @@ import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
-import edu.usf.micronsl.port.singlevalue.Int0dPort;
+import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
 
 public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 
@@ -51,9 +51,6 @@ public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 	 * goal).
 	 */
 	public void run() {
-		Int0dPort goalFeeder = (Int0dPort) getInPort("goalFeeder");
-		int excludeFeeders[] = {goalFeeder.get()};
-		
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;
 
@@ -71,7 +68,7 @@ public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 				if (af instanceof TurnAffordance
 						|| af instanceof ForwardAffordance) {
 					if (!feederToEat) {
-						for (Feeder f : robot.getVisibleFeeders(excludeFeeders)) {
+						for (Feeder f : robot.getVisibleFeeders(null)) {
 							if (f != null) {
 								Point3f newPos = GeomUtils.simulate(
 										f.getPosition(), af);
