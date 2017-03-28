@@ -13,6 +13,7 @@ import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
+import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
@@ -30,7 +31,7 @@ import edu.usf.ratsim.support.SonarUtils;
 public class NoExploration extends Module {
 
 	private static final float STEP = 0.3f;
-	private static final int CONTROL_ITERATIONS = 20;
+	private static final int CONTROL_ITERATIONS = 5;
 	/**
 	 * The robot interface used to perform actions
 	 */
@@ -112,20 +113,25 @@ public class NoExploration extends Module {
 				angle = ((TurnAffordance)selectedAction).getAngle();
 			
 			
+			
+			Point3f relGoal = new Point3f(STEP * (float) Math.cos(angle), STEP * (float)Math.sin(angle), 0);
+			LocalizableRobot lrobot = (LocalizableRobot)robot;
+			Point3f goal = GeomUtils.transformPoint(relGoal, lrobot.getPosition(), lrobot.getOrientationAngle());
+			
 			for (int i = 0; i < CONTROL_ITERATIONS; i++){
 				float front = SonarUtils.getReading(0f, readings, angles);
 				float left = SonarUtils.getReading((float) (Math.PI/2), readings, angles);
 				float leftFront = SonarUtils.getReading((float) (Math.PI/4), readings, angles);
 				Velocities v = new Velocities();	
-				Point3f goal = new Point3f(STEP * (float) Math.cos(angle), STEP * (float)Math.sin(angle), 0);
+				
 				if (SonarUtils.getReading(angle, readings, angles) < BugUtilities.CLOSE_THRS/2)
 					v = BugUtilities.wallFollow(left, leftFront, front, goal);
 				else {
 					
-					v = BugUtilities.goalSeekRelative(goal);
+					v = BugUtilities.goalSeek(lrobot.getPosition(), lrobot.getOrientationAngle(), goal);
 				}
 				if (v.angular != 0)
-					robot.rotate(-v.angular);
+					robot.rotate(v.angular);
 				if (v.linear != 0)
 					robot.forward(v.linear);
 			}

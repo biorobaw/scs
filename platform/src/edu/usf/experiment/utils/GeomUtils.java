@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import javax.media.j3d.Transform3D;
+import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
@@ -265,6 +266,14 @@ public class GeomUtils {
 			return position;
 		} else 
 			throw new RuntimeException("Simulation of unknown affordance");
+	}
+
+	public static Point3f transformPoint(Point3f p, Point3f t, float angle) {
+		Transform3D tf = new Transform3D();
+		tf.setTranslation(new Vector3f(t.x,t.y,t.z));
+		tf.setRotation(new AxisAngle4f(new Vector3f(0,0,1), angle));
+		tf.transform(p);
+		return p;
 	}
 
 }

@@ -111,7 +111,7 @@
 			<!-- TODO: take out -->
 			<cellContribution>1</cellContribution>
 			<!-- Value assigned to exploration action-values -->
-			<explorationReward>0</explorationReward>
+			<explorationReward>01</explorationReward>
 			<!-- Half life value for decay exploration -->
 			<explorationHalfLifeVal>1</explorationHalfLifeVal>
 			<!-- Value assigned to wall actions for the wall taxic modules -->
@@ -552,7 +552,7 @@
 			<!-- Number of episodes -->
 			<number>1</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>0</sleep>
+			<sleep>500</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Turn of the flash of all the feeders -->
@@ -739,7 +739,7 @@
 			<!-- Number of episodes -->
 			<number>1</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>0</sleep>
+			<sleep>100</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Turn of the flash of all the feeders -->
