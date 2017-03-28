@@ -97,7 +97,7 @@ public class TSPModelKnownIDAC extends Model {
 			RndConjCellLayer ccl = new RndConjCellLayer("CCL " + i, lRobot,
 					radius, 0, 0, numIntentions, numCCCellsPerLayer.get(i),
 					"ExponentialPlaceIntentionCell", xmin, ymin, xmax, ymax,
-					lRobot.getAllFeeders(), 0, layerLengths.get(i), 0);
+					lRobot.getAllFeeders(), 0, layerLengths.get(i), 10, 0);
 			ccl.addInPort("intention", intention.getOutPort("intention"));
 			conjCellLayers.add(ccl);
 			conjCellLayersPorts.add(ccl.getOutPort("activation"));

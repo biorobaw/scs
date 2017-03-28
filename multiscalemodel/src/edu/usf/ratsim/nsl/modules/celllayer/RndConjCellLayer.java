@@ -113,13 +113,15 @@ public class RndConjCellLayer extends Module {
 	 * @param wallInhibition
 	 *            A parameter passed to wall modulated cells
 	 *            (WallExponentialConjCell).
+	 * @param wallParamB 
+	 * @param wallParamA 
 	 */
 	public RndConjCellLayer(String name, LocalizableRobot robot,
 			float placeRadius, float minDirectionRadius,
 			float maxDirectionRadius, int numIntentions, int numCells,
 			String placeCellType, float xmin, float ymin, float xmax,
 			float ymax, List<Feeder> goals, float nearGoalProb,
-			float layerLength, float wallInhibition) {
+			float layerLength, float wallParamA, float wallParamB) {
 		super(name);
 
 		if (!(placeCellType.equals("ExponentialPlaceIntentionCell")
@@ -172,7 +174,7 @@ public class RndConjCellLayer extends Module {
 			} else if (placeCellType.equals("ExponentialWallConjCell")) {
 				cells.add(new ExponentialWallConjCell(prefLocation,
 						preferredDirection, placeRadius, directionRadius,
-						preferredIntention, wallInhibition, random));
+						preferredIntention, wallParamB, random, wallParamA));
 			}
 
 			i++;
