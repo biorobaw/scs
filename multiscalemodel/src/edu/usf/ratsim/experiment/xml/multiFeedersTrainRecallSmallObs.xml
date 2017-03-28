@@ -158,7 +158,7 @@
 		</tasks>
 	</group>
 	
-<!--	<group>
+	<group>
 		<name>TimeoutControl</name>
 		<numMembers>64</numMembers>
 		<params>
@@ -166,10 +166,14 @@
 		<tasks>
 		</tasks>
 	</group>
--->	
-	<!-- <group> <name>NegControl</name> <numMembers>64</numMembers> <params> </params>
-		<tasks> </tasks> </group> <group> <name>TimeoutControl</name> <numMembers>64</numMembers>
-		<params> </params> <tasks> </tasks> </group> -->
+	<group> 
+		<name>NegControl</name> 
+		<numMembers>64</numMembers> 
+		<params> 
+		</params>
+		<tasks> 
+		</tasks> 
+	</group> 
 	<!-- Task to be performed before the eperiment -->
 	<beforeExperimentTasks>
 		<!-- Enable feeders for the to be able to give food -->
