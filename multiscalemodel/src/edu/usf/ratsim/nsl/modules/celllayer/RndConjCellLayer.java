@@ -174,7 +174,7 @@ public class RndConjCellLayer extends Module {
 			} else if (placeCellType.equals("ExponentialWallConjCell")) {
 				cells.add(new ExponentialWallConjCell(prefLocation,
 						preferredDirection, placeRadius, directionRadius,
-						preferredIntention, wallParamB, random, wallParamA));
+						preferredIntention, random, wallParamA, wallParamB));
 			}
 
 			i++;
