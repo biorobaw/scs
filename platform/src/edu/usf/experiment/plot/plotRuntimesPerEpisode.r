@@ -20,7 +20,7 @@ plotArrival <- function(pathData, plotName){
   p <- p + scale_y_continuous() + scale_x_continuous(breaks= pretty_breaks())
   p <- p + theme(legend.text = element_text(size=20), legend.title = element_text(size=20), text = element_text(size=20)) 
   p <- p + theme(legend.key.height = unit(3,"line"), legend.key.width = unit(3,"line"), legend.position = "right", legend.justification = c(1, 1), legend.background = element_rect(colour = NA, fill = NA))
-  box <- p + geom_boxplot(position="dodge")# + geom_jitter()
+  box <- p + geom_boxplot(position="dodge",notch = true)# + geom_jitter()
   #box <- p + geom_point(aes(color=group), size = 5)
   print(box)
   ggsave(plot=box,filename=paste(plotName, "box.", pathData[1,'trial'],".pdf", sep=''), width=30, height=10)
