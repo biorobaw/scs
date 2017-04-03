@@ -38,6 +38,8 @@ public class MultipleTSubject extends SubjectOld {
 	int cantReplay;
 	int episodesPerSession;
 	float replayThres;
+	
+	boolean matrixCheckPointing = false;
 
 	public VirtualRobot lRobot;
 	public float awakeFoodDistanceThreshold;
@@ -62,6 +64,8 @@ public class MultipleTSubject extends SubjectOld {
 
 		awakeFoodDistanceThreshold = params.getChildFloat("awakeFoodDistanceThreshold");
 		asleepFoodDistanceThreshold = params.getChildFloat("asleepFoodDistanceThreshold");
+		
+		matrixCheckPointing = params.getChildBoolean("matrixCheckPointing");
 
 		// Num actions + 1 for value
 		QTable = new Float2dSparsePortMatrix(null, numPC, numActions+1);
@@ -165,7 +169,7 @@ public class MultipleTSubject extends SubjectOld {
 		super.endEpisode();
 		
 		
-		saveQ("BeforeReplay");
+		if(matrixCheckPointing) saveQ("BeforeReplay");
 		
 //		try {
 //			Thread.sleep(100);
@@ -206,7 +210,7 @@ public class MultipleTSubject extends SubjectOld {
 
 		lRobot.setCloseThreshold(awakeFoodDistanceThreshold);
 				
-		save();
+		if(matrixCheckPointing) save();
 		
 	}
 	

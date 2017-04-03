@@ -73,6 +73,7 @@
 			<!-- threshold to propagate PC activation during 
 			     sleep state. Should be numPC/50           -->
 			<replayThres>1.0</replayThres>
+			<matrixCheckPointing>False</matrixCheckPointing>
 			
 			<!-- number of directions the rat con move towards -->
 			<numActions>8</numActions>
@@ -100,7 +101,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>8</numMembers>
+		<numMembers>2</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -109,7 +110,7 @@
 	
 	<group>
 		<name>Removing</name>
-		<numMembers>8</numMembers>
+		<numMembers>2</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -118,22 +119,22 @@
 	
 	<group>
 		<name>NoHab</name>
-		<numMembers>8</numMembers>
+		<numMembers>2</numMembers>
 		<params>
 		</params>
 		<tasks>
 		</tasks>
 	</group>
 	
-	<group>
+	<!-- <group>
 		<name>NoReplay</name>
-		<numMembers>8</numMembers>
+		<numMembers>2</numMembers>
 		<params>
 			<cantReplay>0</cantReplay>
 		</params>
 		<tasks>
 		</tasks>
-	</group>
+	</group> -->
 	
 	
 	
