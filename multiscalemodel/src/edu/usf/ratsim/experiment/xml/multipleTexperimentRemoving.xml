@@ -101,7 +101,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>2</numMembers>
+		<numMembers>100</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -110,7 +110,7 @@
 	
 	<group>
 		<name>Removing</name>
-		<numMembers>2</numMembers>
+		<numMembers>100</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -119,7 +119,7 @@
 	
 	<group>
 		<name>NoHab</name>
-		<numMembers>2</numMembers>
+		<numMembers>100</numMembers>
 		<params>
 		</params>
 		<tasks>
