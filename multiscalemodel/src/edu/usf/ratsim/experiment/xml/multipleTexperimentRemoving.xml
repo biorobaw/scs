@@ -503,7 +503,7 @@
 		<groups>
 			<group>Control</group>
 			<group>NoHab</group>
-			<group>NoReplay</group>
+			<!-- <group>NoReplay</group> -->
 			<group>Removing</group>
 		</groups>
 		<!-- Tasks to perform beforehand -->
