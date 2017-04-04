@@ -144,6 +144,11 @@
 			</afterCycleTasks>
 			<!-- Loggers to execute after each cycle -->
 			<afterCycleLoggers>
+				<logger>
+					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
+					<params>
+					</params>
+				</logger>
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->
 			<afterEpisodeLoggers>
@@ -168,7 +173,22 @@
 			</stopConditions>
 			<!-- Plotters to execute after each episode -->
 			<afterEpisodePlotters>
-				
+				<!-- Copy the maze file to the episode folder -->
+				<plotter>
+					<name>edu.usf.experiment.plot.CopyMazeFile</name>
+				</plotter>
+				<!-- Convert csv to rdata -->
+				<plotter>
+					<name>edu.usf.experiment.plot.CSVConverter</name>
+				</plotter>
+				<!-- Get time info from position information -->
+				<plotter>
+					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
+				</plotter>
+				<!-- Plot path for each episode -->
+				<plotter>
+					<name>edu.usf.experiment.plot.PathPlotter</name>
+				</plotter>
 			</afterEpisodePlotters>
 		</episodes>
 		<!-- Tasks to perform after the trial has ended -->

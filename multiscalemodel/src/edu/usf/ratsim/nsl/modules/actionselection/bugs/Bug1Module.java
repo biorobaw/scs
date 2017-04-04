@@ -40,8 +40,8 @@ public class Bug1Module extends Module {
 		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
 
 		float front = SonarUtils.getReading(0f, readings, angles);
-		float left = SonarUtils.getReading((float) (Math.PI/2), readings, angles);
-		float leftFront = SonarUtils.getReading((float) (Math.PI/4), readings, angles);
+		float left = SonarUtils.getReading((float) -(Math.PI/2), readings, angles);
+		float leftFront = SonarUtils.getReading((float) -(Math.PI/4), readings, angles);
 		
 		// State switching criteria
 		switch (state) {

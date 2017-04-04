@@ -65,7 +65,7 @@ public class Bug2Module extends Module {
 			// Record min dist
 			float distToMLine = (float) mLine.distancePerpendicular(new Coordinate(rPos.get().x, rPos.get().y));
 			if (distToMLine > BugUtilities.CLOSE_THRS) {
-				state = State.WF_RETURN_TO_ML;
+		 		state = State.WF_RETURN_TO_ML;   
 			}
 			break;
 		case WF_RETURN_TO_ML:

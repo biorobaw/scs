@@ -6,7 +6,7 @@ import edu.usf.experiment.utils.GeomUtils;
 
 public class BugUtilities {
 	
-	public static final float OBSTACLE_FOUND_THRS = .15f;
+	public static final float OBSTACLE_FOUND_THRS = .15f; //
 	public static final float CLOSE_THRS = .15f;
 	
 	private static final float PROP_ANG_PARALLEL = .2f;
@@ -31,7 +31,7 @@ public class BugUtilities {
 		float linear, angular; 
 		
 		if (front < OBSTACLE_FOUND_THRS){
-			angular = -WF_ROT_VEL_OBS_FRONT;
+			angular = WF_ROT_VEL_OBS_FRONT;
 			linear = 0;
 		} else {
 			// Get the current relation and the target relation (wall parallel
@@ -41,7 +41,7 @@ public class BugUtilities {
 
 			float close_prop = left - WL_FW_TARGET;
 			
-			angular = PROP_ANG_PARALLEL * (targetquot - quot) + PROP_ANG_WALL_CLOSE * close_prop;
+			angular = - PROP_ANG_PARALLEL * (targetquot - quot) - PROP_ANG_WALL_CLOSE * close_prop;
 
 			linear = Math.min(PROP_LINEAR_WF * (front - WL_FW_TARGET), WF_MIN_FW_VEL);
 		}
