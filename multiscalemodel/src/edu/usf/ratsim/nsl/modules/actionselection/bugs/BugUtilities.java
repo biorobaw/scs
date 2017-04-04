@@ -27,7 +27,7 @@ public class BugUtilities {
 		return new Velocities(linear, angular);
 	}
 
-	public static Velocities wallFollow(float left, float leftfw, float front) {
+	public static Velocities wallFollow(float right, float rightfw, float front) {
 		float linear, angular; 
 		
 		if (front < OBSTACLE_FOUND_THRS){
@@ -36,10 +36,10 @@ public class BugUtilities {
 		} else {
 			// Get the current relation and the target relation (wall parallel
 			// to robot)
-			float quot = left / leftfw;
+			float quot = right / rightfw;
 			float targetquot = (float) Math.cos(Math.PI / 8);
 
-			float close_prop = left - WL_FW_TARGET;
+			float close_prop = right - WL_FW_TARGET;
 			
 			angular = - PROP_ANG_PARALLEL * (targetquot - quot) - PROP_ANG_WALL_CLOSE * close_prop;
 

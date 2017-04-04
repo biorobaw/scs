@@ -40,8 +40,8 @@ public class Bug1Module extends Module {
 		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
 
 		float front = SonarUtils.getReading(0f, readings, angles);
-		float left = SonarUtils.getReading((float) -(Math.PI/2), readings, angles);
-		float leftFront = SonarUtils.getReading((float) -(Math.PI/4), readings, angles);
+		float right = SonarUtils.getReading((float) -(Math.PI/2), readings, angles);
+		float rightFront = SonarUtils.getReading((float) -(Math.PI/4), readings, angles);
 		
 		// State switching criteria
 		switch (state) {
@@ -90,15 +90,15 @@ public class Bug1Module extends Module {
 
 		
 		// Cmd depending on state
-		Velocities v = new Velocities();
+		Velocities v = new Velocities(); // velocity is 0
 		switch (state) {
 		case GOAL_SEEKING:
-			v = BugUtilities.goalSeek(rPos.get(), rOrient.get(), platPos.get());
+			v = BugUtilities.goalSeek(rPos.get(), rOrient.get(), platPos.get()); // going to have a positive velocity
 			break;
 		case WF_AWAY_FROM_HP:
 		case WF_RETURN_TO_HP:
 		case WF_GO_TO_CP:
-			v = BugUtilities.wallFollow(left, leftFront, front);
+			v = BugUtilities.wallFollow(right, rightFront, front); // going to have a positive velocity
 			break;
 		}
 
