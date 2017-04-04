@@ -24,7 +24,7 @@ public class Position extends Module {
 
 	@Override
 	public void run() {
-		pos.set(robot.getPosition());
+		pos.set(robot.getPosition()); //note
 	}
 
 	@Override

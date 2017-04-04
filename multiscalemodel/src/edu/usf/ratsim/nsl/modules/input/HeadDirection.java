@@ -24,7 +24,7 @@ public class HeadDirection extends Module {
 
 	@Override
 	public void run() {
-		hd.set(robot.getOrientationAngle());
+		hd.set(robot.getOrientationAngle());//note
 	}
 
 	@Override

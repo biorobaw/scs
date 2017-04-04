@@ -31,7 +31,7 @@ public class Bug1Model extends Model {
 		HeadDirection orientation = new HeadDirection("HeadDirection", (LocalizableRobot) robot);
 		addModule(orientation);
 		
-		PlatformPosition platPos = new PlatformPosition("Plat Pos");
+		PlatformPosition platPos = new PlatformPosition("Plat Pos"); //goal position
 		addModule(platPos);
 		
 		Bug1Module bug1 = new Bug1Module("Bug1", subject);

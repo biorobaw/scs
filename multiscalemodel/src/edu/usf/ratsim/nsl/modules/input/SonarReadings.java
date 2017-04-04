@@ -16,7 +16,7 @@ public class SonarReadings extends Module {
 	private float[] readingsData;
 	private Float1dPortArray readingsPort;
 
-	public SonarReadings(String name, SonarRobot robot) {
+	public SonarReadings(String name, SonarRobot robot) { 
 		super(name);
 
 		this.robot = robot;

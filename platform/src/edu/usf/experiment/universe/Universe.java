@@ -444,4 +444,15 @@ public abstract class Universe {
 		feeders.get(id).setPermanent(b);
 	}
 
+	public float shortestDistanceToPlatforms(LineSegment wall) {
+		float minDist = Float.MAX_VALUE;
+		for (Platform p : platforms) {
+			Point3f pos = p.getPosition();
+			Coordinate c = new Coordinate(pos.x, pos.y);
+			if (wall.distance(c) < minDist)
+				minDist = (float) wall.distance(c);
+		}
+		return minDist;
+	}
+
 }
