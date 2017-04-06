@@ -43,6 +43,8 @@ public class ExperienceRoadMap extends Module {
 
 	private static final int WINDOW_SIZE = 400;
 
+	private static final boolean PLOT = false;
+
 	private UndirectedGraph<PointNode, Edge> g;
 
 	private BasicVisualizationServer<PointNode, Edge> vv;
@@ -105,7 +107,7 @@ public class ExperienceRoadMap extends Module {
 		// Creation of new nodes
 		if ((totalActivation < MIN_ACTIVATION && maxActivation < MAX_SINGLE_ACTIVATION)
 				|| (platPos.get().distance(rPos.get()) < DIST_TO_GOAL_THRS && totalActivation < 3 * MIN_ACTIVATION)) {
-			System.out.println("Creating a node");
+//			System.out.println("Creating a node");
 			// Create new node
 			PointNode nv = new PointNode(rPos.get());
 			g.addVertex(nv);
@@ -150,9 +152,9 @@ public class ExperienceRoadMap extends Module {
 			DijkstraShortestPath<PointNode, Edge> alg = new DijkstraShortestPath(g, wtTransformer);
 			l = alg.getPath(mostActive, goalNode);
 			Number dist = alg.getDistance(mostActive, goalNode);
-			System.out.println("The shortest path from" + mostActive + " to " + goalNode + " is:");
-			System.out.println(l.toString());
-			System.out.println("and the length of the path is: " + dist);
+//			System.out.println("The shortest path from" + mostActive + " to " + goalNode + " is:");
+//			System.out.println(l.toString());
+//			System.out.println("and the length of the path is: " + dist);
 		}
 		
 		// Publish a closer goal if there is a valid path
@@ -195,38 +197,41 @@ public class ExperienceRoadMap extends Module {
 
 		});
 
-		frame = new JFrame("Topological map");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().add(vv);
-		frame.pack();
-		frame.setVisible(true);
+		if (PLOT){
+			frame = new JFrame("Topological map");
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.getContentPane().add(vv);
+			frame.pack();
+			frame.setVisible(true);
 
-		if (repainter != null) {
-			continueRepainting = false;
-			try {
-				repainter.join(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		continueRepainting = true;
-		repainter = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while (continueRepainting) {
-					vv.repaint();
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+			if (repainter != null) {
+				continueRepainting = false;
+				try {
+					repainter.join(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
-		});
-		repainter.start();
+
+			continueRepainting = true;
+			repainter = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					while (continueRepainting) {
+						vv.repaint();
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			});
+			repainter.start();
+		}
+		
 		
 		
 		// Create the delegate bug algorithms

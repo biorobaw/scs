@@ -60,6 +60,8 @@ public class PostExperiment extends Experiment implements Runnable {
 		}
 		// Plot
 		Plotter.plot(afterPlotters);
+		
+		Plotter.join();
 
 	}
 

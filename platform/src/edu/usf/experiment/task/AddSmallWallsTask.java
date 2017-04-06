@@ -25,19 +25,16 @@ import edu.usf.experiment.utils.XMLExperimentParser;
 
 public class AddSmallWallsTask extends Task {
 
-	private final float RADIUS = 1f;
+	private final float RADIUS = 2f;
 	private int watchDogCount;
 	private static final float MIN_DIST_TO_FEEDERS = 0.05f;
 	private static final float LENGTH = .25f;
 	private static final int NUM_WALLS = 14;
 	private static final float NEAR_WALL_RADIUS = .44f;
-	private static final float DISTANCE_INTERIOR_WALLS = .1f;
-	private static final float MIN_DIST_TO_FEEDERS_INTERIOR = 0.1f;
-	private static final double NUM_INTERIOR_WALLS = 14;
-	private static final float DOUBLE_WALL_PROB = 0f;
+	private static final float DISTANCE_INTERIOR_WALLS = .4f;
+	private static final float MIN_DIST_TO_FEEDERS_INTERIOR = 0.4f;
 	private static final double MIN_DIST_TO_OTHER_OUTER = .1;
 	private static final int MAX_WATCH_DOG = 10000;
-	private static final float MIN_ANGLE_DISTANCE_OUTER = (float) (2 * Math.PI / (2 * 8));
 	private static final float MIN_DIST_TO_ROBOT = .2f;
 
 	public AddSmallWallsTask(ElementWrapper params) {
@@ -61,40 +58,6 @@ public class AddSmallWallsTask extends Task {
 		// Add Outer Walls
 		int j = 0;
 		List<Float> angles = new LinkedList<Float>();
-		while (j < NUM_WALLS - NUM_INTERIOR_WALLS) {
-			boolean doubleWall = random.nextFloat() < DOUBLE_WALL_PROB;
-			LineSegment wall;
-			float angle;
-			do {
-				do {
-					angle = (float) (random.nextDouble() * Math.PI * 2);
-				} while (!watchDog()
-						&& (!angles.isEmpty() && minDistance(angle, angles) < MIN_ANGLE_DISTANCE_OUTER));
-				if (watchDog()) {
-					System.out.println("Watch dog reached");
-					univ.revertWalls();
-					return false;
-				}
-
-				angles.add(angle);
-				wall = getOuterWall(angle, doubleWall);
-
-			} while (!watchDog() && !suitableOuterWall(wall, univ, outerWalls));
-
-			if (watchDog()) {
-				System.out.println("Watch dog reached");
-				univ.revertWalls();
-				return false;
-			}
-
-			univ.addWall(wall);
-			outerWalls.add(wall);
-			if (doubleWall)
-				j += 2;
-			else
-				j++;
-		}
-
 		while (j < NUM_WALLS) {
 			LineSegment wall;
 

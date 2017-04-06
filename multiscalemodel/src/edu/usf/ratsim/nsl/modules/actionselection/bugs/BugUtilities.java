@@ -6,7 +6,7 @@ import edu.usf.experiment.utils.GeomUtils;
 
 public class BugUtilities {
 	
-	public static final float OBSTACLE_FOUND_THRS = .15f; //
+	public static final float OBSTACLE_FOUND_THRS = .15f;
 	public static final float CLOSE_THRS = .15f;
 	
 	private static final float PROP_ANG_PARALLEL = .2f;
@@ -15,7 +15,7 @@ public class BugUtilities {
 	private static final float PROP_LINEAR_GS = 0.01f;
 	private static final float PROP_ANGULAR_GS = 0.1f;
 
-	private static final float WL_FW_TARGET = OBSTACLE_FOUND_THRS;
+	private static final float WL_FW_TARGET = OBSTACLE_FOUND_THRS;   	
 	private static final float WF_MIN_FW_VEL = .01f;
 	private static final float WF_ROT_VEL_OBS_FRONT = .2f;
 
@@ -31,9 +31,11 @@ public class BugUtilities {
 		float linear, angular; 
 		
 		if (front < OBSTACLE_FOUND_THRS){
-			angular = WF_ROT_VEL_OBS_FRONT;
+			System.out.println("Obstacle found");
+			angular = -WF_ROT_VEL_OBS_FRONT;
 			linear = 0;
 		} else {
+			System.out.println("Following Wall");
 			// Get the current relation and the target relation (wall parallel
 			// to robot)
 			float quot = left / leftfw;
@@ -41,7 +43,7 @@ public class BugUtilities {
 
 			float close_prop = left - WL_FW_TARGET;
 			
-			angular = - PROP_ANG_PARALLEL * (targetquot - quot) - PROP_ANG_WALL_CLOSE * close_prop;
+			angular = PROP_ANG_PARALLEL * (targetquot - quot) + PROP_ANG_WALL_CLOSE * close_prop;
 
 			linear = Math.min(PROP_LINEAR_WF * (front - WL_FW_TARGET), WF_MIN_FW_VEL);
 		}
