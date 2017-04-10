@@ -97,7 +97,7 @@ public class OneFeederObsModel extends Model {
 		float wallTaxicVal = params.getChildFloat("wallTaxicVal");
 		float wallNegReward = params.getChildFloat("wallNegReward");
 		float wallTooCloseDist = params.getChildFloat("wallTooCloseDist");
-		float wallInhibition = params.getChildFloat("wallInhibition");
+		float wallParamB = params.getChildFloat("wallInhibition");
 		float explorationHalfLifeVal = params
 				.getChildFloat("explorationHalfLifeVal");
 		float xmin = params.getChildFloat("xmin");
@@ -131,7 +131,7 @@ public class OneFeederObsModel extends Model {
 					+ i, lRobot, radius, minHDRadius, maxHDRadius,
 					numIntentions, numCCCellsPerLayer.get(i), placeCellType,
 					xmin, ymin, xmax, ymax, new LinkedList<Feeder>(),
-					goalCellProportion, layerLengths.get(i), wallInhibition);
+					goalCellProportion, layerLengths.get(i), 10, wallParamB);
 			ccl.addInPort("intention", intention.getOutPort("intention"));
 			conjCellLayers.add(ccl);
 			conjCellLayersPorts.add(ccl.getOutPort("activation"));
