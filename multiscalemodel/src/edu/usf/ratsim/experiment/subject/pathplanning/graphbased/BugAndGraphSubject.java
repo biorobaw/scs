@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
+import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.SonarRobot;
 import edu.usf.experiment.subject.Subject;
@@ -14,6 +15,8 @@ import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.experiment.subject.NotImplementedException;
+import edu.usf.ratsim.nsl.modules.pathplanning.Edge;
+import edu.usf.ratsim.nsl.modules.pathplanning.PointNode;
 
 
 public class BugAndGraphSubject extends Subject {
@@ -123,6 +126,10 @@ public class BugAndGraphSubject extends Subject {
 	public Affordance getRightAffordance() {
 		return new TurnAffordance(0, 0);
 
+	}
+
+	public UndirectedGraph<PointNode, Edge> getGraph() {
+		return model.getGraph();
 	}
 	
 

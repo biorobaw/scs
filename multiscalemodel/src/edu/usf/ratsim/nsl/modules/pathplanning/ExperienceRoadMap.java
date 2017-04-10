@@ -43,7 +43,7 @@ public class ExperienceRoadMap extends Module {
 
 	private static final int WINDOW_SIZE = 400;
 
-	private static final boolean PLOT = false;
+	private static final boolean PLOT = true;
 
 	private UndirectedGraph<PointNode, Edge> g;
 
@@ -190,12 +190,12 @@ public class ExperienceRoadMap extends Module {
 		layout.setSize(new Dimension(400, 400));
 		vv = new BasicVisualizationServer<PointNode, Edge>(layout);
 		vv.setPreferredSize(new Dimension(WINDOW_SIZE, WINDOW_SIZE));
-		vv.getRenderContext().setVertexFillPaintTransformer(new Transformer<PointNode, Paint>() {
-			public Paint transform(PointNode pn) {
-				return new Color(pn.activation, 0, 1 - pn.activation, 1);
-			}
-
-		});
+//		vv.getRenderContext().setVertexFillPaintTransformer(new Transformer<PointNode, Paint>() {
+//			public Paint transform(PointNode pn) {
+//				return new Color(pn.activation, 0, 1 - pn.activation, 1);
+//			}
+//
+//		});
 
 		if (PLOT){
 			frame = new JFrame("Topological map");
@@ -276,98 +276,15 @@ public class ExperienceRoadMap extends Module {
 		bug.newEpisode();
 		bug0.newEpisode();
 	}
+
+	public UndirectedGraph<PointNode, Edge> getGraph() {
+		return g;
+	}
 	
 	
 
 }
 
-class PointNode {
 
-	// TODO: make these parameters
-	private static final float MAX_RADIUS = .5f;
 
-	public Point3f prefLoc;
-	public float activation;
 
-	public PointNode(Point3f prefLoc) {
-		this.prefLoc = prefLoc;
-	}
-
-	/**
-	 * Updates the activation value of the node
-	 * 
-	 * @param rPos
-	 *            the position of the robot
-	 * @param sonarReadings
-	 *            the sonar sensor readings
-	 * @param sonarAngles
-	 *            the angles of the sonar sensors in the robot frame of
-	 *            reference
-	 * @param orientation
-	 */
-	public void updateActivation(Point3f rPos, float orientation, Float1dPort sonarReadings, Float1dPort sonarAngles) {
-		float angle = -GeomUtils.angleToPointWithOrientation(orientation, rPos, prefLoc);
-
-		// No good sensor for the angle, or obstacle closer than the unit's
-		// center
-		float dist = prefLoc.distance(rPos);
-		if (!SonarUtils.validSonar(angle, sonarReadings, sonarAngles)
-				|| SonarUtils.getReading(angle, sonarReadings, sonarAngles) < dist)
-			activation = 0;
-		else {
-			if (dist > MAX_RADIUS)
-				activation = 0;
-			else
-				activation = (float) Math.exp(-Math.pow(dist, 2));
-		}
-
-	}
-
-	public void updateActivation(Point3f loc, float distToObs) {
-
-	}
-
-	public float getActivation() {
-		return activation;
-	}
-
-	public String toString() {
-		return "V" + prefLoc.toString();
-	}
-
-}
-
-class Edge {
-	public float weight;
-
-	public Edge(float weight) {
-		this.weight = weight;
-	}
-
-}
-
-class VertextPosLayout<E> extends AbstractLayout<PointNode, E> {
-
-	private static final float DISPLAY_SCALE = 75;
-	private static final float DISPLAY_OFFSET = 200f;
-
-	protected VertextPosLayout(Graph<PointNode, E> graph) {
-		super(graph);
-	}
-
-	@Override
-	public void initialize() {
-
-	}
-
-	@Override
-	public void reset() {
-
-	}
-
-	@Override
-	public Point2D transform(PointNode pn) {
-		return new Point2D.Double(pn.prefLoc.x * DISPLAY_SCALE + DISPLAY_OFFSET, -pn.prefLoc.y * DISPLAY_SCALE + DISPLAY_OFFSET);
-	}
-
-}
