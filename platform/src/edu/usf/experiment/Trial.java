@@ -3,6 +3,7 @@ package edu.usf.experiment;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.log.LoggerLoader;
@@ -13,6 +14,7 @@ import edu.usf.experiment.task.Task;
 import edu.usf.experiment.task.TaskLoader;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.experiment.utils.RandomSingleton;
 
 /**
  * This class models a runnable trial of an experiment. It consists of N

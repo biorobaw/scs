@@ -161,16 +161,30 @@ public class ExperienceRoadMap extends Module {
 		if (l.isEmpty()){
 			intermediateGoal.set(platPos.get());
 			bug.run();
+			
 		} else {
-			Point3f next = g.getEndpoints(l.get(0)).getSecond().prefLoc;
-			if (next.distance(rPos.get()) > NEXT_NODE_DIST_THRS)
-				intermediateGoal.set(next);
-			else {
-				if (l.size() > 1)
-					intermediateGoal.set(g.getEndpoints(l.get(1)).getSecond().prefLoc);
-				else 
-					intermediateGoal.set(platPos.get());
-			}
+//			Point3f next = g.getEndpoints(l.get(0)).getSecond().prefLoc;
+//			if (next.distance(rPos.get()) > NEXT_NODE_DIST_THRS)
+//				intermediateGoal.set(next);
+//			else {
+//				if (l.size() > 1)
+//					intermediateGoal.set(g.getEndpoints(l.get(1)).getSecond().prefLoc);
+//				else 
+//					intermediateGoal.set(platPos.get());
+//			}
+			
+			int i = 0;
+			PointNode nextNode = null;
+			while (i < l.size() && (nextNode == null || active.contains(nextNode))){
+				nextNode = g.getEndpoints(l.get(i)).getSecond();
+				i++;
+			} 
+			
+			if (i >= l.size())
+				intermediateGoal.set(platPos.get());
+			else
+				intermediateGoal.set(nextNode.prefLoc);
+
 			bug0.run();
 		}
 			
@@ -190,12 +204,12 @@ public class ExperienceRoadMap extends Module {
 		layout.setSize(new Dimension(WINDOW_SIZE, WINDOW_SIZE));
 		vv = new BasicVisualizationServer<PointNode, Edge>(layout);
 		vv.setPreferredSize(new Dimension(WINDOW_SIZE, WINDOW_SIZE));
-//		vv.getRenderContext().setVertexFillPaintTransformer(new Transformer<PointNode, Paint>() {
-//			public Paint transform(PointNode pn) {
-//				return new Color(pn.activation, 0, 1 - pn.activation, 1);
-//			}
-//
-//		});
+		vv.getRenderContext().setVertexFillPaintTransformer(new Transformer<PointNode, Paint>() {
+			public Paint transform(PointNode pn) {
+				return new Color(pn.activation, 0, 1 - pn.activation, 1);
+			}
+
+		});
 
 		if (PLOT){
 			frame = new JFrame("Topological map");
