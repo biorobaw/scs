@@ -80,7 +80,7 @@
 	
 	
 	<trial>
-		<name>OneWall</name>
+		<name>RandomWalls</name>
 		<!-- Groups to apply the trial -->
 		<groups>
 			<group>Bug0</group>
@@ -115,7 +115,7 @@
 			<!-- Number of episodes -->
 			<number>3</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>1</sleep>
+			<sleep>10</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<task>

@@ -41,7 +41,7 @@ public class ExperienceRoadMap extends Module {
 
 	private static final float NEXT_NODE_DIST_THRS = 0.5f;
 
-	private static final int WINDOW_SIZE = 400;
+	private static final int WINDOW_SIZE = 800;
 
 	private static final boolean PLOT = true;
 
@@ -187,7 +187,7 @@ public class ExperienceRoadMap extends Module {
 		g = new UndirectedSparseGraph<PointNode, Edge>();
 
 		Layout<PointNode, Edge> layout = new VertextPosLayout<Edge>(g);
-		layout.setSize(new Dimension(400, 400));
+		layout.setSize(new Dimension(WINDOW_SIZE, WINDOW_SIZE));
 		vv = new BasicVisualizationServer<PointNode, Edge>(layout);
 		vv.setPreferredSize(new Dimension(WINDOW_SIZE, WINDOW_SIZE));
 //		vv.getRenderContext().setVertexFillPaintTransformer(new Transformer<PointNode, Paint>() {

@@ -144,10 +144,24 @@
 			</afterCycleTasks>
 			<!-- Loggers to execute after each cycle -->
 			<afterCycleLoggers>
+				<logger>
+					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
+					<params>
+					</params>
+				</logger>
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->
 			<afterEpisodeLoggers>
-				
+				<logger>
+					<name>edu.usf.experiment.log.WallLogger</name>
+					<params>
+					</params>
+				</logger>
+				<logger>
+					<name>edu.usf.ratsim.experiment.subject.pathplanning.graphbased.ExperienceGraphLogger</name>
+					<params>
+					</params>
+				</logger>
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
@@ -179,7 +193,31 @@
 		</afterTrialLoggers>
 		<!-- Plotters to execute after the trial has ended -->
 		<afterTrialPlotters>
-			
+			<!-- Copy the maze file to the episode folder -->
+			<plotter>
+				<name>edu.usf.experiment.plot.CopyMazeFile</name>
+			</plotter>
+			<!-- Convert csv to rdata -->
+			<plotter>
+				<name>edu.usf.experiment.plot.CSVConverter</name>
+			</plotter>
+			<!-- Get time info from position information -->
+			<plotter>
+				<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
+			</plotter>
+			<plotter>
+				<name>edu.usf.experiment.plot.RPlotter</name>
+				<params>
+					<plotScript>/edu/usf/experiment/plot/plotMaze.r</plotScript>
+				</params>
+			</plotter>
+			<!-- Plot path for each episode -->
+			<plotter>
+				<name>edu.usf.experiment.plot.PathPlotter</name>
+			</plotter>
+			<plotter>
+				<name>edu.usf.experiment.plot.PlotGatherer</name>
+			</plotter>
 		</afterTrialPlotters>
 	</trial>
 	

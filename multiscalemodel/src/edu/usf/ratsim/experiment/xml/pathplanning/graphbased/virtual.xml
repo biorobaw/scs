@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-	
-	<!--	<seed>23423423</seed-->
+	<seed>5344563331650386554</seed>
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
@@ -11,7 +10,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/pathplanning/Empty.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>true</display>
+			<display>false</display>
 		</params>
 	</universe>
 	
@@ -124,7 +123,7 @@
 			<!-- Number of episodes -->
 			<number>2</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>5</sleep>
+			<sleep>1</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<task>
@@ -157,6 +156,11 @@
 			<afterEpisodeLoggers>
 				<logger>
 					<name>edu.usf.experiment.log.WallLogger</name>
+					<params>
+					</params>
+				</logger>
+				<logger>
+					<name>edu.usf.ratsim.experiment.subject.pathplanning.graphbased.ExperienceGraphLogger</name>
 					<params>
 					</params>
 				</logger>
@@ -203,8 +207,15 @@
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
 				<plotter>
+					<name>edu.usf.experiment.plot.RPlotter</name>
+					<params>
+						<plotScript>/edu/usf/experiment/plot/plotExpRoadmap.r</plotScript>
+					</params>
+				</plotter>
+				<plotter>
 					<name>edu.usf.experiment.plot.PlotGatherer</name>
 				</plotter>
+				
 			</afterEpisodePlotters>
 		</episodes>
 		<!-- Tasks to perform after the trial has ended -->
@@ -282,6 +293,11 @@
 					<params>
 					</params>
 				</logger>
+				<logger>
+					<name>edu.usf.ratsim.experiment.subject.pathplanning.graphbased.ExperienceGraphLogger</name>
+					<params>
+					</params>
+				</logger>
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
@@ -323,6 +339,12 @@
 				<!-- Plot path for each episode -->
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
+				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.RPlotter</name>
+					<params>
+						<plotScript>/edu/usf/experiment/plot/plotExpRoadmap.r</plotScript>
+					</params>
 				</plotter>
 				<plotter>
 					<name>edu.usf.experiment.plot.PlotGatherer</name>
@@ -407,6 +429,11 @@
 					<params>
 					</params>
 				</logger>
+				<logger>
+					<name>edu.usf.ratsim.experiment.subject.pathplanning.graphbased.ExperienceGraphLogger</name>
+					<params>
+					</params>
+				</logger>
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
@@ -448,6 +475,12 @@
 				<!-- Plot path for each episode -->
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
+				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.RPlotter</name>
+					<params>
+						<plotScript>/edu/usf/experiment/plot/plotExpRoadmap.r</plotScript>
+					</params>
 				</plotter>
 				<plotter>
 					<name>edu.usf.experiment.plot.PlotGatherer</name>
@@ -530,6 +563,12 @@
 					<params>
 					</params>
 				</logger>
+				<logger>
+					<name>edu.usf.ratsim.experiment.subject.pathplanning.graphbased.ExperienceGraphLogger</name>
+					<params>
+					</params>
+				</logger>
+				s
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
@@ -571,6 +610,12 @@
 				<!-- Plot path for each episode -->
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
+				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.RPlotter</name>
+					<params>
+						<plotScript>/edu/usf/experiment/plot/plotExpRoadmap.r</plotScript>
+					</params>
 				</plotter>
 				<plotter>
 					<name>edu.usf.experiment.plot.PlotGatherer</name>

@@ -31,11 +31,9 @@ public class BugUtilities {
 		float linear, angular; 
 		
 		if (front < OBSTACLE_FOUND_THRS){
-			System.out.println("Obstacle found");
 			angular = -WF_ROT_VEL_OBS_FRONT;
 			linear = 0;
 		} else {
-			System.out.println("Following Wall");
 			// Get the current relation and the target relation (wall parallel
 			// to robot)
 			float quot = left / leftfw;
