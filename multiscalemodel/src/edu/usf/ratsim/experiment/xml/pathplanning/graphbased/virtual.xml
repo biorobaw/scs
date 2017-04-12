@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-	<seed>5344563331650386554</seed>
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
@@ -48,19 +47,19 @@
 		</params>
 	</model>
 	
-	<group>
-		<name>Bug0</name>
-		<numMembers>16</numMembers>
-		<params>
-			<algorithm>bug0</algorithm>
-		</params>
-		<tasks>
-		</tasks>
-	</group>
+<!--	<group>-->
+<!--		<name>Bug0</name>-->
+<!--		<numMembers>16</numMembers>-->
+<!--		<params>-->
+<!--			<algorithm>bug0</algorithm>-->
+<!--		</params>-->
+<!--		<tasks>-->
+<!--		</tasks>-->
+<!--	</group>-->
 	
 	<group>
 		<name>Bug1</name>
-		<numMembers>16</numMembers>
+		<numMembers>32</numMembers>
 		<params>
 			<algorithm>bug1</algorithm>
 		</params>
@@ -68,15 +67,15 @@
 		</tasks>
 	</group>
 	
-	<group>
-		<name>Bug2</name>
-		<numMembers>16</numMembers>
-		<params>
-			<algorithm>bug2</algorithm>
-		</params>
-		<tasks>
-		</tasks>
-	</group>
+<!--	<group>-->
+<!--		<name>Bug2</name>-->
+<!--		<numMembers>16</numMembers>-->
+<!--		<params>-->
+<!--			<algorithm>bug2</algorithm>-->
+<!--		</params>-->
+<!--		<tasks>-->
+<!--		</tasks>-->
+<!--	</group>-->
 	
 	<beforeExperimentTasks>
 	</beforeExperimentTasks>
