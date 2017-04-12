@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --time=0:30:00
+#SBATCH --time=0:40:00
 #SBATCH --mem=8192
 #SBATCH --cpus-per-task 2
 #SBATCH --qos=preempt
