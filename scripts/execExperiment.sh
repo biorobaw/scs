@@ -9,6 +9,7 @@ toIndiv=$4
 #compileId=`echo $idMessage | cut -d " " -f 4`
 ant compile
 
+
 #idMessage=`sbatch --dependency=afterok:$compileId scripts/preProcess.sh $experimentFile $logPath`
 #preprocId=`echo $idMessage | cut -d " " -f 4`
 ./scripts/preProcess.sh $experimentFile $logPath
