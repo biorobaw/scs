@@ -31,11 +31,11 @@ public class ExponentialWallConjCell extends ExponentialConjCell {
 	private float a;
 
 	public ExponentialWallConjCell(Point3f preferredLocation, float preferredDirection, float placeRadius,
-			float angleRadius, int preferredIntention, float b, Random r, float a) {
+			float angleRadius, int preferredIntention, Random r, float a, float b) {
 		super(preferredLocation, preferredDirection, placeRadius, angleRadius, preferredIntention);
 		wallCell = r.nextBoolean();
-		this.b = b;
 		this.a = a;
+		this.b = b;
 	}
 
 	@Override
