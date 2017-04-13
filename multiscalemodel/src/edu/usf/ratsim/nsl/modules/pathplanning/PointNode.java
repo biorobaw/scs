@@ -14,8 +14,11 @@ public class PointNode {
 	public Point3f prefLoc;
 	public float activation;
 
+	public boolean following;
+
 	public PointNode(Point3f prefLoc) {
 		this.prefLoc = prefLoc;
+		this.following = false;
 	}
 
 	/**

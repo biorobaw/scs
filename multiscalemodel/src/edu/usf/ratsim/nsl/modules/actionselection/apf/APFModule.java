@@ -14,26 +14,22 @@ import edu.usf.ratsim.support.SonarUtils;
 
 public class APFModule extends Module {
 
-	private static final float MIN_DIST_TO_OBS = 0.5f;
-
-	private static final float REP_ANGULAR_P = 3f;
+	private static final float MIN_DIST_TO_OBS = 0.1f;
 	
-	private static final float ANGULAR_P = .5f;
+	private static final float MIN_DIST_TO_OBS_ROT = 0.3f;
 
-	private static final float LINEAR_P = .5f;
+	private static final float REP_ANGULAR_P = 1f;
+	
+	private static final float ANGULAR_P = .1f;
+
+	private static final float LINEAR_P = .1f;
 
 
-	private static final float REP_LINEAR_P = 1f;
+	private static final float REP_LINEAR_P = .3f;
 
 	private static final float CLOSE_THRS = .1f;
 
 	private VirtualRobot r;
-
-	private enum State {
-		GOAL_SEEKING, WALL_FOLLOWING
-	};
-
-	private State state;
 
 	public APFModule(String name, Subject sub) {
 		super(name);
@@ -59,7 +55,7 @@ public class APFModule extends Module {
 		
 		// Cmd depending on state
 		Velocities v = new Velocities();
-		v.angular = -angleDiff * ANGULAR_P -Math.max(0, MIN_DIST_TO_OBS - leftFront) * REP_ANGULAR_P + Math.max(0, MIN_DIST_TO_OBS - rightFront) * REP_ANGULAR_P;
+		v.angular = -angleDiff * ANGULAR_P -Math.max(0, MIN_DIST_TO_OBS_ROT - leftFront) * REP_ANGULAR_P + Math.max(0, MIN_DIST_TO_OBS_ROT - rightFront) * REP_ANGULAR_P;
 		if (minDist > CLOSE_THRS)
 			v.linear = rPos.get().distance(platPos.get()) * LINEAR_P - Math.max(0, MIN_DIST_TO_OBS - minDist) * REP_LINEAR_P;
 		else
@@ -83,7 +79,6 @@ public class APFModule extends Module {
 	public void newEpisode() {
 		super.newEpisode();
 
-		state = State.GOAL_SEEKING;
 	}
 
 }
