@@ -317,22 +317,37 @@ public class VirtUniverse extends Universe {
 	 *            Direction and magnitude of the movement
 	 */
 	public void moveRobot(Vector3f vector) {
+		Vector3f from = new Vector3f();
+		// Get the old pos transform
+		Transform3D rPos = new Transform3D(robot.getT());
+		rPos.get(from);
+		
 		// Create a new transforme with the translation
 		Transform3D trans = new Transform3D();
 		trans.setTranslation(vector);
-		// Get the old pos transform
-		Transform3D rPos = new Transform3D(robot.getT());
+
 		// Apply translation to old transform
 		rPos.mul(trans);
-		// Set the new transform
-		robot.setT(rPos);
+		
+		// Check for walls in the way
+		Vector3f to = new Vector3f();
+		rPos.get(to);
+		LineSegment toTravel = new LineSegment(new Coordinate(from.x, from.y), new Coordinate(to.x, to.y));
+		boolean intersects = false;
+		for (Wall w : getWalls()){
+			intersects |= w.intersects(toTravel);
+			if (intersects){
+				break;
+			}
+		}
+		
+		if (!intersects){
+			// Set the new transform
+			robot.setT(rPos);
 
-		Vector3f p = new Vector3f();
-		robot.getT().get(p);
-		// System.out.println("New Pos: " + p);
-
-		if (display)
-			robotNode.getTransformGroup().setTransform(rPos);
+			if (display)
+				robotNode.getTransformGroup().setTransform(rPos);
+		}
 	}
 
 	public Quat4f getRobotOrientation() {
