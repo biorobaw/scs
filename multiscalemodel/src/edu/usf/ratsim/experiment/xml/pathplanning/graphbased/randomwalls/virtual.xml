@@ -11,7 +11,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/pathplanning/Empty.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>true</display>
+			<display>false</display>
 		</params>
 	</universe>
 	
@@ -197,6 +197,12 @@
 				<!-- Plot path for each episode -->
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
+				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.RPlotter</name>
+					<params>
+						<plotScript>/edu/usf/experiment/plot/plotExpRoadmap.r</plotScript>
+					</params>
 				</plotter>
 				<plotter>
 					<name>edu.usf.experiment.plot.PlotGatherer</name>

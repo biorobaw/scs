@@ -45,7 +45,7 @@ public class ExperienceRoadMap extends Module {
 
 	private static final int WINDOW_SIZE = 800;
 
-	private static final boolean PLOT = true;
+	private static final boolean PLOT = false;
 
 	private static final float ACTIVATION_THRS = .2f;
 
