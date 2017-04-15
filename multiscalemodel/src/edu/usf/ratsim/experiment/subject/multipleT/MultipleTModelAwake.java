@@ -1,8 +1,15 @@
 package edu.usf.ratsim.experiment.subject.multipleT;
 
+import java.awt.Frame;
+import java.awt.Panel;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.SubjectOld;
@@ -12,7 +19,9 @@ import edu.usf.micronsl.module.copy.Int0dCopyModule;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.ratsim.experiment.subject.NotImplementedException;
+import edu.usf.ratsim.experiment.universe.virtual.CanvasRecorder;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
+import edu.usf.ratsim.experiment.universe.virtual.drawingUtilities.DrawCycleInformation;
 import edu.usf.ratsim.experiment.universe.virtual.drawingUtilities.DrawPolarGraph;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromProbabilities;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
@@ -224,7 +233,7 @@ public class MultipleTModelAwake extends MultipleTModel {
 		
 		universe.addDrawingFunction(new DrawPolarGraph("bias ring",50, 410, 50, biasModule.chosenRing,true));
 		
-				
+		universe.addDrawingFunction(new DrawCycleInformation(375, 50, 15));		
 		
 
 	}
@@ -256,6 +265,26 @@ public class MultipleTModelAwake extends MultipleTModel {
 	
 	public float getMaxActivation(){
 		throw new NotImplementedException();
+	}
+	
+	
+	Boolean done = false;
+	int imid = 0;
+	
+	
+	
+	@Override
+	public void newEpisode() {
+		// TODO Auto-generated method stub
+		super.newEpisode();
+	}
+	
+	@Override
+	public void finalTask() {
+		// TODO Auto-generated method stub
+		super.finalTask();
+		
+		
 	}
 
 

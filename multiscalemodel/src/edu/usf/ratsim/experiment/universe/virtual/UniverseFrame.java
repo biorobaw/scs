@@ -3,9 +3,19 @@ package edu.usf.ratsim.experiment.universe.virtual;
 import java.awt.GraphicsConfiguration;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
+import javax.imageio.ImageIO;
+import javax.media.j3d.Appearance;
 import javax.media.j3d.Canvas3D;
+import javax.media.j3d.GraphicsContext3D;
+import javax.media.j3d.View;
 import javax.vecmath.Vector3f;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
@@ -17,7 +27,7 @@ public class UniverseFrame extends java.awt.Frame {
 
 	private static final long serialVersionUID = -698020368303861261L;
 
-	private Canvas3D topViewCanvas, robotViewCanvas;
+	public Canvas3D topViewCanvas, robotViewCanvas;
 	private Canvas3D[] robotViewsCanvas;
 
 	private java.awt.Button button1;
@@ -31,7 +41,7 @@ public class UniverseFrame extends java.awt.Frame {
 	private java.awt.Button turnLeftBtn;
 
 	private java.awt.Panel panel1;
-	private java.awt.Panel topViewPanel;
+	public java.awt.Panel topViewPanel;
 	private java.awt.Panel wideViewPanel;
 
 	private java.awt.Label posRat;
@@ -40,9 +50,24 @@ public class UniverseFrame extends java.awt.Frame {
 	
 	LinkedList<Runnable> drawingFunctions = new LinkedList<Runnable>();
 	Globals g = Globals.getInstance();
+	
+	//rendering synchronization
+	private Semaphore renderLock = new Semaphore(1);
+	private Semaphore doneRenderLock = new Semaphore(1);
 
 	public UniverseFrame(VirtUniverse world) {
 		this.expUniv = world;
+		
+		
+		try {
+			renderLock.acquire();
+			doneRenderLock.acquire();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 
 		initComponents();
 
@@ -70,21 +95,73 @@ public class UniverseFrame extends java.awt.Frame {
 
 			private static final long serialVersionUID = 2278728176596780651L;
 			
-			
-			public void postRender()
-	        {
+			@Override
+			public void preRender(){
 				
+				//view has not been set yet, do what ever
+				try {
+					renderLock.acquire();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			}
+			
+			@Override
+			public void renderField(int arg0) {
+				// TODO Auto-generated method stub
+				
+				//view has been set, and opaque scene graph objects drawn
+				
+				//draw own opaque objects
 				for (Runnable r : drawingFunctions)
 					r.run();
 				
+			}
+			
+			@Override
+			public void postRender()
+	        {
+				//transparent
+				
+				
+				
 	        }
+			
+			@Override
+			public void postSwap() {
+				// TODO Auto-generated method stub
+				//for sychronization
+				
+				doneRenderLock.release();
+				
+			}
 			
 			
 		};
+		
 		world.getTopView().addCanvas3D(topViewCanvas);
 		topViewCanvas.setSize(500, 500);
 		topViewPanel.add(topViewCanvas);
 
+	}
+	
+	
+
+	public void render(Boolean waitDoneRendering){
+			
+		renderLock.release();
+		if(waitDoneRendering)
+			try {
+				doneRenderLock.acquire();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+		
 	}
 	
 	public void addDrawingFunction(DrawingFunction function){

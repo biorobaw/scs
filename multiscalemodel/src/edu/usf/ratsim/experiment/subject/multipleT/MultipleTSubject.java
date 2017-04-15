@@ -19,6 +19,8 @@ import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePortMatrix;
 import edu.usf.ratsim.experiment.subject.NotImplementedException;
+import edu.usf.ratsim.experiment.universe.virtual.CanvasRecorder;
+import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.robot.virtual.VirtualRobot;
 
@@ -44,11 +46,15 @@ public class MultipleTSubject extends SubjectOld {
 	public VirtualRobot lRobot;
 	public float awakeFoodDistanceThreshold;
 	public float asleepFoodDistanceThreshold;
+	
+	CanvasRecorder recorder = null;
 
 	public MultipleTSubject(String name, String group, ElementWrapper params, RobotOld robot) {
 		super(name, group, params, robot);
 
 		Globals g = Globals.getInstance();
+		
+		if(VirtUniverse.getInstance().display) recorder = new CanvasRecorder(VirtUniverse.getInstance().frame.topViewPanel,"");
 
 
 		lRobot = (VirtualRobot) robot;
@@ -155,11 +161,16 @@ public class MultipleTSubject extends SubjectOld {
 	}
 	
 	
-
+	
 	@Override
 	public void stepCycle() {
 
 		modelAwake.simRun();
+		
+		VirtUniverse vu = VirtUniverse.getInstance();
+		vu.render(true);
+		
+		if(recorder!=null) recorder.record();
 		
 	}
 	
@@ -168,6 +179,7 @@ public class MultipleTSubject extends SubjectOld {
 		// TODO Auto-generated method stub
 		super.endEpisode();
 		
+		if(recorder!=null) recorder.stopRecording();
 		
 		if(matrixCheckPointing) saveQ("BeforeReplay");
 		
@@ -233,6 +245,7 @@ public class MultipleTSubject extends SubjectOld {
 
 	@Override
 	public void newEpisode() {
+		if(recorder!=null) recorder.startRecording();
 		super.newEpisode();
 		modelAwake.newEpisode();
 	}

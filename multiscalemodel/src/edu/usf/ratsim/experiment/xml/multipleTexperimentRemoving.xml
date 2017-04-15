@@ -18,7 +18,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/multipleTmaze.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>false</display>
+			<display>true</display>
 		</params>
 	</universe>
 	

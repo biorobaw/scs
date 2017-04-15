@@ -55,12 +55,12 @@ public class VirtUniverse extends Universe {
 	private BoundingRectNode boundingRect;
 
 	private List<WallNode> wallNodes;
-	private boolean display;
+	public boolean display;
 	private List<Wall> initialWalls;
 	private List<WallNode> wallsToRevert;
 	private LinkedList<PlatformNode> platformNodes;
 	
-	UniverseFrame frame;
+	public UniverseFrame frame;
 
 	public VirtUniverse(ElementWrapper params, String logPath) {
 		super(params, logPath);
@@ -153,6 +153,11 @@ public class VirtUniverse extends Universe {
 		instance = this;
 		
 		wallsToRevert = new LinkedList<WallNode>();
+	}
+	
+	public void render(Boolean waitForDoneRendering){
+		
+		if (display) frame.render(waitForDoneRendering);
 	}
 	
 	public void addDrawingFunction(DrawingFunction function){
