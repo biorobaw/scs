@@ -8,6 +8,7 @@ public abstract class Subject {
 	protected String group;
 	protected Robot robot;
 	protected boolean hasEaten;
+	private boolean triedToEat;
 	
 	public Subject(){};
 	
@@ -19,6 +20,7 @@ public abstract class Subject {
 		this.robot = robot;
 		System.out.println("group: " + group);
 		hasEaten = false;
+		triedToEat = false;
 		instance = this;
 
 	}
@@ -78,6 +80,17 @@ public abstract class Subject {
 	
 	
 	
+	public boolean hasTriedToEat(){
+		return triedToEat;
+	}
+	
+	public void setTriedToEat(){
+		triedToEat = true;
+	}
+
+	public void clearTriedToEAt(){
+		triedToEat = false;
+	}
 	
 	
 

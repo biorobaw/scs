@@ -1,5 +1,6 @@
 package platform.simulatorVirtual.robots;
 
+import java.util.AbstractCollection;
 import java.util.List;
 
 import javax.vecmath.Point3f;
@@ -43,6 +44,15 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 	
 	@Override
 	public void executeTimeStep(float deltaT) {
+		
+		//clear last state variables
+		Subject.instance.clearTriedToEAt();
+		Subject.instance.setHasEaten(false);
+		
+		
+		//execute new actions
+		
+		
 		if(currentAction instanceof DifferentialNavigationPolarAction ||
 			currentAction instanceof DifferentialNavigationAction){
 			
@@ -90,13 +100,10 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 					
 					moveRobot(navigation.getDisplacement(deltaT));
 					
-					if(universe.isRobotCloseToFeeder(destinyId) ){
-						Subject.instance.setHasEaten(universe.robotEat());
-						System.out.println("Try to eat from: "+destinyId);
-						universe.setEnableFeeder(destinyId, false);
-						
+					if(tryToEatIfCloseToFeeder(destinyId)){
 						navigation.setSpeeds(0, 0);
-						
+						//if I successfully eat remove food from feeder -- this logic should be inside the feeder
+						universe.setEnableFeeder(destinyId, false);
 					}
 					
 					
@@ -107,6 +114,23 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 			
 		}
 		
+	}
+	
+	
+	public boolean tryToEatIfCloseToFeeder(int feederId){
+		
+		if(universe.isRobotCloseToFeeder(feederId) ){
+			
+			Subject.instance.setTriedToEat();
+			Boolean ate = universe.robotEat();
+			if(ate) Subject.instance.setHasEaten(ate); //set only if ate==true just in case this function is called more than once
+			System.out.println("Try to eat from: "+feederId +" "+ate);
+
+			return true;
+		}
+		
+		return false;
+
 	}
 	
 	public void moveRobot(float[] displacement){
@@ -157,6 +181,13 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 	@Override
 	public Feeder getClosestFeeder() {
 		return feederVisibility.getClosestFeeder();
+	}
+
+
+	@Override
+	public int getClosestFeeder(AbstractCollection<Integer> feederSet) {
+		// TODO Auto-generated method stub
+		return feederVisibility.getClosestFeeder(feederSet);
 	}
 
 

@@ -65,6 +65,11 @@
 			<!--<feederOrder>$(feederOrder)</feederOrder>-->
 			<feederOrder></feederOrder> 
 			<pathFile>$(ratpath)</pathFile>
+			
+			
+			<filterVisitedFeedersProbability>0.8</filterVisitedFeedersProbability>
+			<moveToClosestFeederInSubsetProbability>0.8</moveToClosestFeederInSubsetProbability>
+			
 		</params>
 	</model>
 	

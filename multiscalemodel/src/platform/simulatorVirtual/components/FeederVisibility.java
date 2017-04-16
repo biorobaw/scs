@@ -1,5 +1,6 @@
 package platform.simulatorVirtual.components;
 
+import java.util.AbstractCollection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -66,5 +67,29 @@ public class FeederVisibility implements FeederVisibilityInterface{
 				return true;
 		return false;
 	}
+	
+	
+	public int getClosestFeeder(AbstractCollection<Integer> feederIdSet){
+		
+		VirtUniverse universe = VirtUniverse.getInstance();
+		
+		float minDist = Float.MAX_VALUE;
+		int closestID = -1;
+		Point3f pos = universe.getRobotPosition();
+		for (int id : feederIdSet){
+			Feeder f = universe.getFeeder(id);
+			float dist = f.getPosition().distance(pos);
+			
+//			System.out.println(f.getPosition());
+//			
+//			System.out.println("id,dist "+id + " " + dist);
+			if (dist < minDist){
+				closestID = id;
+				minDist = dist;
+			}
+		}
+		return closestID;	
+	}
+	
 
 }
