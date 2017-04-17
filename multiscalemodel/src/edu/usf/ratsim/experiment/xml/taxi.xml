@@ -2,7 +2,6 @@
 <!-- Just a test of new format -->
 
 <experiment>
-	
 	<plot>false</plot>
 	
 	<universe>
@@ -30,7 +29,7 @@
 			<!-- Half the field of view of the rat -->
 			<halfFieldOfView>1.83</halfFieldOfView>
 			<!-- How long can the rat see in meters -->
-			<visionDist>1</visionDist>
+			<visionDist>1.5</visionDist>
 			<!-- How far away can the robot eat food. This should be shorter than the universe
 				threshold -->
 			<closeThrs>.1</closeThrs>
@@ -84,7 +83,7 @@
 			<!-- Reward value for food -->
 			<foodReward>1000</foodReward>
 			<!-- Reward value given when it doesnt eat -->
-			<nonFoodReward>-10</nonFoodReward>
+			<nonFoodReward>-1</nonFoodReward>
 			<!-- Lambda discount factor for the taxic module-->
 			<taxicDiscountFactor>1</taxicDiscountFactor>
 			<!-- Lambda discount factor for the learning algorithm -->
@@ -97,9 +96,9 @@
 			<initialValue>0</initialValue>
 			<!-- Value associated with a flashing feeder -->
 			<flashingReward>500</flashingReward>
-			<flashingNegReward>-20</flashingNegReward>
+			<flashingNegReward>-10</flashingNegReward>
 			<!-- Value associated with a non flashing feeder -->
-			<nonFlashingReward>100</nonFlashingReward>
+			<nonFlashingReward>0</nonFlashingReward>
 			<nonFlashingNegReward>-1</nonFlashingNegReward>
 			<!-- Whether the rat can remember last two feeders -->
 			<!-- TODO: take this out -->
@@ -110,11 +109,11 @@
 			<!-- TODO: take out -->
 			<cellContribution>0</cellContribution>
 			<!-- Value assigned to exploration action-values -->
-			<explorationReward>500</explorationReward>
+			<explorationReward>250</explorationReward>
 			<!-- Half life value for decay exploration -->
 			<explorationHalfLifeVal>1</explorationHalfLifeVal>
 			<!-- Value assigned to wall actions for the wall taxic modules -->
-			<wallTaxicVal>100</wallTaxicVal>
+			<wallTaxicVal>250</wallTaxicVal>
 			<wallNegReward>-1</wallNegReward>
 			<!-- Minimum distance to take wall into account -->
 			<wallTooCloseDist>.05</wallTooCloseDist>
@@ -126,7 +125,7 @@
 			<maxAttentionSpan>20</maxAttentionSpan>
 			<!-- Duration of still exploration actions -->
 			<maxActionsSinceForward>10</maxActionsSinceForward>
-			<stillExplorationVal>1000</stillExplorationVal>
+			<stillExplorationVal>0</stillExplorationVal>
 			<!-- Map dimensions for conjuntive cell placing -->
 			<xmin>0</xmin>
 			<ymin>0</ymin>
@@ -157,11 +156,12 @@
 			<task>
 				<name>edu.usf.experiment.task.EnableFeeders</name>
 				<params>
-					<feeders>3</feeders>
+					<feeders>0</feeders>
 				</params>
 			</task>
+			
 			<task>
-				<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
+				<name>edu.usf.experiment.task.FlashActivateRandomFeeder</name>
 			</task>
 		</beforeTrialTasks>
 		<!-- Episodes definition -->

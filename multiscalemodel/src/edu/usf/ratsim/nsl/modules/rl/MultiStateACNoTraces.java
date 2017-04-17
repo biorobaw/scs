@@ -1,16 +1,12 @@
 package edu.usf.ratsim.nsl.modules.rl;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.ListIterator;
-
 import edu.usf.experiment.utils.Debug;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
+import edu.usf.micronsl.port.twodimensional.Float2dPort;
 import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
 
 /**
@@ -105,7 +101,7 @@ public class MultiStateACNoTraces extends Module implements QLAlgorithm {
 			Float1dSparsePort statesBefore = (Float1dSparsePort) getInPort("statesBefore");
 			Float1dPort rlValueEstBefore = (Float1dPort) getInPort("rlValueEstimationBefore");
 			Float1dPort rlValueEstAfter = (Float1dPort) getInPort("rlValueEstimationAfter");
-			FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
+			Float2dPort value = (Float2dPort) getInPort("value");
 
 			// Gets the active state as computed at the beginning of the cycle
 			int a = takenAction.get();
@@ -131,7 +127,7 @@ public class MultiStateACNoTraces extends Module implements QLAlgorithm {
 	 * @param value The action-value and value holding matrix
 	 * @param updateValue 
 	 */
-	private void update(UpdateItem ui, FloatMatrixPort value, boolean updateValue) {
+	private void update(UpdateItem ui, Float2dPort value, boolean updateValue) {
 		for (Integer state : ui.states.keySet()) {
 			float valueDelta = ui.reward + rlDiscountFactor * ui.valueEstAfter - ui.valueEstBefore;
 			float activation = ui.states.get(state);;

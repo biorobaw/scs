@@ -60,9 +60,9 @@ public class DecayingExplorationSchema extends Module {
 
 		if (!performableAffs.isEmpty()) {
 			Affordance pickedAffordance = null;
-			if (containsEat(performableAffs))
-				pickedAffordance = getEat(performableAffs);
-			else {
+//			if (containsEat(performableAffs))
+//				pickedAffordance = getEat(performableAffs);
+//			else {
 				// If last was forward/eat we can turn or forward
 				if (lastPicked == null || lastPicked instanceof EatAffordance || lastPicked instanceof ForwardAffordance)
 					if (containsForward(performableAffs) && r.nextFloat() < FORWARD_BIAS)
@@ -78,7 +78,7 @@ public class DecayingExplorationSchema extends Module {
 							pickedAffordance = performableAffs.get(r.nextInt(performableAffs.size()));
 					} while (performableAffs.size() != 1 && pickedAffordance instanceof TurnAffordance &&
 							((TurnAffordance)pickedAffordance).getAngle() != ((TurnAffordance)lastPicked).getAngle() );
-			}
+//			}
 			
 			votes[pickedAffordance.getIndex()] = (float) explorationValue;
 

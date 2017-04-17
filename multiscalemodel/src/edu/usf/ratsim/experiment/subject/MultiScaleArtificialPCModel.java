@@ -47,7 +47,7 @@ import edu.usf.ratsim.nsl.modules.input.SubjectTriedToEat;
 import edu.usf.ratsim.nsl.modules.intention.Intention;
 import edu.usf.ratsim.nsl.modules.intention.LastAteIntention;
 import edu.usf.ratsim.nsl.modules.intention.NoIntention;
-import edu.usf.ratsim.nsl.modules.rl.MultiStateACTaxic;
+import edu.usf.ratsim.nsl.modules.rl.MultiStateACNoTraces;
 import edu.usf.ratsim.nsl.modules.rl.MultiStateProportionalQL;
 import edu.usf.ratsim.nsl.modules.rl.QLAlgorithm;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
@@ -398,9 +398,8 @@ public class MultiScaleArtificialPCModel extends Model {
 			addModule(mspql);
 			rlAlg = mspql;
 		} else if (rlType.equals("actorCritic")) {
-			MultiStateACTaxic mspac = new MultiStateACTaxic(
-					"RL Module",numActions, numStates,
-					taxicDiscountFactor, rlDiscountFactor, alpha, tracesDecay);
+			MultiStateACNoTraces mspac = new MultiStateACNoTraces(
+					"RL Module",numActions, numStates, rlDiscountFactor, alpha);
 			mspac.addInPort("reward", reward.getOutPort("reward"));
 			mspac.addInPort("takenAction", takenActionPort);
 			mspac.addInPort("statesBefore", getModule("States Before")
