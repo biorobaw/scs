@@ -16,7 +16,6 @@ import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
-import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 
@@ -60,9 +59,6 @@ public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 				.getPossibleAffordances());
 		int voteIndex = 0;
 		boolean feederToEat = robot.isFeederClose();
-		
-		Int0dPort lastFeeder = (Int0dPort)getInPort("goalFeeder");
-		int except[] = {lastFeeder.get()};
 
 		float maxVal = 0;
 		int maxIndex = -1;
@@ -72,7 +68,7 @@ public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 				if (af instanceof TurnAffordance
 						|| af instanceof ForwardAffordance) {
 					if (!feederToEat) {
-						for (Feeder f : robot.getVisibleFeeders(except)) {
+						for (Feeder f : robot.getVisibleFeeders(null)) {
 							if (f != null) {
 								Point3f newPos = GeomUtils.simulate(
 										f.getPosition(), af);

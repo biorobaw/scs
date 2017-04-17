@@ -21,6 +21,7 @@ import edu.usf.micronsl.port.Port;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
+import edu.usf.micronsl.port.twodimensional.Float2dPort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePortMatrix;
 import edu.usf.ratsim.nsl.modules.actionselection.DecayingExplorationSchema;
 import edu.usf.ratsim.nsl.modules.actionselection.GradientValue;
@@ -39,15 +40,15 @@ import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicFoodManyFeedersMany
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicValueSchema;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 import edu.usf.ratsim.nsl.modules.celllayer.RndConjCellLayer;
-import edu.usf.ratsim.nsl.modules.goaldecider.ActiveFeederGoalDecider;
 import edu.usf.ratsim.nsl.modules.goaldecider.LastTriedToEatGoalDecider;
+import edu.usf.ratsim.nsl.modules.goaldecider.OneThenTheOtherGoalDecider;
 import edu.usf.ratsim.nsl.modules.input.ClosestFeeder;
 import edu.usf.ratsim.nsl.modules.input.SubjectAte;
 import edu.usf.ratsim.nsl.modules.input.SubjectTriedToEat;
 import edu.usf.ratsim.nsl.modules.intention.Intention;
 import edu.usf.ratsim.nsl.modules.intention.LastAteIntention;
 import edu.usf.ratsim.nsl.modules.intention.NoIntention;
-import edu.usf.ratsim.nsl.modules.rl.MultiStateACNoTraces;
+import edu.usf.ratsim.nsl.modules.rl.MultiStateACTaxic;
 import edu.usf.ratsim.nsl.modules.rl.MultiStateProportionalQL;
 import edu.usf.ratsim.nsl.modules.rl.QLAlgorithm;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
@@ -134,19 +135,19 @@ public class MultiScaleArtificialPCModel extends Model {
 				"Last Tried To Eat Goal Decider");
 		addModule(lastTriedToEatGoalDecider);
 //
-		ActiveFeederGoalDecider flashingGoalDecider = new ActiveFeederGoalDecider(
-				"Active Feeder Goal Decider");
-		addModule(flashingGoalDecider);
+//		ActiveFeederGoalDecider activeFeederGoalDecider = new ActiveFeederGoalDecider(
+//				"Active Feeder Goal Decider");
+//		addModule(activeFeederGoalDecider);
 
-//		OneThenTheOtherGoalDecider flashingGoalDecider = new OneThenTheOtherGoalDecider(
-//				"One Then The Other Goal Decider",lRobot);
-//		addModule(flashingGoalDecider);
+		OneThenTheOtherGoalDecider oneThenTheOtherGoalDecider = new OneThenTheOtherGoalDecider(
+				"One Then The Other Goal Decider",lRobot);
+		addModule(oneThenTheOtherGoalDecider);
 
 		Module intention;
 		if (numIntentions > 1) {
 			intention = new LastAteIntention("Intention", numIntentions);
 			intention.addInPort("goalFeeder",
-					flashingGoalDecider.getOutPort("goalFeeder"));
+					oneThenTheOtherGoalDecider.getOutPort("goalFeeder"));
 		} else {
 			intention = new NoIntention("Intention", numIntentions);
 		}
@@ -301,7 +302,7 @@ public class MultiScaleArtificialPCModel extends Model {
 				flashingReward, nonFoodReward, taxicDiscountFactor,
 				estimateValue);
 		flashTaxVal.addInPort("goalFeeder",
-				flashingGoalDecider.getOutPort("goalFeeder"));
+				oneThenTheOtherGoalDecider.getOutPort("goalFeeder"));
 		flashTaxVal.addInPort("takenAction", takenActionPort); // just for
 																// dependency
 		taxicValueEstimationPorts.add(flashTaxVal.getOutPort("value"));
@@ -365,10 +366,10 @@ public class MultiScaleArtificialPCModel extends Model {
 				subTriedToEat.getOutPort("subTriedToEat"));
 		lastTriedToEatGoalDecider.addInPort("closestFeeder",
 				closestFeeder.getOutPort("closestFeeder"));
-		flashingGoalDecider.addInPort("subAte", subAte.getOutPort("subAte"));
-		flashingGoalDecider.addInPort("closestFeeder",
+		oneThenTheOtherGoalDecider.addInPort("subAte", subAte.getOutPort("subAte"));
+		oneThenTheOtherGoalDecider.addInPort("closestFeeder",
 				closestFeeder.getOutPort("closestFeeder"));
-		flashingGoalDecider.addInPort("subTriedToEat",
+		oneThenTheOtherGoalDecider.addInPort("subTriedToEat",
 				subTriedToEat.getOutPort("subTriedToEat"));
 		
 		Reward reward = new Reward("Reward", foodReward, nonFoodReward);
@@ -398,8 +399,9 @@ public class MultiScaleArtificialPCModel extends Model {
 			addModule(mspql);
 			rlAlg = mspql;
 		} else if (rlType.equals("actorCritic")) {
-			MultiStateACNoTraces mspac = new MultiStateACNoTraces(
-					"RL Module",numActions, numStates, rlDiscountFactor, alpha);
+			MultiStateACTaxic mspac = new MultiStateACTaxic(
+					"RL Module",numActions, numStates,
+					taxicDiscountFactor, rlDiscountFactor, alpha, tracesDecay);
 			mspac.addInPort("reward", reward.getOutPort("reward"));
 			mspac.addInPort("takenAction", takenActionPort);
 			mspac.addInPort("statesBefore", getModule("States Before")
