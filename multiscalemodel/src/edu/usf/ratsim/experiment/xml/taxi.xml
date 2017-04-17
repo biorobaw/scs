@@ -3,7 +3,6 @@
 
 <experiment>
 	<plot>false</plot>
-	
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
@@ -12,7 +11,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/taxi.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>true</display>
+			<display>false</display>
 		</params>
 	</universe>
 	
@@ -29,7 +28,7 @@
 			<!-- Half the field of view of the rat -->
 			<halfFieldOfView>1.83</halfFieldOfView>
 			<!-- How long can the rat see in meters -->
-			<visionDist>1.5</visionDist>
+			<visionDist>2</visionDist>
 			<!-- How far away can the robot eat food. This should be shorter than the universe
 				threshold -->
 			<closeThrs>.1</closeThrs>
@@ -90,8 +89,6 @@
 			<rlDiscountFactor>1</rlDiscountFactor>
 			<!-- Alpha for the learning algorithm -->
 			<alpha>0.5</alpha>
-			<!-- Elegibility traces for the learning algorithm -->
-			<tracesDecay>.0001</tracesDecay>
 			<!-- Initial value for values and action values -->
 			<initialValue>0</initialValue>
 			<!-- Value associated with a flashing feeder -->
@@ -109,11 +106,11 @@
 			<!-- TODO: take out -->
 			<cellContribution>0</cellContribution>
 			<!-- Value assigned to exploration action-values -->
-			<explorationReward>250</explorationReward>
+			<explorationReward>500</explorationReward>
 			<!-- Half life value for decay exploration -->
-			<explorationHalfLifeVal>1</explorationHalfLifeVal>
+			<explorationHalfLifeVal>.5</explorationHalfLifeVal>
 			<!-- Value assigned to wall actions for the wall taxic modules -->
-			<wallTaxicVal>250</wallTaxicVal>
+			<wallTaxicVal>100</wallTaxicVal>
 			<wallNegReward>-1</wallNegReward>
 			<!-- Minimum distance to take wall into account -->
 			<wallTooCloseDist>.05</wallTooCloseDist>
@@ -154,9 +151,9 @@
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
 			<task>
-				<name>edu.usf.experiment.task.EnableFeeders</name>
+				<name>edu.usf.experiment.task.EnableRandomFeeders</name>
 				<params>
-					<feeders>0</feeders>
+					<numFeeders>1</numFeeders>
 				</params>
 			</task>
 			
@@ -226,7 +223,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>10000</max>
+						<max>2000</max>
 					</params>
 				</condition>
 				<!-- Has eaten from 100 feeders -->

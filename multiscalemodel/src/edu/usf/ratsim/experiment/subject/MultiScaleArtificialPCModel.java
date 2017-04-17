@@ -85,7 +85,6 @@ public class MultiScaleArtificialPCModel extends Model {
 		float rlDiscountFactor = params.getChildFloat("rlDiscountFactor");
 		float taxicDiscountFactor = params.getChildFloat("taxicDiscountFactor");
 		float alpha = params.getChildFloat("alpha");
-		float tracesDecay = params.getChildFloat("tracesDecay");
 		float initialValue = params.getChildFloat("initialValue");
 		float foodReward = params.getChildFloat("foodReward");
 		float nonFoodReward = params.getChildFloat("nonFoodReward");
