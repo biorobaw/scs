@@ -75,8 +75,8 @@ public class GradientValue extends Module implements Voter {
 
 		// Normalize
 		valueEst[0] = (float) (valueEst[0] / normalizer);
-//		if (valueEst[0] > foodReward)
-//			valueEst[0] = foodReward;
+		if (Math.abs(valueEst[0]) > foodReward)
+			valueEst[0] = Math.signum(valueEst[0])*foodReward;
 		
 		if (Float.isInfinite(valueEst[0]) || Float.isNaN(valueEst[0])) {
 			System.out.println("Numeric Error in Gradient value");

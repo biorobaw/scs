@@ -74,10 +74,10 @@ public class GradientVotes extends Module implements Voter {
 			// Normalize with real value and revert previous normalization
 			actionVote[action] = (float) (actionVote[action] / normalizer);
 		
-//		for (int action = 0; action < numActions; action++)
-//			// Normalize with real value and revert previous normalization
-//			if (actionVote[action] > foodReward)
-//				actionVote[action] = foodReward;
+		for (int action = 0; action < numActions; action++)
+			// Normalize with real value and revert previous normalization
+			if (Math.abs(actionVote[action]) > foodReward)
+				actionVote[action] = Math.signum(actionVote[action])*foodReward;
 
 		if (Debug.printValues) {
 			System.out.println("RL votes");
