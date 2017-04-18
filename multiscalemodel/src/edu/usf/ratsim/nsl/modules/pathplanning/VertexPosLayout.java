@@ -7,7 +7,7 @@ import edu.uci.ics.jung.graph.Graph;
 
 class VertextPosLayout<E> extends AbstractLayout<PointNode, E> {
 
-	private static final float DISPLAY_SCALE = 200;
+	private static final float DISPLAY_SCALE = 100;
 	private static final float DISPLAY_OFFSET = 200f;
 
 	protected VertextPosLayout(Graph<PointNode, E> graph) {

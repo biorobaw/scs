@@ -19,7 +19,7 @@ public class PlotGatherer extends Plotter {
 			public void run() {
 				System.out.println("Gathering plots on " + logPath);
 				new File(logPath + "/plots/").mkdir();
-				IOUtils.exec("find . -iname *.pdf -exec ln {} plots/ ;", logPath);
+//				IOUtils.exec("find . -iname *.pdf -exec ln {} plots/ ;", logPath);
 				IOUtils.exec("find . -iname *.png -exec ln {} plots/ ;", logPath);
 			}
 		};

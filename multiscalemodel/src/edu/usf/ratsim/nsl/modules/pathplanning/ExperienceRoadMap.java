@@ -18,6 +18,7 @@ import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
+import edu.uci.ics.jung.graph.util.Pair;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.GeomUtils;
@@ -26,6 +27,7 @@ import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.ratsim.experiment.subject.NotImplementedException;
+import edu.usf.ratsim.nsl.modules.actionselection.apf.APFModule;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Bug0Module;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Bug1Module;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Bug2Module;
@@ -39,11 +41,13 @@ public class ExperienceRoadMap extends Module {
 
 	private static final float DIST_TO_GOAL_THRS = .15f;
 
-	private static final float NEXT_NODE_DIST_THRS = 0.5f;
+	private static final float NEXT_NODE_DIST_THRS = 0.15f;
 
 	private static final int WINDOW_SIZE = 800;
 
 	private static final boolean PLOT = false;
+
+	private static final float ACTIVATION_THRS = .2f;
 
 	private UndirectedGraph<PointNode, Edge> g;
 
@@ -61,7 +65,8 @@ public class ExperienceRoadMap extends Module {
 
 	private Module bug;
 
-	private Bug0Module bug0;
+	 private Bug0Module bug0;
+//	private APFModule bug0;
 
 	private String algorithm;
 
@@ -70,10 +75,10 @@ public class ExperienceRoadMap extends Module {
 
 		frame = null;
 		repainter = null;
-		
+
 		intermediateGoal = new Point3fPort(this);
 		addOutPort("intermediateGoal", intermediateGoal);
-		
+
 		this.subject = subject;
 		this.algorithm = algorithm;
 	}
@@ -96,7 +101,7 @@ public class ExperienceRoadMap extends Module {
 
 			float activation = n.getActivation();
 			totalActivation += activation;
-			if (activation > 0)
+			if (activation > ACTIVATION_THRS)
 				active.add(n);
 
 			if (activation > maxActivation) {
@@ -107,7 +112,7 @@ public class ExperienceRoadMap extends Module {
 		// Creation of new nodes
 		if ((totalActivation < MIN_ACTIVATION && maxActivation < MAX_SINGLE_ACTIVATION)
 				|| (platPos.get().distance(rPos.get()) < DIST_TO_GOAL_THRS && totalActivation < 3 * MIN_ACTIVATION)) {
-//			System.out.println("Creating a node");
+			// System.out.println("Creating a node");
 			// Create new node
 			PointNode nv = new PointNode(rPos.get());
 			g.addVertex(nv);
@@ -137,13 +142,12 @@ public class ExperienceRoadMap extends Module {
 			if (pn.prefLoc.distance(platPos.get()) < DIST_TO_GOAL_THRS)
 				if (goalNode == null)
 					goalNode = pn;
-				else 
-					if (goalNode.prefLoc.distance(platPos.get()) > pn.prefLoc.distance(platPos.get()))
-						goalNode = pn;
-		
+				else if (goalNode.prefLoc.distance(platPos.get()) > pn.prefLoc.distance(platPos.get()))
+					goalNode = pn;
+
 		List<Edge> l = new LinkedList<Edge>();
 		if (goalNode != null) {
-			// Compute the shortest path					
+			// Compute the shortest path
 			Transformer<Edge, Float> wtTransformer = new Transformer<Edge, Float>() {
 				public Float transform(Edge link) {
 					return link.weight;
@@ -152,29 +156,58 @@ public class ExperienceRoadMap extends Module {
 			DijkstraShortestPath<PointNode, Edge> alg = new DijkstraShortestPath(g, wtTransformer);
 			l = alg.getPath(mostActive, goalNode);
 			Number dist = alg.getDistance(mostActive, goalNode);
-//			System.out.println("The shortest path from" + mostActive + " to " + goalNode + " is:");
-//			System.out.println(l.toString());
-//			System.out.println("and the length of the path is: " + dist);
+			// System.out.println("The shortest path from" + mostActive + " to "
+			// + goalNode + " is:");
+			// System.out.println(l.toString());
+			// System.out.println("and the length of the path is: " + dist);
 		}
-		
+
 		// Publish a closer goal if there is a valid path
-		if (l.isEmpty()){
+		if (l.isEmpty()) {
 			intermediateGoal.set(platPos.get());
 			bug.run();
+
 		} else {
-			Point3f next = g.getEndpoints(l.get(0)).getSecond().prefLoc;
-			if (next.distance(rPos.get()) > NEXT_NODE_DIST_THRS)
-				intermediateGoal.set(next);
-			else {
-				if (l.size() > 1)
-					intermediateGoal.set(g.getEndpoints(l.get(1)).getSecond().prefLoc);
-				else 
-					intermediateGoal.set(platPos.get());
+			// Point3f next = g.getEndpoints(l.get(0)).getSecond().prefLoc;
+			// if (next.distance(rPos.get()) > NEXT_NODE_DIST_THRS)
+			// intermediateGoal.set(next);
+			// else {
+			// if (l.size() > 1)
+			// intermediateGoal.set(g.getEndpoints(l.get(1)).getSecond().prefLoc);
+			// else
+			// intermediateGoal.set(platPos.get());
+			// }0
+			// Get the node further into the path that is not active
+			int i = 0;
+			PointNode nextNode = mostActive;
+			while (i < l.size() && active.contains(nextNode)) {
+				Pair<PointNode> edge = g.getEndpoints(l.get(i));
+				if (edge.getFirst() == nextNode)
+					nextNode = edge.getSecond();
+				else
+					nextNode = edge.getFirst();
+				i++;
 			}
+
+			for (PointNode n : g.getVertices())
+				n.following = false;
+
+			if (i >= l.size() || nextNode == null)
+				intermediateGoal.set(platPos.get());
+			else {
+				intermediateGoal.set(nextNode.prefLoc);
+				nextNode.following = true; 
+			}
+
 			bug0.run();
+//			try {
+//				Thread.sleep(10);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
-			
-			
+
 	}
 
 	@Override
@@ -190,14 +223,17 @@ public class ExperienceRoadMap extends Module {
 		layout.setSize(new Dimension(WINDOW_SIZE, WINDOW_SIZE));
 		vv = new BasicVisualizationServer<PointNode, Edge>(layout);
 		vv.setPreferredSize(new Dimension(WINDOW_SIZE, WINDOW_SIZE));
-//		vv.getRenderContext().setVertexFillPaintTransformer(new Transformer<PointNode, Paint>() {
-//			public Paint transform(PointNode pn) {
-//				return new Color(pn.activation, 0, 1 - pn.activation, 1);
-//			}
-//
-//		});
+		vv.getRenderContext().setVertexFillPaintTransformer(new Transformer<PointNode, Paint>() {
+			public Paint transform(PointNode pn) {
+				if (pn.following)
+					return new Color(0f, 1f, 0f, 1f);
+				else
+					return new Color(pn.activation, 0f, 1 - pn.activation, 1f);
+			}
 
-		if (PLOT){
+		});
+
+		if (PLOT) {
 			frame = new JFrame("Topological map");
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			frame.getContentPane().add(vv);
@@ -231,16 +267,14 @@ public class ExperienceRoadMap extends Module {
 			});
 			repainter.start();
 		}
-		
-		
-		
+
 		// Create the delegate bug algorithms
 		Float1dPort sonarReadings = (Float1dPort) getInPort("sonarReadings");
 		Float1dPort sonarAngles = (Float1dPort) getInPort("sonarAngles");
 		Point3fPort rPos = (Point3fPort) getInPort("position");
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
 		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
-		
+
 		// algorithm comes from group parameters
 		bug = null;
 		if (algorithm.equals("bug0"))
@@ -251,20 +285,21 @@ public class ExperienceRoadMap extends Module {
 			bug = new Bug2Module("Bug2", subject);
 		else
 			throw new NotImplementedException();
-		
+
 		bug.addInPort("sonarReadings", sonarReadings);
 		bug.addInPort("sonarAngles", sonarAngles);
 		bug.addInPort("position", rPos);
 		bug.addInPort("orientation", rOrient);
 		bug.addInPort("platformPosition", intermediateGoal);
-		
+
 		bug0 = new Bug0Module("ERMBug0", subject);
+//		bug0 = new APFModule("ERMBug0", subject);
 		bug0.addInPort("sonarReadings", sonarReadings);
 		bug0.addInPort("sonarAngles", sonarAngles);
 		bug0.addInPort("position", rPos);
 		bug0.addInPort("orientation", rOrient);
-		bug0.addInPort("platformPosition", intermediateGoal); 
-		
+		bug0.addInPort("platformPosition", intermediateGoal);
+
 		bug.newTrial();
 		bug0.newTrial();
 	}
@@ -272,7 +307,7 @@ public class ExperienceRoadMap extends Module {
 	@Override
 	public void newEpisode() {
 		super.newEpisode();
-		
+
 		bug.newEpisode();
 		bug0.newEpisode();
 	}
@@ -280,11 +315,5 @@ public class ExperienceRoadMap extends Module {
 	public UndirectedGraph<PointNode, Edge> getGraph() {
 		return g;
 	}
-	
-	
 
 }
-
-
-
-
