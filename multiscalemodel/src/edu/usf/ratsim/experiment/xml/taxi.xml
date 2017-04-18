@@ -2,7 +2,6 @@
 <!-- Just a test of new format -->
 
 <experiment>
-	<plot>false</plot>
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
@@ -46,19 +45,19 @@
 			<!-- Right rotation amount in radians -->
 			<rightAngle>-0.195</rightAngle>
 			<!-- Number of conjunctive cell layers -->
-			<numCCLayers>3</numCCLayers>
+			<numCCLayers>2</numCCLayers>
 			<!-- Size of each layer in millimeters -->
-			<layerLengths>3,3,3</layerLengths>
+			<layerLengths>3,3</layerLengths>
 			<!-- Number of cells per layer -->
-			<numCCCellsPerLayer>20000,12000,8000</numCCCellsPerLayer>
+			<numCCCellsPerLayer>50000,20000</numCCCellsPerLayer>
 			<!-- Type of learning -->
 			<rlType>actorCritic</rlType>
 			<!-- Type of conjunctive layer -> learning connection -->
 			<voteType>gradient</voteType>
 			<!-- Layer connection probabilities to action selection for gradient connections -->
-			<votesConnProbs>1,0.5, 0</votesConnProbs>
+			<votesConnProbs>1,0</votesConnProbs>
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
-			<valueConnProbs>0.0,.5,1</valueConnProbs>
+			<valueConnProbs>1,0</valueConnProbs>
 			<!-- Minimum conjuntive layer cell radius -->
 			<minPCRadius>.05</minPCRadius>
 			<!-- Maximum conjuntive layer cell radius -->
@@ -108,7 +107,7 @@
 			<!-- Value assigned to exploration action-values -->
 			<explorationReward>500</explorationReward>
 			<!-- Half life value for decay exploration -->
-			<explorationHalfLifeVal>.5</explorationHalfLifeVal>
+			<explorationHalfLifeVal>20</explorationHalfLifeVal>
 			<!-- Value assigned to wall actions for the wall taxic modules -->
 			<wallTaxicVal>100</wallTaxicVal>
 			<wallNegReward>-1</wallNegReward>
@@ -151,9 +150,9 @@
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
 			<task>
-				<name>edu.usf.experiment.task.EnableRandomFeeders</name>
+				<name>edu.usf.experiment.task.EnableFeeders</name>
 				<params>
-					<numFeeders>1</numFeeders>
+					<feeders>0</feeders>
 				</params>
 			</task>
 			
@@ -248,9 +247,7 @@
 					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
 				</plotter>
 				<!-- Plot path for each episode -->
-				<plotter>
-					<name>edu.usf.experiment.plot.PathPlotter</name>
-				</plotter>
+				
 				<!-- Plot value -->
 			</afterEpisodePlotters>
 		</episodes>
@@ -263,8 +260,22 @@
 		</afterTrialLoggers>
 		<!-- Plotters to execute after the trial has ended -->
 		<afterTrialPlotters>
+			<plotter>
+				<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
+			</plotter>
+			<plotter>
+				<name>edu.usf.experiment.plot.PlotGatherer</name>
+			</plotter>
 		</afterTrialPlotters>
 	</trial>
 	
+	<afterExperimentPlotters>
+		<plotter>
+			<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
+		</plotter>
+		<plotter>
+			<name>edu.usf.experiment.plot.PlotGatherer</name>
+		</plotter>
+	</afterExperimentPlotters>
 	
 </experiment>

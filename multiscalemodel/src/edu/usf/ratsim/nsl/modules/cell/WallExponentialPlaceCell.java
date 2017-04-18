@@ -42,6 +42,10 @@ public class WallExponentialPlaceCell extends
 			float d = distanceToWall / (getPlaceRadius());
 			float dAcross = Math.max(0, (d - getPreferredLocation().distance(currLocation)
 					/ getPlaceRadius()));
+			
+			if (dAcross == 0)
+				return 0;
+			
 			if (wallCell) {
 				// If it is a wall cell, it activates more near walls but no
 				// across also
