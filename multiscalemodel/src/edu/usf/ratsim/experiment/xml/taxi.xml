@@ -64,14 +64,14 @@
 			<maxPCRadius>.3</maxPCRadius>
 			<!-- Type of conjunctive cell -->
 			<placeCells>ExponentialWallConjCell</placeCells>
-			<votesNormalizer>10</votesNormalizer>
-			<valueNormalizer>10</valueNormalizer>
+			<votesNormalizer>100</votesNormalizer>
+			<valueNormalizer>100</valueNormalizer>
 			<!-- Wall cell modulation. How much does a wall modulate the place field. Greater
 				means less activity -->
 			<wallParamA>10</wallParamA>
 			<wallParamB>.1</wallParamB>
 			<!-- Amount of cells placed near the goal -->
-			<goalCellProportion>0.5</goalCellProportion>
+			<goalCellProportion>0.0</goalCellProportion>
 			<!-- Minimum angular radius of conjuntive cells -->
 			<minHDRadius>0.195</minHDRadius>
 			<!-- Maximum angular radius of conjuntive cells -->
@@ -135,6 +135,9 @@
 		<name>Control</name>
 		<numMembers>64</numMembers>
 		<params>
+			<votesConnProbs>.5,.5</votesConnProbs>
+			<!-- Layer connection probabilities to value estimation for gradient connections -->
+			<valueConnProbs>.5,.5</valueConnProbs>
 		</params>
 		<tasks>
 		</tasks>
@@ -171,9 +174,9 @@
 		<numMembers>64</numMembers>
 		<params>
 			<!-- Layer connection probabilities to action selection for gradient connections -->
-			<votesConnProbs>,5,0</votesConnProbs>
+			<votesConnProbs>1,0</votesConnProbs>
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
-			<valueConnProbs>0,0.5</valueConnProbs>
+			<valueConnProbs>0,1</valueConnProbs>
 		</params>
 		<tasks>
 		</tasks>
