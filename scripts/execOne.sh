@@ -1,9 +1,10 @@
 #!/bin/bash
 
-#SBATCH --time=0:40:00
+#SBATCH --time=0:30:00
 #SBATCH --cpus-per-task 2 
 #SBATCH --mem=8192
 #SBATCH --qos=preempt
+#SBATCH -p mri2016,cms2016,circe
 
 logPath=$1
 if [ -z "$SLURM_ARRAY_TASK_ID" ]; then
