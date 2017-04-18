@@ -7,6 +7,10 @@ import java.util.Random;
 
 import javax.vecmath.Point3f;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.index.quadtree.Quadtree;
+
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -19,6 +23,8 @@ import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceIntentionCell;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialWallConjCell;
 
 public class RndConjCellLayer extends Module {
+
+	private static final float SEARCH_WIDTH = 0.3f;
 
 	/**
 	 * The layer's cells current activation
@@ -68,6 +74,8 @@ public class RndConjCellLayer extends Module {
 	 * The output port. A sparse port is used for efficiency sake.
 	 */
 	private Float1dSparsePortMap activationPort;
+
+	private Quadtree qtree;
 
 	/**
 	 * Create all cells in the layer.
@@ -140,6 +148,7 @@ public class RndConjCellLayer extends Module {
 		this.layerLength = layerLength;
 
 		cells = new LinkedList<ConjCell>();
+		qtree = new Quadtree();
 		random = RandomSingleton.getInstance();
 		int i = 0;
 		do {
@@ -164,18 +173,22 @@ public class RndConjCellLayer extends Module {
 
 			preferredIntention = random.nextInt(numIntentions);
 
+			ConjCell cell = null;
 			if (placeCellType.equals("ExponentialConjCell")) {
-				cells.add(new ExponentialConjCell(prefLocation,
+				cell = new ExponentialConjCell(prefLocation,
 						preferredDirection, placeRadius, directionRadius,
-						preferredIntention));
+						preferredIntention);
 			} else if (placeCellType.equals("ExponentialPlaceIntentionCell")) {
-				cells.add(new ExponentialPlaceIntentionCell(prefLocation,
-						placeRadius, preferredIntention));
+				cell = new ExponentialPlaceIntentionCell(prefLocation,
+						placeRadius, preferredIntention);
 			} else if (placeCellType.equals("ExponentialWallConjCell")) {
-				cells.add(new ExponentialWallConjCell(prefLocation,
+				cell = new ExponentialWallConjCell(prefLocation,
 						preferredDirection, placeRadius, directionRadius,
-						preferredIntention, random, wallParamA, wallParamB));
+						preferredIntention, random, wallParamA, wallParamB);
 			}
+			
+			cells.add(cell);
+			qtree.insert(new Envelope(new Coordinate(cell.getPreferredLocation().x,cell.getPreferredLocation().y)), cell);
 
 			i++;
 		} while (i < numCells);
@@ -262,7 +275,12 @@ public class RndConjCellLayer extends Module {
 		float total = 0;
 		Map<Integer, Float> nonZero = activationPort.getNonZero();
 		nonZero.clear();
-		for (ConjCell pCell : cells) {
+		
+		List<Object> activeCells = qtree.query(new Envelope(point.x - SEARCH_WIDTH, point.x + SEARCH_WIDTH, point.y - SEARCH_WIDTH, point.y + SEARCH_WIDTH));
+		
+//		System.out.println(activeCells.size());
+		for (Object pCellObj : activeCells) {
+			ConjCell pCell = (ConjCell) pCellObj;
 			float val = pCell.getActivation(point, angle, inte, distToWall);
 			if (val != 0)
 				nonZero.put(i, val);
