@@ -7,6 +7,7 @@ require(scales, quietly = TRUE)
 #stepsPerSec <- 4
 
 plotArrival <- function(pathData, plotName){
+  pathData$group <- factor(pathData$group)
   #pathData <- pathData[pathData$runtime < 10000,]
   summarizedRunTimes <- ddply(pathData, .(group, repetition), summarise, sdRT = sd(runtime)/sqrt(length(runtime)), mRT = mean(runtime))
   #   print(head(summarizedRunTimes))
