@@ -132,7 +132,7 @@
 	
 	<!-- Group definition. The order determines order of execution -->
 	<group>
-		<name>Control</name>
+		<name>Symmetric</name>
 		<numMembers>64</numMembers>
 		<params>
 			<votesConnProbs>.5,.5</votesConnProbs>
@@ -182,16 +182,27 @@
 		</tasks>
 	</group>
 	
+		<group>
+		<name>Naive</name>
+		<numMembers>64</numMembers>
+		<params>
+			<alpha>0.0</alpha>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	
+	
 	<!-- Training trial - Non-delayed cue phase -->
 	<trial>
 		<name>Training</name>
 		<!-- Groups to apply the trial -->
 		<groups>
-			<group>Control</group>
+			<group>Symmetric</group>
 			<group>Small</group>
 			<group>Large</group>
 			<group>Asymmetric</group>
-			
+			<group>Naive</group>
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
