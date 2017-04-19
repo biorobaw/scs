@@ -10,6 +10,7 @@ import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
@@ -216,13 +217,13 @@ public class MultiScaleArtificialPCModel extends Model {
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
-		TaxicFoodManyFeedersManyActionsNotLast taxicff = new TaxicFoodManyFeedersManyActionsNotLast(
-				"Taxic Food Finder", subject, lRobot, nonFlashingReward,
-				nonFlashingNegReward, taxicDiscountFactor, estimateValue);
-		taxicff.addInPort("goalFeeder",
-				lastTriedToEatGoalDecider.getOutPort("goalFeeder"), true);
-		addModule(taxicff);
-		votesPorts.add((Float1dPort) taxicff.getOutPort("votes"));
+//		TaxicFoodManyFeedersManyActionsNotLast taxicff = new TaxicFoodManyFeedersManyActionsNotLast(
+//				"Taxic Food Finder", subject, lRobot, nonFlashingReward,
+//				nonFlashingNegReward, taxicDiscountFactor, estimateValue);
+//		taxicff.addInPort("goalFeeder",
+//				lastTriedToEatGoalDecider.getOutPort("goalFeeder"), true);
+//		addModule(taxicff);
+//		votesPorts.add((Float1dPort) taxicff.getOutPort("votes"));
 
 		FlashingTaxicFoodFinderSchema flashingTaxicFF = new FlashingTaxicFoodFinderSchema(
 				"Flashing Taxic Food Finder", subject, lRobot, flashingReward,
@@ -237,10 +238,10 @@ public class MultiScaleArtificialPCModel extends Model {
 		addModule(decayExpl);
 		votesPorts.add((Float1dPort) decayExpl.getOutPort("votes"));
 
-		StillExplorer stillExpl = new StillExplorer("Still Explorer",
-				maxActionsSinceForward, subject, stillExplorationVal);
-		addModule(stillExpl);
-		votesPorts.add((Float1dPort) stillExpl.getOutPort("votes"));
+//		StillExplorer stillExpl = new StillExplorer("Still Explorer",
+//				maxActionsSinceForward, subject, stillExplorationVal);
+//		addModule(stillExpl);
+//		votesPorts.add((Float1dPort) stillExpl.getOutPort("votes"));
 		// Wall following for obst. avoidance
 		// new WallAvoider(BEFORE_WALLAVOID_STR, this, subject,
 		// wallFollowingVal,
@@ -253,10 +254,10 @@ public class MultiScaleArtificialPCModel extends Model {
 		// maxAttentionSpan);
 		// addModule(attExpl);
 		// votesPorts.add((Float1dPort) attExpl.getOutPort("votes"));
-		ObstacleEndTaxic wallTaxic = new ObstacleEndTaxic("Wall Taxic",
-				subject, lRobot, wallTaxicVal, wallNegReward, wallTooCloseDist);
-		addModule(wallTaxic);
-		votesPorts.add((Float1dPort) wallTaxic.getOutPort("votes"));
+//		ObstacleEndTaxic wallTaxic = new ObstacleEndTaxic("Wall Taxic",
+//				subject, lRobot, wallTaxicVal, wallNegReward, wallTooCloseDist);
+//		addModule(wallTaxic);
+//		votesPorts.add((Float1dPort) wallTaxic.getOutPort("votes"));
 
 		// AvoidWallTaxic avoidWallTaxic = new
 		// AvoidWallTaxic("Avoid Wall Taxic", subject, lRobot,
@@ -283,7 +284,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		Port takenActionPort = actionPerformer.getOutPort("takenAction");
 		// Add the taken action ports to some previous exploration modules
 		// attExpl.addInPort("takenAction", takenActionPort, true);
-		stillExpl.addInPort("takenAction", takenActionPort, true);
+//		stillExpl.addInPort("takenAction", takenActionPort, true);
 
 		List<Port> taxicValueEstimationPorts = new LinkedList<Port>();
 		TaxicValueSchema taxVal = new TaxicValueSchema("Taxic Value Estimator",
@@ -462,10 +463,15 @@ public class MultiScaleArtificialPCModel extends Model {
 	// }
 
 	public void newEpisode() {
+		for (RndConjCellLayer l : conjCellLayers)
+			l.clear();
+		
 		for (DecayingExplorationSchema gs : exploration)
 			gs.newEpisode();
 		
 		rlAlg.newEpisode();
+		
+//		Debug.printSelectedValues = true;
 	}
 
 	public void setExplorationVal(float val) {
