@@ -145,9 +145,9 @@
 	
 	
 	<topview>
-		<x>0</x>
-		<y>0</y>
-		<z>16</z>
+		<x>1</x>
+		<y>1</y>
+		<z>8</z>
 	</topview>
 	<thirdview>
 		<x>2.1</x>
