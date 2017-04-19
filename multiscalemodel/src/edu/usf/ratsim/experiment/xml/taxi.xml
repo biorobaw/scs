@@ -138,7 +138,7 @@
 			<votesConnProbs>1,0</votesConnProbs>
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>1,0</valueConnProbs>
-			<numCCCellsPerLayer>20000,0</numCCCellsPerLayer>
+			<numCCCellsPerLayer>20000,1</numCCCellsPerLayer>
 			<minPCRadius>.2</minPCRadius>
 			<maxPCRadius>.2</maxPCRadius>
 		</params>
@@ -153,7 +153,7 @@
 			<votesConnProbs>1,0</votesConnProbs>
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>1,0</valueConnProbs>
-			<numCCCellsPerLayer>20000,0</numCCCellsPerLayer>
+			<numCCCellsPerLayer>20000,1</numCCCellsPerLayer>
 			<minPCRadius>.25</minPCRadius>
 			<maxPCRadius>.25</maxPCRadius>
 		</params>
@@ -168,7 +168,7 @@
 			<votesConnProbs>1,0</votesConnProbs>
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>1,0</valueConnProbs>
-			<numCCCellsPerLayer>20000,0</numCCCellsPerLayer>
+			<numCCCellsPerLayer>20000,1</numCCCellsPerLayer>
 			<minPCRadius>.3</minPCRadius>
 			<maxPCRadius>.3</maxPCRadius>
 		</params>
@@ -183,7 +183,7 @@
 			<votesConnProbs>1,0</votesConnProbs>
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>1,0</valueConnProbs>
-			<numCCCellsPerLayer>20000,0</numCCCellsPerLayer>
+			<numCCCellsPerLayer>20000,1</numCCCellsPerLayer>
 			<minPCRadius>.35</minPCRadius>
 			<maxPCRadius>.35</maxPCRadius>
 		</params>
