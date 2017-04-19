@@ -49,7 +49,7 @@
 			<!-- Size of each layer in millimeters -->
 			<layerLengths>3,3</layerLengths>
 			<!-- Number of cells per layer -->
-			<numCCCellsPerLayer>100000,40000</numCCCellsPerLayer>
+			<numCCCellsPerLayer>20000,20000</numCCCellsPerLayer>
 			<!-- Type of learning -->
 			<rlType>actorCritic</rlType>
 			<!-- Type of conjunctive layer -> learning connection -->
@@ -59,13 +59,13 @@
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>.5,.5</valueConnProbs>
 			<!-- Minimum conjuntive layer cell radius -->
-			<minPCRadius>.05</minPCRadius>
+			<minPCRadius>.15</minPCRadius>
 			<!-- Maximum conjuntive layer cell radius -->
-			<maxPCRadius>.15</maxPCRadius>
+			<maxPCRadius>.3</maxPCRadius>
 			<!-- Type of conjunctive cell -->
 			<placeCells>ExponentialWallConjCell</placeCells>
-			<votesNormalizer>10</votesNormalizer>
-			<valueNormalizer>10</valueNormalizer>
+			<votesNormalizer>20</votesNormalizer>
+			<valueNormalizer>20</valueNormalizer>
 			<!-- Wall cell modulation. How much does a wall modulate the place field. Greater
 				means less activity -->
 			<wallParamA>10</wallParamA>
@@ -105,7 +105,7 @@
 			<!-- TODO: take out -->
 			<cellContribution>0</cellContribution>
 			<!-- Value assigned to exploration action-values -->
-			<explorationReward>25</explorationReward>
+			<explorationReward>100</explorationReward>
 			<!-- Half life value for decay exploration -->
 			<explorationHalfLifeVal>0</explorationHalfLifeVal>
 			<!-- Value assigned to wall actions for the wall taxic modules -->
@@ -268,7 +268,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>2000</max>
+						<max>1000</max>
 					</params>
 				</condition>
 				<!-- Has eaten from 100 feeders -->
