@@ -19,7 +19,7 @@
 		<name>edu.usf.ratsim.robot.virtual.VirtualRobot</name>
 		<params>
 			<!-- Percentual translational noise -->
-			<noise>.2</noise>
+			<noise>.05</noise>
 			<!-- Rotation noise added after translation -->
 			<translationRotationNoise>.195</translationRotationNoise>
 			<!-- How many steps are projected for obstacle avoidance purpose -->
@@ -27,7 +27,7 @@
 			<!-- Half the field of view of the rat -->
 			<halfFieldOfView>1.83</halfFieldOfView>
 			<!-- How long can the rat see in meters -->
-			<visionDist>2</visionDist>
+			<visionDist>1</visionDist>
 			<!-- How far away can the robot eat food. This should be shorter than the universe
 				threshold -->
 			<closeThrs>.1</closeThrs>
@@ -64,8 +64,8 @@
 			<maxPCRadius>.3</maxPCRadius>
 			<!-- Type of conjunctive cell -->
 			<placeCells>ExponentialWallConjCell</placeCells>
-			<votesNormalizer>100</votesNormalizer>
-			<valueNormalizer>100</valueNormalizer>
+			<votesNormalizer>10</votesNormalizer>
+			<valueNormalizer>10</valueNormalizer>
 			<!-- Wall cell modulation. How much does a wall modulate the place field. Greater
 				means less activity -->
 			<wallParamA>10</wallParamA>
@@ -79,7 +79,7 @@
 			<!-- Number of intentions or maps -->
 			<numIntentions>1</numIntentions>
 			<!-- Reward value for food -->
-			<foodReward>1000</foodReward>
+			<foodReward>10000</foodReward>
 			<!-- Reward value given when it doesnt eat -->
 			<nonFoodReward>-1</nonFoodReward>
 			<!-- Lambda discount factor for the taxic module-->
@@ -105,16 +105,16 @@
 			<!-- TODO: take out -->
 			<cellContribution>0</cellContribution>
 			<!-- Value assigned to exploration action-values -->
-			<explorationReward>500</explorationReward>
+			<explorationReward>100</explorationReward>
 			<!-- Half life value for decay exploration -->
-			<explorationHalfLifeVal>20</explorationHalfLifeVal>
+			<explorationHalfLifeVal>10</explorationHalfLifeVal>
 			<!-- Value assigned to wall actions for the wall taxic modules -->
-			<wallTaxicVal>100</wallTaxicVal>
-			<wallNegReward>-1</wallNegReward>
+			<wallTaxicVal>0</wallTaxicVal>
+			<wallNegReward>-.0</wallNegReward>
 			<!-- Minimum distance to take wall into account -->
 			<wallTooCloseDist>.05</wallTooCloseDist>
 			
-			<avoidWallTaxicVal>20</avoidWallTaxicVal>
+			<avoidWallTaxicVal>0</avoidWallTaxicVal>
 			<avoidWallTaxicDist>.1</avoidWallTaxicDist>
 			<!-- Attentional span for still exploration -->
 			<!-- TODO: look at this -->
