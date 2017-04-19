@@ -15,7 +15,6 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 public abstract class SubjectOld extends Subject{
 
 	private RobotOld robot;
-	private boolean triedToEat;
 	private boolean rewarded;
 	
 	
@@ -27,7 +26,7 @@ public abstract class SubjectOld extends Subject{
 		robot.startRobot();
 		
 		hasEaten = false;
-		triedToEat = false;
+
 	}
 
 	
@@ -41,17 +40,7 @@ public abstract class SubjectOld extends Subject{
 	 * Returns true if the subject has tried to eat, regardless of whether it could eat or not
 	 * @return
 	 */
-	public boolean hasTriedToEat(){
-		return triedToEat;
-	}
-	
-	public void setTriedToEat(){
-		triedToEat = true;
-	}
 
-	public void clearTriedToEAt(){
-		triedToEat = false;
-	}
 	
 	public RobotOld getRobot() {
 		return robot;

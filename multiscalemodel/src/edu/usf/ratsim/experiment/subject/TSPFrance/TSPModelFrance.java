@@ -38,14 +38,15 @@ public class TSPModelFrance extends Model {
 	SubjectAte subAte;
 	CurrentFeederModule currentFeeder;
 	VisibleFeedersModule visibleFeeders;
-	Reservoir reservoir;
+	Reservoir reservoir = null;
 	
 	//CELL MODULES
 	
 	//ACTION SELECTION MODULES
 	ActionFromPathModule actionFromPathModule;
-	RandomFeederTaxicActionModule randomFeederTaxicActionModule;
-	ReservoirActionSelectionModule reservoirActionSelectionModule;
+	NonVisitedFeederSetModule nonVisitedFeederSetMoudle;
+	RandomOrClosestFeederTaxicActionModule randomOrClosestFeederTaxicActionModule;
+	ReservoirActionSelectionModule reservoirActionSelectionModule = null;
 	
 	
 	
@@ -67,12 +68,12 @@ public class TSPModelFrance extends Model {
 //		
 //		subAte----------
 //			
-//		currentFeeder-----------------
-//		                             |
-//									\/	
-//		visibleFeedersModule -----> RandomTaxicFeederAction-------------				
+//		currentFeeder------------------------------------------------
+//		                             |								| 
+//									\/								\/
+//		visibleFeedersModule -->NonVisitedFeederSetModule---> RandomOrClosestTaxicFeederAction			
 //																		|					
-//		                            ActionFromPath--------------------->*----------------FinalTask (choose action)--Action execution
+//		                            ActionFromPath--------------------->*--------------->FinalTask (choose action)--Action execution
 //																		/\
 //		Pos--->placeCells---------> ReservoirActionSelectionModule------|
 //											/\	
@@ -95,15 +96,24 @@ public class TSPModelFrance extends Model {
 		float ymin = params.getChildFloat("ymin");
 		float xmax = params.getChildFloat("xmax");
 		float ymax = params.getChildFloat("ymax");
+		
+		List<Integer> order = params.getChildIntList("feederOrder");
+		
+		
+		String pathFile = params.getChild("pathFile").getText();
+		
+		
+		//BASIC NAVIGATION PARAMS:
+		float filterVisitedFeedersProbability = params.getChildFloat("filterVisitedFeedersProbability");
+		float moveToClosestFeederInSubsetProbability = params.getChildFloat("moveToClosestFeederInSubsetProbability");
+		
+		
 		String sFeederOrder = params.getChildText("feederOrder");
 		if(sFeederOrder.equals(".")){
 			System.err.println("ERROR: feeder order defined as `.`, exiting program");
 			System.exit(-1);
 		}
-		List<Integer> order = params.getChildIntList("feederOrder");
 		
-		
-		String pathFile = params.getChild("pathFile").getText();
 
 		
 		this.subject = subject;
@@ -144,11 +154,19 @@ public class TSPModelFrance extends Model {
 		
 		//       ACTION SELECTION MODULES
 		
+		//TAXIC RELATED
+		
+		//feeder subselection
+		nonVisitedFeederSetMoudle = new NonVisitedFeederSetModule("nonVisitedFeederSetModule", filterVisitedFeedersProbability);
+		nonVisitedFeederSetMoudle.addInPort( "currentFeeder", currentFeeder.getOutPort("currentFeeder"));
+		nonVisitedFeederSetMoudle.addInPort("feederSet", visibleFeeders.getOutPort("visibleFeeders"));
+		addModule(nonVisitedFeederSetMoudle);
+		
 		//feeder taxic
-		randomFeederTaxicActionModule = new RandomFeederTaxicActionModule("randomFeederTaxicActionModule");
-		addModule(randomFeederTaxicActionModule);
-		randomFeederTaxicActionModule.addInPort("currentFeeder", currentFeeder.getOutPort("currentFeeder"));
-		randomFeederTaxicActionModule.addInPort("visibleFeeders", visibleFeeders.getOutPort("visibleFeeders"));
+		randomOrClosestFeederTaxicActionModule = new RandomOrClosestFeederTaxicActionModule("randomFeederTaxicActionModule",subject,moveToClosestFeederInSubsetProbability);
+		addModule(randomOrClosestFeederTaxicActionModule);
+		randomOrClosestFeederTaxicActionModule.addInPort("currentFeeder", currentFeeder.getOutPort("currentFeeder"));
+		randomOrClosestFeederTaxicActionModule.addInPort("feederSet", nonVisitedFeederSetMoudle.getOutPort("feederSubSet"));
 		
 		
 		//MOVE USING A PATH:
@@ -156,6 +174,7 @@ public class TSPModelFrance extends Model {
 		//addModule(actionFromPathModule);	
 		
 		//Reservoir Action:
+		/*  COMMENT OUT WHILE RESERVOIR IS NOT READY
 		//                                   id, stim_size,reservoir_size, leak_rate, initial_State_scale, lr, epochs
 		reservoir = new Reservoir( 0,  numPCs,	numPCs, 	1f, 	1f,	 0.5f,	 100);
 		
@@ -163,7 +182,7 @@ public class TSPModelFrance extends Model {
 		reservoirActionSelectionModule = new ReservoirActionSelectionModule("reservoirAction", reservoir);
 		reservoirActionSelectionModule.addInPort("placeCells", placeCells.getOutPort("activation"));
 		addModule(reservoirActionSelectionModule);
-		
+		*/
 		
 		// Schme selection module:
 		Module schemeSelector = new SchemeSelector("schemeSelector");
@@ -192,18 +211,24 @@ public class TSPModelFrance extends Model {
 		return placeCells.getCells();
 	}
 
+	@Override
 	public void newEpisode() {
-		// TODO Auto-generated method stub
-		
+		super.newEpisode();
+		// TODO Auto-generated method stub		
 		//send reset signal to all modules that use memory:
+		/* COMMENT OUT RESERVOIR
 		reservoirActionSelectionModule.newEpisode();
+		*/
 
 		
 	}
 	
+
+	
 	public void endEpisode(){
-		
+		/*
 		reservoir.train(pcActivationHistory, ateHistory);
+		*/
 //		reservoir.newEpisode();
 		
 	}
@@ -251,7 +276,7 @@ public class TSPModelFrance extends Model {
 		//PERFORM ACTION OF TAXIC MODULE
 		//randomFeederTaxicActionModule.outport.data
 		
-		subject.robot.pendingActions.add(randomFeederTaxicActionModule.action);
+		subject.robot.pendingActions.add(randomOrClosestFeederTaxicActionModule.action);
 		
 		
 			

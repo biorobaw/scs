@@ -29,13 +29,19 @@ public class CurrentFeederModule extends Module {
 	@Override
 	public void run() {
 		//System.out.println("Done current feeders");
-		FeederVisibilityInterface fvi = (FeederVisibilityInterface)sub.getRobot();
-		Feeder closest = fvi.getClosestFeeder();
-		//System.out.println("id closest" + closest.getId());
-		if (closest == null || !VirtUniverse.getInstance().isRobotCloseToFeeder(closest.getId()))
-			outPort.set(-1);
-		else
-			outPort.set(closest.getId());
+		
+		//check if tried to eat (otherwise don't count as if visited)
+		
+		if(sub.hasTriedToEat()){
+		
+			FeederVisibilityInterface fvi = (FeederVisibilityInterface)sub.getRobot();
+			Feeder closest = fvi.getClosestFeeder();
+			//System.out.println("id closest" + closest.getId());
+			if (closest == null || !VirtUniverse.getInstance().isRobotCloseToFeeder(closest.getId()))
+				outPort.set(-1);
+			else
+				outPort.set(closest.getId());
+		} else outPort.set(-1);
 		//System.out.println("Done current feeders");
 	}
 
