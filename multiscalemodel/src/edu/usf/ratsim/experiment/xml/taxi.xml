@@ -59,13 +59,13 @@
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>.5,.5</valueConnProbs>
 			<!-- Minimum conjuntive layer cell radius -->
-			<minPCRadius>.15</minPCRadius>
+			<minPCRadius>.3</minPCRadius>
 			<!-- Maximum conjuntive layer cell radius -->
 			<maxPCRadius>.3</maxPCRadius>
 			<!-- Type of conjunctive cell -->
 			<placeCells>ExponentialWallConjCell</placeCells>
-			<votesNormalizer>20</votesNormalizer>
-			<valueNormalizer>20</valueNormalizer>
+			<votesNormalizer>5</votesNormalizer>
+			<valueNormalizer>5</valueNormalizer>
 			<!-- Wall cell modulation. How much does a wall modulate the place field. Greater
 				means less activity -->
 			<wallParamA>10</wallParamA>
@@ -79,7 +79,7 @@
 			<!-- Number of intentions or maps -->
 			<numIntentions>1</numIntentions>
 			<!-- Reward value for food -->
-			<foodReward>10000</foodReward>
+			<foodReward>100000</foodReward>
 			<!-- Reward value given when it doesnt eat -->
 			<nonFoodReward>-1</nonFoodReward>
 			<!-- Lambda discount factor for the taxic module-->
@@ -87,7 +87,7 @@
 			<!-- Lambda discount factor for the learning algorithm -->
 			<rlDiscountFactor>1</rlDiscountFactor>
 			<!-- Alpha for the learning algorithm -->
-			<alpha>0.5</alpha>
+			<alpha>0.1</alpha>
 			<!-- Initial value for values and action values -->
 			<initialValue>0</initialValue>
 			<!-- Value associated with a flashing feeder -->
@@ -129,6 +129,68 @@
 			<ymax>2</ymax>
 		</params>
 	</model>
+	
+	<!-- Group definition. The order determines order of execution -->
+	<group>
+		<name>0.2</name>
+		<numMembers>64</numMembers>
+		<params>
+			<votesConnProbs>1,0</votesConnProbs>
+			<!-- Layer connection probabilities to value estimation for gradient connections -->
+			<valueConnProbs>1,0</valueConnProbs>
+			<numCCCellsPerLayer>20000,0</numCCCellsPerLayer>
+			<minPCRadius>.2</minPCRadius>
+			<maxPCRadius>.2</maxPCRadius>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	
+	<group>
+		<name>0.25</name>
+		<numMembers>64</numMembers>
+		<params>
+			<votesConnProbs>1,0</votesConnProbs>
+			<!-- Layer connection probabilities to value estimation for gradient connections -->
+			<valueConnProbs>1,0</valueConnProbs>
+			<numCCCellsPerLayer>20000,0</numCCCellsPerLayer>
+			<minPCRadius>.25</minPCRadius>
+			<maxPCRadius>.25</maxPCRadius>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	
+	<group>
+		<name>0.3</name>
+		<numMembers>64</numMembers>
+		<params>
+			<votesConnProbs>1,0</votesConnProbs>
+			<!-- Layer connection probabilities to value estimation for gradient connections -->
+			<valueConnProbs>1,0</valueConnProbs>
+			<numCCCellsPerLayer>20000,0</numCCCellsPerLayer>
+			<minPCRadius>.3</minPCRadius>
+			<maxPCRadius>.3</maxPCRadius>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	
+	<group>
+		<name>0.35</name>
+		<numMembers>64</numMembers>
+		<params>
+			<votesConnProbs>1,0</votesConnProbs>
+			<!-- Layer connection probabilities to value estimation for gradient connections -->
+			<valueConnProbs>1,0</valueConnProbs>
+			<numCCCellsPerLayer>20000,0</numCCCellsPerLayer>
+			<minPCRadius>.35</minPCRadius>
+			<maxPCRadius>.35</maxPCRadius>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	
 	
 	<!-- Group definition. The order determines order of execution -->
 	<group>
