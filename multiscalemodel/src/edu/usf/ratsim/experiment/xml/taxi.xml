@@ -133,7 +133,7 @@
 	<!-- Group definition. The order determines order of execution -->
 	<group>
 		<name>Control</name>
-		<numMembers>64</numMembers>
+		<numMembers>4</numMembers>
 		<params>
 			<votesConnProbs>.5,.5</votesConnProbs>
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
@@ -145,7 +145,7 @@
 	
 	<group>
 		<name>Small</name>
-		<numMembers>64</numMembers>
+		<numMembers>4</numMembers>
 		<params>
 			<!-- Layer connection probabilities to action selection for gradient connections -->
 			<votesConnProbs>1,0</votesConnProbs>
@@ -158,7 +158,7 @@
 	
 	<group>
 		<name>Large</name>
-		<numMembers>64</numMembers>
+		<numMembers>4</numMembers>
 		<params>
 			<!-- Layer connection probabilities to action selection for gradient connections -->
 			<votesConnProbs>0,1</votesConnProbs>
@@ -171,7 +171,7 @@
 	
 	<group>
 		<name>Asymmetric</name>
-		<numMembers>64</numMembers>
+		<numMembers>4</numMembers>
 		<params>
 			<!-- Layer connection probabilities to action selection for gradient connections -->
 			<votesConnProbs>1,0</votesConnProbs>
