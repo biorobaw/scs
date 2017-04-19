@@ -87,7 +87,7 @@
 			<!-- Lambda discount factor for the learning algorithm -->
 			<rlDiscountFactor>1</rlDiscountFactor>
 			<!-- Alpha for the learning algorithm -->
-			<alpha>0.5</alpha>
+			<alpha>0.1</alpha>
 			<!-- Initial value for values and action values -->
 			<initialValue>0</initialValue>
 			<!-- Value associated with a flashing feeder -->
