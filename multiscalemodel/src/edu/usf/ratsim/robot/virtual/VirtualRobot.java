@@ -334,6 +334,7 @@ public class VirtualRobot extends LocalizableRobot {
 
 	@Override
 	public void executeAffordance(Affordance af, Subject sub) {
+		// WORKAROUND Dont execute the first cycle 
 		if (PropertyHolder.getInstance().getProperty("cycle").equals("0"))
 			return;
 		

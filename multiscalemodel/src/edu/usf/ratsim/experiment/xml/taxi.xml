@@ -59,7 +59,7 @@
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>.5,.5</valueConnProbs>
 			<!-- Minimum conjuntive layer cell radius -->
-			<minPCRadius>.3</minPCRadius>
+			<minPCRadius>.2</minPCRadius>
 			<!-- Maximum conjuntive layer cell radius -->
 			<maxPCRadius>.3</maxPCRadius>
 			<!-- Type of conjunctive cell -->
@@ -383,12 +383,6 @@
 		</afterTrialLoggers>
 		<!-- Plotters to execute after the trial has ended -->
 		<afterTrialPlotters>
-			<plotter>
-				<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
-			</plotter>
-			<plotter>
-				<name>edu.usf.experiment.plot.PlotGatherer</name>
-			</plotter>
 		</afterTrialPlotters>
 	</trial>
 	
