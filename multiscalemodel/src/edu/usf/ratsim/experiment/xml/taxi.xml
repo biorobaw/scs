@@ -105,9 +105,9 @@
 			<!-- TODO: take out -->
 			<cellContribution>0</cellContribution>
 			<!-- Value assigned to exploration action-values -->
-			<explorationReward>100</explorationReward>
+			<explorationReward>25</explorationReward>
 			<!-- Half life value for decay exploration -->
-			<explorationHalfLifeVal>25</explorationHalfLifeVal>
+			<explorationHalfLifeVal>0</explorationHalfLifeVal>
 			<!-- Value assigned to wall actions for the wall taxic modules -->
 			<wallTaxicVal>0</wallTaxicVal>
 			<wallNegReward>-.0</wallNegReward>
