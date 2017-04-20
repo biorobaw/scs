@@ -59,9 +59,9 @@
 			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>.5,.5</valueConnProbs>
 			<!-- Minimum conjuntive layer cell radius -->
-			<minPCRadius>.2</minPCRadius>
+			<minPCRadius>.25</minPCRadius>
 			<!-- Maximum conjuntive layer cell radius -->
-			<maxPCRadius>.3</maxPCRadius>
+			<maxPCRadius>.35</maxPCRadius>
 			<!-- Type of conjunctive cell -->
 			<placeCells>ExponentialWallConjCell</placeCells>
 			<votesNormalizer>5</votesNormalizer>
@@ -367,6 +367,10 @@
 					<name>edu.usf.experiment.log.FeederLogger</name>
 				</logger>
 				
+				<!-- log value
+				<logger>
+					<name>edu.usf.experiment.log.ValueLogger</name>
+				</logger> -->
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
@@ -403,7 +407,10 @@
 				</plotter>
 				<!-- Plot path for each episode -->
 				
-				<!-- Plot value -->
+				<!-- Plot value 
+				<plotter>
+					<name>edu.usf.experiment.plot.ValuePlotter</name>
+				</plotter>		-->		
 			</afterEpisodePlotters>
 		</episodes>
 		<!-- Tasks to perform after the trial has ended -->
