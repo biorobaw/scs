@@ -25,7 +25,7 @@ public class Model {
 
 	public Model() {
 		modules = new LinkedHashMap<String, Module>();
-		pool = new ThreadDependencyExecutor(10, 10, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(20));
+		pool = new ThreadDependencyExecutor(2, 2, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(20));
 		modulesChanged = false;
 		moduleList = new LinkedList<Module>();
 	}
