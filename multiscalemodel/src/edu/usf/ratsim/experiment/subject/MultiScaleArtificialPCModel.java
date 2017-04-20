@@ -40,6 +40,7 @@ import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicFoodManyFeedersMany
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicValueSchema;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 import edu.usf.ratsim.nsl.modules.celllayer.RndConjCellLayer;
+import edu.usf.ratsim.nsl.modules.celllayer.RndHDPCellLayer;
 import edu.usf.ratsim.nsl.modules.goaldecider.ActiveFeederGoalDecider;
 import edu.usf.ratsim.nsl.modules.goaldecider.LastTriedToEatGoalDecider;
 import edu.usf.ratsim.nsl.modules.input.ClosestFeeder;
@@ -60,12 +61,12 @@ public class MultiScaleArtificialPCModel extends Model {
 	private List<DecayingExplorationSchema> exploration;
 	private Float1dSparseConcatModule jointPCHDIntentionState;
 	private Intention intentionGetter;
-	private Module rlValue;
+	private GradientValue rlValue;
 	private List<RndConjCellLayer> conjCellLayers;
-	private float[][] value;
 	private int numActions;
 	private QLAlgorithm rlAlg;
 	private Float2dSparsePortMatrix valuePort;
+	private List<Float> valueConnProbs;
 
 	public MultiScaleArtificialPCModel() {
 	}
@@ -318,16 +319,11 @@ public class MultiScaleArtificialPCModel extends Model {
 				(Float1dPort) sumTaxicValue.getOutPort("jointState"), true);
 		addModule(taxicValueCopy);
 
-		if (voteType.equals("halfAndHalfConnection"))
-			rlValue = new HalfAndHalfConnectionValue("RL value estimation",
-					numActions, cellContribution);
-		else if (voteType.equals("proportional"))
-			rlValue = new ProportionalValue("RL  estimation", numActions);
-		else if (voteType.equals("gradient")) {
-			List<Float> connProbs = params.getChildFloatList("valueConnProbs");
+		if (voteType.equals("gradient")) {
+			valueConnProbs = params.getChildFloatList("valueConnProbs");
 			float valueNormalizer = params.getChildFloat("valueNormalizer");
 			rlValue = new GradientValue("RL value estimation", numActions,
-					connProbs, numCCCellsPerLayer, valueNormalizer, foodReward);
+					valueConnProbs, numCCCellsPerLayer, valueNormalizer, foodReward);
 		} else
 			throw new RuntimeException("Vote mechanism not implemented");
 		rlValue.addInPort("states",
@@ -539,5 +535,30 @@ public class MultiScaleArtificialPCModel extends Model {
 			System.out.println("[+] Reactivating layer " + layer);
 			conjCellLayers.get(layer).reactivate();
 		}
+	}
+
+	public Map<Point3f, Float> getValuePoints() {
+		Map<Point3f, Float> res = new HashMap<Point3f, Float>();
+		boolean connected[] = rlValue.getConnectPattern();
+		System.out.println(connected.length + " conected booleans");
+		boolean anyTrue = false;
+		int i = 0, k = 0;
+		for (RndConjCellLayer l : conjCellLayers) {
+			float connProb = valueConnProbs.get(i);
+			List<ConjCell> cells = l.getCells();
+			System.out.println(cells.size() + " number of cells in layer " + i + " with conn prob " + connProb);
+			if (connProb != 0)
+				for (ConjCell c : cells) {
+					if (connected[k]) {
+						res.put(c.getPreferredLocation(), valuePort.get(k,numActions));
+					}
+					k++;
+				}
+			else
+				k += cells.size();
+			i++;
+		}
+
+		return res;
 	}
 }

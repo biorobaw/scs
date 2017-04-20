@@ -147,4 +147,11 @@ public class MultiScaleArtificialPCSubject extends Subject {
 		return new TurnAffordance(rightAngle, step);
 	}
 
+	@Override
+	public Map<Point3f, Float> getValuePoints() {
+		return model.getValuePoints();
+	}
+	
+	
+
 }
