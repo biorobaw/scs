@@ -236,32 +236,6 @@
 	</group>
 	
 	<group>
-		<name>Small</name>
-		<numMembers>64</numMembers>
-		<params>
-			<!-- Layer connection probabilities to action selection for gradient connections -->
-			<votesConnProbs>1,0</votesConnProbs>
-			<!-- Layer connection probabilities to value estimation for gradient connections -->
-			<valueConnProbs>1,0</valueConnProbs>
-		</params>
-		<tasks>
-		</tasks>
-	</group>
-	
-	<group>
-		<name>Large</name>
-		<numMembers>64</numMembers>
-		<params>
-			<!-- Layer connection probabilities to action selection for gradient connections -->
-			<votesConnProbs>0,1</votesConnProbs>
-			<!-- Layer connection probabilities to value estimation for gradient connections -->
-			<valueConnProbs>0,1</valueConnProbs>
-		</params>
-		<tasks>
-		</tasks>
-	</group>
-	
-	<group>
 		<name>Asymmetric</name>
 		<numMembers>64</numMembers>
 		<params>
