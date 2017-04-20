@@ -129,14 +129,12 @@
 			<ymax>2</ymax>
 		</params>
 	</model>
-	
-	<!-- Group definition. The order determines order of execution -->
+	<!-- 
 	<group>
 		<name>0.2</name>
 		<numMembers>64</numMembers>
 		<params>
 			<votesConnProbs>1,0</votesConnProbs>
-			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>1,0</valueConnProbs>
 			<numCCCellsPerLayer>20000,1</numCCCellsPerLayer>
 			<minPCRadius>.2</minPCRadius>
@@ -151,7 +149,6 @@
 		<numMembers>64</numMembers>
 		<params>
 			<votesConnProbs>1,0</votesConnProbs>
-			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>1,0</valueConnProbs>
 			<numCCCellsPerLayer>20000,1</numCCCellsPerLayer>
 			<minPCRadius>.25</minPCRadius>
@@ -166,7 +163,6 @@
 		<numMembers>64</numMembers>
 		<params>
 			<votesConnProbs>1,0</votesConnProbs>
-			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>1,0</valueConnProbs>
 			<numCCCellsPerLayer>20000,1</numCCCellsPerLayer>
 			<minPCRadius>.3</minPCRadius>
@@ -181,7 +177,6 @@
 		<numMembers>64</numMembers>
 		<params>
 			<votesConnProbs>1,0</votesConnProbs>
-			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>1,0</valueConnProbs>
 			<numCCCellsPerLayer>20000,1</numCCCellsPerLayer>
 			<minPCRadius>.35</minPCRadius>
@@ -196,7 +191,6 @@
 		<numMembers>64</numMembers>
 		<params>
 			<votesConnProbs>1,0</votesConnProbs>
-			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>1,0</valueConnProbs>
 			<numCCCellsPerLayer>20000,1</numCCCellsPerLayer>
 			<minPCRadius>.4</minPCRadius>
@@ -211,7 +205,6 @@
 		<numMembers>64</numMembers>
 		<params>
 			<votesConnProbs>1,0</votesConnProbs>
-			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>1,0</valueConnProbs>
 			<numCCCellsPerLayer>20000,1</numCCCellsPerLayer>
 			<minPCRadius>.45</minPCRadius>
@@ -221,14 +214,22 @@
 		</tasks>
 	</group>
 	
-	
-	<!-- Group definition. The order determines order of execution -->
+	<group>
+		<name>Naive</name>
+		<numMembers>64</numMembers>
+		<params>
+			<alpha>0.0</alpha>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	-->
+
 	<group>
 		<name>Symmetric</name>
 		<numMembers>64</numMembers>
 		<params>
 			<votesConnProbs>.5,.5</votesConnProbs>
-			<!-- Layer connection probabilities to value estimation for gradient connections -->
 			<valueConnProbs>.5,.5</valueConnProbs>
 		</params>
 		<tasks>
@@ -248,15 +249,7 @@
 		</tasks>
 	</group>
 	
-		<group>
-		<name>Naive</name>
-		<numMembers>64</numMembers>
-		<params>
-			<alpha>0.0</alpha>
-		</params>
-		<tasks>
-		</tasks>
-	</group>
+
 	
 	
 	<!-- Training trial - Non-delayed cue phase -->
