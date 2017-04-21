@@ -6,6 +6,10 @@ Define columns, one per input parameter to the simulator:
 	VAL1
 	...
 	VALN
+  
+Define which columns are passed as arguments (since some can be used as auxiliary columns to calculate other values):
+  columns [COLUMN_NAME]*
+note: only non obligatory columns must be specified
 	
 constant only accepts one val, variable accepts many.
 calculated only accepts one which must be an expression from the other columns (see the possible expressions)
@@ -102,6 +106,9 @@ lenList COLUMN
 	
 row
 	This is used to asing a cell the its row number
+  
+concat [COLUMN | "string"]*
+  concats the value of the columns and the literal string. Note: strings do not support white space.
 
 	COMBINING THE COLUMNS INTO A TABLE
 	

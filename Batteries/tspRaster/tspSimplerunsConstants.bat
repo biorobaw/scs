@@ -11,7 +11,7 @@ constant EXPERIMENT_XML
 "./multiscalemodel/src/edu/usf/ratsim/experiment/xml/tspSimpleRunsFullPath.xml"
 
 calculated LOG_FOLDER 
-concat "logs/TSPInter/p" P1 "q" P2
+concat "logs/TSPInter/p" P1 "-q" P2
 
 constant GROUP 
 Control
@@ -54,6 +54,6 @@ variable P2
 
 
 calculated nFoodStopCondition
-lenList feederOrder 
+lenList enabledFeeders 
 
 combine allXall

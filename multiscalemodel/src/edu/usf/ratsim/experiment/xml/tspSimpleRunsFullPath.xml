@@ -67,8 +67,8 @@
 			<pathFile>$(ratpath)</pathFile>
 			
 			
-			<filterVisitedFeedersProbability>0.9</filterVisitedFeedersProbability>
-			<moveToClosestFeederInSubsetProbability>0.9</moveToClosestFeederInSubsetProbability>
+			<filterVisitedFeedersProbability>$(P1)</filterVisitedFeedersProbability>
+			<moveToClosestFeederInSubsetProbability>$(P2)</moveToClosestFeederInSubsetProbability>
 			
 		</params>
 	</model>
@@ -134,13 +134,22 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>100</number>
+			<number>10</number>
 			<!-- time that advances on each sim cycle -->
 			<timeStep>0.1</timeStep>
 			<!-- Sleep between cycles for visualization -->
 			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
+			
+				<task>
+					<name>edu.usf.experiment.task.EnableFeeders</name>
+					<params>
+						<feeders>$(enabledFeeders)</feeders>
+					</params>
+				</task>
+			
+			
 				<task>
 					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
 				</task>
@@ -149,8 +158,8 @@
 				<task>
 					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
 					<params>
-						<filename>$(ratpath)</filename>
-						<!--<pointXYW>$(startPosition)</pointXYW> -->
+						<!--  <filename>$(ratpath)</filename> -->
+						<pointXYW>$(startPosition)</pointXYW>
 						
 						<!--<point>
 							<x>-0.2</x>
