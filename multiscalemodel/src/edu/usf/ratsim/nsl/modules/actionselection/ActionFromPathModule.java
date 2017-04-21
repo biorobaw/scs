@@ -76,4 +76,11 @@ public class ActionFromPathModule extends Module {
 	public boolean usesRandom() {
 		return false;
 	}
+	
+	@Override
+	public void newEpisode() {
+		// TODO Auto-generated method stub
+		super.newEpisode();
+		nextPos = 1;
+	}
 }

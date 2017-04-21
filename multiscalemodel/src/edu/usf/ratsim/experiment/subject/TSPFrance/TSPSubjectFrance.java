@@ -35,13 +35,15 @@ public class TSPSubjectFrance extends Subject {
 	@Override
 	public void stepCycle() {
 		model.simRun();
-		setHasEaten(false);
+//		setHasEaten(false);
 	}
 	
 
 	@Override
 	public void newEpisode() {
 		model.newEpisode();
+		this.clearTriedToEAt();
+		this.setHasEaten(false);
 	}
 
 	@Override

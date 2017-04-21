@@ -67,8 +67,8 @@
 			<pathFile>$(ratpath)</pathFile>
 			
 			
-			<filterVisitedFeedersProbability>0.8</filterVisitedFeedersProbability>
-			<moveToClosestFeederInSubsetProbability>0.8</moveToClosestFeederInSubsetProbability>
+			<filterVisitedFeedersProbability>0.9</filterVisitedFeedersProbability>
+			<moveToClosestFeederInSubsetProbability>0.9</moveToClosestFeederInSubsetProbability>
 			
 		</params>
 	</model>
@@ -134,7 +134,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>1</number>
+			<number>100</number>
 			<!-- time that advances on each sim cycle -->
 			<timeStep>0.1</timeStep>
 			<!-- Sleep between cycles for visualization -->
