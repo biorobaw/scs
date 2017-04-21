@@ -2,13 +2,13 @@
 columns startPosition ratpath enabledFeeders P1 P2 nFoodStopCondition feederOrder
 
 constant SOURCE_FOLDERS
-"./platform/src/:./multiscalemodel/src/:./bin/:./deps/*:./deps/j3dport/*"
+"./platform/src/;./multiscalemodel/src/;./platform/bin/;./multiscalemodel/bin/;./micronsl/bin/;./deps/*;./deps/j3dport/*"
 
 constant MAIN_CLASS
 edu.usf.experiment.Experiment
 
 constant EXPERIMENT_XML
-"./multiscalemodel/src/edu/usf/ratsim/experiment/xml/tspSimpleRunsFullPath.xml"
+"./multiscalemodel/src/edu/usf/ratsim/experiment/xml/tspSimpleRunsFullPathLocal.xml"
 
 calculated LOG_FOLDER 
 concat "logs/TSPInter/p" P1 "-q" P2

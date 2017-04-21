@@ -47,13 +47,13 @@ public class NonVisitedFeederSetModule extends Module {
 		
 		if(RandomSingleton.getInstance().nextFloat() < filterProbability){
 			
-			System.out.println("FILTERING");
+//			System.out.println("FILTERING");
 			
 			for(int i = 0;i<feederSet.getSize();i++) 
 				if(!visited.contains(feederSet.get(i))) subSelection.add(feederSet.get(i));
 		} else {
 			
-			System.out.println("SKIPPING FILTERING");
+//			System.out.println("SKIPPING FILTERING");
 			for(int i = 0;i<feederSet.getSize();i++) if(feederSet.get(i)!=currentFeeder ) subSelection.add(feederSet.get(i));
 		}
 		
