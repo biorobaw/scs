@@ -139,18 +139,21 @@ if __name__=='__main__':
       order += [i]
 
   #create resulting table  
+  print 'total entries:',totalEntries
   resultTable  = [['' for i in range(0,totalEntries)] for i in range(0,realColumns)]
   #first fill constant and variable columns:
-#  print 'o',order
-#  print 't',columnTypes
-#  print 'n',columnNames
+  print 'o',order
+  print 't',columnTypes
+  print 'n',columnNames
+  print 'resultTable columns: ',len(resultTable) #,len(resultTable[6])
+  print 'r',realColumns
+  cumulative = 1
   for col in order:
     if columnTypes[col] == "constant" or columnTypes[col] == 'variable':
-      for k in range(0,len(columnValues[col])):
-        entriesPerValue = totalEntries/len(columnValues[col])
-        for row in range(0,entriesPerValue):
-  
-          resultTable[col][k*entriesPerValue +row] = columnValues[col][k]
+      cantValues = len(columnValues[col])      
+      for k in range(0,totalEntries):
+        resultTable[col][k] = columnValues[col][(k / cumulative) % cantValues]
+      cumulative = cumulative * cantValues
   
   def parseError(col):
     global columnNames

@@ -1,5 +1,7 @@
 package edu.usf.ratsim.experiment.subject.TSPFrance;
 
+import java.io.IOException;
+
 //import TRN4JAVA.*;
 
 import java.util.LinkedHashMap;
@@ -214,6 +216,18 @@ public class TSPModelFranceLocal extends Model {
 	@Override
 	public void newEpisode() {
 		super.newEpisode();
+		
+//		System.out.println("press enter");
+//		try {
+//			do{
+//				System.in.read();
+//			} while(System.in.available()>0) ;
+//			
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
 		// TODO Auto-generated method stub		
 		//send reset signal to all modules that use memory:
 		/* COMMENT OUT RESERVOIR

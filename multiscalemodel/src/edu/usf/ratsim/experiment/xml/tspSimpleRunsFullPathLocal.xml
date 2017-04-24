@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-	<!-- <seed>-59875563504154406</seed>  -->
+	<seed>-59875563504154406</seed> 
 	
+	<!-- <seed>555</seed>  -->
 	
 	
 	<universe>

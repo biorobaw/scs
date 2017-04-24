@@ -125,6 +125,13 @@ public class RandomOrClosestFeederTaxicActionModule extends Module {
 		
 		
 	}
+	
+	@Override
+	public void newEpisode() {
+		// TODO Auto-generated method stub
+		runFunction = runFirst;
+		super.newEpisode();
+	}
 
 	@Override
 	public boolean usesRandom() {
