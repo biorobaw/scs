@@ -173,7 +173,7 @@ public class TSPModelFrance extends Model {
 		//addModule(actionFromPathModule);	
 		
 		//Reservoir Action:
-		reservoir = new Reservoir( 0,  numPCs,	numPCs, 	1f, 	1f,	 0.5f,	 100);
+		reservoir = new Reservoir( 0,  numPCs,	1024, 	0.8f, 	0.01f,	 0.001f,	 100);
 		
 		
 		reservoirActionSelectionModule = new ReservoirActionSelectionModule("reservoirAction", reservoir);
@@ -209,12 +209,15 @@ public class TSPModelFrance extends Model {
 
 	@Override
 	public void newEpisode() {
+		reservoir.newEpisode();
 		super.newEpisode();
 		// TODO Auto-generated method stub		
 		//send reset signal to all modules that use memory:
-		/* COMMENT OUT RESERVOIR
-		reservoirActionSelectionModule.newEpisode();
-		*/
+		// COMMENT OUT RESERVOIR
+		//reservoir.newEpisode();
+		//reservoirActionSelectionModule.newEpisode();
+	
+		
 
 		
 	}
@@ -222,9 +225,9 @@ public class TSPModelFrance extends Model {
 
 	
 	public void endEpisode(){
-		/*
+		
 		reservoir.train(pcActivationHistory, ateHistory);
-		*/
+		
 //		reservoir.newEpisode();
 		
 	}

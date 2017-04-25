@@ -9,7 +9,8 @@ public class Reservoir {
 	
 	static final int INDEX = 0; // CPU
 	static final int SEED = 12345;
-	boolean testing = false; 
+	boolean testing = false;
+	boolean target_declared = false; 
 	int id = 42;
 	int stimulus_size;
 
@@ -27,14 +28,41 @@ public class Reservoir {
 		this.id = id;
 		this.stimulus_size = stimulus_size;
 		
-		
+
 		TRN4JAVA.Api.allocate(id);
+		
+
 		TRN4JAVA.Api.configure_begin(id);
 		
 		TRN4JAVA.Api.configure_reservoir_widrow_hoff(id, stimulus_size, stimulus_size, reservoir_size, 
 				                                 leak_rate, initial_state_scale, learning_rate);
+		/*TRN4JAVA.Api.setup_performances(id, new TRN4JAVA.Api.Performances()
+		{
+				@Override
+				 public void callback(String phase, final float cycles_per_second)
+				 {
+					System.out.println("Performances callback : phase = " + phase + ", cycles_per_second= " + cycles_per_second);
+				 }
+		});*/
 		
-
+		/*TRN4JAVA.Api.setup_states(id, new TRN4JAVA.Api.Matrix()
+		{
+				@Override
+				 public void callback(String label,  final float samples[], final int rows, final int cols)
+				 {
+				    //display(label, samples, rows, cols);
+					System.out.println("States callback : label = " + label + ", rows = " + rows + ", cols = " + cols);
+				 }
+		});*/
+		/*TRN4JAVA.Api.setup_weights(id, new TRN4JAVA.Api.Matrix()
+		{
+				@Override
+				 public void callback(String label,  final float samples[], final int rows, final int cols)
+				 {
+				    //display(label, samples, rows, cols);
+					System.out.println("Weights callback : label = " + label + ", rows = " + rows + ", cols = " + cols);
+				 }
+		});*/
 		TRN4JAVA.Api.configure_scheduler_tiled(id, epochs);
 
 		TRN4JAVA.Api.configure_feedforward_uniform(id, -1.0f, 1.0f, 0.0f);
@@ -63,7 +91,7 @@ public class Reservoir {
 		int num_pc = pcHistory.get(0).length;
 		float[] incoming = new float[observations*num_pc];
 		float[] expected = new float[observations*num_pc];
-		float[] reward = new float[observations*num_pc];
+		float[] reward = new float[observations];
 		
 		for(int i=0;i<observations;i++){
 			
@@ -75,11 +103,11 @@ public class Reservoir {
 			
 			reward[i] = ateHistory.get(i+1) ? 1f : 0f;
 		}
-		
+			
 		TRN4JAVA.Api.declare_sequence(id, "target", incoming, expected, reward, observations);
 		TRN4JAVA.Api.train(id, "target");
-	
-		
+
+		target_declared = true;
 	}
 	
 	public void transmit(final float stimuli[]){
@@ -88,9 +116,13 @@ public class Reservoir {
 	}
 	
 	public void newEpisode(){
-		testing = true;
-		TRN4JAVA.Api.test(id, "target", 10); // at beginning of new episode - this provides predictions
-		testing = false;
+		if (target_declared)
+		{
+			testing = true;
+			TRN4JAVA.Api.test(id, "target", 10); // at beginning of new episode - this provides predictions
+			testing = false;
+		}
+
 	}
 	
 	void setup(){
