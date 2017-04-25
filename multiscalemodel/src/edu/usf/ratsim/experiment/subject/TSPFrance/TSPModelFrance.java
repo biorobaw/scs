@@ -1,6 +1,5 @@
 package edu.usf.ratsim.experiment.subject.TSPFrance;
 
-import TRN4JAVA.*;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -174,15 +173,12 @@ public class TSPModelFrance extends Model {
 		//addModule(actionFromPathModule);	
 		
 		//Reservoir Action:
-		/*  COMMENT OUT WHILE RESERVOIR IS NOT READY
-		//                                   id, stim_size,reservoir_size, leak_rate, initial_State_scale, lr, epochs
 		reservoir = new Reservoir( 0,  numPCs,	numPCs, 	1f, 	1f,	 0.5f,	 100);
 		
 		
 		reservoirActionSelectionModule = new ReservoirActionSelectionModule("reservoirAction", reservoir);
 		reservoirActionSelectionModule.addInPort("placeCells", placeCells.getOutPort("activation"));
 		addModule(reservoirActionSelectionModule);
-		*/
 		
 		// Schme selection module:
 		Module schemeSelector = new SchemeSelector("schemeSelector");
@@ -190,7 +186,7 @@ public class TSPModelFrance extends Model {
 		
 		
 		//TRN4Java INITIALIZATION
-		TRN4JAVA.initialize_local(0, 0);
+//		TRN4JAVA.initialize_local(0, 0);
 //		try {
 //			TRN4JAVA.allocate(3);
 //		} catch (Exception e) {

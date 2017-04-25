@@ -2,23 +2,23 @@ package edu.usf.ratsim.experiment.subject.TSPFrance;
 
 import java.util.LinkedList;
 
-import TRN4JAVA.*;
+import TRN4JAVA.Api;
 
 public class Reservoir {
 	
 	
 	static final int INDEX = 0; // CPU
 	static final int SEED = 12345;
-	
+	boolean testing = false; 
 	int id = 42;
 	int stimulus_size;
 
 	//float stimulus[]= new float[OBSERVATIONS * STIMULUS_SIZE];
 	
-	TRN4JAVA.Loop loop = null;	 
+	TRN4JAVA.Api.Loop loop = null;	 
 	
 	static {
-		TRN4JAVA.initialize_local(INDEX, SEED);
+		TRN4JAVA.Api.initialize_local(INDEX, SEED);
 	}
 	
 	public Reservoir(int id,int stimulus_size,int reservoir_size, float leak_rate, 
@@ -28,28 +28,28 @@ public class Reservoir {
 		this.stimulus_size = stimulus_size;
 		
 		
-		TRN4JAVA.allocate(id);
-		TRN4JAVA.configure_begin(id);
+		TRN4JAVA.Api.allocate(id);
+		TRN4JAVA.Api.configure_begin(id);
 		
-		TRN4JAVA.configure_reservoir_widrow_hoff(id, stimulus_size, stimulus_size, reservoir_size, 
+		TRN4JAVA.Api.configure_reservoir_widrow_hoff(id, stimulus_size, stimulus_size, reservoir_size, 
 				                                 leak_rate, initial_state_scale, learning_rate);
 		
 
-		TRN4JAVA.configure_scheduler_tiled(id, epochs);
+		TRN4JAVA.Api.configure_scheduler_tiled(id, epochs);
 
-		TRN4JAVA.configure_feedforward_uniform(id, -1.0f, 1.0f, 0.0f);
-		TRN4JAVA.configure_recurrent_gaussian(id, 0.0f, 0.5f/(float)Math.sqrt(reservoir_size));
-		TRN4JAVA.configure_feedback_uniform(id, -1.0f, 1.0f, 0.0f);
-		TRN4JAVA.configure_readout_uniform(id, -1e-2f, 1e-2f, 0.0f);		
+		TRN4JAVA.Api.configure_feedforward_uniform(id, -1.0f, 1.0f, 0.0f);
+		TRN4JAVA.Api.configure_recurrent_gaussian(id, 0.0f, 0.5f/(float)Math.sqrt(reservoir_size));
+		TRN4JAVA.Api.configure_feedback_uniform(id, -1.0f, 1.0f, 0.0f);
+		TRN4JAVA.Api.configure_readout_uniform(id, -1e-2f, 1e-2f, 0.0f);		
 		
 		
 	}
 	
-	void finishInitialization(TRN4JAVA.Loop receive){
+	void finishInitialization(TRN4JAVA.Api.Loop receive){
 		this.loop = receive;
 		
-		TRN4JAVA.configure_loop_custom(id ,stimulus_size , receive);
-		TRN4JAVA.configure_end(id);
+		TRN4JAVA.Api.configure_loop_custom(id ,stimulus_size , receive);
+		TRN4JAVA.Api.configure_end(id);
 		
 	}
 	
@@ -76,19 +76,21 @@ public class Reservoir {
 			reward[i] = ateHistory.get(i+1) ? 1f : 0f;
 		}
 		
-		TRN4JAVA.declare_sequence(id, "target", incoming, expected, reward, observations);
-		TRN4JAVA.train(id, "target");
-		
+		TRN4JAVA.Api.declare_sequence(id, "target", incoming, expected, reward, observations);
+		TRN4JAVA.Api.train(id, "target");
+	
 		
 	}
 	
 	public void transmit(final float stimuli[]){
-		loop.stimulus(stimuli);
+		if (testing)
+			loop.notify(stimuli);
 	}
 	
 	public void newEpisode(){
-		TRN4JAVA.test(id, "target", 10); // at beginning of new episode - this provides predictions
-		
+		testing = true;
+		TRN4JAVA.Api.test(id, "target", 10); // at beginning of new episode - this provides predictions
+		testing = false;
 	}
 	
 	void setup(){
@@ -97,7 +99,7 @@ public class Reservoir {
 	
 	void deallocate(){
 		
-		TRN4JAVA.deallocate(id);
+		TRN4JAVA.Api.deallocate(id);
 		
 	}
 	

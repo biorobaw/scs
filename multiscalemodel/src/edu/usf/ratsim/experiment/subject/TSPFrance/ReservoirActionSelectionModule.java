@@ -1,6 +1,6 @@
 package edu.usf.ratsim.experiment.subject.TSPFrance;
 
-import TRN4JAVA.*;
+import TRN4JAVA.Api;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -46,7 +46,7 @@ public class ReservoirActionSelectionModule extends Module {
 	
 	class RunFirstTime implements Runnable {
 		//First time
-		@Override
+		//@Override
 		public void run() {
 			System.out.println("First Tme");
 			Float1dSparsePortMap pcs = (Float1dSparsePortMap)getInPort("placeCells");
@@ -71,7 +71,6 @@ public class ReservoirActionSelectionModule extends Module {
 	
 	class RunGeneral implements Runnable {
 
-		@Override
 		public void run() {
 			//System.out.println("General time");
 			Float1dSparsePortMap pcs = (Float1dSparsePortMap)getInPort("placeCells");
@@ -103,10 +102,10 @@ public class ReservoirActionSelectionModule extends Module {
 	}
 	
 	
-	class ReceiveLoop extends TRN4JAVA.Loop {
+	class ReceiveLoop extends TRN4JAVA.Api.Loop {
 
 		@Override
-		public void prediction(final float[] prediction) {
+		public void callback(final float[] prediction) {
 			// TODO Auto-generated method stub
 			reservoirPrediction = prediction;
 		}
