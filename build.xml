@@ -6,6 +6,7 @@
   <property name="platformsrc" location="platform/src"/>
   <property name="modelsrc" location="multiscalemodel/src"/>
   <property name="micronslsrc" location="micronsl/src"/>
+  <property name="plotmanagersrc" location="plotManager/src"/>
   <property name="build" location="bin"/>
 
   <target name="init">
@@ -36,6 +37,15 @@
        </fileset>
     </classpath>
     </javac>
+    <javac debug="true" srcdir="${plotmanagersrc}" destdir="${build}">
+    <classpath>
+       <fileset dir="deps/">
+            <include name="**/*.jar" />                       
+            <include name="*.jar" />                       
+       </fileset>
+    </classpath>
+    </javac>
+ 
     <javac debug="true" srcdir="${modelsrc}" destdir="${build}">
 	<classpath>
        <fileset dir="deps/">
@@ -44,7 +54,8 @@
        </fileset>
     </classpath>
     </javac>
-  </target>
+ </target>
+  
 
  <target name="clean"
          description="clean up">
