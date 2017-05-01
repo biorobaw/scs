@@ -30,8 +30,12 @@ import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.Wall;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
+import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.ratsim.experiment.universe.virtual.drawingUtilities.DrawingFunction;
 import edu.usf.ratsim.support.XMLDocReader;
+
+//Test
+import gridbagManager.gridbagManager;
 
 /**
  * This universe class creates a universe from an XML file and exposes
@@ -45,6 +49,7 @@ public class VirtUniverse extends Universe {
 	private static final float OPEN_END_THRS = 0.1f;
 	private static final double MIN_DISTANCE_TO_WALLS = 0.025;
 	private static VirtUniverse instance = null;
+        
 	private View topView;
 	private RobotNode robotNode;
 	private Robot robot;
@@ -61,11 +66,16 @@ public class VirtUniverse extends Universe {
 	private LinkedList<PlatformNode> platformNodes;
 	
 	UniverseFrame frame;
+        
+        gridbagManager gbManager;
 
 	public VirtUniverse(ElementWrapper params, String logPath) {
 		super(params, logPath);
 
 		display = params.getChildBoolean("display");
+                
+                gbManager = new gridbagManager();
+                
 
 		wallNodes = new LinkedList<WallNode>();
 
@@ -644,5 +654,11 @@ public class VirtUniverse extends Universe {
 		else
 			return 3;
 	}
+
+    public void addSeries1dPlot(int x, int y, int xspan, int yspan, Float1dPort port) 
+    {
+        if (display)
+            gbManager.addSeries1dPlot(frame.graphPanel, x, y, xspan, yspan, port);
+    }
 
 }

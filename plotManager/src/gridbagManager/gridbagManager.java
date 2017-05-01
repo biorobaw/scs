@@ -12,12 +12,19 @@ package gridbagManager;
 import edu.usf.micronsl.port.onedimensional.Int1dPort;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import info.monitorenter.gui.chart.Chart2D;
+import info.monitorenter.gui.chart.IAxis;
 import info.monitorenter.gui.chart.ITrace2D;
+import info.monitorenter.gui.chart.rangepolicies.RangePolicyFixedViewport;
 import info.monitorenter.gui.chart.traces.Trace2DLtd;
 import info.monitorenter.gui.chart.traces.Trace2DSimple;
 import info.monitorenter.gui.chart.traces.painters.TracePainterDisc;
 import info.monitorenter.gui.chart.traces.painters.TracePainterVerticalBar;
+import info.monitorenter.util.Range;
 import java.awt.*;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 //import javax.swing.JFrame;
  
 public class gridbagManager 
@@ -154,21 +161,35 @@ public class gridbagManager
     private static Chart2D createDynamicChart(int width, int height, Float1dPort aPort)
     {
         Chart2D chart = new Chart2D();
-        ITrace2D trace = new Trace2DSimple();
+        ITrace2D trace = new Trace2DLtd(100);
         TracePainterDisc discPainter = new TracePainterDisc();
         trace.setTracePainter(discPainter);
         trace.setColor(Color.BLACK);
         chart.addTrace(trace);
         chart.setSize(width, height);
-        
-        //Now to add the points to the trace, since it is static and a one dimensional 
-        //Port, I take the current system time and use that as the x value for the plot
-        //adding 20 ms each time
-        double time = System.currentTimeMillis();
-        for (int i = 0; i < aPort.getData().length; i++) 
+        IAxis<?> axisY = chart.getAxisY();
+        IAxis<?> axisX = chart.getAxisX();
+        axisY.setRangePolicy(new RangePolicyFixedViewport(new Range(0, 1.0)));
+        axisX.setRangePolicy(new RangePolicyFixedViewport(new Range(0,aPort.getData().length)));
+        Timer timer = new Timer(true);
+        TimerTask task = new TimerTask()
         {
-            trace.addPoint(time + i, aPort.getData()[i]);
-        }
+            
+            
+            @Override
+            public void run() 
+            {
+                for(int i = 0; i < aPort.getData().length; i++)
+                {
+                    trace.addPoint(i,aPort.get(i));
+                }
+            }
+        };
+        // Every 20 milliseconds a new value is collected.
+        timer.schedule(task, 100, 10);
+        
+        
+        
         return chart;
     }
     

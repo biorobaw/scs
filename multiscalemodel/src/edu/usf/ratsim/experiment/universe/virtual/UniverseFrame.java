@@ -11,8 +11,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
+import edu.usf.micronsl.port.onedimensional.Float1dPort;
 
 import edu.usf.ratsim.experiment.universe.virtual.drawingUtilities.DrawingFunction;
+import java.awt.GridBagLayout;
+
 
 public class UniverseFrame extends JFrame {
 
@@ -21,6 +24,7 @@ public class UniverseFrame extends JFrame {
 	private Canvas3D topViewCanvas;
 	private JPanel panel1;
 	private JPanel topViewPanel;
+        public JPanel graphPanel;
 
 	private VirtUniverse expUniv;
 	
@@ -76,19 +80,33 @@ public class UniverseFrame extends JFrame {
 		gridBagConstraints.weighty = 0;
 		gridBagConstraints.fill = GridBagConstraints.BOTH;
 		add(panel1, gridBagConstraints);
-
+                
+                //Moved this panel to the right hand side of the window
+                //The left hand side is where the plots will go
 		topViewPanel = new JPanel(new BorderLayout());
 		topViewPanel.setBackground(new java.awt.Color(153, 244, 51));
 		gridBagConstraints = new GridBagConstraints();
-		gridBagConstraints.gridx = 0;
+                gridBagConstraints.gridx = 1;
 		gridBagConstraints.gridy = 0;
 		gridBagConstraints.gridwidth = 1;
 		gridBagConstraints.weightx = 1;
 		gridBagConstraints.weighty = 1;
 		gridBagConstraints.fill = GridBagConstraints.BOTH;
 		add(topViewPanel, gridBagConstraints);
+                
+                //Panel for the graphs to be placed in
+                graphPanel = new JPanel();
+                gridBagConstraints = new GridBagConstraints();
+                graphPanel.setLayout(new GridBagLayout());
+                gridBagConstraints.gridx = 0;
+                gridBagConstraints.gridy = 0;
+		gridBagConstraints.gridwidth = 1;
+		gridBagConstraints.weightx = 1;
+		gridBagConstraints.weighty = 1;
+                gridBagConstraints.fill = GridBagConstraints.BOTH;
+                add(graphPanel,gridBagConstraints);
+                
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
-
+        }
 }

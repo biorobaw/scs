@@ -9,6 +9,7 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.module.copy.Int0dCopyModule;
+import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.ratsim.experiment.subject.NotImplementedException;
@@ -121,7 +122,7 @@ public class MultipleTModelAwake extends MultipleTModel {
 		softmax.addInPort("input", currentStateQ.getOutPort("votes"), true); // executes with last estimation of Q
 		addModule(softmax);
 		
-		
+	
 		//create sameActionBias module:
 		//Assigns bias chance of choosing previous action and (1-bias) of using current probabilities
 		//must be done before deleting impossible actions otherwise if the old action is 
@@ -200,6 +201,11 @@ public class MultipleTModelAwake extends MultipleTModel {
 		
 		//Add drawing utilities:
 		VirtUniverse universe = VirtUniverse.getInstance();
+                
+                // Function call that creates a plot 
+                
+                universe.addSeries1dPlot(0, 0, 200, 200, (Float1dPort) softmax.getOutPort("probabilities"));
+                
 		universe.addDrawingFunction(new DrawPolarGraph("Q softmax",50, 50, 50, softmax.probabilities,true));
 		
 		universe.addDrawingFunction(new DrawPolarGraph("gated probs",50, 170, 50, actionGating.probabilities,true));
