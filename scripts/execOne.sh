@@ -2,7 +2,6 @@
 
 #SBATCH --time=0:40:00
 #SBATCH --cpus-per-task 2 
-#SBATCH --mem=8192
 #SBATCH --qos=preempt
 
 logPath=$1
@@ -15,8 +14,8 @@ fi
 echo "Individual " $individual
 
 if [ `whoami` == "martin" ]; then
-  export PATH=/work/R-3.1.1/bin:$PATH
-  export R_LIBS=/work/R-3.1.1/library/
+  export PATH=/work/R-3.3.3/bin:$PATH
+  export R_LIBS=/work/R-3.3.3/library/
 else
   module add apps/R/3.3.2
   export R_LIBS=/home/m/mllofriualon/work/rlib
