@@ -7,4 +7,4 @@ logPath=$2
 
 mkdir -p $logPath
 
-/usr/bin/java -cp "./platform/src/:./multiscalemodel/src/:./bin/:./deps/*:./deps/j3dport/*" edu.usf.experiment.CalibrationPreExperiment $calibrationFile $logPath > $logPath/preProc.txt 2>&1
+java -cp "./platform/src/:./multiscalemodel/src/:./bin/:./deps/*:./deps/j3dport/*" edu.usf.experiment.CalibrationPreExperiment $calibrationFile $logPath > $logPath/preProc.txt 2>&1

@@ -1,9 +1,10 @@
 #!/bin/bash
 
-#SBATCH --time=0:40:00
-#SBATCH --mem=8192
+#SBATCH --time=0:10:00
+#SBATCH --mem=2048
 #SBATCH --cpus-per-task 2
 #SBATCH --qos=preempt
+#SBATCH -p circe,cms2016,mri2016
 
 logPath=$1
 if [ -z "$SLURM_ARRAY_TASK_ID" ]; then
@@ -23,5 +24,5 @@ else
   module add apps/jre/1.8.0_121.x86 
   module unload apps/jre/1.7.0_80.x64
 fi
-/usr/bin/java -cp "./platform/src/:./experiment/src/:./bin:./deps/*:./deps/j3dport/*" edu.usf.experiment.CalibrationExperiment $logPath $individual
+java -cp "./platform/src/:./experiment/src/:./bin:./deps/*:./deps/j3dport/*" edu.usf.experiment.CalibrationExperiment $logPath $individual
 
