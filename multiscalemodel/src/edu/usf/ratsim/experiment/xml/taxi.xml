@@ -129,7 +129,6 @@
 			<ymax>2</ymax>
 		</params>
 	</model>
-	<!-- 
 	<group>
 		<name>0.2</name>
 		<numMembers>64</numMembers>
@@ -143,7 +142,6 @@
 		<tasks>
 		</tasks>
 	</group>
-	
 	<group>
 		<name>0.25</name>
 		<numMembers>64</numMembers>
@@ -157,7 +155,6 @@
 		<tasks>
 		</tasks>
 	</group>
-	
 	<group>
 		<name>0.3</name>
 		<numMembers>64</numMembers>
@@ -171,7 +168,6 @@
 		<tasks>
 		</tasks>
 	</group>
-	
 	<group>
 		<name>0.35</name>
 		<numMembers>64</numMembers>
@@ -185,7 +181,6 @@
 		<tasks>
 		</tasks>
 	</group>
-	
 	<group>
 		<name>0.4</name>
 		<numMembers>64</numMembers>
@@ -199,7 +194,6 @@
 		<tasks>
 		</tasks>
 	</group>
-	
 	<group>
 		<name>0.45</name>
 		<numMembers>64</numMembers>
@@ -213,7 +207,6 @@
 		<tasks>
 		</tasks>
 	</group>
-	
 	<group>
 		<name>Naive</name>
 		<numMembers>64</numMembers>
@@ -223,8 +216,7 @@
 		<tasks>
 		</tasks>
 	</group>
-	-->
-
+	
 	<group>
 		<name>Symmetric</name>
 		<numMembers>64</numMembers>
@@ -249,7 +241,7 @@
 		</tasks>
 	</group>
 	
-
+	
 	
 	
 	<!-- Training trial - Non-delayed cue phase -->
@@ -334,10 +326,10 @@
 					<name>edu.usf.experiment.log.FeederLogger</name>
 				</logger>
 				
-				<!-- log value
+				<!-- log value -->
 				<logger>
 					<name>edu.usf.experiment.log.ValueLogger</name>
-				</logger> -->
+				</logger>
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
@@ -374,10 +366,10 @@
 				</plotter>
 				<!-- Plot path for each episode -->
 				
-				<!-- Plot value 
+				<!-- Plot value -->
 				<plotter>
 					<name>edu.usf.experiment.plot.ValuePlotter</name>
-				</plotter>		-->		
+				</plotter>
 			</afterEpisodePlotters>
 		</episodes>
 		<!-- Tasks to perform after the trial has ended -->
@@ -389,6 +381,12 @@
 		</afterTrialLoggers>
 		<!-- Plotters to execute after the trial has ended -->
 		<afterTrialPlotters>
+			<plotter>
+				<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
+			</plotter>
+			<plotter>
+				<name>edu.usf.experiment.plot.PlotGatherer</name>
+			</plotter>
 		</afterTrialPlotters>
 	</trial>
 	
@@ -400,5 +398,7 @@
 			<name>edu.usf.experiment.plot.PlotGatherer</name>
 		</plotter>
 	</afterExperimentPlotters>
+	
+	
 	
 </experiment>

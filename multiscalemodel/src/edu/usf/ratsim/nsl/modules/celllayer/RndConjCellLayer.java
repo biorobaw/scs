@@ -75,7 +75,7 @@ public class RndConjCellLayer extends Module {
 	 */
 	private Float1dSparsePortMap activationPort;
 
-	private Quadtree qtree;
+//	private Quadtree qtree;
 
 	/**
 	 * Create all cells in the layer.
@@ -148,7 +148,7 @@ public class RndConjCellLayer extends Module {
 		this.layerLength = layerLength;
 
 		cells = new LinkedList<ConjCell>();
-		qtree = new Quadtree();
+//		qtree = new Quadtree();
 		random = RandomSingleton.getInstance();
 		int i = 0;
 		do {
@@ -188,7 +188,7 @@ public class RndConjCellLayer extends Module {
 			}
 			
 			cells.add(cell);
-			qtree.insert(new Envelope(new Coordinate(cell.getPreferredLocation().x,cell.getPreferredLocation().y)), cell);
+//			qtree.insert(new Envelope(new Coordinate(cell.getPreferredLocation().x,cell.getPreferredLocation().y)), cell);
 
 			i++;
 		} while (i < numCells);
@@ -276,11 +276,12 @@ public class RndConjCellLayer extends Module {
 		Map<Integer, Float> nonZero = activationPort.getNonZero();
 		nonZero.clear();
 		
-		List<Object> activeCells = qtree.query(new Envelope(point.x - SEARCH_WIDTH, point.x + SEARCH_WIDTH, point.y - SEARCH_WIDTH, point.y + SEARCH_WIDTH));
+//		List<Object> activeCells = qtree.query(new Envelope(point.x - SEARCH_WIDTH, point.x + SEARCH_WIDTH, point.y - SEARCH_WIDTH, point.y + SEARCH_WIDTH));
 		
 //		System.out.println(activeCells.size());
-		for (Object pCellObj : activeCells) {
-			ConjCell pCell = (ConjCell) pCellObj;
+//		for (Object pCellObj : activeCells) {
+		for (ConjCell pCell : cells) {
+//			ConjCell pCell = (ConjCell) pCellObj;
 			float val = pCell.getActivation(point, angle, inte, distToWall);
 			if (val != 0)
 				nonZero.put(i, val);
