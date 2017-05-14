@@ -1,16 +1,31 @@
 #!/bin/sh
 
+# Group name - e.g. Control
+group=$1
+# Individual number - e.g. 1
+individual=$2
+# Trial name - e.g. Training
+trial=$3
+# Plot name, including folder inside plots, only initial part of filename - e.g. value/value
+plot=$4
+
+key="${plot}$trial.$group.$individual.*.pdf"
+
+echo Making gif for $key 
+
 mkdir movie
 
-find . -iname "*value*.pdf" -exec cp {} movie/ \;
+for f in $(find . -iname $key -not -path "./movie/*"); do
+	gs -q -o movie/$(filename -r $f).png -sDEVICE=pngalpha -dLastPage=1 -r72 $f 
+done
 
 cd movie
 
-find . -iname "value*" -exec convert {} {}.png \;
+#find . -iname "*.pdf" -exec convert {} {}.png \;
 
 # Make the gif
-input="valueTraining.Symmetric.0.%d.pdf.png"
-output="value.gif"
+input="$plot$trial.$group.$individual.%d.png"
+output="$plot.$trial.$group.$individual.gif"
 
 palette="/tmp/palette.png"
 
@@ -23,4 +38,4 @@ cd ..
 
 cp movie/$output .
 
-# rm -r movie
+rm -r movie

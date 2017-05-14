@@ -277,7 +277,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>100</number>
+			<number>1</number>
 			<!-- Sleep between cycles for visualization -->
 			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
@@ -381,6 +381,13 @@
 		</afterTrialLoggers>
 		<!-- Plotters to execute after the trial has ended -->
 		<afterTrialPlotters>
+			<!-- Make a gif out of all value plots for this trial -->
+			<plotter>
+				<name>edu.usf.experiment.plot.GifMaker</name>
+				<params>
+					<plot>value</plot>
+				</params>
+			</plotter>
 			<plotter>
 				<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
 			</plotter>
