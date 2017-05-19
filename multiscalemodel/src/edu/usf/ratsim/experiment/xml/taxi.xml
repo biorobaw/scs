@@ -36,7 +36,7 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
+		<name>edu.usf.ratsim.experiment.subject.taxi.MultiScaleArtificialPCSubject</name>
 		<params>
 			<!-- Step length in meters -->
 			<step>.05</step>
