@@ -85,9 +85,12 @@ public class NoExploration extends Module {
 				}
 			}
 
-			if (Debug.printSelectedValues)
+			if (Debug.printSelectedValues){
 				System.out.println("votes for aff " + action + ": " + votes.get(action));
+			}	
 		}
+		
+
 
 		if (!possible.isEmpty()) {
 

@@ -19,7 +19,8 @@ plotArrival <- function(pathData, plotName){
 # Plot runtimes per episode
 files <- list.files('.', 'summary.RData', recursive=T)
 runtimeFrames<-lapply(files,function(x) {load(x); summarizedRunTimes['file'] <- x; summarizedRunTimes})
-runtimes<-Reduce(function(x,y) merge (x,y, all=T), runtimeFrames)
+library(data.table)
+runtimes<-rbindlist(runtimeFrames)
 # names(runtimes)[2] <- "Group"
 #levels(runtimes$Group) <- c("Multi-Scale (3 Layers)", "Small Scale (1 Layer)", "Medium Scale (1 Layer)", "Large Scale (1 Layer)")
 ddply(runtimes, .(group), function(x) plotArrival(x, plotName="runtimes"))

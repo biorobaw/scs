@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<calibration>
+	
+	<experiment>multiscalemodel/src/edu/usf/ratsim/experiment/xml/taxi.xml</experiment>
+	
+	<model>
+		<minPCRadius>
+			<value>.2</value>
+			<value>.25</value>
+			<value>.3</value>
+			<value>.35</value>
+		</minPCRadius>
+		<maxPCRadius>
+			<value>.25</value>
+			<value>.3</value>
+			<value>.35</value>
+			<value>.4</value>
+		</maxPCRadius>
+	</model>
+	
+</calibration>

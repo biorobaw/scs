@@ -542,7 +542,7 @@ public class VirtUniverse extends Universe {
 			float visionDist) {
 		List<Point3f> openEnds = new LinkedList<Point3f>();
 		List<Wall> innerWalls = new LinkedList<Wall>(getWalls());
-		innerWalls.removeAll(initialWalls);
+//		innerWalls.removeAll(initialWalls);
 		for (Wall w : innerWalls) {
 			Point3f p = new Point3f((float) w.s.p0.x, (float) w.s.p0.y, 0f);
 			
@@ -572,6 +572,8 @@ public class VirtUniverse extends Universe {
 		for (Point3f oe : openEnds)
 			if (pointCanBeSeenByRobot(oe, halfFieldOfView, visionDist))
 				visibleEnds.add(oe);
+		
+//		System.out.println(visibleEnds.size());
 		
 		return visibleEnds;
 	}

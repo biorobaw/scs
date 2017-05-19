@@ -10,6 +10,7 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
+import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.robot.Landmark;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
@@ -333,6 +334,11 @@ public class VirtualRobot extends LocalizableRobot {
 
 	@Override
 	public void executeAffordance(Affordance af, Subject sub) {
+		// WORKAROUND Dont execute the first cycle 
+		// TODO: fix this with better model-universe interaction
+		if (PropertyHolder.getInstance().getProperty("cycle").equals("0"))
+			return;
+		
 		if (af instanceof TurnAffordance) {
 			TurnAffordance ta = (TurnAffordance) af;
 			List<Affordance> forward = new LinkedList<Affordance>();

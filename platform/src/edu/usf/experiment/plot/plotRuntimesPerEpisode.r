@@ -7,6 +7,7 @@ require(scales, quietly = TRUE)
 #stepsPerSec <- 4
 
 plotArrival <- function(pathData, plotName){
+  pathData$group <- factor(pathData$group)
   #pathData <- pathData[pathData$runtime < 10000,]
   summarizedRunTimes <- ddply(pathData, .(group, repetition), summarise, sdRT = sd(runtime)/sqrt(length(runtime)), mRT = mean(runtime))
   #   print(head(summarizedRunTimes))
@@ -37,10 +38,11 @@ plotArrival <- function(pathData, plotName){
 }
 
 # Plot runtimes per episode
-# files <- list.files('.', 'summary.RData', recursive=T)
-# runtimeFrames<-lapply(files,function(x) {load(x); summarizedRunTimes['file'] <- x; summarizedRunTimes})
-# runtimes<-Reduce(function(x,y) merge (x,y, all=T), runtimeFrames)
-# save(runtimes, file="runtimes.RData")
+files <- list.files('.', 'summary.RData', recursive=T)
+runtimeFrames<-lapply(files,function(x) {load(x); summarizedRunTimes['file'] <- x; summarizedRunTimes})
+library(data.table)
+runtimes<-rbindlist(runtimeFrames)
+save(runtimes, file="runtimes.RData")
 load('runtimes.RData')
 # runtimes <- runtimes[runtimes$runtime != 200000,]
 ddply(runtimes, .(trial), function(x) plotArrival(x, plotName="runtimesEpisode"))

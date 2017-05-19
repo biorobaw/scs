@@ -31,7 +31,10 @@ public class DecayingExplorationSchema extends Module {
 			float explorationHalfLifeVal) {
 		super(name);
 		this.maxReward = maxReward;
-		this.alpha = -Math.log(.5) / explorationHalfLifeVal;
+		if (explorationHalfLifeVal != 0)
+			this.alpha = -Math.log(.5) / explorationHalfLifeVal;
+		else
+			this.alpha = 0;
 
 		votes = new float[subject.getPossibleAffordances().size()];
 		addOutPort("votes", new Float1dPortArray(this, votes));
@@ -51,6 +54,7 @@ public class DecayingExplorationSchema extends Module {
 			votes[i] = 0;
 
 		double explorationValue = maxReward * Math.exp(-(episodeCount - 1) * alpha);
+//		System.out.println(explorationValue);
 		List<Affordance> affs = robot.checkAffordances(subject.getPossibleAffordances());
 
 		List<Affordance> performableAffs = new LinkedList<Affordance>();
