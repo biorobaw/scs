@@ -25,7 +25,8 @@ public class Model {
 
 	public Model() {
 		modules = new LinkedHashMap<String, Module>();
-		pool = new ThreadDependencyExecutor(10, 10, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(20));
+		// TODO: there seems to be a link between threads and heap size (why?) - lowering to improve mem footprint for cluster
+		pool = new ThreadDependencyExecutor(2, 2, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(20));
 		modulesChanged = false;
 		moduleList = new LinkedList<Module>();
 	}
