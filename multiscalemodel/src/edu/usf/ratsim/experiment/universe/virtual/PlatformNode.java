@@ -1,6 +1,7 @@
 package edu.usf.ratsim.experiment.universe.virtual;
 
 import javax.media.j3d.Appearance;
+import javax.media.j3d.BranchGroup;
 import javax.media.j3d.ColoringAttributes;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
@@ -31,14 +32,15 @@ public class PlatformNode extends ExpUniverseNode {
 		addVolume(null, vol, xp, yp, zp);
 
 		position = new Point3f(xp, yp, zp);
+		
+		setCapability(BranchGroup.ALLOW_DETACH);
 	}
 	
-	public PlatformNode(float x, float y) {
+	public PlatformNode(float x, float y, float r) {
 		normalColor = new Color3f(1f, 0, 0);
 		float xp = x;
 		float yp = y;
 		float zp = 0;
-		float r = .03f;
 		float h = 0;
 
 		app = new Appearance();
@@ -48,6 +50,8 @@ public class PlatformNode extends ExpUniverseNode {
 		addVolume(null, vol, xp, yp, zp);
 
 		position = new Point3f(xp, yp, zp);
+		
+		setCapability(BranchGroup.ALLOW_DETACH);
 	}
 
 	public Point3f getPosition() {

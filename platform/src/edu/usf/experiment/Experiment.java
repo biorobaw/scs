@@ -108,7 +108,7 @@ public class Experiment implements Runnable {
 		
 		// System.out.println(System.getProperty("java.class.path"));
 		System.out.println("[+] Starting group " + groupName + " individual "
-				+ " in log " + logPath);
+				+ subjectName + " in log " + logPath);
 
 		// logPath = logPath + File.separator + groupName + File.separator
 		// + subjectName + File.separator;

@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.vecmath.Point3f;
-import javax.vecmath.Quat4f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
@@ -16,7 +15,6 @@ import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.robot.ssl.sensefeeder.FeederSensor;
-import edu.usf.ratsim.robot.ssl.slam.SlamStateProxy;
 
 public class SSLRobot extends LocalizableRobot {
 

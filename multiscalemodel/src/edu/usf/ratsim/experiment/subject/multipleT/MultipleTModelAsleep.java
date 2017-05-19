@@ -14,13 +14,10 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.module.copy.Float1dCopyModule;
-import edu.usf.micronsl.module.copy.Float1dSparseCopyModule;
 import edu.usf.micronsl.module.copy.Int0dCopyModule;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
-import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
@@ -32,11 +29,9 @@ import edu.usf.ratsim.nsl.modules.multipleT.ClosestActionSelection;
 import edu.usf.ratsim.nsl.modules.multipleT.MoveFromToActionPerformer;
 import edu.usf.ratsim.nsl.modules.multipleT.NextActiveModule;
 import edu.usf.ratsim.nsl.modules.multipleT.NextPositionModule;
-import edu.usf.ratsim.nsl.modules.multipleT.UpdateQModule;
 import edu.usf.ratsim.nsl.modules.multipleT.UpdateQModuleAC;
 import edu.usf.ratsim.nsl.modules.rl.ActorCriticDeltaError;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
-import edu.usf.ratsim.nsl.modules.rl.SarsaQDeltaError;
 
 public class MultipleTModelAsleep extends MultipleTModel {
 

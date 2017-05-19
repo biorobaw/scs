@@ -6,7 +6,6 @@ import java.util.Set;
 
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
-import edu.usf.micronsl.port.twodimensional.sparse.Entry;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 
 /**

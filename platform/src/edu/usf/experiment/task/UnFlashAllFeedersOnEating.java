@@ -18,23 +18,8 @@ public class UnFlashAllFeedersOnEating extends Task {
 		super(params);
 	}
 
-	@Override
-	public void perform(Experiment experiment) {
-		perform(experiment.getUniverse(), experiment.getSubject());
-	}
-
-	@Override
-	public void perform(Trial trial) {
-		perform(trial.getUniverse(), trial.getSubject());
-	}
-
-	@Override
-	public void perform(Episode episode) {
-		perform(episode.getUniverse(), episode.getSubject());
-	}
-	
-	private void perform(Universe u, Subject subject){
-		if (subject.hasEaten())
+	public void perform(Universe u, Subject s){
+		if (s.hasEaten())
 			for (Integer f : u.getFeederNums())
 				u.setFlashingFeeder(f, false);
 	}

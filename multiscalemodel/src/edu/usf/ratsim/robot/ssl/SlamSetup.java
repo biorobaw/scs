@@ -1,6 +1,7 @@
 package edu.usf.ratsim.robot.ssl;
-import edu.usf.ratsim.robot.ssl.slam.SlamStateProxy;
 import java.util.Random;
+
+import edu.usf.ratsim.robot.ssl.slam.SlamStateProxy;
 
 public class SlamSetup {
 	private SSLPilot pilot;

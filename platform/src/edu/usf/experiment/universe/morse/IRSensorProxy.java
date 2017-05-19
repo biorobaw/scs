@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import javax.vecmath.Point3f;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 

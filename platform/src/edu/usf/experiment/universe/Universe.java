@@ -410,6 +410,14 @@ public abstract class Universe {
 	public List<Platform> getPlatforms() {
 		return platforms;
 	}
+	
+	public void clearPlatforms(){
+		platforms.clear();
+	}
+	
+	public void addPlatform(Point3f pos, float radius){
+		platforms.add(new Platform(pos, radius));
+	}
 
 	public boolean hasRobotFoundPlatform() {
 		Point3f pos = getRobotPosition();
@@ -434,6 +442,17 @@ public abstract class Universe {
 	
 	public void setPermanentFeeder(Integer id, boolean b) {
 		feeders.get(id).setPermanent(b);
+	}
+
+	public float shortestDistanceToPlatforms(LineSegment wall) {
+		float minDist = Float.MAX_VALUE;
+		for (Platform p : platforms) {
+			Point3f pos = p.getPosition();
+			Coordinate c = new Coordinate(pos.x, pos.y);
+			if (wall.distance(c) < minDist)
+				minDist = (float) wall.distance(c);
+		}
+		return minDist;
 	}
 
 }

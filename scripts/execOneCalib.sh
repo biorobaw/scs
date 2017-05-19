@@ -1,6 +1,10 @@
 #!/bin/bash
 
 #SBATCH --time=0:40:00
+<<<<<<< HEAD
+=======
+#SBATCH --mem=8192
+>>>>>>> bug-algs
 #SBATCH --cpus-per-task 2
 #SBATCH --qos=preempt
 

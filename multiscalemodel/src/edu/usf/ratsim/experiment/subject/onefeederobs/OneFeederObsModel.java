@@ -35,7 +35,6 @@ import edu.usf.ratsim.nsl.modules.actionselection.StillExplorer;
 import edu.usf.ratsim.nsl.modules.actionselection.Voter;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.FlashingTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.actionselection.taxic.ObstacleEndTaxic;
-import edu.usf.ratsim.nsl.modules.actionselection.taxic.TaxicFoodManyFeedersManyActionsNotLast;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 import edu.usf.ratsim.nsl.modules.celllayer.RndConjCellLayer;
 import edu.usf.ratsim.nsl.modules.input.ClosestFeeder;

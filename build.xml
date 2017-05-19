@@ -22,8 +22,8 @@
     <javac debug="true" srcdir="${platformsrc}" destdir="${build}">
     <classpath>
        <fileset dir="deps/">
-            <include name="**/*.jar" />                       
             <include name="*.jar" />                       
+            <include name="xbee/*.jar" />                       
        </fileset>
     </classpath>
 	
@@ -31,16 +31,16 @@
     <javac debug="true" srcdir="${micronslsrc}" destdir="${build}">
     <classpath>
        <fileset dir="deps/">
-            <include name="**/*.jar" />                       
             <include name="*.jar" />                       
+            <include name="xbee/*.jar" />                       
        </fileset>
     </classpath>
     </javac>
     <javac debug="true" srcdir="${modelsrc}" destdir="${build}">
 	<classpath>
        <fileset dir="deps/">
-            <include name="**/*.jar" />                       
             <include name="*.jar" />                       
+            <include name="xbee/*.jar" />                       
        </fileset>
     </classpath>
     </javac>

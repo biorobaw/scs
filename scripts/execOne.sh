@@ -1,8 +1,16 @@
 #!/bin/bash
 
+<<<<<<< HEAD
 #SBATCH --time=0:40:00
 #SBATCH --cpus-per-task 2 
 #SBATCH --qos=preempt
+=======
+#SBATCH --time=0:30:00
+#SBATCH --cpus-per-task 2 
+#SBATCH --mem=8192
+#SBATCH --qos=preempt
+#SBATCH -p mri2016,cms2016,circe
+>>>>>>> bug-algs
 
 logPath=$1
 if [ -z "$SLURM_ARRAY_TASK_ID" ]; then
@@ -22,6 +30,8 @@ else
   module add apps/jre/1.8.0_121.x86 
   module unload apps/jre/1.7.0_80.x64
 fi
+module list
+java -version
 
 java -cp "./platform/src/:./multiscalemodel/src/:./bin/:./deps/*:./deps/j3dport/*" edu.usf.experiment.RunIndividualByNumber $logPath $individual
 

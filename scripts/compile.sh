@@ -4,4 +4,4 @@
 
 rm -rf bin
 mkdir bin 
-javac -sourcepath ./multiscalemodel/src/:./platform/src -d bin -cp "./experiment/src/:./experiment/bin/:./multiscalemodel/target:./multiscalemodel/target/classes:./deps/*:./deps/j3dport/*" `find . -iname *.java`
+javac -sourcepath ./multiscalemodel/src/:./platform/src:micronsl/src -d bin -cp "./experiment/src/:./experiment/bin/:./multiscalemodel/target:./multiscalemodel/target/classes:./deps/xbee-java-library-1.2.0.jar" ./multiscalemodel/src/edu/usf/ratsim/robot/robotito/XbeeTestReceive.java

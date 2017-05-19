@@ -13,7 +13,6 @@ public class RuntimePerTrialPlotter extends Plotter {
 	public Runnable plot() {
 		final String logPath = getLogPath();
 		
-		
 		return new Runnable(){
 			@Override
 			public void run() {

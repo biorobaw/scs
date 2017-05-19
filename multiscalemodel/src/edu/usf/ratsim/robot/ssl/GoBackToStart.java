@@ -9,6 +9,7 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -40,22 +41,7 @@ public class GoBackToStart extends Task {
 		final_rot_thrs = params.getChildFloat("final_rot_thrs");
 	}
 
-	@Override
-	public void perform(Experiment experiment) {
-		perform(experiment.getUniverse(), experiment.getSubject().getRobot());
-	}
-
-	@Override
-	public void perform(Trial trial) {
-		perform(trial.getUniverse(), trial.getSubject().getRobot());
-	}
-
-	@Override
-	public void perform(Episode episode) {
-		perform(episode.getUniverse(), episode.getSubject().getRobot());
-	}
-
-	private void perform(Universe u, Robot r) {
+	public void perform(Universe u, Subject s){
 		Point3f robot = u.getRobotPosition();
 		Point3f feeder = new Point3f(FEEDER_X, FEEDER_Y, 0);
 		Point3f start = new Point3f(START_X, START_Y, 0);
@@ -64,12 +50,12 @@ public class GoBackToStart extends Task {
 			Point2f rInFeederFrame = new Point2f(robot.x - feeder.x, robot.y - feeder.y);
 			// If x is larger, closer to y (negative coords)
 			if (rInFeederFrame.x < rInFeederFrame.y) {
-				goToPoint(P1_X, P1_Y, 0, u, r);
+				goToPoint(P1_X, P1_Y, 0, u, s.getRobot());
 			} else {
-				goToPoint(P2_X, P2_Y, 0, u, r);
+				goToPoint(P2_X, P2_Y, 0, u, s.getRobot());
 			}
 		}
-		goToPoint(START_X, START_Y, START_T, u, r);
+		goToPoint(START_X, START_Y, START_T, u, s.getRobot());
 	}
 
 	private void goToPoint(float x, float y, float t, Universe u, Robot r) {

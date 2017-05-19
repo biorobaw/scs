@@ -3,6 +3,8 @@ package edu.usf.experiment.task;
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
+import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public class DummyTask extends Task {
@@ -15,21 +17,8 @@ public class DummyTask extends Task {
 		text = params.getChildText("text");
 	}
 
-	@Override
-	public void perform(Experiment experiments) {
-		System.out.println("Performing dummy task at experiment level");
-		System.out.println(text);
-	}
-
-	@Override
-	public void perform(Trial trial) {
-		System.out.println("Performing dummy task at trial level");
-		System.out.println(text);
-	}
-
-	@Override
-	public void perform(Episode episode) {
-		System.out.println("Performin dummy task at episode level");
+	public void perform(Universe u, Subject s){
+		System.out.println("Performin dummy task");
 		System.out.println(text);
 	}
 

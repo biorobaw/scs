@@ -2,7 +2,6 @@ package edu.usf.ratsim.nsl.modules.input;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 
 /**
@@ -20,7 +19,7 @@ public class HeadDirection extends Module {
 		
 		this.robot = robot;
 		hd = new Float0dPort(this);
-		addOutPort("position", hd);
+		addOutPort("orientation", hd);
 	}
 
 	@Override

@@ -9,10 +9,10 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.CSVReader;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.experiment.utils.XMLUtils;
 
 public class PlaceRobotFile extends Task {
 	
@@ -52,26 +52,9 @@ public class PlaceRobotFile extends Task {
 		
 	}
 
-	@Override
-	public void perform(Experiment experiment) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void perform(Trial trial) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void perform(Episode episode) {
-		perform(episode.getUniverse());
-	}
-
-	private void perform(Universe universe) {
+	public void perform(Universe u, Subject s){
 		Point4f p = positions.get(nextPos);
-		universe.setRobotPosition(new Point2D.Float(p.x, p.y), p.w);
+		u.setRobotPosition(new Point2D.Float(p.x, p.y), p.w);
 		if (nextPos+1 < positions.size()) nextPos++;
 		else Globals.getInstance().put("done", true);
 		

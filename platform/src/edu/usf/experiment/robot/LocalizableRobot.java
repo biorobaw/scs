@@ -3,7 +3,6 @@ package edu.usf.experiment.robot;
 import java.util.List;
 
 import javax.vecmath.Point3f;
-import javax.vecmath.Quat4f;
 
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.ElementWrapper;
