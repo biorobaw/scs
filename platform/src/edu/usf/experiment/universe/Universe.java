@@ -122,12 +122,7 @@ public abstract class Universe {
 		return boundingRect;
 	}
 
-	// Robot position
-	public abstract Point3f getRobotPosition();
 
-	public abstract Quat4f getRobotOrientation();
-
-	public abstract float getRobotOrientationAngle();
 
 	// Feeders
 	public Point3f getFoodPosition(int i) {
