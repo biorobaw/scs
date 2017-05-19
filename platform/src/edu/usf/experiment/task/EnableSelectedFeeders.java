@@ -8,6 +8,7 @@ import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -25,6 +26,11 @@ public class EnableSelectedFeeders extends Task {
 	}
 
 	public void perform(Universe u, Subject s){
+		if (!(u instanceof FeederUniverse))
+			throw new IllegalArgumentException("");
+		
+		FeederUniverse fu = (FeederUniverse) u;
+		
 		String feeders = PropertyHolder.getInstance().getProperty("SelectedFeeders");
 		StringTokenizer tok = new StringTokenizer(feeders,",");
 		indexList = new LinkedList<Integer>();
@@ -32,7 +38,7 @@ public class EnableSelectedFeeders extends Task {
 			indexList.add(Integer.parseInt(tok.nextToken()));
 		
 		for (Integer f : indexList)
-			u.setEnableFeeder(f, true);
+			fu.setEnableFeeder(f, true);
 	}
 
 }

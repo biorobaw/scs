@@ -5,11 +5,9 @@ import java.util.LinkedList;
 
 import javax.vecmath.Point4f;
 
-import edu.usf.experiment.Episode;
-import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Globals;
-import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.MovableRobotUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.CSVReader;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -53,8 +51,13 @@ public class PlaceRobotFile extends Task {
 	}
 
 	public void perform(Universe u, Subject s){
+		if (!(u instanceof MovableRobotUniverse))
+			throw new IllegalArgumentException("");
+		
+		MovableRobotUniverse mru = (MovableRobotUniverse) u;
+		
 		Point4f p = positions.get(nextPos);
-		u.setRobotPosition(new Point2D.Float(p.x, p.y), p.w);
+		mru.setRobotPosition(new Point2D.Float(p.x, p.y), p.w);
 		if (nextPos+1 < positions.size()) nextPos++;
 		else Globals.getInstance().put("done", true);
 		

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -28,6 +29,11 @@ public class TimeoutFlashFeeder extends Task {
 	}
 
 	public void perform(Universe u, Subject s){
+		if (!(u instanceof FeederUniverse))
+			throw new IllegalArgumentException("");
+		
+		FeederUniverse fu = (FeederUniverse) u;
+		
 		if (s.hasEaten())
 			timeSinceAte = 0;
 		else
@@ -35,13 +41,13 @@ public class TimeoutFlashFeeder extends Task {
  
 //		System.out.println("Time since ate " + timeSinceAte + " timeout " + timeout);
 		if (timeSinceAte == timeout) {
-			List<Integer> active = u.getActiveFeeders();
+			List<Integer> active = fu.getActiveFeeders();
 
 			// Pick an active one and flash
 			int i = random.nextInt(active.size());
 			System.out.println("Flashing feeder " + active.get(i));
 			int toFlash = active.get(i);
-			u.setFlashingFeeder(toFlash, true);
+			fu.setFlashingFeeder(toFlash, true);
 		}
 	}
 

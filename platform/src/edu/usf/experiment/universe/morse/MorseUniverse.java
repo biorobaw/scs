@@ -7,23 +7,28 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.List;
 import java.util.Map;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
-import edu.usf.experiment.universe.Universe;
+import com.vividsolutions.jts.geom.LineSegment;
+
+import edu.usf.experiment.universe.GlobalCameraUniverse;
+import edu.usf.experiment.universe.MovableRobotUniverse;
+import edu.usf.experiment.universe.Platform;
+import edu.usf.experiment.universe.PlatformUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
 
-public class MorseUniverse extends Universe {
+public class MorseUniverse implements GlobalCameraUniverse, PlatformUniverse, MovableRobotUniverse {
 
 	private PosSensorProxy posSensor;
 	private BufferedWriter writer;
 	private BufferedReader reader;
 
 	public MorseUniverse(ElementWrapper params, String logPath) {
-		super(params, logPath);
 		
 		MorseUtils.startSimulator();
 
@@ -75,6 +80,42 @@ public class MorseUniverse extends Universe {
 
 	public static void main(String[] args) {
 
+	}
+
+	@Override
+	public void rotateRobot(double degrees) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Platform> getPlatforms() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void clearPlatforms() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addPlatform(Point3f pos, float radius) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean hasRobotFoundPlatform() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public float shortestDistanceToPlatforms(LineSegment wall) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

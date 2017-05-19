@@ -1,6 +1,7 @@
 package edu.usf.experiment.task;
 
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -15,9 +16,14 @@ public class ReleaseFoodFromFeeders extends Task {
 		super(params);
 	}
 	public void perform(Universe u, Subject s){
-		for (Integer f : u.getActiveFeeders())
-			if(u.hasRobotFoundFeeder(f)){
-				u.releaseFood(f);
+		if (!(u instanceof FeederUniverse))
+			throw new IllegalArgumentException("");
+		
+		FeederUniverse fu = (FeederUniverse) u;
+		
+		for (Integer f : fu.getActiveFeeders())
+			if(fu.hasRobotFoundFeeder(f)){
+				fu.releaseFood(f);
 			}
 	}
 

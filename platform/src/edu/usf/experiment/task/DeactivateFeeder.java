@@ -1,6 +1,7 @@
 package edu.usf.experiment.task;
 
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -21,7 +22,12 @@ public class DeactivateFeeder extends Task {
 	}
 	
 	public void perform(Universe u, Subject s){
-		u.setActiveFeeder(feeder, false);
+		if (!(u instanceof FeederUniverse))
+			throw new IllegalArgumentException("");
+		
+		FeederUniverse fu = (FeederUniverse) u;
+		
+		fu.setActiveFeeder(feeder, false);
 	}
 
 

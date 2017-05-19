@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -26,8 +27,13 @@ public class EnableFeeders extends Task {
 	}
 
 	public void perform(Universe u, Subject s){
+		if (!(u instanceof FeederUniverse))
+			throw new IllegalArgumentException("");
+		
+		FeederUniverse fu = (FeederUniverse) u;
+		
 		for (Integer f : indexList)
-			u.setEnableFeeder(f, true);
+			fu.setEnableFeeder(f, true);
 	}
 
 }

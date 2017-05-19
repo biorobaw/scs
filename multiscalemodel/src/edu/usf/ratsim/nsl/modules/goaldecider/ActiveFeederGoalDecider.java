@@ -1,10 +1,17 @@
 package edu.usf.ratsim.nsl.modules.goaldecider;
 
+import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
 
+/**
+ * This class selects the next intention as the currently active feeder, used in modes in which the agent is told which is the currently active feeder,
+ * e.g. the taxi problem
+ * @author martin
+ *
+ */
 public class ActiveFeederGoalDecider extends Module {
 
 	public int[] goalFeeder;
@@ -20,7 +27,8 @@ public class ActiveFeederGoalDecider extends Module {
 	}
 
 	public void run() {
-		currentGoal = Universe.getActiveFeeders().get(0);
+		// Get the active feeder from the published property
+		currentGoal = Integer.parseInt(PropertyHolder.getInstance().getProperty("activeFeeder"));
 
 		goalFeeder[0] = currentGoal;
 		if (Debug.printActiveGoal)

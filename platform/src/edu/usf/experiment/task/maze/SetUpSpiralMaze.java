@@ -10,7 +10,9 @@ import com.vividsolutions.jts.geom.LineSegment;
 
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
+import edu.usf.experiment.universe.PlatformUniverse;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.WallUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public class SetUpSpiralMaze extends Task {
@@ -21,8 +23,18 @@ public class SetUpSpiralMaze extends Task {
 
 	@Override
 	public void perform(Universe u, Subject s) {
-		u.clearWalls();
-		u.clearPlatforms();
+		if (!(u instanceof WallUniverse))
+			throw new IllegalArgumentException("");
+		
+		WallUniverse wu = (WallUniverse) u;
+		
+		if (!(u instanceof PlatformUniverse))
+			throw new IllegalArgumentException("");
+		
+		PlatformUniverse pu = (PlatformUniverse) u;
+		
+		wu.clearWalls();
+		pu.clearPlatforms();
 		
 		double l = .4;
 //		List<Coordinate> coords = new LinkedList<Coordinate>();
@@ -52,12 +64,12 @@ public class SetUpSpiralMaze extends Task {
 		do {
 			Coordinate next = coords.remove(0);
 			LineSegment seg = new LineSegment(prev,next);
-			u.addWall(seg);
+			wu.addWall(seg);
 			prev = next;
 		} while (!coords.isEmpty());
 		
 		
-		u.addPlatform(new Point3f(0f, 0f, 0), .05f);
+		pu.addPlatform(new Point3f(0f, 0f, 0), .05f);
 	}
 
 }

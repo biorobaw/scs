@@ -6,7 +6,9 @@ import javax.vecmath.Point3f;
 
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
+import edu.usf.experiment.universe.PlatformUniverse;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.WallUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public class SetUpSingleWall extends Task {
@@ -17,12 +19,22 @@ public class SetUpSingleWall extends Task {
 
 	@Override
 	public void perform(Universe u, Subject s) {
-		u.clearWalls();
-		u.clearPlatforms();
+		if (!(u instanceof WallUniverse))
+			throw new IllegalArgumentException("");
 		
-		u.addWall(0, .5f, 0, -.5f);
+		WallUniverse wu = (WallUniverse) u;
 		
-		u.addPlatform(new Point3f(-1f, 0, 0), .1f);
+		if (!(u instanceof PlatformUniverse))
+			throw new IllegalArgumentException("");
+		
+		PlatformUniverse pu = (PlatformUniverse) u;
+		
+		wu.clearWalls();
+		pu.clearPlatforms();
+		
+		wu.addWall(0, .5f, 0, -.5f);
+		
+		pu.addPlatform(new Point3f(-1f, 0, 0), .1f);
 	}
 
 }

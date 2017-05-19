@@ -2,6 +2,7 @@ package edu.usf.experiment.task;
 
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.CSVReader;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -27,6 +28,12 @@ public class AddAllFeedersTask extends Task{
 	}
 
 	public void perform(Universe u, Subject s) {
+		if (!(u instanceof FeederUniverse))
+			throw new IllegalArgumentException("");
+		
+		FeederUniverse fu = (FeederUniverse) u;
+		
+		
 		//parse feederfile and create feeders
 		if (feedersFile==null) return;
 		
@@ -40,7 +47,7 @@ public class AddAllFeedersTask extends Task{
 					id++;
 					Float x = Float.parseFloat(line[0]);
 					Float y = Float.parseFloat(line[1]);
-					u.addFeeder(id, x, y);
+					fu.addFeeder(id, x, y);
 					
 				}
 			}

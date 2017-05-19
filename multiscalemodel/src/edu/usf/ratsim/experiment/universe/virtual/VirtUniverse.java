@@ -1,6 +1,7 @@
 package edu.usf.ratsim.experiment.universe.virtual;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,6 +16,7 @@ import javax.media.j3d.View;
 import javax.media.j3d.VirtualUniverse;
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Color3f;
+import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3d;
@@ -22,13 +24,21 @@ import javax.vecmath.Vector3f;
 
 import org.w3c.dom.Document;
 
-import com.sun.j3d.utils.behaviors.picking.Intersect;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
+import edu.usf.experiment.universe.BoundedUniverse;
 import edu.usf.experiment.universe.Feeder;
-import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.FeederUniverse;
+import edu.usf.experiment.universe.GlobalCameraUniverse;
+import edu.usf.experiment.universe.MovableRobotUniverse;
+import edu.usf.experiment.universe.Platform;
+import edu.usf.experiment.universe.PlatformUniverse;
 import edu.usf.experiment.universe.Wall;
+import edu.usf.experiment.universe.WallUniverse;
+import edu.usf.experiment.universe.element.MazeElement;
+import edu.usf.experiment.universe.element.MazeElementLoader;
+import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.ratsim.experiment.universe.virtual.drawingUtilities.DrawingFunction;
@@ -41,45 +51,115 @@ import edu.usf.ratsim.support.XMLDocReader;
  * @author ludo
  * 
  */
-public class VirtUniverse extends Universe {
+public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUniverse, GlobalCameraUniverse, BoundedUniverse, MovableRobotUniverse{
 
-	private static final float OPEN_END_THRS = 0.1f;
-	private static final double MIN_DISTANCE_TO_WALLS = 0.025;
+	/**
+	 * Singleton instance for the universe
+	 */
 	private static VirtUniverse instance = null;
-	private View topView;
-	private RobotNode robotNode;
+	
+	/**
+	 * How close has food to be to consider it available to the agent
+	 */
+	private final float CLOSE_TO_FOOD_THRS;
+	/**
+	 * How far one end of a wall hast to be to consider it an open end (not part of a biger wall)
+	 */
+	private final float OPEN_END_THRS = 0.1f;
+	/**
+	 * Minimum distance the agent must be away from walls
+	 */
+	private final double MIN_DISTANCE_TO_WALLS = 0.025;
+
+	/**
+	 * The robot object for accounting reasons - e.g. position tracking
+	 */
 	private Robot robot;
-	private Map<Integer, FeederNode> feederNodes;
-
-	private BranchGroup bg;
-
-	private BoundingRectNode boundingRect;
-
-	private List<WallNode> wallNodes;
+	
+	/**
+	 * Feeder data
+	 */
+	private static Map<Integer, Feeder> feeders;
+	private int lastAteFeeder;
+	
+	/**
+	 * Wall data
+	 */
+	private List<Wall> walls;
+	private List<Wall> wallsToRevert;
+	
+	/**
+	 * Platform data
+	 */
+	private List<Platform> platforms;
+	
+	/**
+	 * Bounding rect data
+	 */
+	private Rectangle2D.Float boundingRect;
+	
+	// Display information
+	/**
+	 * Whether to display the universe
+	 */
 	private boolean display;
-	private List<Wall> initialWalls;
-	private List<WallNode> wallsToRevert;
-	private LinkedList<PlatformNode> platformNodes;
-
+	/**
+	 * The main branch group
+	 */
+	private BranchGroup bg;
+	/**
+	 * The frame to display the universe
+	 */
 	UniverseFrame frame;
+	
+	/**
+	 * The visual node for the robot
+	 */
+	private RobotNode robotNode;
 
+	/**
+	 * Visual nodes for feeders
+	 */
+	private Map<Integer, FeederNode> feederNodes;
+	
+	/**
+	 * Visual nodes for walls
+	 */
+	private List<WallNode> wallNodes;
+	private List<WallNode> wallNodesToRevert;
+	
+	/**
+	 * Visual nodes for platforms
+	 */
+	private LinkedList<PlatformNode> platformNodes;
+	
+	/**
+	 * The top view node
+	 */
+	private View topView;
+
+	/**
+	 * Main constructor for the simulator universe
+	 * @param params the parameters in the form of an XML node
+	 * @param logPath the path to where to log 
+	 */
 	public VirtUniverse(ElementWrapper params, String logPath) {
-		super(params, logPath);
+		CLOSE_TO_FOOD_THRS = params.getChildFloat("closeToFoodThrs");
+
+		walls = new LinkedList<Wall>();
+		feeders = new HashMap<Integer, Feeder>();
 
 		display = params.getChildBoolean("display");
 
-		wallNodes = new LinkedList<WallNode>();
-
-		// Assume mazefile was copied by pre-experiment or experiment
-		String mazeFile = logPath + "/maze.xml";
+		// Assumes maze is already copied by pre-experiment or experiment
+		String mazeFile = logPath + "maze.xml";
 		Document doc = XMLDocReader.readDocument(mazeFile);
 		ElementWrapper maze = new ElementWrapper(doc.getDocumentElement());
 		List<ElementWrapper> list;
 
-		robot = new Robot();
-
-		// Save initial walls to differentiate from later on added ones
-		initialWalls = new LinkedList<Wall>(getWalls());
+		ElementWrapper brEW = maze.getChild("boundingRect");
+		setBoundingRect(new Rectangle2D.Float(brEW.getChildFloat("x"), brEW.getChildFloat("y"), brEW.getChildFloat("w"),
+				brEW.getChildFloat("h")));
 
 		if (display) {
 			VirtualUniverse vu = new VirtualUniverse();
@@ -94,29 +174,6 @@ public class VirtUniverse extends Universe {
 			// Add previously created elements, but not added to the 3d universe
 			robotNode = new RobotNode(maze.getChild("robotview"), display);
 			bg.addChild(robotNode);
-
-			// Walls
-			for (Wall wn : getWalls()) {
-				WallNode w = new WallNode(wn);
-				wallNodes.add(w);
-				bg.addChild(w);
-			}
-
-			list = maze.getChildren("feeder");
-			feederNodes = new HashMap<Integer, FeederNode>();
-			for (ElementWrapper fn : list) {
-				FeederNode feeder = new FeederNode(fn);
-				feederNodes.put(feeder.getId(), feeder);
-				bg.addChild(feeder);
-			}
-
-			list = maze.getChildren("platform");
-			platformNodes = new LinkedList<PlatformNode>();
-			for (ElementWrapper pn : list) {
-				PlatformNode p = new PlatformNode(pn);
-				platformNodes.add(p);
-				bg.addChild(p);
-			}
 
 			ElementWrapper floor = maze.getChild("floor");
 			if (floor != null)
@@ -140,31 +197,247 @@ public class VirtUniverse extends Universe {
 			frame.setVisible(true);
 		}
 
+		robot = new Robot();
+
+		// Walls
+		list = maze.getChildren("wall");
+		wallNodes = new LinkedList<WallNode>();
+		for (ElementWrapper wall : list) {
+			Wall w = new Wall(wall.getChildFloat("x1"), wall.getChildFloat("y1"), wall.getChildFloat("x2"),
+					wall.getChildFloat("y2"));
+			walls.add(w);
+
+			if (display) {
+				WallNode wn = new WallNode(wall);
+				wallNodes.add(wn);
+				bg.addChild(wn);
+			}
+		}
+		wallsToRevert = new LinkedList<Wall>();
+		wallNodesToRevert = new LinkedList<WallNode>();
+
+		MazeElementLoader meloader = MazeElementLoader.getInstance();
+		list = maze.getChildren("mazeElement");
+		for (ElementWrapper element : list) {
+			MazeElement e = meloader.load(element);
+			for (Wall w : e.walls) {
+				walls.add(w);
+			}
+
+		}
+
+		list = maze.getChildren("feeder");
+		feederNodes = new HashMap<Integer, FeederNode>();
+		int i = 0;
+		for (ElementWrapper feeder : list) {
+			Feeder f = new Feeder(feeder.getChildInt("id"),
+					new Point3f(feeder.getChildFloat("x"), feeder.getChildFloat("y"), feeder.getChildFloat("z")));
+			feeders.put(f.getId(), f);
+
+			if (display) {
+				FeederNode fn = new FeederNode(feeder);
+				feederNodes.put(fn.getId(), fn);
+				bg.addChild(fn);
+			}
+			i++;
+		}
+		
+
+		list = maze.getChildren("platform");
+		platformNodes = new LinkedList<PlatformNode>();
+		list = maze.getChildren("platform");
+		platforms = new LinkedList<Platform>();
+		for (ElementWrapper platform : list) {
+			Platform p = new Platform(
+					new Point3f(platform.getChildFloat("x"), platform.getChildFloat("y"), platform.getChildFloat("z")),
+					platform.getChildFloat("r"));
+			platforms.add(p);
+			if (display) {
+				PlatformNode pn = new PlatformNode(platform);
+				platformNodes.add(pn);
+				bg.addChild(pn);
+			}
+		}
+
 		instance = this;
-
-		wallsToRevert = new LinkedList<WallNode>();
 	}
 
-	public void addDrawingFunction(DrawingFunction function) {
+	/********************************* Feeder Universe *************************************/
+	public Point3f getFoodPosition(int i) {
+		return feeders.get(i).getPosition();
+	}
+
+	public List<Integer> getFlashingFeeders() {
+		List<Integer> res = new LinkedList<Integer>();
+		for (Feeder f : feeders.values())
+			if (f.isFlashing())
+				res.add(f.getId());
+
+		return res;
+	}
+
+	public List<Integer> getActiveFeeders() {
+		List<Integer> res = new LinkedList<Integer>();
+		for (Feeder f : feeders.values())
+			if (f.isActive())
+				res.add(f.getId());
+
+		return res;
+	}
+
+	public int getNumFeeders() {
+		return feeders.size();
+	}
+
+	public void setActiveFeeder(int i, boolean val) {
+		feeders.get(i).setActive(val);
+		
 		if (display)
-			frame.addDrawingFunction(function);
+			feederNodes.get(i).setActive(val);
 	}
 
-	@Override
-	public void addFeeder(int id, float x, float y) {
-		super.addFeeder(id, x, y);
+	public void setFlashingFeeder(int i, boolean flashing) {
+		feeders.get(i).setFlashing(flashing);
+		
+		if (display)
+			feederNodes.get(i).setFlashing(flashing);
+	}
 
+	public List<Integer> getFeederNums() {
+		return new LinkedList<Integer>(feeders.keySet());
+	}
+
+	public List<Feeder> getFeeders() {
+		return new LinkedList<Feeder>(feeders.values());
+	}
+
+	public Feeder getFeeder(int i) {
+		return feeders.get(i);
+	}
+
+	public boolean isFeederActive(int feeder) {
+		return feeders.get(feeder).isActive();
+	}
+
+	public boolean isFeederFlashing(int feeder) {
+		return feeders.get(feeder).isFlashing();
+	}
+
+	public void releaseFood(int feeder) {
+		feeders.get(feeder).releaseFood();
+	}
+
+	public boolean hasFoodFeeder(int feeder) {
+		return feeders.get(feeder).hasFood();
+	}
+
+	// Involving position and food
+	public boolean hasRobotFoundFood() {
+		Point3f robot = getRobotPosition();
+		for (Feeder f : feeders.values()) {
+			if (f.isActive() && f.hasFood() && robot.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS)
+				return true;
+		}
+
+		return false;
+	}
+
+	public void robotEat() {
+		int feedingFeeder = -1;
+
+		Point3f robotPos = getRobotPosition();
+		for (Feeder f : feeders.values()) {
+			if (robotPos.distance(f.getPosition()) <= CLOSE_TO_FOOD_THRS)
+				if (f.hasFood())
+					feedingFeeder = f.getId();
+		}
+
+		if (feedingFeeder != -1) {
+			feeders.get(feedingFeeder).clearFood();
+			lastAteFeeder = feedingFeeder;
+			if (Debug.printRobotEaten)
+				System.out.println("Robot has eaten");
+		} else {
+			System.out.println("Robot tried to eat far from food");
+		}
+	}
+
+	public int getLastFeedingFeeder() {
+		return lastAteFeeder;
+	}
+
+	public boolean isRobotCloseToFeeder(int currentGoal) {
+		Point3f robot = getRobotPosition();
+		return robot.distance(feeders.get(currentGoal).getPosition()) < CLOSE_TO_FOOD_THRS;
+	}
+
+	public int getFeedingFeeder() {
+		Point3f robotPos = getRobotPosition();
+		for (Feeder f : feeders.values()) {
+			if (f.isActive())
+				if (robotPos.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS)
+					return f.getId();
+		}
+
+		return -1;
+	}
+
+	public boolean hasRobotFoundFeeder(int i) {
+		Point3f robot = getRobotPosition();
+		Feeder f = feeders.get(i);
+		return robot.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS;
+	}
+
+	public boolean isRobotCloseToAFeeder() {
+		Point3f robot = getRobotPosition();
+		for (Feeder f : feeders.values())
+			if (robot.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS)
+				return true;
+		return false;
+	}
+
+	public float getDistanceToFeeder(int i) {
+		return getRobotPosition().distance(feeders.get(i).getPosition());
+	}
+
+	public int getFoundFeeder() {
+		Point3f robot = getRobotPosition();
+		for (Feeder f : feeders.values())
+			if (robot.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS)
+				return f.getId();
+
+		return -1;
+	}
+
+	public List<Integer> getEnabledFeeders() {
+		List<Integer> res = new LinkedList<Integer>();
+		for (Feeder f : feeders.values())
+			if (f.isEnabled())
+				res.add(f.getId());
+		return res;
+	}
+
+	public void setEnableFeeder(Integer f, boolean enabled) {
+		feeders.get(f).setEnabled(enabled);
+	}
+
+	public void clearFoodFromFeeder(Integer f) {
+		feeders.get(f).clearFood();
+	}
+
+	public void addFeeder(int id, float x, float y) {
+		feeders.put(id, new Feeder(id, new Point3f(x, y, 0)));
+		
 		if (display) {
 			FeederNode feeder = new FeederNode(id, x, y);
 			feederNodes.put(id, feeder);
 			bg.addChild(feeder);
 		}
 	}
-
-	@Override
+	
 	public void addFeeder(Feeder f) {
-		super.addFeeder(f);
-
+		feeders.put(f.getId(), f);
+		
 		if (display) {
 			FeederNode feeder = new FeederNode(f.getId(), f.getPosition().x, f.getPosition().y);
 			feederNodes.put(f.getId(), feeder);
@@ -172,77 +445,308 @@ public class VirtUniverse extends Universe {
 		}
 	}
 
-	public void addWall(float x1, float y1, float x2, float y2) {
-		super.addWall(x1, y1, x2, y2);
+	public void setPermanentFeeder(Integer id, boolean b) {
+		feeders.get(id).setPermanent(b);
+	}
 
+	@Override
+	public void setWantedFeeder(int feeder, boolean wanted) {
+		if (display)
+			feederNodes.get(feeder).setWanted(wanted);
+	}
+	/********************************* Bounded Universe *************************************/
+	public Rectangle2D.Float getBoundingRect() {
+		return boundingRect;
+	}
+
+	public void setBoundingRect(Rectangle2D.Float boundingRect) {
+		this.boundingRect = boundingRect;
+	}
+
+	/********************************* Wall Universe *************************************/
+	public List<Wall> getWalls() {
+		return walls;
+	}
+
+	public float shortestDistanceToWalls(LineSegment wall) {
+		float shortestDistance = Float.MAX_VALUE;
+		for (Wall w : walls)
+			if (w.distanceTo(wall) < shortestDistance)
+				shortestDistance = w.distanceTo(wall);
+
+		return shortestDistance;
+	}
+
+	public float wallDistanceToFeeders(LineSegment wall) {
+		float minDist = Float.MAX_VALUE;
+		for (Feeder fn : feeders.values()) {
+			Point3f pos = fn.getPosition();
+			Coordinate c = new Coordinate(pos.x, pos.y);
+			if (wall.distance(c) < minDist)
+				minDist = (float) wall.distance(c);
+		}
+		return minDist;
+	}
+
+	public void addWall(float x, float y, float x2, float y2) {
+		Wall wall = new Wall(x, y, x2, y2);
+		wallsToRevert.add(wall);
+		walls.add(wall);
+		
 		if (display) {
-			WallNode w = new WallNode(x1, y1, 0, x2, y2, 0, 0.025f);
-			wallsToRevert.add(w);
+			WallNode w = new WallNode(x, y, 0, x2, y2, 0, 0.025f);
+			wallNodesToRevert.add(w);
 			bg.addChild(w);
 			wallNodes.add(w);
 		}
 	}
 
-	@Override
-	public void setRevertWallPoint() {
-		super.setRevertWallPoint();
+	public float shortestDistanceToWalls(Point2f x1) {
+		float shortestDistance = Float.MAX_VALUE;
+		for (Wall w : walls)
+			if (w.distanceTo(x1) < shortestDistance)
+				shortestDistance = w.distanceTo(x1);
 
-		wallsToRevert.clear();
+		return shortestDistance;
 	}
 
-	@Override
-	public void revertWalls() {
-		super.revertWalls();
+	public float shortestDistanceToFeeders(Point2f x) {
+		float minDist = Float.MAX_VALUE;
+		Coordinate p = new Coordinate(x.x, x.y);
+		for (Feeder fn : feeders.values()) {
+			Point3f pos = fn.getPosition();
+			Coordinate c = new Coordinate(pos.x, pos.y);
+			if (p.distance(c) < minDist)
+				minDist = (float) p.distance(c);
+		}
+		return minDist;
+	}
+
+	public void addWall(LineSegment segment) {
+		Wall wall = new Wall(segment);
+		wallsToRevert.add(wall);
+		walls.add(wall);
+		
+		if (display) {
+			WallNode w = new WallNode(segment, 0.025f);
+			wallNodesToRevert.add(w);
+			bg.addChild(w);
+			wallNodes.add(w);
+		}
+	}
+
+	public boolean wallIntersectsOtherWalls(LineSegment wall) {
+		boolean intersects = false;
+		for (Wall w : walls)
+			intersects = intersects || w.intersects(wall);
+
+		return intersects;
+	}
+
+	public float getDistanceToClosestWall(Point3f p) {
+		Point2f p2 = new Point2f(p.x, p.y);
+
+		float shortestDistance = Float.MAX_VALUE;
+		for (Wall w : getWalls())
+			if (w.distanceTo(p2) < shortestDistance)
+				shortestDistance = w.distanceTo(p2);
+
+		return shortestDistance;
+	}
+
+	public float getDistanceToClosestWall() {
+		return getDistanceToClosestWall(getRobotPosition());
+	}
+
+	public boolean isFeederEnabled(int feeder) {
+		return feeders.get(feeder).isEnabled();
+	}
+
+	public float shortestDistanceToFeeders(LineSegment wall) {
+		double distance = Float.MAX_VALUE;
+		for (Feeder f : feeders.values()) {
+			Coordinate p = new Coordinate(f.getPosition().x, f.getPosition().y);
+			if (wall.distance(p) < distance)
+				distance = wall.distance(p);
+		}
+		return (float) distance;
+	}
+
+	public void removeWall(LineSegment wall) {
+		walls.remove(wall);
+	}
+
+	public void setRevertWallPoint() {
+		wallsToRevert.clear();
 		if (display)
-			for (WallNode wn : wallsToRevert) {
+			wallsToRevert.clear();
+	}
+
+	public void revertWalls() {
+		for (Wall w : wallsToRevert)
+			walls.remove(w);
+		
+		if (display)
+			for (WallNode wn : wallNodesToRevert) {
 				wallNodes.remove(wn);
 				bg.removeChild(wn);
 			}
 	}
 
-	public void addWall(LineSegment wSegment) {
-		super.addWall(wSegment);
-
-		if (display) {
-			WallNode w = new WallNode(wSegment, 0.025f);
-			wallsToRevert.add(w);
-			bg.addChild(w);
-			wallNodes.add(w);
-		}
-	}
 
 	public void clearWalls() {
-		super.clearWalls();
+		walls.clear();
 		
 		for (WallNode wn : wallNodes)
 			bg.removeChild(wn);
-		
+
 		wallNodes.clear();
 	}
 
-	@Override
+	public float shortestDistanceToRobot(LineSegment wall) {
+		return (float) wall.distance(new Coordinate(getRobotPosition().x, getRobotPosition().y));
+
+	}
+	
+	/**
+	 * Gives distance to nearest intersecting wall with the path (current pos,
+	 * pos + Vector(rayX,raY))
+	 * 
+	 * @param dx
+	 * @param dy
+	 * @return
+	 */
+	public double distanceToNearestWall(float dx, float dy, float maxDistance) {
+		// The current position with rotation
+
+		Vector3f p = new Vector3f();
+		robot.getT().get(p);
+
+		Coordinate initCoordinate = new Coordinate(p.x, p.y);
+		Coordinate finalCoordinate = new Coordinate(p.x + dx, p.y + dy);
+
+		// System.out.println("movement: "+initCoordinate + " " +
+		// finalCoordinate);
+
+		double minDistance = maxDistance;
+		LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
+		Coordinate inter;
+		double distance;
+		for (Wall wall : getWalls()) {
+
+			if ((inter = path.intersection(wall.s)) != null
+					&& (distance = inter.distance(initCoordinate)) < minDistance)
+				minDistance = distance;
+		}
+
+		return minDistance;
+	}
+
+	/********************************* Platform Universe *************************************/
+	public List<Platform> getPlatforms() {
+		return platforms;
+	}
+
 	public void clearPlatforms() {
-		super.clearPlatforms();
+		platforms.clear();
 		
-		if (display){
+		if (display) {
 			for (PlatformNode pn : platformNodes)
 				bg.removeChild(pn);
-		
+
 			platformNodes.clear();
 		}
 	}
 
-	@Override
 	public void addPlatform(Point3f pos, float radius) {
-		super.addPlatform(pos, radius);
+		platforms.add(new Platform(pos, radius));
 		
-		if (display){
+		if (display) {
 			PlatformNode p = new PlatformNode(pos.x, pos.y, radius);
 			platformNodes.add(p);
 			bg.addChild(p);
 		}
 	}
 
+	public boolean hasRobotFoundPlatform() {
+		Point3f pos = getRobotPosition();
+		for (Platform plat : platforms)
+			if (plat.getPosition().distance(pos) < CLOSE_TO_FOOD_THRS)
+				return true;
+		return false;
+	}
+
+	public float shortestDistanceToPlatforms(LineSegment wall) {
+		float minDist = Float.MAX_VALUE;
+		for (Platform p : platforms) {
+			Point3f pos = p.getPosition();
+			Coordinate c = new Coordinate(pos.x, pos.y);
+			if (wall.distance(c) < minDist)
+				minDist = (float) wall.distance(c);
+		}
+		return minDist;
+	}
+
+	/********************************* Global Camera Universe *************************************/
+	public Point3f getRobotPosition() {
+		Transform3D t = new Transform3D(robot.getT());
+		Vector3f pos = new Vector3f();
+		t.get(pos);
+
+		return new Point3f(pos);
+	}
+	
+	public Quat4f getRobotOrientation() {
+		Transform3D t = new Transform3D(robot.getT());
+		// Get the rotation from the quaternion
+		// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+		Quat4f rot = new Quat4f();
+		t.get(rot);
+
+		return rot;
+	}
+	
+	public float getRobotOrientationAngle() {
+		Transform3D t = new Transform3D(robot.getT());
+		// Get the rotation from the quaternion
+		// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+		Quat4f rot = new Quat4f();
+		t.get(rot);
+		return (float) (2 * Math.acos(rot.w) * Math.signum(rot.z));
+	}
+	
+	/********************************* Movable Robot Universe *************************************/
+	public void setRobotPosition(Point2D.Float pos, float angle) {
+		Transform3D translate = new Transform3D();
+		translate.setTranslation(new Vector3f(pos.x, pos.y, 0));
+		Transform3D rot = new Transform3D();
+		rot.rotZ(angle);
+		translate.mul(rot);
+		robot.setT(translate);
+		if (display)
+			robotNode.getTransformGroup().setTransform(translate);
+	}
+
+	public void rotateRobot(double degrees) {
+		// Create a new transforme with the translation
+		Transform3D trans = new Transform3D();
+		trans.rotZ(degrees);
+		// Get the old pos transform
+		Transform3D rPos = new Transform3D(robot.getT());
+		// Apply translation to old transform
+		rPos.mul(trans);
+		// Set the new transform
+		robot.setT(rPos);
+		if (display)
+			robotNode.getTransformGroup().setTransform(rPos);
+	}
+
+	/********************************* Visual Functions *************************************/
+	public void addDrawingFunction(DrawingFunction function) {
+		if (display)
+			frame.addDrawingFunction(function);
+	}
+	
 	public View getTopView() {
 		return topView;
 	}
@@ -259,57 +763,8 @@ public class VirtUniverse extends Universe {
 		return robotNode.getOffScreenImages();
 	}
 
-	/**
-	 * Return the virtual robot's position
-	 * 
-	 * @return
-	 */
-	public Point3f getRobotPosition() {
-		Transform3D t = new Transform3D(robot.getT());
-		Vector3f pos = new Vector3f();
-		t.get(pos);
-
-		return new Point3f(pos);
-	}
-
-	/**
-	 * Sets the virtual robot position
-	 * 
-	 * @param vector
-	 *            Robots position
-	 */
-
-	public void setRobotPosition(Point2D.Float pos, float angle) {
-		Transform3D translate = new Transform3D();
-		translate.setTranslation(new Vector3f(pos.x, pos.y, 0));
-		Transform3D rot = new Transform3D();
-		rot.rotZ(angle);
-		translate.mul(rot);
-		robot.setT(translate);
-		if (display)
-			robotNode.getTransformGroup().setTransform(translate);
-	}
-
-	/**
-	 * Rotate the virtual world robot.
-	 * 
-	 * @param degrees
-	 *            Amount to rotate in degrees.
-	 */
-	public void rotateRobot(double degrees) {
-		// Create a new transforme with the translation
-		Transform3D trans = new Transform3D();
-		trans.rotZ(degrees);
-		// Get the old pos transform
-		Transform3D rPos = new Transform3D(robot.getT());
-		// Apply translation to old transform
-		rPos.mul(trans);
-		// Set the new transform
-		robot.setT(rPos);
-		if (display)
-			robotNode.getTransformGroup().setTransform(rPos);
-	}
-
+	/********************************* Simulation Functions *************************************/
+	
 	/**
 	 * Move the virtual robot a certain amount of distance
 	 * 
@@ -321,60 +776,33 @@ public class VirtUniverse extends Universe {
 		// Get the old pos transform
 		Transform3D rPos = new Transform3D(robot.getT());
 		rPos.get(from);
-		
+
 		// Create a new transforme with the translation
 		Transform3D trans = new Transform3D();
 		trans.setTranslation(vector);
 
 		// Apply translation to old transform
 		rPos.mul(trans);
-		
+
 		// Check for walls in the way
 		Vector3f to = new Vector3f();
 		rPos.get(to);
 		LineSegment toTravel = new LineSegment(new Coordinate(from.x, from.y), new Coordinate(to.x, to.y));
 		boolean intersects = false;
-		for (Wall w : getWalls()){
+		for (Wall w : getWalls()) {
 			intersects |= w.intersects(toTravel);
-			if (intersects){
+			if (intersects) {
 				break;
 			}
 		}
-		
-		if (!intersects){
+
+		if (!intersects) {
 			// Set the new transform
 			robot.setT(rPos);
 
 			if (display)
 				robotNode.getTransformGroup().setTransform(rPos);
 		}
-	}
-
-	public Quat4f getRobotOrientation() {
-		Transform3D t = new Transform3D(robot.getT());
-		// Get the rotation from the quaternion
-		// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
-		Quat4f rot = new Quat4f();
-		t.get(rot);
-
-		return rot;
-	}
-
-	public float getRobotOrientationAngle() {
-		Transform3D t = new Transform3D(robot.getT());
-		// Get the rotation from the quaternion
-		// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
-		Quat4f rot = new Quat4f();
-		t.get(rot);
-		return (float) (2 * Math.acos(rot.w) * Math.signum(rot.z));
-	}
-
-	@Override
-	public void setActiveFeeder(int i, boolean val) {
-		super.setActiveFeeder(i, val);
-
-		if (display)
-			feederNodes.get(i).setActive(val);
 	}
 
 	public boolean canRobotMove(float angle, float step) {
@@ -427,55 +855,6 @@ public class VirtUniverse extends Universe {
 		}
 
 		return !intesectsWall;
-	}
-
-	/**
-	 * Gives distance to nearest intersecting wall with the path (current pos,
-	 * pos + Vector(rayX,raY))
-	 * 
-	 * @param dx
-	 * @param dy
-	 * @return
-	 */
-
-	public double distanceToNearestWall(float dx, float dy, float maxDistance) {
-		// The current position with rotation
-
-		Vector3f p = new Vector3f();
-		robot.getT().get(p);
-
-		Coordinate initCoordinate = new Coordinate(p.x, p.y);
-		Coordinate finalCoordinate = new Coordinate(p.x + dx, p.y + dy);
-
-		// System.out.println("movement: "+initCoordinate + " " +
-		// finalCoordinate);
-
-		double minDistance = maxDistance;
-		LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
-		Coordinate inter;
-		double distance;
-		for (Wall wall : getWalls()) {
-
-			if ((inter = path.intersection(wall.s)) != null
-					&& (distance = inter.distance(initCoordinate)) < minDistance)
-				minDistance = distance;
-		}
-
-		return minDistance;
-	}
-
-	// public boolean isRobotParallelToWall() {
-	// boolean aff[] = getRobotAffordances();
-	//
-	// // If I cannot move to any of the perpendicular directions I am near a
-	// // wall
-	// return !aff[GeomUtils.discretizeAction(-90)]
-	// || !aff[GeomUtils.discretizeAction(90)];
-	// }
-
-	public void setWantedFeeder(int feeder, boolean wanted) {
-		if (display)
-			feederNodes.get(feeder).setWanted(wanted);
 	}
 
 	public void clearWantedFeeders() {
@@ -534,21 +913,6 @@ public class VirtUniverse extends Universe {
 
 	}
 
-	// public boolean placeIntersectsWalls(Polygon c) {
-	// boolean intersects = false;
-	// for (WallNode w : wallNodes)
-	// intersects = intersects || w.intersects(c);
-	//
-	// return intersects;
-	// }
-
-	public void setFlashingFeeder(int i, boolean flashing) {
-		super.setFlashingFeeder(i, flashing);
-
-		if (display)
-			feederNodes.get(i).setFlashing(flashing);
-	}
-
 	@Override
 	protected void finalize() throws Throwable {
 		// TODO Auto-generated method stub
@@ -564,7 +928,7 @@ public class VirtUniverse extends Universe {
 	public List<Point3f> getVisibleWallEnds(float halfFieldOfView, float visionDist) {
 		List<Point3f> openEnds = new LinkedList<Point3f>();
 		List<Wall> innerWalls = new LinkedList<Wall>(getWalls());
-//		innerWalls.removeAll(initialWalls);
+		// innerWalls.removeAll(initialWalls);
 		for (Wall w : innerWalls) {
 			Point3f p = new Point3f((float) w.s.p0.x, (float) w.s.p0.y, 0f);
 
@@ -679,46 +1043,54 @@ public class VirtUniverse extends Universe {
 	}
 
 	/**
-	 * Returns the reading of the sonar by emulating numRays rays that hit the obstacles
-	 * @param angle The angle of the sonar in the robot's frame of reference
-	 * @param sonarAperture The aperture of the sonar sensor
-	 * @param maxDist The maximum distance that can be sensed
-	 * @param numRays The number of rays to use. Must be at least two
+	 * Returns the reading of the sonar by emulating numRays rays that hit the
+	 * obstacles
+	 * 
+	 * @param angle
+	 *            The angle of the sonar in the robot's frame of reference
+	 * @param sonarAperture
+	 *            The aperture of the sonar sensor
+	 * @param maxDist
+	 *            The maximum distance that can be sensed
+	 * @param numRays
+	 *            The number of rays to use. Must be at least two
 	 * @return
 	 */
 	public float getRobotSonarReading(float angle, float sonarAperture, float maxDist, int numRays) {
 		// Working data
 		Point3f rPos = getRobotPosition();
 		Coordinate rCoor = new Coordinate(rPos.x, rPos.y);
-		
+
 		Transform3D rT = robot.getT();
-		
+
 		float closestDist = maxDist;
-		
+
 		// For each ray
-		for (int i = 0; i < numRays; i++){
+		for (int i = 0; i < numRays; i++) {
 			// Get the angle of the ray in the robot's frame of reference
 			// It goes in the segment [angle - aperture/2, angle + aperture/2]
-			float rayAngle = angle - sonarAperture/2 + ((float)i)/(numRays-1) * sonarAperture;
-			// Create each point in the robot frame of reference 
-			Point3f rayEnd = new Point3f((float)(Math.cos(rayAngle) * maxDist), (float) (Math.sin(rayAngle) * maxDist), 0);
+			float rayAngle = angle - sonarAperture / 2 + ((float) i) / (numRays - 1) * sonarAperture;
+			// Create each point in the robot frame of reference
+			Point3f rayEnd = new Point3f((float) (Math.cos(rayAngle) * maxDist), (float) (Math.sin(rayAngle) * maxDist),
+					0);
 			// Rotate and translate it to reflect the robot frame of ref
 			rT.transform(rayEnd);
 			Coordinate rayEndCoor = new Coordinate(rayEnd.x, rayEnd.y);
 			// Create a segment from the robot to the point
 			LineSegment s = new LineSegment(rCoor, rayEndCoor);
-			// Intersect the segment to all walls to find closest point to the robot
-			for (Wall w : getWalls()){
+			// Intersect the segment to all walls to find closest point to the
+			// robot
+			for (Wall w : getWalls()) {
 				Coordinate intersection = w.s.intersection(s);
-				if (intersection != null){
+				if (intersection != null) {
 					float dist = (float) intersection.distance(rCoor);
 					if (dist < closestDist)
 						closestDist = dist;
 				}
-					
+
 			}
 		}
-		
+
 		return closestDist;
 	}
 

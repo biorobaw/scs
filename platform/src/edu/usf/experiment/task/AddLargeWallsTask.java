@@ -9,16 +9,15 @@ import javax.vecmath.Point2f;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
-import edu.usf.experiment.Episode;
-import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PreExperiment;
-import edu.usf.experiment.Trial;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.RobotLoader;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.SubjectLoader;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.UniverseLoader;
+import edu.usf.experiment.universe.WallUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -49,13 +48,18 @@ public class AddLargeWallsTask extends Task {
 
 	@Override
 	public void perform(Universe u, Subject s) {
+		if (!(u instanceof WallUniverse))
+			throw new IllegalArgumentException("");
+		
+		WallUniverse wu = (WallUniverse) u;
+		
 		System.out.println("[+] Adding large walls");
-		while (!placeWalls(u))
+		while (!placeWalls(wu))
 			;
 		System.out.println("[+] Large walls added");
 	}
 
-	private boolean placeWalls(Universe univ) {
+	private boolean placeWalls(WallUniverse univ) {
 		random = RandomSingleton.getInstance();
 		List<LineSegment> outerWalls = new LinkedList<LineSegment>();
 		watchDogCount = 0;
@@ -139,8 +143,10 @@ public class AddLargeWallsTask extends Task {
 		return watchDogCount > MAX_WATCH_DOG;
 	}
 
-	private boolean suitableOuterWall(List<LineSegment> walls, Universe univ,
+	private boolean suitableOuterWall(List<LineSegment> walls, WallUniverse univ,
 			List<LineSegment> outerWalls) {
+		boolean feederUniverse = univ instanceof FeederUniverse;
+		
 		boolean suitable = true;
 		for (LineSegment w2 : outerWalls) {
 			for (LineSegment wall : walls) {
@@ -148,20 +154,24 @@ public class AddLargeWallsTask extends Task {
 					return false;
 				suitable = suitable
 						&& univ.shortestDistanceToWalls(wall) > 0
-						&& univ.wallDistanceToFeeders(wall) > MIN_DIST_TO_FEEDERS;
+						&& (!feederUniverse ||
+								((FeederUniverse)univ).wallDistanceToFeeders(wall) > MIN_DIST_TO_FEEDERS);
 			}
 		}
 		return suitable;
 	}
 
-	private boolean suitableInnerWall(List<LineSegment> walls, Universe univ) {
+	private boolean suitableInnerWall(List<LineSegment> walls, WallUniverse univ) {
+		boolean feederUniv = univ instanceof FeederUniverse;
+		
 		boolean suitable = true;
 		for (LineSegment wall : walls)
 			suitable &= wall.p0.distance(new Coordinate(0, 0)) < RADIUS
 				&& wall.p1.distance(new Coordinate(0, 0)) < RADIUS
 				&& wall.distance(new Coordinate(0, 0)) > 0.05
 				&& univ.shortestDistanceToWalls(wall) > DISTANCE_INTERIOR_WALLS
-				&& univ.shortestDistanceToFeeders(wall) > MIN_DIST_TO_FEEDERS_INTERIOR;
+				&& (!feederUniv ||
+						((FeederUniverse)univ).shortestDistanceToFeeders(wall) > MIN_DIST_TO_FEEDERS_INTERIOR);
 		return suitable;
 	}
 
@@ -220,7 +230,7 @@ public class AddLargeWallsTask extends Task {
 		new PreExperiment(
 				"multiscalemodel/src/edu/usf/ratsim/experiment/xml/multiFeedersTrainRecallLargeObs.xml",
 				"logs/Experiment/");
-		Universe univ = UniverseLoader.getInstance().load(root,
+		WallUniverse univ = (WallUniverse) UniverseLoader.getInstance().load(root,
 				"logs/Experiment/");
 		Robot robot = RobotLoader.getInstance().load(root);
 		Subject subject = SubjectLoader.getInstance().load("a", "a",

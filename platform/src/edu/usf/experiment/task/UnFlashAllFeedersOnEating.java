@@ -4,6 +4,7 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -19,9 +20,14 @@ public class UnFlashAllFeedersOnEating extends Task {
 	}
 
 	public void perform(Universe u, Subject s){
+		if (!(u instanceof FeederUniverse))
+			throw new IllegalArgumentException("");
+		
+		FeederUniverse fu = (FeederUniverse) u;
+		
 		if (s.hasEaten())
-			for (Integer f : u.getFeederNums())
-				u.setFlashingFeeder(f, false);
+			for (Integer f : fu.getFeederNums())
+				fu.setFlashingFeeder(f, false);
 	}
 
 }

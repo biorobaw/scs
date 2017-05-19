@@ -9,6 +9,7 @@ import javax.vecmath.Point3f;
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.CSVReader;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -35,6 +36,12 @@ public class AddNFeedersFromFileTask extends Task{
 	}
 	
 	public void perform(Universe u, Subject s){
+		if (!(u instanceof FeederUniverse))
+			throw new IllegalArgumentException("");
+		
+		FeederUniverse fu = (FeederUniverse) u;
+		
+		
 		//parse feederfile and create feeders
 		if (feedersFile==null) return;
 		
@@ -64,7 +71,7 @@ public class AddNFeedersFromFileTask extends Task{
 			Feeder f = allFeeders.remove(item);
 			// Set the id incremental to avoid gaps
 			f.setId(i);
-			u.addFeeder(f);
+			fu.addFeeder(f);
 		}
 			
 		

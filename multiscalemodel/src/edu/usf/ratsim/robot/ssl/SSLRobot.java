@@ -102,17 +102,19 @@ public class SSLRobot extends LocalizableRobot {
 
 	@Override
 	public Feeder getFlashingFeeder() {
-		List<Feeder> visible = getVisibleFeeders(null);
-		if (visible.isEmpty()) {
-			System.out.println("No visible feeder");
-			return null;
-		} else if (universe.isFeederFlashing(visible.get(0).getId())) {
-			System.out.println("Found flashing feeder " + visible.get(0).getId());
-			return visible.get(0);
-		} else {
-			System.out.println("Feeder " + visible.get(0).getId() + " is visible but not flashing");
-			return null;
-		}
+		//TODO: fix this back to working
+//		List<Feeder> visible = getVisibleFeeders(null);
+//		if (visible.isEmpty()) {
+//			System.out.println("No visible feeder");
+//			return null;
+//		} else if (universe.isFeederFlashing(visible.get(0).getId())) {
+//			System.out.println("Found flashing feeder " + visible.get(0).getId());
+//			return visible.get(0);
+//		} else {
+//			System.out.println("Feeder " + visible.get(0).getId() + " is visible but not flashing");
+//			return null;
+//		}
+		return null;
 	}
 
 	@Override

@@ -6,7 +6,7 @@ import javax.vecmath.Point3f;
 
 import com.vividsolutions.jts.geom.LineSegment;
 
-public interface FeederUniverse {
+public interface FeederUniverse extends Universe {
 
 
 
@@ -71,4 +71,13 @@ public interface FeederUniverse {
 	public void addFeeder(Feeder f);
 	
 	public void setPermanentFeeder(Integer id, boolean b);
+	
+	/**
+	 * Inform the universe of the currently pursued feeder for displaying purposes
+	 * @param feeder which feeder is being pursued
+	 * @param wanted whether is being pursued or not
+	 */
+	public void setWantedFeeder(int feeder, boolean wanted);
+	
+	public float wallDistanceToFeeders(LineSegment wall);
 }

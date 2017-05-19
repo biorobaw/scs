@@ -11,6 +11,7 @@ import edu.usf.experiment.Trial;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
+import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
@@ -42,7 +43,12 @@ public class GoBackToStart extends Task {
 	}
 
 	public void perform(Universe u, Subject s){
-		Point3f robot = u.getRobotPosition();
+		if (!(u instanceof GlobalCameraUniverse))
+			throw new IllegalArgumentException("");
+		
+		GlobalCameraUniverse gcu = (GlobalCameraUniverse) u;
+		
+		Point3f robot = gcu.getRobotPosition();
 		Point3f feeder = new Point3f(FEEDER_X, FEEDER_Y, 0);
 		Point3f start = new Point3f(START_X, START_Y, 0);
 		// If farther away from the start than feeder -> behind feeder
@@ -50,15 +56,15 @@ public class GoBackToStart extends Task {
 			Point2f rInFeederFrame = new Point2f(robot.x - feeder.x, robot.y - feeder.y);
 			// If x is larger, closer to y (negative coords)
 			if (rInFeederFrame.x < rInFeederFrame.y) {
-				goToPoint(P1_X, P1_Y, 0, u, s.getRobot());
+				goToPoint(P1_X, P1_Y, 0, gcu, s.getRobot());
 			} else {
-				goToPoint(P2_X, P2_Y, 0, u, s.getRobot());
+				goToPoint(P2_X, P2_Y, 0, gcu, s.getRobot());
 			}
 		}
-		goToPoint(START_X, START_Y, START_T, u, s.getRobot());
+		goToPoint(START_X, START_Y, START_T, gcu, s.getRobot());
 	}
 
-	private void goToPoint(float x, float y, float t, Universe u, Robot r) {
+	private void goToPoint(float x, float y, float t, GlobalCameraUniverse u, Robot r) {
 		Point3f toP = new Point3f(x, y, 0);
 		// Rotate to face
 		float angleToGoal = angleToPwithO(u.getRobotOrientation(), u.getRobotPosition(), toP);

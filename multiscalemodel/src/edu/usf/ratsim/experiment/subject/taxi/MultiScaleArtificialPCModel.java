@@ -135,9 +135,9 @@ public class MultiScaleArtificialPCModel extends Model {
 				"Last Tried To Eat Goal Decider");
 		addModule(lastTriedToEatGoalDecider);
 //
-		ActiveFeederGoalDecider flashingGoalDecider = new ActiveFeederGoalDecider(
+		ActiveFeederGoalDecider aciveGoalDecider = new ActiveFeederGoalDecider(
 				"Active Feeder Goal Decider");
-		addModule(flashingGoalDecider);
+		addModule(aciveGoalDecider);
 
 //		OneThenTheOtherGoalDecider flashingGoalDecider = new OneThenTheOtherGoalDecider(
 //				"One Then The Other Goal Decider",lRobot);
@@ -147,7 +147,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		if (numIntentions > 1) {
 			intention = new LastAteIntention("Intention", numIntentions);
 			intention.addInPort("goalFeeder",
-					flashingGoalDecider.getOutPort("goalFeeder"));
+					aciveGoalDecider.getOutPort("goalFeeder"));
 		} else {
 			intention = new NoIntention("Intention", numIntentions);
 		}
@@ -361,10 +361,10 @@ public class MultiScaleArtificialPCModel extends Model {
 				subTriedToEat.getOutPort("subTriedToEat"));
 		lastTriedToEatGoalDecider.addInPort("closestFeeder",
 				closestFeeder.getOutPort("closestFeeder"));
-		flashingGoalDecider.addInPort("subAte", subAte.getOutPort("subAte"));
-		flashingGoalDecider.addInPort("closestFeeder",
+		aciveGoalDecider.addInPort("subAte", subAte.getOutPort("subAte"));
+		aciveGoalDecider.addInPort("closestFeeder",
 				closestFeeder.getOutPort("closestFeeder"));
-		flashingGoalDecider.addInPort("subTriedToEat",
+		aciveGoalDecider.addInPort("subTriedToEat",
 				subTriedToEat.getOutPort("subTriedToEat"));
 		
 		Reward reward = new Reward("Reward", foodReward, nonFoodReward);

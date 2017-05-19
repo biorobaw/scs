@@ -275,6 +275,9 @@
 			<task>
 				<name>edu.usf.experiment.task.FlashActivateRandomFeeder</name>
 			</task>
+			<task>
+				<name>edu.usf.experiment.task.PublishActiveFeeder</name>
+			</task>
 		</beforeTrialTasks>
 		<!-- Episodes definition -->
 		<episodes>

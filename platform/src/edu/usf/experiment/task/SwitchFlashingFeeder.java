@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -25,24 +26,29 @@ public class SwitchFlashingFeeder extends Task {
 	}
 
 	public void perform(Universe u, Subject s){
+		if (!(u instanceof FeederUniverse))
+			throw new IllegalArgumentException("");
+		
+		FeederUniverse fu = (FeederUniverse) u;
+		
 		if(s.hasEaten()){
-			int feeder = u.getFeedingFeeder();
+			int feeder = fu.getFeedingFeeder();
 			
 			// Deactivate the feeding one
-			u.setActiveFeeder(feeder, false);
-			u.setFlashingFeeder(feeder, false);
+			fu.setActiveFeeder(feeder, false);
+			fu.setFlashingFeeder(feeder, false);
 			
-			List<Integer> enabled = u.getEnabledFeeders();
+			List<Integer> enabled = fu.getEnabledFeeders();
 			enabled.remove(new Integer(feeder));
 			for (Integer f : enabled){
 //				u.setActiveFeeder(f, true);
-				u.setFlashingFeeder(f, false);
+				fu.setFlashingFeeder(f, false);
 			}
 			
 			// Pick an active one and flash
 			int toFlash = enabled.get(random.nextInt(enabled.size()));
-			u.setActiveFeeder(toFlash, true);
-			u.setFlashingFeeder(toFlash, true);
+			fu.setActiveFeeder(toFlash, true);
+			fu.setFlashingFeeder(toFlash, true);
 		}
 	}
 

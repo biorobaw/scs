@@ -7,6 +7,7 @@ import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -17,13 +18,18 @@ public class FeederLogger extends Logger {
 	}
 
 	public void log(Universe univ) {
+		if (!(univ instanceof FeederUniverse))
+			throw new IllegalArgumentException("");
+		
+		FeederUniverse fu = (FeederUniverse) univ;
+		
 		synchronized (FeederLogger.class) {
 			PropertyHolder props = PropertyHolder.getInstance();
 			String groupName = props.getProperty("group");
 			String subName = props.getProperty("subject");
 
 			PrintWriter writer = getWriter();
-			for (Feeder f : univ.getFeeders())
+			for (Feeder f : fu.getFeeders())
 				writer.println(groupName + '\t' + subName + '\t' + f.getId() + '\t' 
 						+ f.getPosition().x + '\t' + f.getPosition().y + '\t'
 						+ f.isEnabled());

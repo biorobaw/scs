@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -25,17 +26,22 @@ public class FoundNFoodNoMistakesStopCond implements Condition {
 
 	@Override
 	public boolean holds(Episode episode) {
-		Subject sub = episode.getSubject();
 		Universe u = episode.getUniverse();
-		if (sub.hasTriedToEat() && u.getFoundFeeder() != -1) {
-			if (!u.isFeederEnabled(u.getFoundFeeder())) {
+		if (!(u instanceof FeederUniverse))
+			throw new IllegalArgumentException("");
+		
+		FeederUniverse fu = (FeederUniverse) u;
+		
+		Subject sub = episode.getSubject();
+		if (sub.hasTriedToEat() && fu.getFoundFeeder() != -1) {
+			if (!fu.isFeederEnabled(fu.getFoundFeeder())) {
 				// Trying to eat from wrong feeder
 				toGo = n;
-			} else if (u.getFoundFeeder() != lastFeeder) {
+			} else if (fu.getFoundFeeder() != lastFeeder) {
 				// Trying to eat from an enabled feeder
-				flashing.add(u.isFeederFlashing(u.getFoundFeeder()));
+				flashing.add(fu.isFeederFlashing(fu.getFoundFeeder()));
 				toGo--;
-				lastFeeder = u.getFoundFeeder();
+				lastFeeder = fu.getFoundFeeder();
 			}
 
 

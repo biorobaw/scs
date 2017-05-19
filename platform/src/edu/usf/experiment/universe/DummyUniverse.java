@@ -1,23 +1,15 @@
 package edu.usf.experiment.universe;
 
-import java.awt.geom.Point2D.Float;
 import java.awt.geom.Rectangle2D;
-
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class DummyUniverse extends Universe {
+public class DummyUniverse implements GlobalCameraUniverse, BoundedUniverse {
 
 	public DummyUniverse(ElementWrapper params, String logPath){
-		super(params, logPath);
 		System.out.println("Dummy universe created");
-	}
-
-	@Override
-	public java.awt.geom.Rectangle2D.Float getBoundingRectangle() {
-		return new Rectangle2D.Float(0f,0f,0f,0f);
 	}
 
 	@Override
@@ -35,9 +27,14 @@ public class DummyUniverse extends Universe {
 		return 0;
 	}
 
+
 	@Override
-	public void setRobotPosition(Float float1, float w) {
-		// TODO Auto-generated method stub
+	public Rectangle2D.Float getBoundingRect() {
+		return new Rectangle2D.Float(0, 0, 1, 1);
+	}
+
+	@Override
+	public void setBoundingRect(java.awt.geom.Rectangle2D.Float boundingRect) {
 		
 	}
 }

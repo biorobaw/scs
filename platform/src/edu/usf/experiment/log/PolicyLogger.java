@@ -10,6 +10,7 @@ import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.experiment.universe.BoundedUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -29,6 +30,11 @@ public class PolicyLogger extends Logger {
 	}
 
 	public void log(Universe univ, Subject sub) {
+		if (!(univ instanceof BoundedUniverse))
+			throw new IllegalArgumentException("");
+		
+		BoundedUniverse bu = (BoundedUniverse) univ;
+		
 		PrintWriter writer = getWriter();
 		
 		PropertyHolder props = PropertyHolder.getInstance();
@@ -39,11 +45,11 @@ public class PolicyLogger extends Logger {
 		
 		for (int intention = 0; intention < numIntentions; intention++) {
 			for (float xInc = MARGIN; xInc
-					- (univ.getBoundingRectangle().getWidth() - MARGIN / 2) < 1e-8; xInc += interval) {
+					- (bu.getBoundingRect().getWidth() - MARGIN / 2) < 1e-8; xInc += interval) {
 				for (float yInc = MARGIN; yInc
-						- (univ.getBoundingRectangle().getHeight() - MARGIN / 2) < 1e-8; yInc += interval) {
-					float x = (float) (univ.getBoundingRectangle().getMinX() + xInc);
-					float y = (float) (univ.getBoundingRectangle().getMinY() + yInc);
+						- (bu.getBoundingRect().getHeight() - MARGIN / 2) < 1e-8; yInc += interval) {
+					float x = (float) (bu.getBoundingRect().getMinX() + xInc);
+					float y = (float) (bu.getBoundingRect().getMinY() + yInc);
 
 					float maxVal = Float.NEGATIVE_INFINITY;
 					float bestAngle = 0;

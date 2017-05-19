@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -24,13 +25,18 @@ public class SwitchFeeder extends Task {
 	}
 
 	public void perform(Universe u, Subject s){
+		if (!(u instanceof FeederUniverse))
+			throw new IllegalArgumentException("");
+		
+		FeederUniverse fu = (FeederUniverse) u;
+		
 		if (s.hasEaten()) {
-			int eatenFeeder = u.getFeedingFeeder();
+			int eatenFeeder = fu.getFeedingFeeder();
 
 			// Deactivate the feeding one
-			u.setActiveFeeder(eatenFeeder, false);
+			fu.setActiveFeeder(eatenFeeder, false);
 
-			List<Integer> enabled = u.getEnabledFeeders();
+			List<Integer> enabled = fu.getEnabledFeeders();
 			enabled.remove(new Integer(eatenFeeder));
 			// for (Integer f : enabled){
 			// u.setActiveFeeder(f, true);
@@ -38,7 +44,7 @@ public class SwitchFeeder extends Task {
 			// }
 
 			// Activate only one
-			u.setActiveFeeder(enabled.get(random.nextInt(enabled.size())), true);
+			fu.setActiveFeeder(enabled.get(random.nextInt(enabled.size())), true);
 		}
 	}
 

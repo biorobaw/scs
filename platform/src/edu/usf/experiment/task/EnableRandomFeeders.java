@@ -8,6 +8,7 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -29,8 +30,13 @@ public class EnableRandomFeeders extends Task {
 	}
 
 	public void perform(Universe u, Subject s){
+		if (!(u instanceof FeederUniverse))
+			throw new IllegalArgumentException("");
+		
+		FeederUniverse fu = (FeederUniverse) u;
+		
 		List<Integer> toEnable = new LinkedList<Integer>();
-		List<Integer> feeders = new LinkedList<Integer>(u.getFeederNums());
+		List<Integer> feeders = new LinkedList<Integer>(fu.getFeederNums());
 		for (int i = 0; i < numFeeders; i++){
 			int index = r.nextInt(feeders.size());
 			toEnable.add(feeders.get(index));
@@ -38,7 +44,7 @@ public class EnableRandomFeeders extends Task {
 		}
 			
 		for (Integer f : toEnable)
-			u.setEnableFeeder(f, true);
+			fu.setEnableFeeder(f, true);
 	}
 
 }

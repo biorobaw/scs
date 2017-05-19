@@ -8,6 +8,7 @@ import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -27,7 +28,12 @@ public class FeedingLogger extends Logger {
 
 	}
 
-	private void log(Subject subject, Universe universe) {
+	private void log(Subject subject, Universe univ) {
+		if (!(univ instanceof FeederUniverse))
+			throw new IllegalArgumentException("");
+		
+		FeederUniverse fu = (FeederUniverse) univ;
+		
 		if (subject.hasTriedToEat()) {
 			PropertyHolder props = PropertyHolder.getInstance();
 			String cycle = props.getProperty("cycle");
@@ -35,7 +41,7 @@ public class FeedingLogger extends Logger {
 			if(subject.getRobot().isFeederClose()){
 	            int feeder = subject.getRobot().getClosestFeeder().getId();
 				FeedingLog fl = new FeedingLog(feeder, cycle, subject.hasEaten(),
-						universe.isFeederFlashing(feeder), universe.isFeederEnabled(feeder));
+						fu.isFeederFlashing(feeder), fu.isFeederEnabled(feeder));
 				feederLogs.add(fl);
 			}
 		}

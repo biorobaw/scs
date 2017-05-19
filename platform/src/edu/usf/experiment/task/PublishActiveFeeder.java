@@ -5,6 +5,7 @@ import java.util.Random;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
+import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.FeederUniverse;
@@ -18,9 +19,9 @@ import edu.usf.experiment.utils.RandomSingleton;
  * @author ludo
  *
  */
-public class FlashActivateRandomFeeder extends Task {
+public class PublishActiveFeeder extends Task {
 
-	public FlashActivateRandomFeeder(ElementWrapper params) {
+	public PublishActiveFeeder(ElementWrapper params) {
 		super(params);
 		// TODO Auto-generated constructor stub
 	}
@@ -31,12 +32,8 @@ public class FlashActivateRandomFeeder extends Task {
 		
 		FeederUniverse fu = (FeederUniverse) u;
 		
-		List<Integer> enabledFeeders = fu.getEnabledFeeders();
-
-		Random r = RandomSingleton.getInstance();
-		int feeder = enabledFeeders.get(r.nextInt(enabledFeeders.size()));
-		fu.setActiveFeeder(feeder, true);
-		fu.setFlashingFeeder(feeder, true);
+		List<Integer> activeFeeders = fu.getActiveFeeders();
+		PropertyHolder.getInstance().setProperty("activeFeeder", activeFeeders.get(0).toString());
 	}
 
 

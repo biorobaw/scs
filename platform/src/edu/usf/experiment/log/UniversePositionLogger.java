@@ -6,6 +6,7 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -16,7 +17,12 @@ public class UniversePositionLogger extends PositionLogger {
 	}
 
 	public void log(Universe univ, Subject sub) {
-		Point3f pos = univ.getRobotPosition();
+		if (!(univ instanceof GlobalCameraUniverse))
+			throw new IllegalArgumentException("");
+		
+		GlobalCameraUniverse gcu = (GlobalCameraUniverse) univ;
+		
+		Point3f pos = gcu.getRobotPosition();
 		addPose(new Pose(pos.x, pos.y, false, sub.hasTriedToEat(), sub.hasEaten()));
 	}
 	

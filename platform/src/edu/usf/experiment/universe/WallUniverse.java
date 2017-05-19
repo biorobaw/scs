@@ -7,13 +7,11 @@ import javax.vecmath.Point3f;
 
 import com.vividsolutions.jts.geom.LineSegment;
 
-public interface WallUniverse {
+public interface WallUniverse extends Universe {
 
 	public List<Wall> getWalls();
 
-	public float shortestDistanceToWalls(LineSegment wall) ;
-
-	public float wallDistanceToFeeders(LineSegment wall);
+	public float shortestDistanceToWalls(LineSegment wall);
 
 	public void addWall(float x, float y, float x2, float y2);
 
@@ -38,5 +36,15 @@ public interface WallUniverse {
 	public void clearWalls();
 
 	public float shortestDistanceToRobot(LineSegment wall);
+	
+	/**
+	 * Gives distance to nearest intersecting wall with the path (current pos,
+	 * pos + Vector(rayX,raY))
+	 * 
+	 * @param dx
+	 * @param dy
+	 * @return
+	 */
+	public double distanceToNearestWall(float dx, float dy, float maxDistance);
 
 }
