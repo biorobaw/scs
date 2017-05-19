@@ -23,53 +23,33 @@ import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.experiment.utils.XMLExperimentParser;
 
-public class AddSmallWallsTask extends Task {
+public class AddSmallWallsTaskBug extends Task {
 
-	private final float RADIUS = .5f;
+	private final float RADIUS = 2f;
 	private int watchDogCount;
 	private static final float MIN_DIST_TO_FEEDERS = 0.05f;
-	private static final float LENGTH = .125f;
-	private static final int NUM_WALLS = 16;
+	private static final float LENGTH = .25f;
+	private static final int NUM_WALLS = 14;
 	private static final float NEAR_WALL_RADIUS = .44f;
-	private static final float DISTANCE_INTERIOR_WALLS = .1f;
-	private static final float MIN_DIST_TO_FEEDERS_INTERIOR = 0.1f;
-	private static final double NUM_INTERIOR_WALLS = 6;
-	private static final float DOUBLE_WALL_PROB = 0.2f;
+	private static final float DISTANCE_INTERIOR_WALLS = .4f;
+	private static final float MIN_DIST_TO_FEEDERS_INTERIOR = 0.4f;
 	private static final double MIN_DIST_TO_OTHER_OUTER = .1;
 	private static final int MAX_WATCH_DOG = 10000;
-	private static final float MIN_ANGLE_DISTANCE_OUTER = (float) (2 * Math.PI / (2 * 8));
-	private static final float MIN_DIST_TO_ROBOT = .1f;
+	private static final float MIN_DIST_TO_ROBOT = .2f;
 
-	public AddSmallWallsTask(ElementWrapper params) {
+	public AddSmallWallsTaskBug(ElementWrapper params) {
 		super(params);
 
 	}
 
-	@Override
-	public void perform(Experiment experiment) {
+	public void perform(Universe u, Subject s){
 		System.out.println("[+] Adding wmall walls");
-		while (!perform(experiment.getUniverse(), experiment.getSubject()))
+		while (!placeWalls(u, s))
 			;
 		System.out.println("[+] Small walls added");
 	}
 
-	@Override
-	public void perform(Trial trial) {
-		System.out.println("[+] Adding wmall walls");
-		while (!perform(trial.getUniverse(), trial.getSubject()))
-			;
-		System.out.println("[+] Small walls added");
-	}
-
-	@Override
-	public void perform(Episode episode) {
-		System.out.println("[+] Adding wmall walls");
-		while (!perform(episode.getUniverse(), episode.getSubject()))
-			;
-		System.out.println("[+] Small walls added");
-	}
-
-	public void perform(Universe univ, Subject sub) {
+	public boolean placeWalls(Universe univ, Subject sub) {
 		Random random = RandomSingleton.getInstance();
 		List<LineSegment> outerWalls = new LinkedList<LineSegment>();
 		watchDogCount = 0;
@@ -78,40 +58,6 @@ public class AddSmallWallsTask extends Task {
 		// Add Outer Walls
 		int j = 0;
 		List<Float> angles = new LinkedList<Float>();
-		while (j < NUM_WALLS - NUM_INTERIOR_WALLS) {
-			boolean doubleWall = random.nextFloat() < DOUBLE_WALL_PROB;
-			LineSegment wall;
-			float angle;
-			do {
-				do {
-					angle = (float) (random.nextDouble() * Math.PI * 2);
-				} while (!watchDog()
-						&& (!angles.isEmpty() && minDistance(angle, angles) < MIN_ANGLE_DISTANCE_OUTER));
-				if (watchDog()) {
-					System.out.println("Watch dog reached");
-					univ.revertWalls();
-					return false;
-				}
-
-				angles.add(angle);
-				wall = getOuterWall(angle, doubleWall);
-
-			} while (!watchDog() && !suitableOuterWall(wall, univ, outerWalls));
-
-			if (watchDog()) {
-				System.out.println("Watch dog reached");
-				univ.revertWalls();
-				return false;
-			}
-
-			univ.addWall(wall);
-			outerWalls.add(wall);
-			if (doubleWall)
-				j += 2;
-			else
-				j++;
-		}
-
 		while (j < NUM_WALLS) {
 			LineSegment wall;
 
@@ -204,8 +150,8 @@ public class AddSmallWallsTask extends Task {
 			Robot robot = RobotLoader.getInstance().load(root);
 			Subject subject = SubjectLoader.getInstance().load("a", "a",
 					root.getChild("model"), robot);
-			AddSmallWallsTask t = new AddSmallWallsTask(null);
-			while (!t.perform(univ, subject))
+			AddSmallWallsTaskBug t = new AddSmallWallsTaskBug(null);
+			while (!t.placeWalls(univ, subject))
 				;
 			System.out.println("walls added");
 			// try {

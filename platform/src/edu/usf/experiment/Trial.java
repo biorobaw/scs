@@ -73,7 +73,8 @@ public class Trial implements Runnable {
 				trialNode.getChild("beforeTrialLoggers"), logPath);
 		afterLoggers = LoggerLoader.getInstance().load(
 				trialNode.getChild("afterTrialLoggers"), logPath);
-
+		
+		// This should not happen here, this is at loading time
 //		subject.newTrial();
 
 		episodes = new LinkedList<Episode>();
