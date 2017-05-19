@@ -5,6 +5,8 @@ import java.util.List;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
+import edu.usf.experiment.robot.AffordanceRobot;
+import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
@@ -12,6 +14,7 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.universe.FeederUtils;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
@@ -22,7 +25,8 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 	private float reward;
 
 	private Subject subject;
-	private LocalizableRobot robot;
+	private AffordanceRobot ar;
+	private FeederRobot fr;
 	private float negReward;
 
 	public FlashingTaxicFoodFinderSchema(String name, Subject subject,
@@ -37,7 +41,8 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 		addOutPort("votes", new Float1dPortArray(this, votes));
 
 		this.subject = subject;
-		this.robot = robot;
+		this.ar = (AffordanceRobot) robot;
+		this.fr = (FeederRobot) robot;
 	}
 
 	/**
@@ -54,14 +59,13 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 			votes[i] = 0;
 
 		// Get the votes for each affordable action
-		List<Affordance> affs = robot.checkAffordances(subject
+		List<Affordance> affs = ar.checkAffordances(subject
 				.getPossibleAffordances());
 		int voteIndex = 0;
 		
-		boolean feederToEat = robot.isFeederClose()
-				&& robot.seesFlashingFeeder()
-				&& robot.getFlashingFeeder().getId() == robot
-						.getClosestFeeder().getId();
+		boolean feederToEat = fr.isFeederClose()
+				&& fr.seesFlashingFeeder()
+				&& fr.getFlashingFeeder().getId() == FeederUtils.getClosestFeeder(fr.getVisibleFeeders()).getId();
 //		System.out.println("Feeder close: " + robot.isFeederClose());
 //		System.out.println("Feeder to eat: " + feederToEat);
 //		if (robot.seesFlashingFeeder()){
@@ -74,15 +78,15 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 			if (af.isRealizable()) {
 				if (af instanceof TurnAffordance
 						|| af instanceof ForwardAffordance) {
-					if (robot.seesFlashingFeeder() && !feederToEat) {
-						Feeder f = robot.getFlashingFeeder();
+					if (fr.seesFlashingFeeder() && !feederToEat) {
+						Feeder f = fr.getFlashingFeeder();
 						Point3f newPos = GeomUtils
 								.simulate(f.getPosition(), af);
 						Quat4f rotToNewPos = GeomUtils.angleToPoint(newPos);
 
 						float angleDiff = Math.abs(GeomUtils
 								.rotToAngle(rotToNewPos));
-						if (angleDiff < robot.getHalfFieldView())
+						if (angleDiff < fr.getHalfFieldView())
 							value += getFeederValue(newPos);
 						else
 							value += -getFeederValue(f.getPosition());

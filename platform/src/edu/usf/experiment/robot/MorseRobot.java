@@ -17,7 +17,9 @@ import edu.usf.experiment.universe.morse.MorseUtils;
 import edu.usf.experiment.universe.morse.PosSensorProxy;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class MorseRobot extends LocalizableRobot {
+//TODO: Implement the functionality of all these interfaces
+public class MorseRobot
+		implements DifferentialRobot, LocalizableRobot, StepRobot, PlatformRobot, AffordanceRobot, SonarRobot {
 
 	private static final float FORWARD_THRS = .3f;
 	private static final float TURN_THRS = .2f;
@@ -29,8 +31,6 @@ public class MorseRobot extends LocalizableRobot {
 	private Affordance lastAction;
 
 	public MorseRobot(ElementWrapper params, Universe univ) {
-		super(params);
-
 		Map<String, Integer> streamPorts = MorseUtils.getStreamPorts();
 		System.out.println(streamPorts.toString());
 		if (streamPorts.containsKey("robot.pose")) {
@@ -117,16 +117,6 @@ public class MorseRobot extends LocalizableRobot {
 	}
 
 	@Override
-	public void eat() {
-
-	}
-
-	@Override
-	public boolean hasFoundFood() {
-		return false;
-	}
-
-	@Override
 	public void startRobot() {
 		// TODO Auto-generated method stub
 
@@ -143,27 +133,12 @@ public class MorseRobot extends LocalizableRobot {
 	}
 
 	@Override
-	public Feeder getFlashingFeeder() {
-		return null;
-	}
-
-	@Override
-	public boolean seesFlashingFeeder() {
-		return false;
-	}
-
-	@Override
-	public boolean isFeederClose() {
-		return false;
-	}
-
-	@Override
 	public List<Affordance> checkAffordances(List<Affordance> possibleAffordances) {
 		// TODO Auto-generated method stub
 		float front = frontIR.getDistance();
 		float left = leftIR.getDistance();
 		float right = rightIR.getDistance();
-//		System.out.println(front + " " + left + " " + right);
+		// System.out.println(front + " " + left + " " + right);
 		boolean canForward = front > FORWARD_THRS;
 		for (Affordance a : possibleAffordances)
 			if (a instanceof ForwardAffordance) {
@@ -171,10 +146,11 @@ public class MorseRobot extends LocalizableRobot {
 				a.setRealizable(canForward);
 			} else if (a instanceof TurnAffordance) {
 				TurnAffordance ta = (TurnAffordance) a;
-//				if (lastAction != null && lastAction instanceof TurnAffordance
-//						&& ((TurnAffordance) lastAction).getAngle() != ta.getAngle())
-//					a.setRealizable(false);
-//				else 
+				// if (lastAction != null && lastAction instanceof
+				// TurnAffordance
+				// && ((TurnAffordance) lastAction).getAngle() != ta.getAngle())
+				// a.setRealizable(false);
+				// else
 				if (ta.getAngle() > 0) {
 					a.setRealizable(left > TURN_THRS || (!canForward && right <= TURN_THRS));
 				} else
@@ -189,35 +165,11 @@ public class MorseRobot extends LocalizableRobot {
 			forward(((ForwardAffordance) selectedAction).getDistance());
 		} else if (selectedAction instanceof TurnAffordance) {
 			rotate(((TurnAffordance) selectedAction).getAngle());
-//			if (frontIR.getDistance() > FORWARD_THRS)
-//				forward(10);
+			// if (frontIR.getDistance() > FORWARD_THRS)
+			// forward(10);
 		}
 
 		lastAction = selectedAction;
-	}
-
-	@Override
-	public List<Feeder> getVisibleFeeders(int[] is) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Point3f> getVisibleWallEnds() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public int getLastAteFeeder() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getLastTriedToEatFeeder() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override
@@ -228,7 +180,7 @@ public class MorseRobot extends LocalizableRobot {
 
 	@Override
 	public void moveContinous(float lVel, float angVel) {
-		
+
 	}
 
 	@Override
@@ -237,6 +189,36 @@ public class MorseRobot extends LocalizableRobot {
 		l.add(af);
 		checkAffordances(l);
 		return l.get(0).isRealizable();
+	}
+
+	@Override
+	public void setLinearVel(float linearVel) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void setAngularVel(float angularVel) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public float[] getSonarReadings() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public float[] getSonarAngles() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public float getSonarAperture() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

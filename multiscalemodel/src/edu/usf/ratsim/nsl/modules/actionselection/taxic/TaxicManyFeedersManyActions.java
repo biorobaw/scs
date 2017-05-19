@@ -5,6 +5,8 @@ import java.util.List;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
+import edu.usf.experiment.robot.AffordanceRobot;
+import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
@@ -12,6 +14,7 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.universe.FeederUtils;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
@@ -23,7 +26,8 @@ public class TaxicManyFeedersManyActions extends Module {
 	private float reward;
 
 	private Subject subject;
-	private LocalizableRobot robot;
+	private AffordanceRobot ar;
+	private FeederRobot fr;
 	private float negReward;
 
 	public TaxicManyFeedersManyActions(String name, Subject subject,
@@ -38,7 +42,8 @@ public class TaxicManyFeedersManyActions extends Module {
 		addOutPort("votes", new Float1dPortArray(this, votes));
 
 		this.subject = subject;
-		this.robot = robot;
+		this.ar = (AffordanceRobot) robot;
+		this.fr = (FeederRobot) robot;
 	}
 
 	/**
@@ -57,10 +62,10 @@ public class TaxicManyFeedersManyActions extends Module {
 			votes[i] = 0;
 
 		// Get the votes for each affordable action
-		List<Affordance> affs = robot.checkAffordances(subject
+		List<Affordance> affs = ar.checkAffordances(subject
 				.getPossibleAffordances());
 		int voteIndex = 0;
-		boolean feederToEat = robot.isFeederClose();
+		boolean feederToEat = fr.isFeederClose();
 
 		float maxVal = 0;
 		int maxIndex = -1;
@@ -70,8 +75,8 @@ public class TaxicManyFeedersManyActions extends Module {
 				if (af instanceof TurnAffordance
 						|| af instanceof ForwardAffordance) {
 					if (!feederToEat) {
-						for (Feeder f : robot.getVisibleFeeders(goalFeeder
-								.getData())) {
+						// TODO: used to use except, see if needed
+						for (Feeder f : fr.getVisibleFeeders()) {
 							if (f != null) {
 								Point3f newPos = GeomUtils.simulate(
 										f.getPosition(), af);
@@ -81,7 +86,7 @@ public class TaxicManyFeedersManyActions extends Module {
 								float angleDiff = Math.abs(GeomUtils
 										.rotToAngle(rotToNewPos));
 								float feederVal;
-								if (angleDiff < robot.getHalfFieldView())
+								if (angleDiff < fr.getHalfFieldView())
 									feederVal = getFeederValue(newPos);
 								else
 									feederVal = -getFeederValue(f.getPosition());
@@ -92,8 +97,8 @@ public class TaxicManyFeedersManyActions extends Module {
 					}
 				} else if (af instanceof EatAffordance) {
 					if (feederToEat) {
-						float feederValue = getFeederValue(robot
-								.getClosestFeeder().getPosition());
+						float feederValue = getFeederValue(FeederUtils.getClosestFeeder(fr.getVisibleFeeders())
+								.getPosition());
 						if (feederValue > value)
 							value = feederValue;
 						// value += reward;

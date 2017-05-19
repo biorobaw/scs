@@ -2,6 +2,8 @@ package edu.usf.ratsim.nsl.modules.actionselection.taxic;
 
 import javax.vecmath.Point3f;
 
+import edu.usf.experiment.robot.AffordanceRobot;
+import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.GeomUtils;
@@ -14,7 +16,8 @@ public class FlashingTaxicValueSchema extends Module {
 	private float reward;
 
 	private Subject subject;
-	private LocalizableRobot robot;
+	private AffordanceRobot ar;
+	private FeederRobot fr;
 	private double lambda;
 	private boolean estimateValue;
 	private float negReward;
@@ -31,7 +34,8 @@ public class FlashingTaxicValueSchema extends Module {
 		addOutPort("value", new Float1dPortArray(this, value));
 
 		this.subject = subject;
-		this.robot = robot;
+		this.ar = (AffordanceRobot) robot;
+		this.fr = (FeederRobot) robot;
 		this.lambda = lambda;
 		this.estimateValue = estimateValue;
 	}
@@ -49,8 +53,8 @@ public class FlashingTaxicValueSchema extends Module {
 		// Get the value of the current position
 		if (estimateValue) {
 			float val = 0;
-			if (robot.seesFlashingFeeder())
-				val += getFeederValue(robot.getFlashingFeeder().getPosition());
+			if (fr.seesFlashingFeeder())
+				val += getFeederValue(fr.getFlashingFeeder().getPosition());
 
 			// Last position represents the current value
 			value[0] = val;

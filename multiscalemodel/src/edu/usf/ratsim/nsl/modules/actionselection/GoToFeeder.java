@@ -5,10 +5,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.AffordanceRobot;
+import edu.usf.experiment.robot.FeederRobot;
+import edu.usf.experiment.robot.StepRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.universe.FeederUtils;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
@@ -16,7 +19,9 @@ import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 public class GoToFeeder extends Module {
 
-	private LocalizableRobot lRobot;
+	private FeederRobot fr;
+	private AffordanceRobot ar;
+	private StepRobot sr;
 	private Random random;
 	private Int0dPort takenActionPort;
 	private Subject sub;
@@ -24,7 +29,9 @@ public class GoToFeeder extends Module {
 	public GoToFeeder(String name, Subject sub, Random random) {
 		super(name);
 
-		this.lRobot = (LocalizableRobot) sub.getRobot();
+		this.fr = (FeederRobot) sub.getRobot();
+		this.ar = (AffordanceRobot) sub.getRobot();
+		this.sr = (StepRobot) sub.getRobot();
 		this.sub = sub;
 		this.random = random;
 		
@@ -36,7 +43,7 @@ public class GoToFeeder extends Module {
 	public void run() {
 		Float1dPort votes = (Float1dPort) getInPort("votes");
 
-		List<Feeder> visibleFeeders = lRobot.getVisibleFeeders(null);
+		List<Feeder> visibleFeeders = fr.getVisibleFeeders();
 
 		// Get action value for each visible feeder
 		List<ActionValue> avList = new LinkedList<ActionValue>();
@@ -62,25 +69,25 @@ public class GoToFeeder extends Module {
 		if (!seeToGoFeeder) {
 			// Turn 120
 			if (random.nextBoolean())
-				lRobot.rotate(120);
+				sr.rotate(120);
 			else
-				lRobot.rotate(-120);
+				sr.rotate(-120);
 			takenActionPort.set(-1);
 		} else {
 			int desiredFeederId = avList.get(0).getAction();
-			if (lRobot.isFeederClose()
-					&& lRobot.getClosestFeeder().getId() == desiredFeederId){
-				lRobot.executeAffordance(new EatAffordance(), sub);
+			if (fr.isFeederClose()
+					&& FeederUtils.getClosestFeeder(fr.getVisibleFeeders()).getId() == desiredFeederId){
+				ar.executeAffordance(new EatAffordance(), sub);
 			} else {
 				Feeder desiredFeeder = null;
 				for (Feeder f : visibleFeeders)
 					if (f.getId() == desiredFeederId)
 						desiredFeeder = f;
 				// Todo: make it a step
-				lRobot.rotate(GeomUtils.rotToAngle(GeomUtils
+				sr.rotate(GeomUtils.rotToAngle(GeomUtils
 						.angleToPoint(desiredFeeder.getPosition())));
 				// Parametrize
-				lRobot.forward(.1f);
+				sr.forward(.1f);
 			}
 			
 			takenActionPort.set(desiredFeederId);

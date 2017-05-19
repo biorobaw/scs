@@ -3,7 +3,7 @@ package edu.usf.ratsim.nsl.modules.actionselection;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
@@ -25,7 +25,7 @@ public class ProportionalExplorer extends Module {
 	/**
 	 * The robot interface used to perform actions
 	 */
-	private Robot robot;
+	private AffordanceRobot ar;
 	/**
 	 * The subject, used to get all possible affordances
 	 */
@@ -50,7 +50,7 @@ public class ProportionalExplorer extends Module {
 		takenAction = new Int0dPort(this);
 		addOutPort("takenAction", takenAction);
 
-		robot = sub.getRobot();
+		ar = (AffordanceRobot) sub.getRobot();
 
 		lastAction = null;
 
@@ -64,7 +64,7 @@ public class ProportionalExplorer extends Module {
 		Float1dPort votes = (Float1dPort) getInPort("votes");
 
 		Affordance selectedAction;
-		List<Affordance> aff = robot.checkAffordances(sub.getPossibleAffordances());
+		List<Affordance> aff = ar.checkAffordances(sub.getPossibleAffordances());
 
 		List<Affordance> possible = new LinkedList<Affordance>();
 		float totalPossible = 0f;
@@ -107,24 +107,24 @@ public class ProportionalExplorer extends Module {
 			fwd.add(sub.getForwardAffordance());
 			if (selectedAction instanceof TurnAffordance) {
 				do {
-					robot.executeAffordance(selectedAction, sub);
-					robot.checkAffordances(fwd);
+					ar.executeAffordance(selectedAction, sub);
+					ar.checkAffordances(fwd);
 				} while (!fwd.get(0).isRealizable());
 				// robot.executeAffordance(new ForwardAffordance(.05f), sub);
 			} else {
-				robot.executeAffordance(selectedAction, sub);
+				ar.executeAffordance(selectedAction, sub);
 			}
 		} else {
 			List<Affordance> fwd = new LinkedList<Affordance>();
 			fwd.add(sub.getForwardAffordance());
-			robot.checkAffordances(fwd);
+			ar.checkAffordances(fwd);
 			if (fwd.get(0).isRealizable())
 				selectedAction = fwd.get(0);
 			else if (RandomSingleton.getInstance().nextBoolean())
 				selectedAction = sub.getLeftAffordance();
 			else
 				selectedAction = sub.getRightAffordance();
-			robot.executeAffordance(selectedAction, sub);
+			ar.executeAffordance(selectedAction, sub);
 
 		}
 

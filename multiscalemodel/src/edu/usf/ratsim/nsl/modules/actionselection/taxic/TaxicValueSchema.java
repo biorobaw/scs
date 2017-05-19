@@ -2,6 +2,8 @@ package edu.usf.ratsim.nsl.modules.actionselection.taxic;
 
 import javax.vecmath.Point3f;
 
+import edu.usf.experiment.robot.AffordanceRobot;
+import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Feeder;
@@ -17,7 +19,8 @@ public class TaxicValueSchema extends Module {
 	private float reward;
 
 	private Subject subject;
-	private LocalizableRobot robot;
+	private AffordanceRobot ar;
+	private FeederRobot fr;
 	private double lambda;
 	private boolean estimateValue;
 	private float negReward;
@@ -34,9 +37,11 @@ public class TaxicValueSchema extends Module {
 		addOutPort("value", new Float1dPortArray(this, value));
 
 		this.subject = subject;
-		this.robot = robot;
 		this.lambda = lambda;
 		this.estimateValue = estimateValue;
+		
+		this.ar = (AffordanceRobot) robot;
+		this.fr = (FeederRobot) robot;
 	}
 
 	/**
@@ -50,15 +55,15 @@ public class TaxicValueSchema extends Module {
 	 */
 	public void run() {
 		Int0dPort goalFeeder = (Int0dPort) getInPort("goalFeeder");
-
+		// TODO: see if this is still needed - not being currently excluded
 		int exclude[] = {goalFeeder.get()};
 
-		if (robot.getVisibleFeeders(exclude).isEmpty())
+		if (fr.getVisibleFeeders().isEmpty())
 			value[0] = 0;
 		// Get the value of the current position
 		else if (estimateValue) {
 			value[0] = Float.NEGATIVE_INFINITY;
-			for (Feeder f : robot.getVisibleFeeders(exclude)) {
+			for (Feeder f : fr.getVisibleFeeders()) {
 //				if (robot.isFeederClose()
 //						&& robot.getClosestFeeder().getId() == f.getId())
 				float feederValue = getFeederValue(f.getPosition());

@@ -2,8 +2,8 @@ package edu.usf.ratsim.nsl.modules.multipleT;
 
 import javax.vecmath.Point3f;
 
+import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
@@ -21,14 +21,14 @@ import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 public class MoveFromToActionPerformer extends Module {
 	
 	//Point3f[] actions; 
-	Robot robot;
+	AffordanceRobot robot;
 	Subject subject;
 
 	public MoveFromToActionPerformer(String name,Subject subject) {
 		super(name);
 
 		this.subject = subject;
-		this.robot = subject.getRobot();
+		this.robot = (AffordanceRobot) subject.getRobot();
 
 	}
 

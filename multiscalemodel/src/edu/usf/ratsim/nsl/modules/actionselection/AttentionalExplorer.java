@@ -5,7 +5,9 @@ import java.util.Random;
 
 import javax.vecmath.Point3f;
 
+import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.WallRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
@@ -32,7 +34,8 @@ public class AttentionalExplorer extends Module {
 	private float[] votes;
 	private Subject sub;
 	private float exploringVal;
-	private Robot robot;
+	private AffordanceRobot ar;
+	private WallRobot wr;
 	private Random r;
 	private Point3f currentInterest;
 	private int attentionRemaining;
@@ -48,7 +51,9 @@ public class AttentionalExplorer extends Module {
 		this.attentionRemaining = 0;
 		this.sub = sub;
 		this.exploringVal = exploringVal;
-		this.robot = sub.getRobot();
+		this.ar = (AffordanceRobot) sub.getRobot();
+		this.wr = (WallRobot) sub.getRobot();
+
 
 		r = RandomSingleton.getInstance();
 		currentInterest = null;
@@ -69,7 +74,7 @@ public class AttentionalExplorer extends Module {
 
 		// Find all visible interest points
 		// List<Point3f> interestingPoints = robot.getInterestingPoints();
-		List<Point3f> interestingPoints = robot.getVisibleWallEnds();
+		List<Point3f> interestingPoints = wr.getVisibleWallEnds();
 		// If no current interest or not found, create new interest
 		if (attentionRemaining <= 0 // Not interesting any more
 				|| currentInterest == null // no current interest
@@ -99,7 +104,7 @@ public class AttentionalExplorer extends Module {
 					interestingPoints, TRACKIN_THRS);
 
 			// For each affordance set a value based on current interest point
-			List<Affordance> affs = robot.checkAffordances(sub
+			List<Affordance> affs = ar.checkAffordances(sub
 					.getPossibleAffordances());
 			int voteIndex = 0;
 			for (Affordance af : affs) {

@@ -1,5 +1,6 @@
 package edu.usf.ratsim.nsl.modules.multipleT;
 
+import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
@@ -22,7 +23,7 @@ public class MultipleTActionPerformer extends Module {
 	float stepSize;
 	//Point3f[] actions; 
 	float[] angles;
-	Robot robot;
+	AffordanceRobot robot;
 	Subject subject;
 
 	public MultipleTActionPerformer(String name,int numActions,float stepSize,Subject subject) {
@@ -32,7 +33,7 @@ public class MultipleTActionPerformer extends Module {
 		this.angles = new float[numActions];
 		//this.actions = new Point3f[numActions];
 		this.subject = subject;
-		this.robot = subject.getRobot();
+		this.robot = (AffordanceRobot) subject.getRobot();
 		this.stepSize = stepSize;
 		
 		double deltaAngle = 2*Math.PI/numActions;

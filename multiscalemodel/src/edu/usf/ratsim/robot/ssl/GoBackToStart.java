@@ -5,10 +5,7 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
-import edu.usf.experiment.Episode;
-import edu.usf.experiment.Experiment;
-import edu.usf.experiment.Trial;
-import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.DifferentialRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
@@ -45,8 +42,12 @@ public class GoBackToStart extends Task {
 	public void perform(Universe u, Subject s){
 		if (!(u instanceof GlobalCameraUniverse))
 			throw new IllegalArgumentException("");
-		
 		GlobalCameraUniverse gcu = (GlobalCameraUniverse) u;
+		
+		if (!(s.getRobot() instanceof DifferentialRobot))
+			throw new IllegalArgumentException("");
+		DifferentialRobot dr = (DifferentialRobot) s.getRobot();
+		
 		
 		Point3f robot = gcu.getRobotPosition();
 		Point3f feeder = new Point3f(FEEDER_X, FEEDER_Y, 0);
@@ -56,15 +57,15 @@ public class GoBackToStart extends Task {
 			Point2f rInFeederFrame = new Point2f(robot.x - feeder.x, robot.y - feeder.y);
 			// If x is larger, closer to y (negative coords)
 			if (rInFeederFrame.x < rInFeederFrame.y) {
-				goToPoint(P1_X, P1_Y, 0, gcu, s.getRobot());
+				goToPoint(P1_X, P1_Y, 0, gcu, dr);
 			} else {
-				goToPoint(P2_X, P2_Y, 0, gcu, s.getRobot());
+				goToPoint(P2_X, P2_Y, 0, gcu, dr);
 			}
 		}
-		goToPoint(START_X, START_Y, START_T, gcu, s.getRobot());
+		goToPoint(START_X, START_Y, START_T, gcu, dr);
 	}
 
-	private void goToPoint(float x, float y, float t, GlobalCameraUniverse u, Robot r) {
+	private void goToPoint(float x, float y, float t, GlobalCameraUniverse u, DifferentialRobot r) {
 		Point3f toP = new Point3f(x, y, 0);
 		// Rotate to face
 		float angleToGoal = angleToPwithO(u.getRobotOrientation(), u.getRobotPosition(), toP);

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
@@ -23,7 +24,7 @@ public class DecayingExplorationSchema extends Module {
 	private double alpha;
 
 	private Subject subject;
-	private LocalizableRobot robot;
+	private AffordanceRobot robot;
 	private int episodeCount;
 	private Affordance lastPicked;
 
@@ -44,7 +45,7 @@ public class DecayingExplorationSchema extends Module {
 		episodeCount = 0;
 
 		this.subject = subject;
-		this.robot = robot;
+		this.robot = (AffordanceRobot) robot;
 
 		this.lastPicked = null;
 	}

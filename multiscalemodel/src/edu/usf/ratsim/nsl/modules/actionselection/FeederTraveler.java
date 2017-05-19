@@ -2,7 +2,9 @@ package edu.usf.ratsim.nsl.modules.actionselection;
 
 import java.util.List;
 
-import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.AffordanceRobot;
+import edu.usf.experiment.robot.FeederRobot;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
@@ -13,14 +15,16 @@ import edu.usf.micronsl.module.Module;
 
 public class FeederTraveler extends Module {
 
-	private LocalizableRobot lRobot;
+	private FeederRobot fr;
+	private AffordanceRobot ar;
 	private Subject sub;
 	private List<Integer> feedersToVisit;
 
-	public FeederTraveler(String name, List<Integer> feederOrder, Subject sub, LocalizableRobot lRobot) {
+	public FeederTraveler(String name, List<Integer> feederOrder, Subject sub, Robot robot) {
 		super(name);
 
-		this.lRobot = lRobot;
+		this.fr = (FeederRobot) robot;
+		this.ar = (AffordanceRobot) robot;
 		this.sub = sub;
 		
 		feedersToVisit = feederOrder;
@@ -28,7 +32,7 @@ public class FeederTraveler extends Module {
 
 	@Override
 	public void run() {
-		List<Feeder> allFeeders = lRobot.getVisibleFeeders(null);
+		List<Feeder> allFeeders = fr.getVisibleFeeders();
 		Feeder next = null;
 		if (feedersToVisit.size() == 0)
 			return;
@@ -50,16 +54,16 @@ public class FeederTraveler extends Module {
 		}
 		
 		if (GeomUtils.distanceToPoint(next.getPosition()) < sub.getStepLenght()){
-			lRobot.executeAffordance(new EatAffordance(), sub);
+			ar.executeAffordance(new EatAffordance(), sub);
 			feedersToVisit.remove(0);
 		} else {
 			float angleToPoint = GeomUtils.rotToAngle(GeomUtils.angleToPoint(next
 					.getPosition()));
 			if (Math.abs(angleToPoint) > sub.getMinAngle()) {
-				lRobot.executeAffordance(new TurnAffordance(sub.getMinAngle()
+				ar.executeAffordance(new TurnAffordance(sub.getMinAngle()
 						* Math.signum(angleToPoint), 0), sub);
 			} else {
-				lRobot.executeAffordance(
+				ar.executeAffordance(
 						new ForwardAffordance(sub.getStepLenght()), sub);
 			}
 		}

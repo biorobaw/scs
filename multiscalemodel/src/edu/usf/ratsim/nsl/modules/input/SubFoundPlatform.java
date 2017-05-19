@@ -1,6 +1,7 @@
 package edu.usf.ratsim.nsl.modules.input;
 
-import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.PlatformRobot;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 
@@ -12,12 +13,12 @@ import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 public class SubFoundPlatform extends Module {
 
 	private Bool0dPort outPort;
-	private LocalizableRobot robot;
+	private PlatformRobot pr;
 
-	public SubFoundPlatform(String name, LocalizableRobot lRobot) {
+	public SubFoundPlatform(String name, Robot robot) {
 		super(name);
 		
-		this.robot = lRobot;
+		this.pr = (PlatformRobot) robot;
 		
 		outPort = new Bool0dPort(this);
 		addOutPort("foundPlatform", outPort);
@@ -25,7 +26,7 @@ public class SubFoundPlatform extends Module {
 
 	@Override
 	public void run() {
-		outPort.set(robot.hasFoundPlatform());
+		outPort.set(pr.hasFoundPlatform());
 	}
 
 	@Override

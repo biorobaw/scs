@@ -1,6 +1,6 @@
 package edu.usf.experiment.robot;
 
-public interface DifferentialRobot {
+public interface DifferentialRobot extends Robot {
 
 	/**
 	 * Sets the linear velocity of the robot
@@ -13,4 +13,11 @@ public interface DifferentialRobot {
 	 * @param angularVel the new angular velocity, in radians.
 	 */
 	public void setAngularVel(float angularVel);
+	
+	/**
+	 * Move the robot in a continous fashion, as opposed to step motions
+	 * @param lVel Linear velocity, positive values produce forward motions
+	 * @param angVel Angular velocity, positive values mean left rotations
+	 */
+	public abstract void moveContinous(float lVel, float angVel);
 }

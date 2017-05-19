@@ -7,11 +7,7 @@ import javax.vecmath.Point3f;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public abstract class LocalizableRobot extends Robot {
-
-	public LocalizableRobot(ElementWrapper params) {
-		super(params);
-	}
+public interface LocalizableRobot {
 
 	/**
 	 * Returns the position of the animal as thought by the subject

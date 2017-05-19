@@ -2,7 +2,7 @@ package edu.usf.ratsim.nsl.modules.actionselection;
 
 import java.util.List;
 
-import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.micronsl.module.Module;
@@ -22,7 +22,7 @@ public class WallAvoider extends Module {
 	private static final int WALL_LOOKAHEAD = 10;
 	public float[] votes;
 	private float wallFollowingValue;
-	private Robot robot;
+	private AffordanceRobot ar;
 	private float currentValue;
 	private boolean active;
 	private int direction;
@@ -42,7 +42,7 @@ public class WallAvoider extends Module {
 		votes = new float[numActions + 1];
 		addOutPort("votes", new Float1dPortArray(this, votes));
 
-		robot = subject.getRobot();
+		ar = (AffordanceRobot) subject.getRobot();
 		this.subject = subject;
 	}
 
@@ -52,7 +52,7 @@ public class WallAvoider extends Module {
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;
 
-		List<Affordance> affs = robot.checkAffordances(subject
+		List<Affordance> affs = ar.checkAffordances(subject
 				.getPossibleAffordances());
 		int index = 0;
 		for (Affordance af : affs) {
