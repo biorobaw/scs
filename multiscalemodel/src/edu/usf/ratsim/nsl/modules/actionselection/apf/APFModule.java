@@ -1,13 +1,12 @@
 
 package edu.usf.ratsim.nsl.modules.actionselection.apf;
 
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
-import edu.usf.ratsim.nsl.modules.actionselection.bugs.BugUtilities;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Velocities;
 import edu.usf.ratsim.robot.virtual.VirtualRobot;
 import edu.usf.ratsim.support.SonarUtils;
@@ -31,10 +30,10 @@ public class APFModule extends Module {
 
 	private VirtualRobot r;
 
-	public APFModule(String name, Subject sub) {
+	public APFModule(String name, Robot robot) {
 		super(name);
 
-		this.r = (VirtualRobot) sub.getRobot();
+		this.r = (VirtualRobot) robot; // TODO: change to differential
 
 	}
 

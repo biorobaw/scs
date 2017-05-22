@@ -4,6 +4,7 @@ import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
@@ -22,13 +23,11 @@ public class MoveFromToActionPerformer extends Module {
 	
 	//Point3f[] actions; 
 	AffordanceRobot robot;
-	Subject subject;
 
-	public MoveFromToActionPerformer(String name,Subject subject) {
+	public MoveFromToActionPerformer(String name, Robot robot) {
 		super(name);
 
-		this.subject = subject;
-		this.robot = (AffordanceRobot) subject.getRobot();
+		this.robot = (AffordanceRobot) robot;
 
 	}
 
@@ -48,11 +47,11 @@ public class MoveFromToActionPerformer extends Module {
 		
 		//System.out.println("performing: "+action);
 		float deltaAngle = GeomUtils.relativeAngle((float)theta, ((LocalizableRobot)robot).getOrientationAngle());
-		robot.executeAffordance(new TurnAffordance(deltaAngle, distance), subject);
-		robot.executeAffordance(new ForwardAffordance(distance), subject);
+		robot.executeAffordance(new TurnAffordance(deltaAngle, distance));
+		robot.executeAffordance(new ForwardAffordance(distance));
 		
 		EatAffordance eat = new EatAffordance();
-		if(robot.checkAffordance(eat)) robot.executeAffordance(eat, subject);
+		if(robot.checkAffordance(eat)) robot.executeAffordance(eat);
 		
 		//System.out.println("iteration: " + i);
 		//System.out.println("");

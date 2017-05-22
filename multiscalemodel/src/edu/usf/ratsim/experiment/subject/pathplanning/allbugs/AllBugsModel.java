@@ -28,7 +28,7 @@ public class AllBugsModel extends Model {
 	public AllBugsModel() {
 	}
 
-	public AllBugsModel(ElementWrapper params, Subject subject,
+	public AllBugsModel(ElementWrapper params,
 			Robot robot) {
 		
 		String algorithm = params.getChildText("algorithm");
@@ -47,11 +47,11 @@ public class AllBugsModel extends Model {
 		
 		Module bug = null;
 		if (algorithm.equals("bug0"))
-			bug = new Bug0Module("Bug0", subject);
+			bug = new Bug0Module("Bug0", robot);
 		else if (algorithm.equals("bug1"))
-			bug = new Bug1Module("Bug1", subject);
+			bug = new Bug1Module("Bug1", robot);
 		else if (algorithm.equals("bug2"))
-			bug = new Bug2Module("Bug2", subject);
+			bug = new Bug2Module("Bug2", robot);
 		else
 			throw new NotImplementedException();
 		

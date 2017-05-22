@@ -1,7 +1,7 @@
 
 package edu.usf.ratsim.nsl.modules.actionselection.bugs;
 
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
@@ -22,10 +22,11 @@ public class Bug0Module extends Module {
 
 	private State state;
 
-	public Bug0Module(String name, Subject sub) {
+	public Bug0Module(String name, Robot robot) {
 		super(name);
 
-		this.r = (VirtualRobot) sub.getRobot();
+		// TODO: set to differential robot?
+		this.r = (VirtualRobot) robot;
 
 	}
 

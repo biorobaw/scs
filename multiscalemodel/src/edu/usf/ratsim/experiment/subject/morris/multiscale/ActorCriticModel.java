@@ -8,8 +8,11 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
+import edu.usf.experiment.model.ValueModel;
+import edu.usf.experiment.robot.AffordanceRobot;
+import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
@@ -33,7 +36,7 @@ import edu.usf.ratsim.nsl.modules.rl.MultiStateACNoTraces;
 import edu.usf.ratsim.nsl.modules.rl.QLAlgorithm;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
 
-public class ActorCriticModel extends Model {
+public class ActorCriticModel extends Model implements ValueModel{
 
 	// private ProportionalExplorer actionPerformerVote;
 	// private List<WTAVotes> qLActionSel;
@@ -50,7 +53,7 @@ public class ActorCriticModel extends Model {
 	public ActorCriticModel() {
 	}
 
-	public ActorCriticModel(ElementWrapper params, Subject subject, LocalizableRobot lRobot) {
+	public ActorCriticModel(ElementWrapper params, Robot robot) {
 		/**
 		 * Place cell radius range
 		 */
@@ -107,8 +110,12 @@ public class ActorCriticModel extends Model {
 		float ymin = params.getChildFloat("ymin");
 		float xmax = params.getChildFloat("xmax");
 		float ymax = params.getChildFloat("ymax");
+		
+		AffordanceRobot aRobot = (AffordanceRobot) robot;
+		FeederRobot fRobot = (FeederRobot) robot;
+		LocalizableRobot lRobot = (LocalizableRobot) robot;
 
-		numActions = subject.getPossibleAffordances().size();
+		numActions = aRobot.getPossibleAffordances().size();
 
 		// qLActionSel = new LinkedList<WTAVotes>();
 		exploration = new LinkedList<DecayingExplorationSchema>();
@@ -120,7 +127,7 @@ public class ActorCriticModel extends Model {
 		// For each layer
 		for (int i = 0; i < numCCLayers; i++) {
 			RndHDPCellLayer ccl = new RndHDPCellLayer("CCL " + i, lRobot, radius, minHDRadius, maxHDRadius,
-					numCCCellsPerLayer.get(i), "ExponentialHDPC", xmin, ymin, xmax, ymax, lRobot.getAllFeeders(), 0f,
+					numCCCellsPerLayer.get(i), "ExponentialHDPC", xmin, ymin, xmax, ymax, null, 0f,
 					layerLengths.get(i));
 			conjCellLayers.add(ccl);
 			conjCellLayersPorts.add(ccl.getOutPort("activation"));
@@ -156,7 +163,7 @@ public class ActorCriticModel extends Model {
 		votesPorts.add((Float1dPort) rlVotes.getOutPort("votes"));
 
 		// Exploration module
-		DecayingExplorationSchema decayExpl = new DecayingExplorationSchema("Decay Explorer", subject, lRobot,
+		DecayingExplorationSchema decayExpl = new DecayingExplorationSchema("Decay Explorer", robot,
 				explorationReward, explorationHalfLifeVal);
 		exploration.add(decayExpl);
 		addModule(decayExpl);
@@ -170,7 +177,7 @@ public class ActorCriticModel extends Model {
 		// Get votes from QL and other behaviors and perform an action
 		// One vote per layer (one now) + taxic + wf
 //		ProportionalExplorer actionPerformer = new ProportionalExplorer("Action Performer", subject);
-		NoExploration actionPerformer = new NoExploration("Action Performer", subject);
+		NoExploration actionPerformer = new NoExploration("Action Performer", robot);
 		actionPerformer.addInPort("votes", jointVotes.getOutPort("jointState"));
 		addModule(actionPerformer);
 		// State calculation should be done after movement
@@ -203,7 +210,7 @@ public class ActorCriticModel extends Model {
 		rlValueCopy.addInPort("toCopy", (Float1dPort) rlValue.getOutPort("valueEst"), true);
 		addModule(rlValueCopy);
 
-		SubFoundPlatform foundPlat = new SubFoundPlatform("sub found platform", lRobot);
+		SubFoundPlatform foundPlat = new SubFoundPlatform("sub found platform", robot);
 		foundPlat.addInPort("takenAction", takenActionPort); // dep
 		addModule(foundPlat);
 

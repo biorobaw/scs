@@ -9,6 +9,7 @@ import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.Logger;
+import edu.usf.experiment.model.GraphModel;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.nsl.modules.pathplanning.Edge;
@@ -40,9 +41,9 @@ public class ExperienceGraphLogger extends Logger {
 	}
 
 	private void log(Subject subject) {
-		if (!(subject instanceof BugAndGraphSubject))
+		if (!(subject.getModel() instanceof GraphModel))
 			throw new IllegalArgumentException("ExperienceGraphLogger needs a BugandGraphSubject");
-		BugAndGraphSubject gs = (BugAndGraphSubject) subject;
+		GraphModel gs = (GraphModel) subject.getModel();
 
 		g = gs.getGraph();
 

@@ -40,7 +40,7 @@ public interface FeederUniverse extends Universe {
 	// Involving position and food
 	public boolean hasRobotFoundFood();
 
-	public void robotEat();
+	public boolean robotEat();
 
 	public int getLastFeedingFeeder();
 
@@ -80,4 +80,16 @@ public interface FeederUniverse extends Universe {
 	public void setWantedFeeder(int feeder, boolean wanted);
 	
 	public float wallDistanceToFeeders(LineSegment wall);
+
+	/**
+	 * Whether the robot has eaten in the last cycle
+	 * @return
+	 */
+	public boolean hasRobotEaten();
+
+	/**
+	 * Whether the robot has tried to eat in the last cycle
+	 * @return
+	 */
+	public boolean hasRobotTriedToEat();
 }

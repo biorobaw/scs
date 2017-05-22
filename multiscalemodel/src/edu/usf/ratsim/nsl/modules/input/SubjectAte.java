@@ -1,6 +1,7 @@
 package edu.usf.ratsim.nsl.modules.input;
 
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.FeederRobot;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 
@@ -11,13 +12,13 @@ import edu.usf.micronsl.port.singlevalue.Bool0dPort;
  */
 public class SubjectAte extends Module {
 
-	private Subject sub;
 	private Bool0dPort outPort;
+	private FeederRobot robot;
 
-	public SubjectAte(String name, Subject sub) {
+	public SubjectAte(String name, Robot robot) {
 		super(name);
 		
-		this.sub = sub;
+		this.robot = (FeederRobot) robot;
 		
 		outPort = new Bool0dPort(this);
 		addOutPort("subAte", outPort);
@@ -25,7 +26,7 @@ public class SubjectAte extends Module {
 
 	@Override
 	public void run() {
-		outPort.set(sub.hasEaten());
+		outPort.set(robot.hasRobotEaten());
 	}
 
 	@Override

@@ -18,7 +18,7 @@ public class APFModel extends Model {
 	public APFModel() {
 	}
 
-	public APFModel(ElementWrapper params, Subject subject,
+	public APFModel(ElementWrapper params,
 			Robot robot) {
 		
 		SonarReadings sReadings = new SonarReadings("Sonar Readings", (SonarRobot) robot);
@@ -33,7 +33,7 @@ public class APFModel extends Model {
 		PlatformPosition platPos = new PlatformPosition("Plat Pos");
 		addModule(platPos);
 		
-		APFModule apf = new APFModule("APF", subject);
+		APFModule apf = new APFModule("APF", robot);
 		apf.addInPort("sonarReadings", sReadings.getOutPort("sonarReadings"));
 		apf.addInPort("sonarAngles", sReadings.getOutPort("sonarAngles"));
 		apf.addInPort("position", rPos.getOutPort("position"));

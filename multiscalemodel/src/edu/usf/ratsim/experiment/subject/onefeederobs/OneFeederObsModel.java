@@ -8,8 +8,9 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
+import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
@@ -63,8 +64,8 @@ public class OneFeederObsModel extends Model {
 	public OneFeederObsModel() {
 	}
 
-	public OneFeederObsModel(ElementWrapper params, Subject subject,
-			LocalizableRobot lRobot) {
+	public OneFeederObsModel(ElementWrapper params,
+			Robot robot) {
 		// Get some configuration values for place cells + qlearning
 		float minPCRadius = params.getChildFloat("minPCRadius");
 		float maxPCRadius = params.getChildFloat("maxPCRadius");
@@ -109,8 +110,10 @@ public class OneFeederObsModel extends Model {
 				.getChildInt("maxActionsSinceForward");
 		float stillExplorationVal = params.getChildFloat("stillExplorationVal");
 
-				
-		numActions = subject.getPossibleAffordances().size();
+		AffordanceRobot aRobot = (AffordanceRobot) robot;
+		LocalizableRobot lRobot = (LocalizableRobot) robot;
+		
+		numActions = aRobot.getPossibleAffordances().size();
 
 		// qLActionSel = new LinkedList<WTAVotes>();
 		exploration = new LinkedList<DecayingExplorationSchema>();
@@ -186,20 +189,20 @@ public class OneFeederObsModel extends Model {
 		// universe, numActions, flashingReward, nonFlashingReward);
 
 		FlashingTaxicFoodFinderSchema flashingTaxicFF = new FlashingTaxicFoodFinderSchema(
-				"Flashing Taxic Food Finder", subject, lRobot, flashingReward,
+				"Flashing Taxic Food Finder", robot, flashingReward,
 				flashingNegReward, taxicDiscountFactor, estimateValue);
 		addModule(flashingTaxicFF);
 		votesPorts.add((Float1dPort) flashingTaxicFF.getOutPort("votes"));
 
 		DecayingExplorationSchema decayExpl = new DecayingExplorationSchema(
-				"Decay Explorer", subject, lRobot, explorationReward,
+				"Decay Explorer", robot, explorationReward,
 				explorationHalfLifeVal);
 		exploration.add(decayExpl);
 		addModule(decayExpl);
 		votesPorts.add((Float1dPort) decayExpl.getOutPort("votes"));
 
 		StillExplorer stillExpl = new StillExplorer("Still Explorer",
-				maxActionsSinceForward, subject, stillExplorationVal);
+				maxActionsSinceForward, stillExplorationVal, robot);
 		addModule(stillExpl);
 		votesPorts.add((Float1dPort) stillExpl.getOutPort("votes"));
 		// Wall following for obst. avoidance
@@ -215,7 +218,7 @@ public class OneFeederObsModel extends Model {
 		// addModule(attExpl);
 		// votesPorts.add((Float1dPort) attExpl.getOutPort("votes"));
 		ObstacleEndTaxic wallTaxic = new ObstacleEndTaxic("Wall Taxic",
-				subject, lRobot, wallTaxicVal, wallNegReward, wallTooCloseDist);
+				robot, wallTaxicVal, wallNegReward, wallTooCloseDist);
 		addModule(wallTaxic);
 		votesPorts.add((Float1dPort) wallTaxic.getOutPort("votes"));
 
@@ -233,7 +236,7 @@ public class OneFeederObsModel extends Model {
 		// Get votes from QL and other behaviors and perform an action
 		// One vote per layer (one now) + taxic + wf
 		NoExploration actionPerformer = new NoExploration("Action Performer",
-				subject);
+				robot);
 		actionPerformer.addInPort("votes", jointVotes.getOutPort("jointState"));
 		addModule(actionPerformer);
 		// State calculation should be done after movement
@@ -271,18 +274,18 @@ public class OneFeederObsModel extends Model {
 				(Float1dPort) rlValue.getOutPort("valueEst"), true);
 		addModule(rlValueCopy);
 
-		SubjectAte subAte = new SubjectAte("Subject Ate", subject);
+		SubjectAte subAte = new SubjectAte("Subject Ate", robot);
 		subAte.addInPort("takenAction", takenActionPort); // just for dependency
 		addModule(subAte);
 
 		SubjectTriedToEat subTriedToEat = new SubjectTriedToEat(
-				"Subject Tried To Eat", subject);
+				"Subject Tried To Eat", robot);
 		subTriedToEat.addInPort("takenAction", takenActionPort); // just for
 																	// dependency
 		addModule(subTriedToEat);
 
 		ClosestFeeder closestFeeder = new ClosestFeeder(
-				"Closest Feeder After Move", subject);
+				"Closest Feeder After Move", robot);
 		closestFeeder.addInPort("takenAction", takenActionPort);
 		addModule(closestFeeder);
 
@@ -297,7 +300,7 @@ public class OneFeederObsModel extends Model {
 			// QL_STR, this, subject, bAll.getSize(), numActions,
 			// discountFactor, alpha, initialValue);
 			MultiStateProportionalQL mspql = new MultiStateProportionalQL(
-					"RL Module", subject, numActions, taxicDiscountFactor,
+					"RL Module", numActions, taxicDiscountFactor,
 					rlDiscountFactor, alpha, initialValue);
 
 			mspql.addInPort("reward",

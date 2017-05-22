@@ -128,8 +128,14 @@ public class MultiStateACNoTraces extends Module implements QLAlgorithm {
 	 * @param updateValue 
 	 */
 	private void update(UpdateItem ui, Float2dPort value, boolean updateValue) {
+		float valueDelta = ui.reward + rlDiscountFactor * ui.valueEstAfter - ui.valueEstBefore;
+		
+		if (valueDelta > 1000)
+			System.out.println("Something is weird with delta");
+		
 		for (Integer state : ui.states.keySet()) {
-			float valueDelta = ui.reward + rlDiscountFactor * ui.valueEstAfter - ui.valueEstBefore;
+			
+			
 			float activation = ui.states.get(state);;
 			
 			// Update value

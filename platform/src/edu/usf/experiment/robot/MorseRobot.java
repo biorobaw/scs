@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
@@ -160,7 +159,7 @@ public class MorseRobot
 	}
 
 	@Override
-	public void executeAffordance(Affordance selectedAction, Subject sub) {
+	public void executeAffordance(Affordance selectedAction) {
 		if (selectedAction instanceof ForwardAffordance) {
 			forward(((ForwardAffordance) selectedAction).getDistance());
 		} else if (selectedAction instanceof TurnAffordance) {
@@ -219,6 +218,42 @@ public class MorseRobot
 	public float getSonarAperture() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public List<Affordance> getPossibleAffordances() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public float getMinAngle() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getStepLength() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Affordance getForwardAffordance() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Affordance getLeftAffordance() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Affordance getRightAffordance() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

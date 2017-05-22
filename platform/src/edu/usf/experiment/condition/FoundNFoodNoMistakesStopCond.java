@@ -33,7 +33,7 @@ public class FoundNFoodNoMistakesStopCond implements Condition {
 		FeederUniverse fu = (FeederUniverse) u;
 		
 		Subject sub = episode.getSubject();
-		if (sub.hasTriedToEat() && fu.getFoundFeeder() != -1) {
+		if (fu.hasRobotTriedToEat() && fu.getFoundFeeder() != -1) {
 			if (!fu.isFeederEnabled(fu.getFoundFeeder())) {
 				// Trying to eat from wrong feeder
 				toGo = n;

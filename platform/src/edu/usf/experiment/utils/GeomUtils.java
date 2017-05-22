@@ -204,24 +204,24 @@ public class GeomUtils {
 		return (float) Math.sqrt(Math.pow(p.x, 2) + Math.pow(p.y, 2) + Math.pow(p.z, 2));
 	}
 
-	public static float getFeederReward(Point3f position, float rotationAngle, float maxReward,
-			Subject subject, LocalizableRobot robot) {
-		Quat4f rotToFood = GeomUtils.angleToPoint(position);
-
-		Quat4f actionAngle = GeomUtils.angleToRot(rotationAngle);
-
-		float angleDiff = Math.abs(GeomUtils.angleDiff(actionAngle,
-				rotToFood));
-
-		float rotationSteps = angleDiff / subject.getMinAngle();
-
-		float dist = GeomUtils.distanceToPoint(position);
-
-		float forwardSteps = dist / subject.getStepLenght();
-
-		// TODO: improve this function
-		return (float) (maxReward * Math.exp(-(forwardSteps + rotationSteps) / 10));
-	}
+//	public static float getFeederReward(Point3f position, float rotationAngle, float maxReward,
+//			Subject subject, LocalizableRobot robot) {
+//		Quat4f rotToFood = GeomUtils.angleToPoint(position);
+//
+//		Quat4f actionAngle = GeomUtils.angleToRot(rotationAngle);
+//
+//		float angleDiff = Math.abs(GeomUtils.angleDiff(actionAngle,
+//				rotToFood));
+//
+//		float rotationSteps = angleDiff / subject.getMinAngle();
+//
+//		float dist = GeomUtils.distanceToPoint(position);
+//
+//		float forwardSteps = dist / subject.getStepLenght();
+//
+//		// TODO: improve this function
+//		return (float) (maxReward * Math.exp(-(forwardSteps + rotationSteps) / 10));
+//	}
 
 	/**
 	 * Returns the steps needed to get to a feeder
@@ -229,16 +229,16 @@ public class GeomUtils {
 	 * @param subject
 	 * @return
 	 */
-	public static float getStepsToFeeder(Point3f feederPos, Subject subject) {
+	public static float getStepsToFeeder(Point3f feederPos, float minAngle, float stepLength) {
 		Quat4f rotToFood = GeomUtils.angleToPoint(feederPos);
 
 		float angleDiff = Math.abs(GeomUtils.rotToAngle(rotToFood)); 
 
-		int rotationSteps = (int) Math.ceil(angleDiff / subject.getMinAngle());
+		int rotationSteps = (int) Math.ceil(angleDiff / minAngle);
 
 		float dist = GeomUtils.distanceToPoint(feederPos);
 
-		int forwardSteps = (int) Math.ceil(dist / subject.getStepLenght());
+		int forwardSteps = (int) Math.ceil(dist / stepLength);
 
 		return forwardSteps + rotationSteps;
 	}
@@ -256,7 +256,8 @@ public class GeomUtils {
 			return position;
 		} else if (af instanceof TurnAffordance) {
 			TurnAffordance ta = (TurnAffordance) af;
-			Quat4f rot = GeomUtils.angleToRot(-ta.getAngle());
+			// TODO: figure out this: it should be -angle
+			Quat4f rot = GeomUtils.angleToRot(ta.getAngle());
 			Transform3D t = new Transform3D();
 			t.set(rot);
 			t.transform(position);

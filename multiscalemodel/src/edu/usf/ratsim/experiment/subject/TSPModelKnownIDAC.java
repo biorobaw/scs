@@ -4,8 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import edu.usf.experiment.robot.AffordanceRobot;
+import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.Model;
@@ -41,8 +43,8 @@ public class TSPModelKnownIDAC extends Model {
 	public TSPModelKnownIDAC() {
 	}
 
-	public TSPModelKnownIDAC(ElementWrapper params, Subject subject,
-			LocalizableRobot lRobot) {
+	public TSPModelKnownIDAC(ElementWrapper params,
+			Robot robot) {
 		// Environment bounds
 		float xmin = params.getChildFloat("xmin");
 		float ymin = params.getChildFloat("ymin");
@@ -71,6 +73,10 @@ public class TSPModelKnownIDAC extends Model {
 		float rlDiscountFactor = params.getChildFloat("rlDiscountFactor");
 		float alpha = params.getChildFloat("alpha");
 		float tracesDecay = params.getChildFloat("tracesDecay");
+		
+		AffordanceRobot aRobot = (AffordanceRobot) robot;
+		FeederRobot fRobot = (FeederRobot) robot;
+		LocalizableRobot lRobot = (LocalizableRobot) robot;
 		
 		Random r = RandomSingleton.getInstance();
 
@@ -136,7 +142,7 @@ public class TSPModelKnownIDAC extends Model {
 		addModule(rlVotes);
 
 		// Add in port for dependency
-		GoToFeeder gotofeeder = new GoToFeeder("Go To Feeder", subject,
+		GoToFeeder gotofeeder = new GoToFeeder("Go To Feeder", robot,
 				RandomSingleton.getInstance());
 //		GoToFeedersSequentially gotofeeder = new GoToFeedersSequentially("Go To Feeder", subject,
 //				RandomSingleton.getInstance());
@@ -151,11 +157,11 @@ public class TSPModelKnownIDAC extends Model {
 
 		// Information to lastAteGoalDecider about the step
 		SubjectTriedToEat subTriedToEat = new SubjectTriedToEat(
-				"Subject Tried To Eat", subject);
+				"Subject Tried To Eat", robot);
 		subTriedToEat.addInPort("takenAction", takenActionPort);
 		addModule(subTriedToEat);
 		ClosestFeeder closestFeeder = new ClosestFeeder(
-				"Closest Feeder After Move", subject);
+				"Closest Feeder After Move", robot);
 		closestFeeder.addInPort("takenAction", takenActionPort);
 		addModule(closestFeeder);
 		lastTriedToEatGoalDecider.addInPort("subTriedToEat",
@@ -179,7 +185,7 @@ public class TSPModelKnownIDAC extends Model {
 		addModule(rlValueCopy);
 		
 		// Rewarding schema
-		SubjectAte subAte = new SubjectAte("Subject Ate", subject);
+		SubjectAte subAte = new SubjectAte("Subject Ate", robot);
 		subAte.addInPort("takenAction", takenActionPort); // just for dependency
 		addModule(subAte);
 		Reward reward = new Reward("Reward", foodReward, nonFoodReward);

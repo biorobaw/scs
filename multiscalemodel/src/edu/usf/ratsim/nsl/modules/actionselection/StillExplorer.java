@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 import edu.usf.experiment.robot.AffordanceRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
@@ -29,7 +29,6 @@ public class StillExplorer extends Module {
 
 	private static final int TIME_EXPLORING = 1;
 	private int maxActionsSinceForward;
-	private Subject sub;
 	private int actionsSinceForward;
 	private Random r;
 	private float[] votes;
@@ -39,18 +38,18 @@ public class StillExplorer extends Module {
 	private boolean turning;
 	private boolean turningLeft;
 
-	public StillExplorer(String name, int maxActionsSinceForward, Subject sub,
-			float stillExploringVal) {
+	public StillExplorer(String name, int maxActionsSinceForward,
+			float stillExploringVal, Robot robot) {
 		super(name);
+		
+		this.ar = (AffordanceRobot) robot;
 
-		votes = new float[sub.getPossibleAffordances().size()];
+		votes = new float[ar.getPossibleAffordances().size()];
 		addOutPort("votes", new Float1dPortArray(this, votes));
 
 		this.maxActionsSinceForward = maxActionsSinceForward;
-		this.sub = sub;
 		this.stillExploringVal = stillExploringVal;
-		this.ar = (AffordanceRobot) sub.getRobot();
-
+		
 		actionsSinceForward = 0;
 		turning = false;
 		turningLeft = false;
@@ -65,7 +64,7 @@ public class StillExplorer extends Module {
 			votes[i] = 0;
 
 		if (takenAction.get() != -1) {
-			Affordance taken = sub.getPossibleAffordances().get(
+			Affordance taken = ar.getPossibleAffordances().get(
 					takenAction.get());
 
 			if (taken instanceof ForwardAffordance)
@@ -85,7 +84,7 @@ public class StillExplorer extends Module {
 			
 //			System.out.println("Still explorer executing " + turning);
 
-			List<Affordance> affs = ar.checkAffordances(sub
+			List<Affordance> affs = ar.checkAffordances(ar
 					.getPossibleAffordances());
 			Affordance pickedAffordance;
 			

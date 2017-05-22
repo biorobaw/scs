@@ -3,35 +3,29 @@ package edu.usf.ratsim.nsl.modules.pathplanning;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Paint;
-import java.awt.geom.Point2D;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JFrame;
-import javax.vecmath.Point3f;
 
 import org.apache.commons.collections15.Transformer;
 
-import edu.uci.ics.jung.algorithms.layout.AbstractLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
-import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import edu.uci.ics.jung.graph.util.Pair;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.ratsim.experiment.subject.NotImplementedException;
-import edu.usf.ratsim.nsl.modules.actionselection.apf.APFModule;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Bug0Module;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Bug1Module;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Bug2Module;
-import edu.usf.ratsim.support.SonarUtils;
 
 public class ExperienceRoadMap extends Module {
 
@@ -61,8 +55,6 @@ public class ExperienceRoadMap extends Module {
 
 	private Point3fPort intermediateGoal;
 
-	private Subject subject;
-
 	private Module bug;
 
 	 private Bug0Module bug0;
@@ -70,7 +62,9 @@ public class ExperienceRoadMap extends Module {
 
 	private String algorithm;
 
-	public ExperienceRoadMap(String name, Subject subject, String algorithm) {
+	private Robot robot;
+
+	public ExperienceRoadMap(String name, String algorithm, Robot robot) {
 		super(name);
 
 		frame = null;
@@ -79,8 +73,8 @@ public class ExperienceRoadMap extends Module {
 		intermediateGoal = new Point3fPort(this);
 		addOutPort("intermediateGoal", intermediateGoal);
 
-		this.subject = subject;
 		this.algorithm = algorithm;
+		this.robot = robot;
 	}
 
 	@Override
@@ -278,11 +272,11 @@ public class ExperienceRoadMap extends Module {
 		// algorithm comes from group parameters
 		bug = null;
 		if (algorithm.equals("bug0"))
-			bug = new Bug0Module("Bug0", subject);
+			bug = new Bug0Module("Bug0", robot);
 		else if (algorithm.equals("bug1"))
-			bug = new Bug1Module("Bug1", subject);
+			bug = new Bug1Module("Bug1", robot);
 		else if (algorithm.equals("bug2"))
-			bug = new Bug2Module("Bug2", subject);
+			bug = new Bug2Module("Bug2", robot);
 		else
 			throw new NotImplementedException();
 
@@ -292,7 +286,7 @@ public class ExperienceRoadMap extends Module {
 		bug.addInPort("orientation", rOrient);
 		bug.addInPort("platformPosition", intermediateGoal);
 
-		bug0 = new Bug0Module("ERMBug0", subject);
+		bug0 = new Bug0Module("ERMBug0", robot);
 //		bug0 = new APFModule("ERMBug0", subject);
 		bug0.addInPort("sonarReadings", sonarReadings);
 		bug0.addInPort("sonarAngles", sonarAngles);

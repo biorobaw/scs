@@ -7,7 +7,7 @@ import javax.vecmath.Quat4f;
 
 import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.FeederRobot;
-import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
@@ -24,24 +24,22 @@ public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 	public float[] votes;
 	private float reward;
 
-	private Subject subject;
 	private AffordanceRobot ar;
 	private FeederRobot fr;
 	private float negReward;
 
-	public TaxicFoodManyFeedersManyActionsNotLast(String name, Subject subject, LocalizableRobot robot, float reward,
+	public TaxicFoodManyFeedersManyActionsNotLast(String name, Robot robot, float reward,
 			float negReward, float lambda, boolean estimateValue) {
 		super(name);
 		this.reward = reward;
 		this.negReward = negReward;
-
-		// Votes for action and value
-		votes = new float[subject.getPossibleAffordances().size()];
-		addOutPort("votes", new Float1dPortArray(this, votes));
-
-		this.subject = subject;
+		
 		this.ar = (AffordanceRobot) robot;
 		this.fr = (FeederRobot) robot;
+
+		// Votes for action and value
+		votes = new float[ar.getPossibleAffordances().size()];
+		addOutPort("votes", new Float1dPortArray(this, votes));
 	}
 
 	/**
@@ -58,7 +56,7 @@ public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 			votes[i] = 0;
 
 		// Get the votes for each affordable action
-		List<Affordance> affs = ar.checkAffordances(subject.getPossibleAffordances());
+		List<Affordance> affs = ar.checkAffordances(ar.getPossibleAffordances());
 		int voteIndex = 0;
 		boolean feederToEat = fr.isFeederClose();
 
@@ -114,7 +112,7 @@ public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 	}
 
 	private float getFeederValue(Point3f feederPos) {
-		float steps = GeomUtils.getStepsToFeeder(feederPos, subject);
+		float steps = GeomUtils.getStepsToFeeder(feederPos, ar.getMinAngle(), ar.getStepLength());
 		return (float) Math.max(0, (reward + negReward * steps));
 	}
 

@@ -44,16 +44,17 @@ public class AttentionalExplorer extends Module {
 	public AttentionalExplorer(String name, Subject sub, float exploringVal,
 			int maxAttentionSpan) {
 		super(name);
-		votes = new float[sub.getPossibleAffordances().size()];
+
+		this.ar = (AffordanceRobot) sub.getRobot();
+		this.wr = (WallRobot) sub.getRobot();
+
+		votes = new float[ar.getPossibleAffordances().size()];
 		addOutPort("votes", new Float1dPortArray(this, votes));
 
 		this.maxAttentionSpan = maxAttentionSpan;
 		this.attentionRemaining = 0;
 		this.sub = sub;
 		this.exploringVal = exploringVal;
-		this.ar = (AffordanceRobot) sub.getRobot();
-		this.wr = (WallRobot) sub.getRobot();
-
 
 		r = RandomSingleton.getInstance();
 		currentInterest = null;
@@ -104,7 +105,7 @@ public class AttentionalExplorer extends Module {
 					interestingPoints, TRACKIN_THRS);
 
 			// For each affordance set a value based on current interest point
-			List<Affordance> affs = ar.checkAffordances(sub
+			List<Affordance> affs = ar.checkAffordances(ar
 					.getPossibleAffordances());
 			int voteIndex = 0;
 			for (Affordance af : affs) {
@@ -152,11 +153,11 @@ public class AttentionalExplorer extends Module {
 	}
 
 	private Point3f applyLastMove(Point3f p, int i) {
-		return GeomUtils.simulate(p, sub.getPossibleAffordances().get(i));
+		return GeomUtils.simulate(p, ar.getPossibleAffordances().get(i));
 	}
 
 	private float getFeederValue(Point3f feederPos, float reward) {
-		float steps = GeomUtils.getStepsToFeeder(feederPos, sub);
+		float steps = GeomUtils.getStepsToFeeder(feederPos, ar.getMinAngle(), ar.getStepLength());
 		return (float) (reward * Math.pow(.9, steps));
 	}
 

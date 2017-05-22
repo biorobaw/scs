@@ -18,7 +18,7 @@ public class Bug2Model extends Model {
 	public Bug2Model() {
 	}
 
-	public Bug2Model(ElementWrapper params, Subject subject,
+	public Bug2Model(ElementWrapper params,
 			Robot robot) {
 		
 		SonarReadings sReadings = new SonarReadings("Sonar Readings", (SonarRobot) robot);
@@ -33,7 +33,7 @@ public class Bug2Model extends Model {
 		PlatformPosition platPos = new PlatformPosition("Plat Pos");
 		addModule(platPos);
 		
-		Bug2Module bug2 = new Bug2Module("Bug1", subject);
+		Bug2Module bug2 = new Bug2Module("Bug1", robot);
 		bug2.addInPort("sonarReadings", sReadings.getOutPort("sonarReadings"));
 		bug2.addInPort("sonarAngles", sReadings.getOutPort("sonarAngles"));
 		bug2.addInPort("position", rPos.getOutPort("position"));

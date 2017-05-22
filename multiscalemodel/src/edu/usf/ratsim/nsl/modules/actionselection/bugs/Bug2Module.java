@@ -5,7 +5,7 @@ import javax.vecmath.Point3f;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
@@ -25,15 +25,18 @@ public class Bug2Module extends Module {
 	private LineSegment mLine;
 	private Point3f hitPoint;
 
-	public Bug2Module(String name, Subject sub) {
+	public Bug2Module(String name, Robot robot) {
 		super(name);
 
-		this.r = (VirtualRobot) sub.getRobot();
+		// TODO: change to differential robot?
+		this.r = (VirtualRobot) robot;
 
 		state = State.GOAL_SEEKING;
 
 		mLine = null;
 	}
+	
+	
 
 	@Override
 	public void run() {

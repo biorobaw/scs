@@ -6,6 +6,7 @@ import java.util.Map;
 
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.micronsl.Model;
 
 /**
  * Loads a subject based on their non-fully qualified class name (simple name)
@@ -13,30 +14,22 @@ import edu.usf.experiment.utils.ElementWrapper;
  * @author ludo
  * 
  */
-public class SubjectLoader {
+public class ModelLoader {
 
-	private static SubjectLoader instance;
+	private static ModelLoader instance;
 	private Map<String, Class<?>> classBySimpleName;
 
-	public static SubjectLoader getInstance() {
+	public static ModelLoader getInstance() {
 		if (instance == null)
-			instance = new SubjectLoader();
+			instance = new ModelLoader();
 		return instance;
 	}
 
-	private SubjectLoader() {
-//		Reflections reflections = new Reflections();
-//		Set<Class<? extends Subject>> allClasses = reflections
-//				.getSubTypesOf(Subject.class);
-//		classBySimpleName = new HashMap<>();
-//
-//		for (Class<?> c : allClasses) {
-//			classBySimpleName.put(c.getSimpleName(), c);
-//		}
+	private ModelLoader() {
+
 	}
 
-	public Subject load(String subjectName, String groupName,
-			ElementWrapper modelNode, Robot robot) {
+	public Model load(ElementWrapper modelNode, Robot robot) {
 		try {
 			Constructor constructor;
 			String name = modelNode.getChildText("name");
@@ -44,11 +37,10 @@ public class SubjectLoader {
 //					String.class, String.class, ElementWrapper.class,
 //					Robot.class);
 			constructor = Class.forName(name).getConstructor(
-					String.class, String.class, ElementWrapper.class,
+					ElementWrapper.class,
 					Robot.class);
-			Subject sub = (Subject) constructor.newInstance(subjectName,
-					groupName, modelNode.getChild("params"), robot);
-			return sub;
+			Model model = (Model) constructor.newInstance(modelNode.getChild("params"), robot);
+			return model;
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
 		} catch (InstantiationException e) {

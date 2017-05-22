@@ -4,13 +4,11 @@ import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.FeederRobot;
-import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
-import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 public class TaxicValueSchema extends Module {
@@ -18,15 +16,14 @@ public class TaxicValueSchema extends Module {
 	public float[] value;
 	private float reward;
 
-	private Subject subject;
 	private AffordanceRobot ar;
 	private FeederRobot fr;
 	private double lambda;
 	private boolean estimateValue;
 	private float negReward;
 
-	public TaxicValueSchema(String name, Subject subject,
-			LocalizableRobot robot, float reward, float negReward, float lambda,
+	public TaxicValueSchema(String name,
+			Robot robot, float reward, float negReward, float lambda,
 			boolean estimateValue) {
 		super(name);
 		this.reward = reward;
@@ -36,7 +33,6 @@ public class TaxicValueSchema extends Module {
 		value = new float[1];
 		addOutPort("value", new Float1dPortArray(this, value));
 
-		this.subject = subject;
 		this.lambda = lambda;
 		this.estimateValue = estimateValue;
 		
@@ -77,7 +73,7 @@ public class TaxicValueSchema extends Module {
 	}
 
 	private float getFeederValue(Point3f feederPos) {
-		float steps = GeomUtils.getStepsToFeeder(feederPos, subject);
+		float steps = GeomUtils.getStepsToFeeder(feederPos, ar.getMinAngle(), ar.getStepLength());
 		return Math.max(0, (reward  + negReward * steps)) ; //* Math.pow(lambda, ));
 	}
 

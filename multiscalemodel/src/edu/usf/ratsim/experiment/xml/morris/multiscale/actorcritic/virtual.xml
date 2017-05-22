@@ -11,7 +11,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/MorrisMaze.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>false</display>
+			<display>true</display>
 		</params>
 	</universe>
 	
@@ -19,6 +19,12 @@
 		<!-- Robot to use. Use full name of the class -->
 		<name>edu.usf.ratsim.robot.virtual.VirtualRobot</name>
 		<params>
+			<!-- Step length in meters -->
+			<step>.05</step>
+			<!-- Left rotation amount in radians -->
+			<leftAngle>0.195</leftAngle>
+			<!-- Right rotation amount in radians -->
+			<rightAngle>-0.195</rightAngle>
 			<!-- Percentual translational noise -->
 			<noise>.2</noise>
 			<!-- Rotation noise added after translation -->
@@ -37,14 +43,8 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.experiment.subject.morris.multiscale.ActorCriticSubject</name>
+		<name>edu.usf.ratsim.experiment.subject.morris.multiscale.ActorCriticModel</name>
 		<params>
-			<!-- Step length in meters -->
-			<step>.05</step>
-			<!-- Left rotation amount in radians -->
-			<leftAngle>0.195</leftAngle>
-			<!-- Right rotation amount in radians -->
-			<rightAngle>-0.195</rightAngle>
 			<!-- Number of conjunctive cell layers -->
 			<numCCLayers>2</numCCLayers>
 			<!-- Size of each layer in millimeters -->

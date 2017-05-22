@@ -6,8 +6,7 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
 import edu.usf.experiment.robot.AffordanceRobot;
-import edu.usf.experiment.robot.FeederRobot;
-import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.WallRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
@@ -34,13 +33,12 @@ public class ObstacleEndTaxic extends Module {
 	private float negReward;
 	private float tooCloseDist;
 
-	public ObstacleEndTaxic(String name, Subject sub, LocalizableRobot robot,
+	public ObstacleEndTaxic(String name, Robot robot,
 			float taxicVal, float negReward, float tooCloseDist) {
 		super(name);
-		votes = new float[sub.getPossibleAffordances().size()];
+		votes = new float[ar.getPossibleAffordances().size()];
 		addOutPort("votes", new Float1dPortArray(this, votes));
 
-		this.sub = sub;
 		this.taxicVal = taxicVal;
 		this.ar = (AffordanceRobot) robot;
 		this.wr = (WallRobot) robot;
@@ -59,7 +57,7 @@ public class ObstacleEndTaxic extends Module {
 			if (p.distance(new Point3f()) > tooCloseDist) {
 				// For each affordance set a value based on current interest
 				// point
-				List<Affordance> affs = ar.checkAffordances(sub
+				List<Affordance> affs = ar.checkAffordances(ar
 						.getPossibleAffordances());
 				int voteIndex = 0;
 				for (Affordance af : affs) {
@@ -98,7 +96,7 @@ public class ObstacleEndTaxic extends Module {
 	}
 
 	private float getPointValue(Point3f feederPos, float reward) {
-		float steps = GeomUtils.getStepsToFeeder(feederPos, sub);
+		float steps = GeomUtils.getStepsToFeeder(feederPos, ar.getMinAngle(), ar.getStepLength());
 		return (float) Math.max(0, (reward + negReward * steps));
 	}
 

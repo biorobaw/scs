@@ -11,7 +11,7 @@ import edu.usf.experiment.plot.Plotter;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.RobotLoader;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.SubjectLoader;
+import edu.usf.experiment.subject.ModelLoader;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.task.TaskLoader;
 import edu.usf.experiment.universe.Universe;
@@ -21,6 +21,7 @@ import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.IOUtils;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.experiment.utils.XMLExperimentParser;
+import edu.usf.micronsl.Model;
 
 /**
  * This holds a set of trials over a group of individuals. Group parameters, and
@@ -149,8 +150,9 @@ public class Experiment implements Runnable {
 		ElementWrapper modelParams = root.getChild("model");
 		ElementWrapper groupParams = getGroupNode(root, groupName).getChild("params");
 		modelParams.merge(root, groupParams);
-		subject = SubjectLoader.getInstance().load(subjectName, groupName,
-				modelParams, robot);
+		Model model = ModelLoader.getInstance().load(modelParams, robot);
+		
+		subject = new Subject(subjectName, groupName, model, robot);
 
 		System.out.println("[+] Model created");
 

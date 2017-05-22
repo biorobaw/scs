@@ -74,7 +74,7 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 	/**
 	 * The robot object for accounting reasons - e.g. position tracking
 	 */
-	private Robot robot;
+	private Transform3D robot;
 	
 	/**
 	 * Feeder data
@@ -138,6 +138,10 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 	 */
 	private View topView;
 
+	private boolean robotTriedToEat;
+
+	private boolean robotAte;
+
 	/**
 	 * Main constructor for the simulator universe
 	 * @param params the parameters in the form of an XML node
@@ -197,7 +201,7 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 			frame.setVisible(true);
 		}
 
-		robot = new Robot();
+		robot = new Transform3D();
 
 		// Walls
 		list = maze.getChildren("wall");
@@ -222,6 +226,12 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 			MazeElement e = meloader.load(element);
 			for (Wall w : e.walls) {
 				walls.add(w);
+				
+				if (display) {
+					WallNode wn = new WallNode(w);
+					wallNodes.add(wn);
+					bg.addChild(wn);
+				}
 			}
 
 		}
@@ -260,6 +270,9 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 		}
 
 		instance = this;
+		
+		robotTriedToEat = false;
+		robotAte = false;
 	}
 
 	/********************************* Feeder Universe *************************************/
@@ -342,7 +355,7 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 		return false;
 	}
 
-	public void robotEat() {
+	public boolean robotEat() {
 		int feedingFeeder = -1;
 
 		Point3f robotPos = getRobotPosition();
@@ -357,8 +370,10 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 			lastAteFeeder = feedingFeeder;
 			if (Debug.printRobotEaten)
 				System.out.println("Robot has eaten");
+			return true;
 		} else {
 			System.out.println("Robot tried to eat far from food");
+			return false;
 		}
 	}
 
@@ -620,7 +635,7 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 		// The current position with rotation
 
 		Vector3f p = new Vector3f();
-		robot.getT().get(p);
+		robot.get(p);
 
 		Coordinate initCoordinate = new Coordinate(p.x, p.y);
 		Coordinate finalCoordinate = new Coordinate(p.x + dx, p.y + dy);
@@ -689,7 +704,7 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 
 	/********************************* Global Camera Universe *************************************/
 	public Point3f getRobotPosition() {
-		Transform3D t = new Transform3D(robot.getT());
+		Transform3D t = new Transform3D(robot);
 		Vector3f pos = new Vector3f();
 		t.get(pos);
 
@@ -697,7 +712,7 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 	}
 	
 	public Quat4f getRobotOrientation() {
-		Transform3D t = new Transform3D(robot.getT());
+		Transform3D t = new Transform3D(robot);
 		// Get the rotation from the quaternion
 		// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 		Quat4f rot = new Quat4f();
@@ -707,7 +722,7 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 	}
 	
 	public float getRobotOrientationAngle() {
-		Transform3D t = new Transform3D(robot.getT());
+		Transform3D t = new Transform3D(robot);
 		// Get the rotation from the quaternion
 		// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 		Quat4f rot = new Quat4f();
@@ -722,9 +737,11 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 		Transform3D rot = new Transform3D();
 		rot.rotZ(angle);
 		translate.mul(rot);
-		robot.setT(translate);
+		robot = translate;
 		if (display)
 			robotNode.getTransformGroup().setTransform(translate);
+		
+		robotAte = robotTriedToEat = false;
 	}
 
 	public void rotateRobot(double degrees) {
@@ -732,13 +749,15 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 		Transform3D trans = new Transform3D();
 		trans.rotZ(degrees);
 		// Get the old pos transform
-		Transform3D rPos = new Transform3D(robot.getT());
+		Transform3D rPos = new Transform3D(robot);
 		// Apply translation to old transform
 		rPos.mul(trans);
 		// Set the new transform
-		robot.setT(rPos);
+		robot = rPos;
 		if (display)
 			robotNode.getTransformGroup().setTransform(rPos);
+		
+		robotAte = robotTriedToEat = false;
 	}
 
 	/********************************* Visual Functions *************************************/
@@ -774,7 +793,7 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 	public void moveRobot(Vector3f vector) {
 		Vector3f from = new Vector3f();
 		// Get the old pos transform
-		Transform3D rPos = new Transform3D(robot.getT());
+		Transform3D rPos = new Transform3D(robot);
 		rPos.get(from);
 
 		// Create a new transforme with the translation
@@ -798,16 +817,18 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 
 		if (!intersects) {
 			// Set the new transform
-			robot.setT(rPos);
+			robot = rPos;
 
 			if (display)
 				robotNode.getTransformGroup().setTransform(rPos);
 		}
+		
+		robotAte = robotTriedToEat = false;
 	}
 
 	public boolean canRobotMove(float angle, float step) {
 		// The current position with rotation
-		Transform3D rPos = new Transform3D(robot.getT());
+		Transform3D rPos = new Transform3D(robot);
 
 		Vector3f p = new Vector3f();
 		rPos.get(p);
@@ -839,7 +860,7 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 		// The current position with rotation
 
 		Vector3f p = new Vector3f();
-		robot.getT().get(p);
+		robot.get(p);
 
 		Coordinate initCoordinate = new Coordinate(p.x, p.y);
 		Coordinate finalCoordinate = new Coordinate(p.x + deltaPos.x, p.y + deltaPos.y);
@@ -992,7 +1013,7 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 	 */
 	public int isWallCloseToSides(float bodyToNoseLength, float distToConsider) {
 		// Find the nose
-		Transform3D rPos = new Transform3D(robot.getT());
+		Transform3D rPos = new Transform3D(robot);
 		Transform3D toNose = new Transform3D();
 		toNose.setTranslation(new Vector3d(bodyToNoseLength, 0, 0));
 		rPos.mul(toNose);
@@ -1061,7 +1082,7 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 		Point3f rPos = getRobotPosition();
 		Coordinate rCoor = new Coordinate(rPos.x, rPos.y);
 
-		Transform3D rT = robot.getT();
+		Transform3D rT = robot;
 
 		float closestDist = maxDist;
 
@@ -1092,6 +1113,24 @@ public class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUnive
 		}
 
 		return closestDist;
+	}
+
+	public void setTriedToEat() {
+		robotTriedToEat = true;
+	}
+
+	public void setHasEaten() {
+		robotAte = true;
+	}
+
+	@Override
+	public boolean hasRobotEaten() {
+		return robotAte;
+	}
+
+	@Override
+	public boolean hasRobotTriedToEat() {
+		return robotTriedToEat;
 	}
 
 }

@@ -1,6 +1,7 @@
 package edu.usf.experiment.condition;
 
 import edu.usf.experiment.Episode;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public class FoundNFoodStopCond implements Condition {
@@ -23,7 +24,7 @@ public class FoundNFoodStopCond implements Condition {
 	@Override
 	public boolean holds(Episode e) {
 		if(n<=0) cycles+=1;
-		if (e.getSubject().hasEaten())
+		if (((FeederUniverse)e.getUniverse()).hasRobotEaten())
 			n--;
 		return n <= 0 && cycles >=extraCycles;
 	}

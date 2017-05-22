@@ -16,5 +16,17 @@ public interface AffordanceRobot extends Robot {
 	
 	public abstract boolean checkAffordance(Affordance af);
 
-	public abstract void executeAffordance(Affordance selectedAction, Subject sub);
+	public abstract void executeAffordance(Affordance selectedAction);
+
+	public abstract List<Affordance> getPossibleAffordances();
+
+	public abstract float getMinAngle();
+
+	public abstract float getStepLength();
+
+	public abstract Affordance getForwardAffordance();
+
+	public abstract Affordance getLeftAffordance();
+
+	public abstract Affordance getRightAffordance();
 }

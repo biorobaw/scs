@@ -8,8 +8,10 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
+import edu.usf.experiment.robot.AffordanceRobot;
+import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
@@ -50,7 +52,7 @@ public class MorrisHLReplayModel extends Model {
 	public MorrisHLReplayModel() {
 	}
 
-	public MorrisHLReplayModel(ElementWrapper params, Subject subject, LocalizableRobot lRobot) {
+	public MorrisHLReplayModel(ElementWrapper params, Robot robot) {
 		/**
 		 * Place cell radius range
 		 */
@@ -117,8 +119,12 @@ public class MorrisHLReplayModel extends Model {
 		float ymin = params.getChildFloat("ymin");
 		float xmax = params.getChildFloat("xmax");
 		float ymax = params.getChildFloat("ymax");
-
-		numActions = subject.getPossibleAffordances().size();
+		
+		AffordanceRobot aRobot = (AffordanceRobot) robot;
+		FeederRobot fRobot = (FeederRobot) robot;
+		LocalizableRobot lRobot = (LocalizableRobot) robot;
+		
+		numActions = aRobot.getPossibleAffordances().size();
 
 		// qLActionSel = new LinkedList<WTAVotes>();
 		exploration = new LinkedList<DecayingExplorationSchema>();
@@ -130,7 +136,7 @@ public class MorrisHLReplayModel extends Model {
 		// For each layer
 		for (int i = 0; i < numCCLayers; i++) {
 			RndHDPCellLayer ccl = new RndHDPCellLayer("CCL " + i, lRobot, radius, minHDRadius, maxHDRadius,
-					numCCCellsPerLayer.get(i), placeCellType, xmin, ymin, xmax, ymax, lRobot.getAllFeeders(), 0f,
+					numCCCellsPerLayer.get(i), placeCellType, xmin, ymin, xmax, ymax, null, 0f,
 					layerLengths.get(i));
 			conjCellLayers.add(ccl);
 			conjCellLayersPorts.add(ccl.getOutPort("activation"));
@@ -166,7 +172,7 @@ public class MorrisHLReplayModel extends Model {
 		votesPorts.add((Float1dPort) rlVotes.getOutPort("votes"));
 
 		// Exploration module
-		DecayingExplorationSchema decayExpl = new DecayingExplorationSchema("Decay Explorer", subject, lRobot,
+		DecayingExplorationSchema decayExpl = new DecayingExplorationSchema("Decay Explorer", robot,
 				explorationReward, explorationHalfLifeVal);
 		exploration.add(decayExpl);
 		addModule(decayExpl);
@@ -179,7 +185,7 @@ public class MorrisHLReplayModel extends Model {
 
 		// Get votes from QL and other behaviors and perform an action
 		// One vote per layer (one now) + taxic + wf
-		ProportionalExplorer actionPerformer = new ProportionalExplorer("Action Performer", subject);
+		ProportionalExplorer actionPerformer = new ProportionalExplorer("Action Performer", robot);
 		actionPerformer.addInPort("votes", jointVotes.getOutPort("jointState"));
 		addModule(actionPerformer);
 		// State calculation should be done after movement
@@ -212,7 +218,7 @@ public class MorrisHLReplayModel extends Model {
 		rlValueCopy.addInPort("toCopy", (Float1dPort) rlValue.getOutPort("valueEst"), true);
 		addModule(rlValueCopy);
 
-		SubFoundPlatform foundPlat = new SubFoundPlatform("sub found platform", lRobot);
+		SubFoundPlatform foundPlat = new SubFoundPlatform("sub found platform", robot);
 		foundPlat.addInPort("takenAction", takenActionPort); // dep
 		addModule(foundPlat);
 

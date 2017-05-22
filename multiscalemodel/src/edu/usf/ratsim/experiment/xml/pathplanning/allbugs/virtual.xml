@@ -43,7 +43,7 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.experiment.subject.pathplanning.allbugs.AllBugsSubject</name>
+		<name>edu.usf.ratsim.experiment.subject.pathplanning.allbugs.AllBugsModel</name>
 		<params>
 			<algorithm>none</algorithm>
 		</params>

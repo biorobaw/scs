@@ -12,7 +12,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/taxi.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>false</display>
+			<display>true</display>
 		</params>
 	</universe>
 	
@@ -20,6 +20,12 @@
 		<!-- Robot to use. Use full name of the class -->
 		<name>edu.usf.ratsim.robot.virtual.VirtualRobot</name>
 		<params>
+			<!-- Step length in meters -->
+			<step>.05</step>
+			<!-- Left rotation amount in radians -->
+			<leftAngle>0.195</leftAngle>
+			<!-- Right rotation amount in radians -->
+			<rightAngle>-0.195</rightAngle>
 			<!-- Percentual translational noise -->
 			<noise>.05</noise>
 			<!-- Rotation noise added after translation -->
@@ -38,14 +44,8 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.experiment.subject.taxi.MultiScaleArtificialPCSubject</name>
+		<name>edu.usf.ratsim.experiment.subject.taxi.MultiScaleArtificialPCModel</name>
 		<params>
-			<!-- Step length in meters -->
-			<step>.05</step>
-			<!-- Left rotation amount in radians -->
-			<leftAngle>0.195</leftAngle>
-			<!-- Right rotation amount in radians -->
-			<rightAngle>-0.195</rightAngle>
 			<!-- Number of conjunctive cell layers -->
 			<numCCLayers>2</numCCLayers>
 			<!-- Size of each layer in millimeters -->
@@ -284,7 +284,7 @@
 			<!-- Number of episodes -->
 			<number>100</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>0</sleep>
+			<sleep>10</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Place the animat in a given place -->

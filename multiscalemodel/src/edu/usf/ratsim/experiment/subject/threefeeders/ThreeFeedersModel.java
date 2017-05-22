@@ -8,8 +8,10 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
+import edu.usf.experiment.robot.AffordanceRobot;
+import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
@@ -68,8 +70,8 @@ public class ThreeFeedersModel extends Model {
 	public ThreeFeedersModel() {
 	}
 
-	public ThreeFeedersModel(ElementWrapper params, Subject subject,
-			LocalizableRobot lRobot) {
+	public ThreeFeedersModel(ElementWrapper params,
+			Robot robot) {
 		// Get some configuration values for place cells + qlearning
 		float minPCRadius = params.getChildFloat("minPCRadius");
 		float maxPCRadius = params.getChildFloat("maxPCRadius");
@@ -114,8 +116,11 @@ public class ThreeFeedersModel extends Model {
 				.getChildInt("maxActionsSinceForward");
 		float stillExplorationVal = params.getChildFloat("stillExplorationVal");
 
-				
-		numActions = subject.getPossibleAffordances().size();
+		AffordanceRobot aRobot = (AffordanceRobot) robot;
+		FeederRobot fRobot = (FeederRobot) robot;
+		LocalizableRobot lRobot = (LocalizableRobot) robot;
+		
+		numActions = aRobot.getPossibleAffordances().size();
 
 		// qLActionSel = new LinkedList<WTAVotes>();
 		exploration = new LinkedList<DecayingExplorationSchema>();
@@ -155,7 +160,7 @@ public class ThreeFeedersModel extends Model {
 			RndConjCellLayer ccl = new RndConjCellLayer("CCL "
 					+ i, lRobot, radius, minHDRadius, maxHDRadius,
 					numIntentions, numCCCellsPerLayer.get(i), placeCellType,
-					xmin, ymin, xmax, ymax, lRobot.getAllFeeders(),
+					xmin, ymin, xmax, ymax, fRobot.getAllFeeders(),
 					goalCellProportion, layerLengths.get(i), 10, wallParamB);
 			ccl.addInPort("intention", intention.getOutPort("intention"));
 			conjCellLayers.add(ccl);
@@ -211,7 +216,7 @@ public class ThreeFeedersModel extends Model {
 		// new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
 		TaxicFoodManyFeedersManyActionsNotLast taxicff = new TaxicFoodManyFeedersManyActionsNotLast(
-				"Taxic Food Finder", subject, lRobot, nonFlashingReward,
+				"Taxic Food Finder", robot, nonFlashingReward,
 				nonFlashingNegReward, taxicDiscountFactor, estimateValue);
 		taxicff.addInPort("goalFeeder",
 				lastTriedToEatGoalDecider.getOutPort("goalFeeder"), true);
@@ -219,20 +224,20 @@ public class ThreeFeedersModel extends Model {
 		votesPorts.add((Float1dPort) taxicff.getOutPort("votes"));
 
 		FlashingTaxicFoodFinderSchema flashingTaxicFF = new FlashingTaxicFoodFinderSchema(
-				"Flashing Taxic Food Finder", subject, lRobot, flashingReward,
+				"Flashing Taxic Food Finder", robot, flashingReward,
 				flashingNegReward, taxicDiscountFactor, estimateValue);
 		addModule(flashingTaxicFF);
 		votesPorts.add((Float1dPort) flashingTaxicFF.getOutPort("votes"));
 
 		DecayingExplorationSchema decayExpl = new DecayingExplorationSchema(
-				"Decay Explorer", subject, lRobot, explorationReward,
+				"Decay Explorer", robot, explorationReward,
 				explorationHalfLifeVal);
 		exploration.add(decayExpl);
 		addModule(decayExpl);
 		votesPorts.add((Float1dPort) decayExpl.getOutPort("votes"));
 
 		StillExplorer stillExpl = new StillExplorer("Still Explorer",
-				maxActionsSinceForward, subject, stillExplorationVal);
+				maxActionsSinceForward, stillExplorationVal, robot);
 		addModule(stillExpl);
 		votesPorts.add((Float1dPort) stillExpl.getOutPort("votes"));
 		// Wall following for obst. avoidance
@@ -248,7 +253,7 @@ public class ThreeFeedersModel extends Model {
 		// addModule(attExpl);
 		// votesPorts.add((Float1dPort) attExpl.getOutPort("votes"));
 		ObstacleEndTaxic wallTaxic = new ObstacleEndTaxic("Wall Taxic",
-				subject, lRobot, wallTaxicVal, wallNegReward, wallTooCloseDist);
+				robot, wallTaxicVal, wallNegReward, wallTooCloseDist);
 		addModule(wallTaxic);
 		votesPorts.add((Float1dPort) wallTaxic.getOutPort("votes"));
 
@@ -266,7 +271,7 @@ public class ThreeFeedersModel extends Model {
 		// Get votes from QL and other behaviors and perform an action
 		// One vote per layer (one now) + taxic + wf
 		NoExploration actionPerformer = new NoExploration("Action Performer",
-				subject);
+				robot);
 		actionPerformer.addInPort("votes", jointVotes.getOutPort("jointState"));
 		addModule(actionPerformer);
 		// State calculation should be done after movement
@@ -281,7 +286,7 @@ public class ThreeFeedersModel extends Model {
 
 		List<Port> taxicValueEstimationPorts = new LinkedList<Port>();
 		TaxicValueSchema taxVal = new TaxicValueSchema("Taxic Value Estimator",
-				subject, lRobot, nonFlashingReward, nonFoodReward,
+				robot, nonFlashingReward, nonFoodReward,
 				taxicDiscountFactor, estimateValue);
 		taxVal.addInPort("goalFeeder",
 				lastTriedToEatGoalDecider.getOutPort("goalFeeder"));
@@ -290,7 +295,7 @@ public class ThreeFeedersModel extends Model {
 		addModule(taxVal);
 
 		FlashingTaxicValueSchema flashTaxVal = new FlashingTaxicValueSchema(
-				"Flashing Taxic Value Estimator", subject, lRobot,
+				"Flashing Taxic Value Estimator", robot,
 				flashingReward, nonFoodReward, taxicDiscountFactor,
 				estimateValue);
 		flashTaxVal.addInPort("goalFeeder",
@@ -336,18 +341,18 @@ public class ThreeFeedersModel extends Model {
 				(Float1dPort) rlValue.getOutPort("valueEst"), true);
 		addModule(rlValueCopy);
 
-		SubjectAte subAte = new SubjectAte("Subject Ate", subject);
+		SubjectAte subAte = new SubjectAte("Subject Ate", robot);
 		subAte.addInPort("takenAction", takenActionPort); // just for dependency
 		addModule(subAte);
 
 		SubjectTriedToEat subTriedToEat = new SubjectTriedToEat(
-				"Subject Tried To Eat", subject);
+				"Subject Tried To Eat", robot);
 		subTriedToEat.addInPort("takenAction", takenActionPort); // just for
 																	// dependency
 		addModule(subTriedToEat);
 
 		ClosestFeeder closestFeeder = new ClosestFeeder(
-				"Closest Feeder After Move", subject);
+				"Closest Feeder After Move", robot);
 		closestFeeder.addInPort("takenAction", takenActionPort);
 		addModule(closestFeeder);
 
@@ -374,7 +379,7 @@ public class ThreeFeedersModel extends Model {
 			// QL_STR, this, subject, bAll.getSize(), numActions,
 			// discountFactor, alpha, initialValue);
 			MultiStateProportionalQL mspql = new MultiStateProportionalQL(
-					"RL Module", subject, numActions, taxicDiscountFactor,
+					"RL Module", numActions, taxicDiscountFactor,
 					rlDiscountFactor, alpha, initialValue);
 
 			mspql.addInPort("reward",

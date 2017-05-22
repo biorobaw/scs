@@ -1,7 +1,7 @@
 package edu.usf.ratsim.nsl.modules.input;
 
 import edu.usf.experiment.robot.FeederRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.FeederUtils;
 import edu.usf.micronsl.module.Module;
@@ -14,20 +14,17 @@ import edu.usf.micronsl.port.singlevalue.Int0dPort;
  */
 public class ClosestFeeder extends Module {
 
-	private Subject sub;
 	private Int0dPort outPort;
 	
 	private FeederRobot fr;
 
-	public ClosestFeeder(String name, Subject sub) {
+	public ClosestFeeder(String name, Robot robot) {
 		super(name);
-		
-		this.sub = sub;
 		
 		outPort = new Int0dPort(this);
 		addOutPort("closestFeeder", outPort);
 		
-		fr = (FeederRobot) sub.getRobot();
+		fr = (FeederRobot) robot;
 	}
 
 	@Override

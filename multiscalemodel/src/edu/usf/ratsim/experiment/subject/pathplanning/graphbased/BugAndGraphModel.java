@@ -1,6 +1,7 @@
 package edu.usf.ratsim.experiment.subject.pathplanning.graphbased;
 
 import edu.uci.ics.jung.graph.UndirectedGraph;
+import edu.usf.experiment.model.GraphModel;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.SonarRobot;
@@ -20,7 +21,7 @@ import edu.usf.ratsim.nsl.modules.pathplanning.PointNode;
  * @author ludo
  *
  */
-public class BugAndGraphModel extends Model {
+public class BugAndGraphModel extends Model implements GraphModel {
 
 
 	private ExperienceRoadMap erm;
@@ -28,7 +29,7 @@ public class BugAndGraphModel extends Model {
 	public BugAndGraphModel() {
 	}
 
-	public BugAndGraphModel(ElementWrapper params, Subject subject,
+	public BugAndGraphModel(ElementWrapper params,
 			Robot robot) {
 		
 		String algorithm = params.getChildText("algorithm");
@@ -45,7 +46,7 @@ public class BugAndGraphModel extends Model {
 		PlatformPosition platPos = new PlatformPosition("Plat Pos");
 		addModule(platPos);
 		
-		erm = new ExperienceRoadMap("Experience road map", subject, algorithm);
+		erm = new ExperienceRoadMap("Experience road map", algorithm, robot);
 		erm.addInPort("sonarReadings", sReadings.getOutPort("sonarReadings"));
 		erm.addInPort("sonarAngles", sReadings.getOutPort("sonarAngles"));
 		erm.addInPort("position", rPos.getOutPort("position"));

@@ -17,15 +17,13 @@ public class FeederTraveler extends Module {
 
 	private FeederRobot fr;
 	private AffordanceRobot ar;
-	private Subject sub;
 	private List<Integer> feedersToVisit;
 
-	public FeederTraveler(String name, List<Integer> feederOrder, Subject sub, Robot robot) {
+	public FeederTraveler(String name, List<Integer> feederOrder, Robot robot) {
 		super(name);
 
 		this.fr = (FeederRobot) robot;
 		this.ar = (AffordanceRobot) robot;
-		this.sub = sub;
 		
 		feedersToVisit = feederOrder;
 	}
@@ -53,18 +51,18 @@ public class FeederTraveler extends Module {
 			return;
 		}
 		
-		if (GeomUtils.distanceToPoint(next.getPosition()) < sub.getStepLenght()){
-			ar.executeAffordance(new EatAffordance(), sub);
+		if (GeomUtils.distanceToPoint(next.getPosition()) < ar.getStepLength()){
+			ar.executeAffordance(new EatAffordance());
 			feedersToVisit.remove(0);
 		} else {
 			float angleToPoint = GeomUtils.rotToAngle(GeomUtils.angleToPoint(next
 					.getPosition()));
-			if (Math.abs(angleToPoint) > sub.getMinAngle()) {
-				ar.executeAffordance(new TurnAffordance(sub.getMinAngle()
-						* Math.signum(angleToPoint), 0), sub);
+			if (Math.abs(angleToPoint) > ar.getMinAngle()) {
+				ar.executeAffordance(new TurnAffordance(ar.getMinAngle()
+						* Math.signum(angleToPoint), 0));
 			} else {
 				ar.executeAffordance(
-						new ForwardAffordance(sub.getStepLenght()), sub);
+						new ForwardAffordance(ar.getStepLength()));
 			}
 		}
 		

@@ -1,6 +1,7 @@
 package edu.usf.experiment.condition;
 
 import edu.usf.experiment.Episode;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public class FoundFoodStopCond implements Condition {
@@ -10,7 +11,7 @@ public class FoundFoodStopCond implements Condition {
 
 	@Override
 	public boolean holds(Episode episode) {
-		return episode.getSubject().hasEaten();
+		return ((FeederUniverse)episode.getUniverse()).hasRobotEaten();
 	}
 	
 

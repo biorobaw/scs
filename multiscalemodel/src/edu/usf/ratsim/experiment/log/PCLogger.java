@@ -10,8 +10,6 @@ import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.ratsim.experiment.subject.TSPSubject;
-import edu.usf.ratsim.experiment.subject.multipleT.MultipleTSubject;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 
 public class PCLogger extends Logger {
@@ -23,13 +21,11 @@ public class PCLogger extends Logger {
 	}
 
 	public void log(Subject sub) {
-		if (sub instanceof TSPSubject)
-			cells = ((TSPSubject) sub).getPlaceCells();
-		else if (sub instanceof MultipleTSubject)
-			cells = ((MultipleTSubject) sub).getPlaceCells();
+		if (sub.getModel() instanceof PlaceCellModel)
+			cells = ((PlaceCellModel)sub.getModel()).getPlaceCells();
 		else
 			throw new IllegalArgumentException(
-					"PC logger can only be used with TSPModel or MultipleTModel");
+					"PC logger can only be used with PlaceCellModel");
 
 
 		

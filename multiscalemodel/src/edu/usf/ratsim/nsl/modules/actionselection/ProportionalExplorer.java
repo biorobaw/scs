@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.usf.experiment.robot.AffordanceRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.Debug;
@@ -27,10 +27,6 @@ public class ProportionalExplorer extends Module {
 	 */
 	private AffordanceRobot ar;
 	/**
-	 * The subject, used to get all possible affordances
-	 */
-	private Subject sub;
-	/**
 	 * The output port describing the action taken by the module
 	 */
 	private Int0dPort takenAction;
@@ -44,17 +40,16 @@ public class ProportionalExplorer extends Module {
 	 * @param sub
 	 *            The subject to use
 	 */
-	public ProportionalExplorer(String name, Subject sub) {
+	public ProportionalExplorer(String name, Robot robot) {
 		super(name);
 
 		takenAction = new Int0dPort(this);
 		addOutPort("takenAction", takenAction);
 
-		ar = (AffordanceRobot) sub.getRobot();
+		ar = (AffordanceRobot) robot;
 
 		lastAction = null;
 
-		this.sub = sub;
 	}
 
 	/**
@@ -64,7 +59,7 @@ public class ProportionalExplorer extends Module {
 		Float1dPort votes = (Float1dPort) getInPort("votes");
 
 		Affordance selectedAction;
-		List<Affordance> aff = ar.checkAffordances(sub.getPossibleAffordances());
+		List<Affordance> aff = ar.checkAffordances(ar.getPossibleAffordances());
 
 		List<Affordance> possible = new LinkedList<Affordance>();
 		float totalPossible = 0f;
@@ -104,27 +99,27 @@ public class ProportionalExplorer extends Module {
 			selectedAction = possible.get(i - 1);
 
 			List<Affordance> fwd = new LinkedList<Affordance>();
-			fwd.add(sub.getForwardAffordance());
+			fwd.add(ar.getForwardAffordance());
 			if (selectedAction instanceof TurnAffordance) {
 				do {
-					ar.executeAffordance(selectedAction, sub);
+					ar.executeAffordance(selectedAction);
 					ar.checkAffordances(fwd);
 				} while (!fwd.get(0).isRealizable());
 				// robot.executeAffordance(new ForwardAffordance(.05f), sub);
 			} else {
-				ar.executeAffordance(selectedAction, sub);
+				ar.executeAffordance(selectedAction);
 			}
 		} else {
 			List<Affordance> fwd = new LinkedList<Affordance>();
-			fwd.add(sub.getForwardAffordance());
+			fwd.add(ar.getForwardAffordance());
 			ar.checkAffordances(fwd);
 			if (fwd.get(0).isRealizable())
 				selectedAction = fwd.get(0);
 			else if (RandomSingleton.getInstance().nextBoolean())
-				selectedAction = sub.getLeftAffordance();
+				selectedAction = ar.getLeftAffordance();
 			else
-				selectedAction = sub.getRightAffordance();
-			ar.executeAffordance(selectedAction, sub);
+				selectedAction = ar.getRightAffordance();
+			ar.executeAffordance(selectedAction);
 
 		}
 

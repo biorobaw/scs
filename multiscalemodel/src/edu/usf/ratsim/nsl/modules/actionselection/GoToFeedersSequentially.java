@@ -60,7 +60,7 @@ public class GoToFeedersSequentially extends Module {
 			int desiredFeederId = togo;
 			if (fr.isFeederClose()
 					&& FeederUtils.getClosestFeeder(fr.getVisibleFeeders()).getId() == desiredFeederId){
-				ar.executeAffordance(new EatAffordance(), sub);
+				ar.executeAffordance(new EatAffordance());
 				togo++;
 			} else {
 				Feeder desiredFeeder = null;

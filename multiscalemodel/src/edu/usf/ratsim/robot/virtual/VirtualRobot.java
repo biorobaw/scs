@@ -39,6 +39,10 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 
 	private static final float ROBOT_LENGTH = .1f;
 
+	private static final float DEFAULT_STEP = .05f;
+
+	private static final float DEFAULT_ANGLE = (float) (Math.PI/16);
+
 	public VirtUniverse universe;
 
 	private Random r;
@@ -70,6 +74,13 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 	private float sonarMaxDist;
 
 	private int sonarNumRays;
+	
+	private float step;
+	private float leftAngle;
+	private float rightAngle;
+
+	private boolean lastSuccessfulEat;
+	private boolean lastAte;
 
 	public void setCloseThreshold(float value) {
 		this.closeThrs = value;
@@ -82,7 +93,22 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 		halfFieldOfView = params.getChildFloat("halfFieldOfView");
 		visionDist = params.getChildFloat("visionDist");
 		closeThrs = params.getChildFloat("closeThrs");
-
+		/*
+		 * Affordance parameters
+		 */
+		if (params.getChild("step") != null)
+			step = params.getChildFloat("step");
+		else
+			step = DEFAULT_STEP;
+		if (params.getChild("leftAngle") != null)
+			leftAngle = params.getChildFloat("leftAngle");
+		else
+			rightAngle = DEFAULT_ANGLE;
+		if (params.getChild("rightAngle") != null)
+			rightAngle = params.getChildFloat("rightAngle");
+		else
+			rightAngle = DEFAULT_ANGLE;
+		
 		// Sonar configuration
 		if (params.getChild("sonarAngles") != null) {
 			sonarAngles = params.getChildFloatList("sonarAngles");
@@ -102,11 +128,14 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 		closestFeederValid = false;
 		lastAteFeeder = -1;
 		lastTriedToEat = -1;
+		lastAte = false;
+		lastSuccessfulEat = false;
 	}
 
 	public void rotate(float grados) {
 		universe.rotateRobot(grados + noise * r.nextFloat() * grados);
 		closestFeederValid = false;
+		lastAte = false;
 	}
 
 	public void startRobot() {
@@ -121,13 +150,15 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 		universe.rotateRobot((2 * r.nextFloat() - 1) * translationRotationNoise);
 
 		closestFeederValid = false;
+		lastAte = false;
 	}
 
 	@Override
 	public void eat() {
 		if (Debug.printRobotAte)
 			System.out.println("Robot ate");
-		universe.robotEat();
+		lastAte = true;
+		lastSuccessfulEat = universe.robotEat();
 	}
 
 	public List<Landmark> getLandmarks() {
@@ -297,7 +328,7 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 	}
 
 	@Override
-	public void executeAffordance(Affordance af, Subject sub) {
+	public void executeAffordance(Affordance af) {
 		// WORKAROUND Dont execute the first cycle
 		// TODO: fix this with better model-universe interaction
 		if (PropertyHolder.getInstance().getProperty("cycle").equals("0"))
@@ -308,15 +339,16 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 			List<Affordance> forward = new LinkedList<Affordance>();
 			forward.add(new ForwardAffordance(ta.getDistance()));
 			rotate(ta.getAngle());
-
-		} else if (af instanceof ForwardAffordance)
+			lastAte = false;
+		} else if (af instanceof ForwardAffordance) {
 			forward(((ForwardAffordance) af).getDistance());
-		else if (af instanceof EatAffordance) {
+			lastAte = false;
+		} else if (af instanceof EatAffordance) {
 			// Updates food in universe
-			sub.setTriedToEat();
+			universe.setTriedToEat();
 			if (isFeederClose() && FeederUtils.getClosestFeeder(getVisibleFeeders()).hasFood()) {
 				eat();
-				sub.setHasEaten(true);
+				universe.setHasEaten();
 				lastAteFeeder = FeederUtils.getClosestFeeder(getVisibleFeeders()).getId();
 				if (Debug.printTryingToEat)
 					System.out.println("Ate from a feeder with food");
@@ -436,6 +468,59 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 	public void setAngularVel(float angularVel) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public List<Affordance> getPossibleAffordances() {
+		List<Affordance> res = new LinkedList<Affordance>();
+		
+		res.add(getLeftAffordance());
+		res.add(getForwardAffordance());
+		res.add(getRightAffordance());
+		res.add(new EatAffordance());
+		
+		return res;
+	}
+
+	@Override
+	public float getMinAngle() {
+		return Math.min(leftAngle, rightAngle);
+	}
+
+	@Override
+	public float getStepLength() {
+		return step;
+	}
+
+	@Override
+	public Affordance getForwardAffordance() {
+		return new ForwardAffordance(step);
+	}
+
+	@Override
+	public Affordance getLeftAffordance() {
+		return new TurnAffordance(leftAngle, step);
+	}
+
+	@Override
+	public Affordance getRightAffordance() {
+		return new TurnAffordance(rightAngle, step);
+	}
+
+	@Override
+	public boolean hasRobotEaten() {
+		return lastAte && lastSuccessfulEat;
+	}
+
+	@Override
+	public boolean hasRobotTriedToEat() {
+		return lastAte;
+	}
+
+	@Override
+	public void clearEaten() {
+		lastAte = false;
+		lastSuccessfulEat = false;
 	}
 
 }

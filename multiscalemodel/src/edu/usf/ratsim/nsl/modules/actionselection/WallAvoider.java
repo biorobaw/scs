@@ -52,7 +52,7 @@ public class WallAvoider extends Module {
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;
 
-		List<Affordance> affs = ar.checkAffordances(subject
+		List<Affordance> affs = ar.checkAffordances(ar
 				.getPossibleAffordances());
 		int index = 0;
 		for (Affordance af : affs) {

@@ -44,7 +44,7 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.experiment.subject.pathplanning.bug0.Bug0Subject</name>
+		<name>edu.usf.ratsim.experiment.subject.pathplanning.bug0.Bug0Model</name>
 		<params>
 		</params>
 	</model>

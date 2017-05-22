@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import edu.usf.experiment.robot.AffordanceRobot;
-import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
@@ -23,29 +23,28 @@ public class DecayingExplorationSchema extends Module {
 	private Random r;
 	private double alpha;
 
-	private Subject subject;
 	private AffordanceRobot robot;
 	private int episodeCount;
 	private Affordance lastPicked;
 
-	public DecayingExplorationSchema(String name, Subject subject, LocalizableRobot robot, float maxReward,
+	public DecayingExplorationSchema(String name, Robot robot, float maxReward,
 			float explorationHalfLifeVal) {
 		super(name);
+		
+		this.robot = (AffordanceRobot) robot;
+		
 		this.maxReward = maxReward;
 		if (explorationHalfLifeVal != 0)
 			this.alpha = -Math.log(.5) / explorationHalfLifeVal;
 		else
 			this.alpha = 0;
 
-		votes = new float[subject.getPossibleAffordances().size()];
+		votes = new float[this.robot.getPossibleAffordances().size()];
 		addOutPort("votes", new Float1dPortArray(this, votes));
 
 		r = RandomSingleton.getInstance();
 
 		episodeCount = 0;
-
-		this.subject = subject;
-		this.robot = (AffordanceRobot) robot;
 
 		this.lastPicked = null;
 	}
@@ -56,7 +55,7 @@ public class DecayingExplorationSchema extends Module {
 
 		double explorationValue = maxReward * Math.exp(-(episodeCount - 1) * alpha);
 //		System.out.println(explorationValue);
-		List<Affordance> affs = robot.checkAffordances(subject.getPossibleAffordances());
+		List<Affordance> affs = robot.checkAffordances(robot.getPossibleAffordances());
 
 		List<Affordance> performableAffs = new LinkedList<Affordance>();
 		for (Affordance a : affs)

@@ -35,9 +35,7 @@ public class MultiStateProportionalQL extends Module implements QLAlgorithm {
 
 	private boolean update;
 
-	private Subject subject;
-
-	public MultiStateProportionalQL(String name, Subject subject,
+	public MultiStateProportionalQL(String name,
 			int numActions, float taxicDiscountFactor, float rlDiscountFactor, float alpha,
 			float initialValue) {
 		super(name);
@@ -45,8 +43,6 @@ public class MultiStateProportionalQL extends Module implements QLAlgorithm {
 		// TODO: fix discount factor thing 
 		
 		this.alpha = alpha;
-		this.subject = subject;
-
 		// File f = new File("policy.obj");
 		// if (f.exists()
 		// && Configuration.getBoolean("Experiment.loadSavedPolicy")) {

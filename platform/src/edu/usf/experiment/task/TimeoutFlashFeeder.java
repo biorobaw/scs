@@ -34,7 +34,7 @@ public class TimeoutFlashFeeder extends Task {
 		
 		FeederUniverse fu = (FeederUniverse) u;
 		
-		if (s.hasEaten())
+		if (fu.hasRobotEaten())
 			timeSinceAte = 0;
 		else
 			timeSinceAte++;

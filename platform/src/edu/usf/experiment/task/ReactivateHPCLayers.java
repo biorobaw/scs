@@ -3,6 +3,7 @@ package edu.usf.experiment.task;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
+import edu.usf.experiment.model.DeactivableModel;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -30,8 +31,10 @@ public class ReactivateHPCLayers extends Task {
 	}
 
 	public void perform(Universe u, Subject s){
+		DeactivableModel m = (DeactivableModel) s.getModel();
+		
 		if (s.getGroup().equals(group))
-			s.reactivateHPCLayers(indexList);
+			m.reactivateHPCLayers(indexList);
 	}
 
 

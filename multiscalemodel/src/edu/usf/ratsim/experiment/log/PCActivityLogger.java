@@ -23,7 +23,8 @@ public class PCActivityLogger extends Logger {
 		if (writer == null)
 			writer = getWriter();
 
-		Map<Integer, Float> activation = sub.getPCActivity();
+		PlaceCellModel pcm = (PlaceCellModel) sub.getModel();
+		Map<Integer, Float> activation = pcm.getPCActivity();
 		PropertyHolder props = PropertyHolder.getInstance();
 		String trialName = props.getProperty("trial");
 		String groupName = props.getProperty("group");

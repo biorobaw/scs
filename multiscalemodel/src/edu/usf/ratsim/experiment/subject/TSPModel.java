@@ -4,8 +4,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.usf.experiment.robot.AffordanceRobot;
+import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
@@ -22,8 +24,8 @@ public class TSPModel extends Model {
 	public TSPModel() {
 	}
 
-	public TSPModel(ElementWrapper params, Subject subject,
-			LocalizableRobot lRobot) {
+	public TSPModel(ElementWrapper params,
+			Robot robot) {
 		// Get some configuration values for place cells + qlearning
 		float PCRadius = params.getChildFloat("PCRadius");
 		int numCCCellsPerSide = params.getChildInt("numPCCellsPerSide");
@@ -39,7 +41,10 @@ public class TSPModel extends Model {
 		}
 		List<Integer> order = params.getChildIntList("feederOrder");
 
-		numActions = subject.getPossibleAffordances().size();
+		AffordanceRobot aRobot = (AffordanceRobot) robot;
+		LocalizableRobot lRobot = (LocalizableRobot) robot;
+		
+		numActions = aRobot.getPossibleAffordances().size();
 
 		// Create the layers
 		placeCells = new TesselatedPlaceCellLayer(
@@ -48,7 +53,7 @@ public class TSPModel extends Model {
 		addModule(placeCells);
 		
 		// Module that navigates the feeders
-		feederTraveler = new FeederTraveler("Traveler", order, subject, lRobot);
+		feederTraveler = new FeederTraveler("Traveler", order, robot);
 		// Add in port for dependency
 		feederTraveler.addInPort("pc", placeCells.getOutPort("activation"));
 		addModule(feederTraveler);

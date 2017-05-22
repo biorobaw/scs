@@ -7,6 +7,7 @@ import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.Logger;
+import edu.usf.experiment.model.ValueModel;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -31,7 +32,8 @@ public class ValueEntropyLogger extends Logger {
 
 //		System.out.println("Starting to log value");
 		
-		float valueEntropy = sub.getValueEntropy();
+		ValueModel vm = (ValueModel) sub.getModel();
+		float valueEntropy = vm.getValueEntropy();
 
 		writer.println(trialName + '\t' + groupName + '\t' + subName + '\t'
 				+ episodeName + '\t' + cycle + "\t" + valueEntropy);

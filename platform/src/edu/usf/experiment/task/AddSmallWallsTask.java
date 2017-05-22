@@ -14,8 +14,8 @@ import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.RobotLoader;
+import edu.usf.experiment.subject.ModelLoader;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.SubjectLoader;
 import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.UniverseLoader;
@@ -24,6 +24,7 @@ import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.experiment.utils.XMLExperimentParser;
+import edu.usf.micronsl.Model;
 
 public class AddSmallWallsTask extends Task {
 
@@ -221,10 +222,9 @@ public class AddSmallWallsTask extends Task {
 					.loadRoot("multiscalemodel/src/edu/usf/ratsim/experiment/xml/multiFeedersTrainRecallSmallObs.xml");
 			Universe univ = UniverseLoader.getInstance().load(root, ".");
 			Robot robot = RobotLoader.getInstance().load(root);
-			Subject subject = SubjectLoader.getInstance().load("a", "a",
-					root.getChild("model"), robot);
+			Model model = ModelLoader.getInstance().load(root.getChild("model"), robot);
 			AddSmallWallsTask t = new AddSmallWallsTask(null);
-			while (!t.putWalls(univ, subject))
+			while (!t.putWalls(univ, new Subject("sub", "group", model, robot)))
 				;
 			System.out.println("walls added");
 			// try {

@@ -10,6 +10,7 @@ import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
+import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 
 /**
  * Sets the goal to be the flashing feeder (if any) or any feeder if there is
@@ -52,6 +53,11 @@ public class FlashingOrAnyGoalDecider extends Module {
 	}
 
 	public void run() {
+		// TODO: fix models to input these ports
+		Bool0dPort subAte = (Bool0dPort) getInPort("subAte");
+		Bool0dPort subTriedToEat = (Bool0dPort) getInPort("subTriedToEat");
+		
+		
 		if (currentGoal == -1) {
 			// currentGoal = 0;
 			currentGoal = r.nextInt(numIntentions);
@@ -59,7 +65,7 @@ public class FlashingOrAnyGoalDecider extends Module {
 		}
 
 		// TODO: why do we need the second term?
-		if (subject.hasEaten() || subject.hasTriedToEat()) {
+		if (subAte.get() || subTriedToEat.get()) {
 			lastFeeder = currentGoal;
 			Feeder newFeeder = FeederUtils.getClosestFeeder(fr.getVisibleFeeders());
 			if (!fr.isFeederClose() || newFeeder.getId() == lastFeeder)

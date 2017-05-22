@@ -43,7 +43,7 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.experiment.subject.pathplanning.bug2.Bug2Subject</name>
+		<name>edu.usf.ratsim.experiment.subject.pathplanning.bug2.Bug2Model</name>
 		<params>
 			<!-- Step length in meters -->
 			<step>.05</step>

@@ -3,7 +3,6 @@ package edu.usf.ratsim.nsl.modules.multipleT;
 import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
@@ -24,16 +23,14 @@ public class MultipleTActionPerformer extends Module {
 	//Point3f[] actions; 
 	float[] angles;
 	AffordanceRobot robot;
-	Subject subject;
 
-	public MultipleTActionPerformer(String name,int numActions,float stepSize,Subject subject) {
+	public MultipleTActionPerformer(String name,int numActions,float stepSize, Robot robot) {
 		super(name);
 
 		this.numActions = numActions;
 		this.angles = new float[numActions];
 		//this.actions = new Point3f[numActions];
-		this.subject = subject;
-		this.robot = (AffordanceRobot) subject.getRobot();
+		this.robot = (AffordanceRobot) robot;
 		this.stepSize = stepSize;
 		
 		double deltaAngle = 2*Math.PI/numActions;
@@ -53,11 +50,11 @@ public class MultipleTActionPerformer extends Module {
 		int action = ((Int0dPort)getInPort("action")).get();
 		//System.out.println("performing: "+action);
 		float deltaAngle = GeomUtils.relativeAngle(angles[action], ((LocalizableRobot)robot).getOrientationAngle());
-		robot.executeAffordance(new TurnAffordance(deltaAngle, stepSize), subject);
-		robot.executeAffordance(new ForwardAffordance(stepSize), subject);
+		robot.executeAffordance(new TurnAffordance(deltaAngle, stepSize));
+		robot.executeAffordance(new ForwardAffordance(stepSize));
 		
 		EatAffordance eat = new EatAffordance();
-		if(robot.checkAffordance(eat)) robot.executeAffordance(eat, subject);
+		if(robot.checkAffordance(eat)) robot.executeAffordance(eat);
 		
 		//System.out.println("iteration: " + i);
 		//System.out.println("");

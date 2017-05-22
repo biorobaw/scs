@@ -43,7 +43,7 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.experiment.subject.pathplanning.apf.APFSubject</name>
+		<name>edu.usf.ratsim.experiment.subject.pathplanning.apf.APFModel</name>
 		<params>
 			<algorithm>none</algorithm>
 		</params>

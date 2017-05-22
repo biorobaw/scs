@@ -7,7 +7,7 @@ import javax.vecmath.Quat4f;
 
 import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.FeederRobot;
-import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
@@ -29,20 +29,19 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 	private FeederRobot fr;
 	private float negReward;
 
-	public FlashingTaxicFoodFinderSchema(String name, Subject subject,
-			LocalizableRobot robot, float reward, float negReward,
+	public FlashingTaxicFoodFinderSchema(String name,
+			Robot robot, float reward, float negReward,
 			float lambda, boolean estimateValue) {
 		super(name);
 		this.reward = reward;
 		this.negReward = negReward;
-
-		// Votes for action and value
-		votes = new float[subject.getPossibleAffordances().size()];
-		addOutPort("votes", new Float1dPortArray(this, votes));
-
-		this.subject = subject;
+		
 		this.ar = (AffordanceRobot) robot;
 		this.fr = (FeederRobot) robot;
+
+		// Votes for action and value
+		votes = new float[ar.getPossibleAffordances().size()];
+		addOutPort("votes", new Float1dPortArray(this, votes));
 	}
 
 	/**
@@ -59,18 +58,18 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 			votes[i] = 0;
 
 		// Get the votes for each affordable action
-		List<Affordance> affs = ar.checkAffordances(subject
+		List<Affordance> affs = ar.checkAffordances(ar
 				.getPossibleAffordances());
 		int voteIndex = 0;
 		
 		boolean feederToEat = fr.isFeederClose()
 				&& fr.seesFlashingFeeder()
 				&& fr.getFlashingFeeder().getId() == FeederUtils.getClosestFeeder(fr.getVisibleFeeders()).getId();
-//		System.out.println("Feeder close: " + robot.isFeederClose());
-//		System.out.println("Feeder to eat: " + feederToEat);
-//		if (robot.seesFlashingFeeder()){
-//			System.out.println("Seeing flashing feeder");
-//		}
+		System.out.println("Feeder close: " + fr.isFeederClose());
+		System.out.println("Feeder to eat: " + feederToEat);
+		if (fr.seesFlashingFeeder()){
+			System.out.println("Seeing flashing feeder");
+		}
 		float maxValue = 0;
 		int index = -1;
 		for (Affordance af : affs) {
@@ -115,7 +114,7 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 	}
 
 	private float getFeederValue(Point3f feederPos) {
-		float steps = GeomUtils.getStepsToFeeder(feederPos, subject);
+		float steps = GeomUtils.getStepsToFeeder(feederPos, ar.getMinAngle(), ar.getStepLength());
 		return (float) Math.max(0f, (reward + negReward * steps)); // *
 																	// Math.pow(lambda,
 																	// ));

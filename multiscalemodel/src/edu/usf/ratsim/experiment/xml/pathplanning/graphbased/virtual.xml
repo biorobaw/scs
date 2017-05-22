@@ -41,7 +41,7 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.experiment.subject.pathplanning.graphbased.BugAndGraphSubject</name>
+		<name>edu.usf.ratsim.experiment.subject.pathplanning.graphbased.BugAndGraphModel</name>
 		<params>
 			<algorithm>none</algorithm>
 		</params>

@@ -25,7 +25,7 @@ public class UnFlashAllFeedersOnEating extends Task {
 		
 		FeederUniverse fu = (FeederUniverse) u;
 		
-		if (s.hasEaten())
+		if (fu.hasRobotEaten())
 			for (Integer f : fu.getFeederNums())
 				fu.setFlashingFeeder(f, false);
 	}

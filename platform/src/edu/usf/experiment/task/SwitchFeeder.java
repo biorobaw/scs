@@ -30,7 +30,7 @@ public class SwitchFeeder extends Task {
 		
 		FeederUniverse fu = (FeederUniverse) u;
 		
-		if (s.hasEaten()) {
+		if (fu.hasRobotEaten()) {
 			int eatenFeeder = fu.getFeedingFeeder();
 
 			// Deactivate the feeding one

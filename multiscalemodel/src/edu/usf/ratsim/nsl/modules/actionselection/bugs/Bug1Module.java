@@ -2,6 +2,7 @@ package edu.usf.ratsim.nsl.modules.actionselection.bugs;
 
 import javax.vecmath.Point3f;
 
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
@@ -23,10 +24,11 @@ public class Bug1Module extends Module {
 	private Point3f minDistPlace;
 	private Point3f hitPoint;
 
-	public Bug1Module(String name, Subject sub) {
+	public Bug1Module(String name, Robot robot) {
 		super(name);
 
-		this.r = (VirtualRobot) sub.getRobot();
+		// TODO: set to differential robot?
+		this.r = (VirtualRobot) robot;
 
 		state = State.GOAL_SEEKING;
 	}

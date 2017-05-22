@@ -38,7 +38,7 @@ public class TaxicManyFeedersManyActions extends Module {
 		this.negReward = negReward;
 
 		// Votes for action and value
-		votes = new float[subject.getPossibleAffordances().size()];
+		votes = new float[ar.getPossibleAffordances().size()];
 		addOutPort("votes", new Float1dPortArray(this, votes));
 
 		this.subject = subject;
@@ -62,7 +62,7 @@ public class TaxicManyFeedersManyActions extends Module {
 			votes[i] = 0;
 
 		// Get the votes for each affordable action
-		List<Affordance> affs = ar.checkAffordances(subject
+		List<Affordance> affs = ar.checkAffordances(ar
 				.getPossibleAffordances());
 		int voteIndex = 0;
 		boolean feederToEat = fr.isFeederClose();
@@ -126,7 +126,7 @@ public class TaxicManyFeedersManyActions extends Module {
 	}
 
 	private float getFeederValue(Point3f feederPos) {
-		float steps = GeomUtils.getStepsToFeeder(feederPos, subject);
+		float steps = GeomUtils.getStepsToFeeder(feederPos, ar.getMinAngle(), ar.getStepLength());
 		return (float) Math.max(0, (reward + negReward * steps));
 	}
 

@@ -9,6 +9,7 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
+import edu.usf.experiment.model.ValueModel;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -35,7 +36,9 @@ public class ValueLogger extends Logger {
 		System.out.println("Starting to log value");
 
 
-		Map<Point3f, Float> valPoints = sub.getValuePoints();
+		ValueModel vm = (ValueModel) sub.getModel();
+		
+		Map<Point3f, Float> valPoints = vm.getValuePoints();
 	
 		for (Point3f p : valPoints.keySet())
 			writer.println(trialName + '\t' + groupName + '\t'

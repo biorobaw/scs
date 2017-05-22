@@ -36,5 +36,21 @@ public interface FeederRobot extends VisionRobot {
 
 	public Feeder getFeederInFront();
 
+	/**
+	 * Bookeeping method to signal the robot ate: last action was a successful eat
+	 * @return
+	 */
+	public boolean hasRobotEaten();
+
+	/**
+	 * Bookeeping method to signal the robot tried to eat: last action was eating
+	 * @return
+	 */
+	public boolean hasRobotTriedToEat();
+
+	public List<Feeder> getAllFeeders();
+
+	public void clearEaten();
+
 	
 }

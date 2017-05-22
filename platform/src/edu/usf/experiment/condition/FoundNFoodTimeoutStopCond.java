@@ -1,7 +1,7 @@
 package edu.usf.experiment.condition;
 
 import edu.usf.experiment.Episode;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -23,9 +23,9 @@ public class FoundNFoodTimeoutStopCond implements Condition {
 
 	@Override
 	public boolean holds(Episode episode) {
-		Subject sub = episode.getSubject();
-
-		if (sub.hasEaten()) {
+		FeederUniverse fu = (FeederUniverse) episode.getUniverse();
+			
+		if (fu.hasRobotEaten()) {
 			stepsSinceLastAte = 0;
 			toGo--;
 		} else

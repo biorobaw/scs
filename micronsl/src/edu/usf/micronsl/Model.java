@@ -142,4 +142,7 @@ public class Model {
 		for (Module m : moduleList)
 			m.newTrial();
 	}
+
+	public void endEpisode() {
+	}
 }

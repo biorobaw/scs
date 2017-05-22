@@ -10,9 +10,11 @@ import javax.vecmath.Point3f;
 
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
+import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.module.copy.Int0dCopyModule;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
@@ -33,7 +35,7 @@ import edu.usf.ratsim.nsl.modules.multipleT.UpdateQModuleAC;
 import edu.usf.ratsim.nsl.modules.rl.ActorCriticDeltaError;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
 
-public class MultipleTModelAsleep extends MultipleTModel {
+public class MultipleTModelAsleep extends Model {
 
 	private int numActions;
 	private int numPC;
@@ -49,8 +51,9 @@ public class MultipleTModelAsleep extends MultipleTModel {
 	public MultipleTModelAsleep() {
 	}
 
-	public MultipleTModelAsleep(ElementWrapper params, Subject subject,
-			LocalizableRobot lRobot, int numActions,int numPC,LinkedList<PlaceCell> pcList) {
+	public MultipleTModelAsleep(ElementWrapper params,
+			Robot robot, int numActions,int numPC,LinkedList<PlaceCell> pcList, Float2dSparsePort QTable,
+			Float2dSparsePort WTable, float step) {
 		
 		//Get parameters frorm xml file
 		
@@ -62,7 +65,7 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		this.numActions = numActions;
 		this.numPC = numPC;
 		
-		
+		LocalizableRobot lRobot = (LocalizableRobot) robot;
 		
 		
 		
@@ -114,9 +117,9 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		
 		
 		//Create Variables Q,W, note sleepState has already been initialized.
-		QTable = ((MultipleTSubject)subject).QTable;
+		this.QTable = QTable;
 		
-		WTable = ((MultipleTSubject)subject).WTable;
+		this.WTable = WTable;
 		
 		//Create pos module 
 		Position pos = new Position("position", lRobot);
@@ -170,7 +173,7 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		actionSelection.addInPort("nextPosition", nextPosModule.getOutPort("nextPosition"));
 		addModule(actionSelection);
 		
-		Module actionPerformer = new MoveFromToActionPerformer("actionPerformer",subject);
+		Module actionPerformer = new MoveFromToActionPerformer("actionPerformer", robot);
 		actionPerformer.addInPort("position", pos.getOutPort("position"));
 		actionPerformer.addInPort("nextPosition", nextPosModule.getOutPort("nextPosition"));
 		addModule(actionPerformer);
@@ -179,7 +182,7 @@ public class MultipleTModelAsleep extends MultipleTModel {
 		actionPerformer.addPreReq(placeCells);
 		
 		//create subAte module
-		SubjectAte subAte = new SubjectAte("Subject Ate",subject);
+		SubjectAte subAte = new SubjectAte("Subject Ate",robot);
 		addModule(subAte);
 		subAte.addPreReq(actionPerformer);
 		

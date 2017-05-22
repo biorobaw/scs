@@ -7,6 +7,7 @@ import java.util.Random;
 
 import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.FeederRobot;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.StepRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.EatAffordance;
@@ -26,13 +27,12 @@ public class GoToFeeder extends Module {
 	private Int0dPort takenActionPort;
 	private Subject sub;
 
-	public GoToFeeder(String name, Subject sub, Random random) {
+	public GoToFeeder(String name, Robot robot, Random random) {
 		super(name);
 
-		this.fr = (FeederRobot) sub.getRobot();
-		this.ar = (AffordanceRobot) sub.getRobot();
-		this.sr = (StepRobot) sub.getRobot();
-		this.sub = sub;
+		this.fr = (FeederRobot) robot;
+		this.ar = (AffordanceRobot) robot;
+		this.sr = (StepRobot) robot;
 		this.random = random;
 		
 		takenActionPort = new Int0dPort(this);
@@ -77,7 +77,7 @@ public class GoToFeeder extends Module {
 			int desiredFeederId = avList.get(0).getAction();
 			if (fr.isFeederClose()
 					&& FeederUtils.getClosestFeeder(fr.getVisibleFeeders()).getId() == desiredFeederId){
-				ar.executeAffordance(new EatAffordance(), sub);
+				ar.executeAffordance(new EatAffordance());
 			} else {
 				Feeder desiredFeeder = null;
 				for (Feeder f : visibleFeeders)

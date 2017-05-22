@@ -107,7 +107,7 @@ public class Episode {
 				+ trial.getGroup() + " " + trial.getSubjectName() + " "
 				+ episodeNumber + " started.");
 
-		getSubject().newEpisode();
+		getSubject().getModel().newEpisode();
 		
 		// Do all before trial tasks
 		for (Logger logger : beforeEpisodeLoggers)
@@ -127,7 +127,7 @@ public class Episode {
 			for (Task t : beforeCycleTasks)
 				t.perform(this);
 
-			getSubject().stepCycle();
+			getSubject().getModel().simRun();
 //			System.out.println("cycle");
 			// TODO: universe step cycle
 
@@ -161,7 +161,7 @@ public class Episode {
 
 		System.out.println();
 		
-		getSubject().endEpisode();
+		getSubject().getModel().endEpisode();
 
 		
 		// Finalize loggers
