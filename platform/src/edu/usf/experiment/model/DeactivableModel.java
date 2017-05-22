@@ -1,14 +1,14 @@
 package edu.usf.experiment.model;
 
-import java.util.LinkedList;
+import java.util.List;
 
 public interface DeactivableModel {
 
-	void deactivateHPCLayersProportion(LinkedList<Integer> indexList, float proportion);
+	void deactivateHPCLayersProportion(List<Integer> indexList, float proportion);
 
-	void deactivateHPCLayersRadial(LinkedList<Integer> indexList, float constant);
+	void deactivateHPCLayersRadial(List<Integer> indexList, float constant);
 
-	void reactivateHPCLayers(LinkedList<Integer> indexList);
+	void reactivateHPCLayers(List<Integer> indexList);
 
 	
 }

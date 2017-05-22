@@ -2,7 +2,7 @@ package edu.usf.ratsim.nsl.modules.cell;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.ratsim.experiment.subject.NotImplementedException;
+import edu.usf.ratsim.support.NotImplementedException;
 
 /**
  * Exponential conjunctive cells are exponentially modulated by place and head

@@ -22,10 +22,10 @@ import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
-import edu.usf.ratsim.experiment.subject.NotImplementedException;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Bug0Module;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Bug1Module;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Bug2Module;
+import edu.usf.ratsim.support.NotImplementedException;
 
 public class ExperienceRoadMap extends Module {
 

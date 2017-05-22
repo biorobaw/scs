@@ -46,7 +46,7 @@ public class SetUpRandomWalls extends Task {
 		
 		PlatformUniverse pu = (PlatformUniverse) u;
 		
-		wu.clearWalls();
+		wu.revertWalls();
 		pu.clearPlatforms();
 		
 		pu.addPlatform(new Point3f(-2f, 0, 0), .1f);
@@ -57,6 +57,8 @@ public class SetUpRandomWalls extends Task {
 		wu.addWall(-len, -len/2, len, -len/2);
 		wu.addWall(len, -len/2, len, len/2);
 		System.out.println("[+] Adding wmall walls");
+		wu.setRevertWallPoint();
+		
 		while (!placeWalls(wu, pu, s))
 			;
 		System.out.println("[+] Small walls added");
@@ -64,9 +66,7 @@ public class SetUpRandomWalls extends Task {
 	
 	public boolean placeWalls(WallUniverse wu, PlatformUniverse pu, Subject sub) {
 		Random random = RandomSingleton.getInstance();
-		List<LineSegment> outerWalls = new LinkedList<LineSegment>();
 		watchDogCount = 0;
-		wu.setRevertWallPoint();
 
 		// Add Outer Walls
 		int j = 0;

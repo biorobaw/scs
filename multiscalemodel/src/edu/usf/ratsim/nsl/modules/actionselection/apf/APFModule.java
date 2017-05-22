@@ -8,8 +8,8 @@ import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Velocities;
-import edu.usf.ratsim.robot.virtual.VirtualRobot;
 import edu.usf.ratsim.support.SonarUtils;
+import edu.usf.vlwsim.VirtualRobot;
 
 public class APFModule extends Module {
 

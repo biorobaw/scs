@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="us-ascii"?>
+
+<world>
+	<boundingRect>
+		<x>-1</x>
+		<y>-1</y>
+		<w>1</w>
+		<h>1</h>
+	</boundingRect>
+
+	<wall>
+		<x1>0</x1>
+		<y1>.5</y1>
+		<z1>0</z1>
+		<x2>0</x2>		
+		<y2>-.5</y2>	
+		<z2>0</z2>	
+	</wall>		
+
+	<platform>
+		<r>.1</r>
+		<h>0</h>
+		<cr>0</cr>
+		<cg>1</cg>
+		<cb>0</cb>
+		<x>-1</x>
+		<y>0</y>
+		<z>0</z>
+	</platform>				
+	
+	<!-- Views -->
+	<topview>
+		<x>0</x>
+		<y>0</y>
+		<z>4</z>
+	</topview>
+	<thirdview>
+		<x>2.1</x>
+		<y>2.5</y>
+		<z>2.1</z>
+	</thirdview>
+	<robotview>
+		<x>1</x>
+		<y>.1</y>
+		<z>0</z>
+		<theta>1.57</theta>
+	</robotview>
+	
+</world>
+

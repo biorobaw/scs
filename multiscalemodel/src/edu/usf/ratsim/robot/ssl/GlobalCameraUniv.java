@@ -7,7 +7,7 @@ import javax.vecmath.Quat4f;
 
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
-import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
+import edu.usf.vlwsim.VirtUniverse;
 
 public class GlobalCameraUniv extends VirtUniverse{
 

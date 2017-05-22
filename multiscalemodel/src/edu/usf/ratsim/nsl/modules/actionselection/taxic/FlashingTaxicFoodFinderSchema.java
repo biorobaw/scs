@@ -65,11 +65,11 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 		boolean feederToEat = fr.isFeederClose()
 				&& fr.seesFlashingFeeder()
 				&& fr.getFlashingFeeder().getId() == FeederUtils.getClosestFeeder(fr.getVisibleFeeders()).getId();
-		System.out.println("Feeder close: " + fr.isFeederClose());
-		System.out.println("Feeder to eat: " + feederToEat);
-		if (fr.seesFlashingFeeder()){
-			System.out.println("Seeing flashing feeder");
-		}
+////		System.out.println("Feeder close: " + fr.isFeederClose());
+////		System.out.println("Feeder to eat: " + feederToEat);
+//		if (fr.seesFlashingFeeder()){
+//			System.out.println("Seeing flashing feeder");
+//		}
 		float maxValue = 0;
 		int index = -1;
 		for (Affordance af : affs) {

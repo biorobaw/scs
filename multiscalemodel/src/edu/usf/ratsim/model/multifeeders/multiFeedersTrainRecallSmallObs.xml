@@ -1,0 +1,908 @@
+<?xml version="1.0" encoding="us-ascii"?>
+	
+<experiment>
+	<universe>
+		<name>edu.usf.vlwsim.VirtUniverse</name>
+		<params>
+			<!-- Distance from which the food is accessible according to the universe -->
+			<closeToFoodThrs>0.1</closeToFoodThrs>
+			<!-- Map file -->
+			<maze>multiscalemodel/src/edu/usf/ratsim/model/multifeeders/multiFeeders.xml</maze>
+			<!-- Display de window or run without GUI -->
+			<display>true</display>
+		</params>
+	</universe>
+	
+	<robot>
+		<!-- Robot to use. Use full name of the class -->
+		<name>edu.usf.vlwsim.VirtualRobot</name>
+		<params>
+			<!-- Step length in meters -->
+			<step>.05</step>
+			<!-- Left rotation amount in radians -->
+			<leftAngle>0.195</leftAngle>
+			<!-- Right rotation amount in radians -->
+			<rightAngle>-0.195</rightAngle>
+			<!-- Percentual translational noise -->
+			<noise>.2</noise>
+			<!-- Rotation noise added after translation -->
+			<translationRotationNoise>.195</translationRotationNoise>
+			<!-- How many steps are projected for obstacle avoidance purpose -->
+			<lookaheadSteps>1</lookaheadSteps>
+			<!-- Half the field of view of the rat -->
+			<halfFieldOfView>1.83</halfFieldOfView>
+			<!-- How long can the rat see in meters -->
+			<visionDist>10</visionDist>
+			<!-- How far away can the robot eat food. This should be shorter than the universe
+				threshold -->
+			<closeThrs>.1</closeThrs>
+		</params>
+	</robot>
+	
+	<model>
+		<!-- Model implementation -->
+		<name>edu.usf.ratsim.model.multifeeders.MultiScaleArtificialPCModel</name>
+		<params>
+			
+			<!-- Number of conjunctive cell layers -->
+			<numCCLayers>3</numCCLayers>
+			<!-- Size of each layer in millimeters -->
+			<layerLengths>3,3,3</layerLengths>
+			<!-- Number of cells per layer -->
+			<numCCCellsPerLayer>200000,120000,80000</numCCCellsPerLayer>
+			<!-- Type of learning -->
+			<rlType>actorCritic</rlType>
+			<!-- Type of conjunctive layer -> learning connection -->
+			<voteType>gradient</voteType>
+			<!-- Layer connection probabilities to action selection for gradient connections -->
+			<votesConnProbs>1,0.5, 0</votesConnProbs>
+			<!-- Layer connection probabilities to value estimation for gradient connections -->
+			<valueConnProbs>0.0,.5,1</valueConnProbs>
+			<!-- Minimum conjuntive layer cell radius -->
+			<minPCRadius>.0682</minPCRadius>
+			<!-- Maximum conjuntive layer cell radius -->
+			<maxPCRadius>.1428</maxPCRadius>
+			<!-- Type of conjunctive cell -->
+			<placeCells>ExponentialWallConjCell</placeCells>
+			<votesNormalizer>20</votesNormalizer>
+			<valueNormalizer>20</valueNormalizer>
+			<!-- Wall cell modulation. How much does a wall modulate the place field. Greater
+				means less activity -->
+			<wallParamA>10</wallParamA>			
+			<wallParamB>.1</wallParamB>
+			<!-- Amount of cells placed near the goal -->
+			<goalCellProportion>0.5</goalCellProportion>
+			<!-- Minimum angular radius of conjuntive cells -->
+			<minHDRadius>0.195</minHDRadius>
+			<!-- Maximum angular radius of conjuntive cells -->
+			<maxHDRadius>1.57</maxHDRadius>
+			<!-- Number of intentions or maps -->
+			<numIntentions>8</numIntentions>
+			<!-- Reward value for food -->
+			<foodReward>1000</foodReward>
+			<!-- Reward value given when it doesnt eat -->
+			<nonFoodReward>-10</nonFoodReward>
+			<!-- Lambda discount factor for the taxic module-->
+			<taxicDiscountFactor>1</taxicDiscountFactor>
+			<!-- Lambda discount factor for the learning algorithm -->
+			<rlDiscountFactor>1</rlDiscountFactor>
+			<!-- Alpha for the learning algorithm -->
+			<alpha>.5</alpha>
+			<!-- Elegibility traces for the learning algorithm -->
+			<tracesDecay>.9</tracesDecay>
+			<!-- Initial value for values and action values -->
+			<initialValue>0</initialValue>
+			<!-- Value associated with a flashing feeder -->
+			<flashingReward>500</flashingReward>
+			<flashingNegReward>-20</flashingNegReward>
+			<!-- Value associated with a non flashing feeder -->
+			<nonFlashingReward>100</nonFlashingReward>
+			<nonFlashingNegReward>-20</nonFlashingNegReward>
+			<!-- Whether the rat can remember last two feeders -->
+			<!-- TODO: take this out -->
+			<rememberLastTwo>false</rememberLastTwo>
+			<!-- Whether the taxic modules can contribute to value estimation -->
+			<estimateValue>true</estimateValue>
+			<!-- Cell contribution when not using normalization -->
+			<!-- TODO: take out -->
+			<cellContribution>1</cellContribution>
+			<!-- Value assigned to exploration action-values -->
+			<explorationReward>0</explorationReward>
+			<!-- Half life value for decay exploration -->
+			<explorationHalfLifeVal>1</explorationHalfLifeVal>
+			<!-- Value assigned to wall actions for the wall taxic modules -->
+			<wallTaxicVal>10</wallTaxicVal>
+			<wallNegReward>-1</wallNegReward>
+			<!-- Minimum distance to take wall into account -->
+			<wallTooCloseDist>.05</wallTooCloseDist>
+			
+			<avoidWallTaxicVal>20</avoidWallTaxicVal>
+			<avoidWallTaxicDist>.1</avoidWallTaxicDist>
+			<!-- Attentional span for still exploration -->
+			<!-- TODO: look at this -->
+			<maxAttentionSpan>20</maxAttentionSpan>
+			<!-- Duration of still exploration actions -->
+			<maxActionsSinceForward>10</maxActionsSinceForward>
+			<stillExplorationVal>1000</stillExplorationVal>
+			<!-- Map dimensions for conjuntive cell placing -->
+			<xmin>-.5</xmin>
+			<ymin>-.5</ymin>
+			<xmax>.5</xmax>
+			<ymax>.5</ymax>
+		</params>
+	</model>
+	
+	<!-- Group definition. The order determines order of execution -->
+	<group>
+		<name>Ventral</name>
+		<numMembers>64</numMembers>
+		<params>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	
+	<group>
+		<name>Dorsal</name>
+		<numMembers>64</numMembers>
+		<params>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	
+	<group>
+		<name>Control</name>
+		<numMembers>64</numMembers>
+		<params>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	
+<!--
+	<group>
+		<name>TimeoutControl</name>
+		<numMembers>64</numMembers>
+		<params>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	<group> 
+		<name>NegControl</name> 
+		<numMembers>64</numMembers> 
+		<params> 
+		</params>
+		<tasks> 
+		</tasks> 
+	</group> 
+-->
+	<!-- Task to be performed before the eperiment -->
+	<beforeExperimentTasks>
+		<!-- Enable feeders for the to be able to give food -->
+		<task>
+			<name>edu.usf.experiment.task.EnableRandomFeedersTriangle</name>
+			
+		</task>
+		<!--<task> <name>edu.usf.experiment.task.EnableFeeders</name> <params> <feeders>1,3,5</feeders>
+			</params> </task>-->
+	</beforeExperimentTasks>
+	
+	<!-- Loggers to be executed before the eperiment -->
+	<beforeExperimentLoggers>
+		<!-- Log walls -->
+		<!--<logger> <name>edu.usf.experiment.log.WallLogger</name> <params> </params> </logger>-->
+		<!-- Log conjunctive cells -->
+		<!--<logger> <name>edu.usf.ratsim.experiment.log.PCLogger</name> </logger>-->
+	</beforeExperimentLoggers>
+	<!-- Plots to perform before the experiment -->
+	<beforeExperimentPlotters>
+		<!-- Convert CSV files to rdata files -->
+		<!-- <plotter> <name>edu.usf.experiment.plot.CSVConverter</name> </plotter> -->
+		<!-- <plotter> <name>edu.usf.experiment.plot.PlotGatherer</name> </plotter> -->
+		<!--<plotter> <name>edu.usf.ratsim.experiment.plot.PCPlotter</name> </plotter>-->
+	</beforeExperimentPlotters>
+	
+	<!-- Training trial - Non-delayed cue phase -->
+	<trial>
+		<name>Training</name>
+		<!-- Groups to apply the trial -->
+		<groups>
+			<group>Control</group>
+			<group>Dorsal</group>
+			<group>Ventral</group>
+			<group>NegControl</group>
+		</groups>
+		<!-- Tasks to perform beforehand -->
+		<beforeTrialTasks>
+		</beforeTrialTasks>
+		<!-- Episodes definition -->
+		<episodes>
+			<!-- Number of episodes -->
+			<number>1</number>
+			<!-- Sleep between cycles for visualization -->
+			<sleep>0</sleep>
+			<!-- Tasks to perform before each episode -->
+			<beforeEpisodeTasks>
+				<!-- Flash one of the feeders -->
+				<task>
+					<name>edu.usf.experiment.task.FlashActivateRandomFeeder</name>
+					<params>
+					</params>
+				</task>
+				<!-- Place the animat in a given place -->
+				<task>
+					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<params>
+						<point>
+							<x>0</x>
+							<y>0</y>
+							<theta>3.14</theta>
+						</point>
+					</params>
+				</task>
+			</beforeEpisodeTasks>
+			<!-- Tasks to performe before each cycle -->
+			<beforeCycleTasks>
+			</beforeCycleTasks>
+			<!-- Tasks to performe after each cycle -->
+			<afterCycleTasks>
+				<!-- Switch which feeder is flashing if the robot ate -->
+				<task>
+					<name>edu.usf.experiment.task.SwitchFlashingFeeder</name>
+				</task>
+				<!-- Release food from the feeder if the rat is close -->
+				<task>
+					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+				</task>
+			</afterCycleTasks>
+			<!-- Loggers to execute after each cycle -->
+			<afterCycleLoggers>
+				<!-- Log the subject position -->
+				<logger>
+					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
+					<params>
+					</params>
+				</logger>
+<!--				<logger>-->
+<!--					<name>edu.usf.ratsim.experiment.log.ValueEntropyLogger</name>-->
+<!--				</logger>-->
+				<!--<logger> <name>edu.usf.experiment.log.ValueLogger</name> <params> <circle>false</circle>
+					<interval>.1</interval> <angleInterval>.78</angleInterval> <numIntentions>1</numIntentions>
+					</params> </logger>-->
+				<!-- Log each position estimated value -->
+				
+			</afterCycleLoggers>
+			<!-- Loggers to execute after each episode -->
+			<afterEpisodeLoggers>
+				<!-- Log each wall position -->
+				<logger>
+					<name>edu.usf.experiment.log.WallLogger</name>
+					<params>
+					</params>
+				</logger>
+				<logger>
+					<name>edu.usf.experiment.log.FeederLogger</name>
+				</logger>
+
+				
+				<!-- Log each position estimated value -->
+				<!--<logger> <name>edu.usf.experiment.log.ValueLogger</name> <params> <circle>false</circle>
+					<interval>.1</interval> <angleInterval>.78</angleInterval> <numIntentions>1</numIntentions>
+					</params> </logger>-->
+			</afterEpisodeLoggers>
+			<!-- Tasks to execute after each episode -->
+			<afterEpisodeTasks>
+			</afterEpisodeTasks>
+			<!-- Conditions upon which the episode ends -->
+			<stopConditions>
+				<!-- Timeout cycles -->
+				<condition>
+					<name>edu.usf.experiment.condition.MaxCycles</name>
+					<params>
+						<max>10000</max>
+					</params>
+				</condition>
+				<!-- Has eaten from 100 feeders -->
+				<condition>
+					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
+					<params>
+						<n>100</n>
+					</params>
+				</condition>
+			</stopConditions>
+			<!-- Plotters to execute after each episode -->
+			<afterEpisodePlotters>
+				<!-- Copy the maze file to the episode folder -->
+				<plotter>
+					<name>edu.usf.experiment.plot.CopyMazeFile</name>
+				</plotter>
+				<!-- Convert csv to rdata -->
+				<plotter>
+					<name>edu.usf.experiment.plot.CSVConverter</name>
+				</plotter>
+				<!-- Get time info from position information -->
+				<plotter>
+					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
+				</plotter>
+				<!-- Plot path for each episode -->
+				<plotter>
+					<name>edu.usf.experiment.plot.PathPlotter</name>
+				</plotter>
+				<!-- Plot value -->
+				
+				<!--<plotter> <name>edu.usf.experiment.plot.ValuePlotter</name> </plotter>-->
+			</afterEpisodePlotters>
+		</episodes>
+		<!-- Tasks to perform after the trial has ended -->
+		<afterTrialTasks>
+		</afterTrialTasks>
+		<!-- Loggers to execute after the trial has ended -->
+		<afterTrialLoggers>
+			
+		</afterTrialLoggers>
+		<!-- Plotters to execute after the trial has ended -->
+		<afterTrialPlotters>
+		</afterTrialPlotters>
+	</trial>
+	
+	<!-- Second Training trial - Delayed cue phase -->
+	<trial>
+		<name>DelayedCueNoObs</name>
+		<!-- Groups to apply the trial -->
+		<groups>
+			<group>Control</group>
+			<group>Dorsal</group>
+			<group>Ventral</group>
+			<group>NegControl</group>
+		</groups>
+		<!-- Tasks to perform beforehand -->
+		<beforeTrialTasks>
+		</beforeTrialTasks>
+		<!-- Episodes definition -->
+		<episodes>
+			<!-- Number of episodes -->
+			<number>1</number>
+			<!-- Sleep between cycles for visualization -->
+			<sleep>0</sleep>
+			<!-- Tasks to perform before each episode -->
+			<beforeEpisodeTasks>
+				<!-- Turn of the flash of all the feeders -->
+				<task>
+					<name>edu.usf.experiment.task.UnFlashAllFeeders</name>
+					<params>
+					</params>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.DeactivateAllFeeders</name>
+				</task>
+				<!-- Activate all enabled feeders so the rat decides which one to feed from -->
+				<task>
+					<name>edu.usf.experiment.task.ActivateRandomFeeder</name>
+					<params>
+					</params>
+				</task>
+				<!-- Place the animat in a given place -->
+				<task>
+					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<params>
+						<point>
+							<x>0</x>
+							<y>0</y>
+							<theta>3.14</theta>
+						</point>
+					</params>
+				</task>
+			</beforeEpisodeTasks>
+			<!-- Tasks to performe before each cycle -->
+			<beforeCycleTasks>
+			</beforeCycleTasks>
+			<!-- Tasks to performe after each cycle -->
+			<afterCycleTasks>
+				<!-- Unflash feeders when rat has eaten -->
+				<task>
+					<name>edu.usf.experiment.task.UnFlashAllFeedersOnEating</name>
+				</task>
+				<!-- Switch the active feeder upon eating -->
+				<task>
+					<name>edu.usf.experiment.task.SwitchFeeder</name>
+				</task>
+				<!-- Release food from the feeder if the rat is close -->
+				<task>
+					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+				</task>
+				<!-- Upon timeout time without eating, flash a feeder -->
+				<task>
+					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
+					<params>
+						<timeout>150</timeout>
+					</params>
+				</task>
+			</afterCycleTasks>
+			<!-- Loggers to execute after each cycle -->
+			<afterCycleLoggers>
+				<!-- Log the subject position -->
+				<logger>
+					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
+					<params>
+					</params>
+				</logger>
+				<!-- Log feeding events -->
+				<logger>
+					<name>edu.usf.experiment.log.FeedingLogger</name>
+				</logger>
+<!--				<logger>-->
+<!--					<name>edu.usf.ratsim.experiment.log.ValueEntropyLogger</name>-->
+<!--				</logger>-->
+			</afterCycleLoggers>
+			<!-- Loggers to execute after each episode -->
+			<afterEpisodeLoggers>
+				<!-- Log each wall position -->
+				<logger>
+					<name>edu.usf.experiment.log.WallLogger</name>
+					<params>
+					</params>
+				</logger>
+				<logger>
+					<name>edu.usf.experiment.log.FeederLogger</name>
+				</logger>
+				<!-- Log each position estimated value -->
+				<!-- <logger> <name>edu.usf.experiment.log.ValueLogger</name> <params> <circle>false</circle>
+					<interval>.1</interval> <angleInterval>.78</angleInterval> <numIntentions>8</numIntentions>
+					</params> </logger> -->
+			</afterEpisodeLoggers>
+			<!-- Tasks to execute after each episode -->
+			<afterEpisodeTasks>
+			</afterEpisodeTasks>
+			<!-- Conditions upon which the episode ends -->
+			<stopConditions>
+				<!-- Timeout cycles -->
+				<condition>
+					<name>edu.usf.experiment.condition.MaxCycles</name>
+					<params>
+						<max>50000</max>
+					</params>
+				</condition>
+				<!-- Has eaten from 15 feeders with no errors and only up to two flashing feeders
+					in the sequence-->
+				<condition>
+					<name>edu.usf.experiment.condition.FoundNFoodNoMistakesStopCond</name>
+					<params>
+						<n>15</n>
+					</params>
+				</condition>
+			</stopConditions>
+			<!-- Plotters to execute after each episode -->
+			<afterEpisodePlotters>
+				<!-- Copy the maze file to the episode folder -->
+				<plotter>
+					<name>edu.usf.experiment.plot.CopyMazeFile</name>
+				</plotter>
+				<!-- Convert csv to rdata -->
+				<plotter>
+					<name>edu.usf.experiment.plot.CSVConverter</name>
+				</plotter>
+				<!-- Get time info from position information -->
+				<plotter>
+					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
+				</plotter>
+				<!-- Plot path for each episode -->
+				<plotter>
+					<name>edu.usf.experiment.plot.PathPlotter</name>
+				</plotter>
+				<!-- Plot value -->
+				<!-- <plotter> <name>edu.usf.experiment.plot.ValuePlotter</name> </plotter> -->
+				
+			</afterEpisodePlotters>
+		</episodes>
+		<!-- Tasks to perform after the trial has ended -->
+		<afterTrialTasks>
+		</afterTrialTasks>
+		<!-- Loggers to execute after the trial has ended -->
+		<afterTrialLoggers>
+		</afterTrialLoggers>
+		<!-- Plotters to execute after the trial has ended -->
+		<afterTrialPlotters>
+		</afterTrialPlotters>
+	</trial>
+	
+	<!-- Recall - Delayed cue phase with obstacles -->
+	<trial>
+		<name>DelayedCueObs</name>
+		<!-- Groups to apply the trial -->
+		<groups>
+			<group>Control</group>
+			<group>Dorsal</group>
+			<group>Ventral</group>
+			<group>NegControl</group>
+			<group>TimeoutControl</group>
+		</groups>
+		<!-- Tasks to perform beforehand -->
+		<beforeTrialTasks>
+			<!-- Deactivation of a proportion of HPC layers -->
+			<task>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
+				<params>
+					<group>Ventral</group>
+					<layers>2</layers>
+					<proportion>.5</proportion>
+					<constant>2.3</constant>
+				</params>
+			</task>
+			<task>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
+				<params>
+					<group>Dorsal</group>
+					<layers>0</layers>
+					<proportion>.5</proportion>
+					<constant>2.3</constant>
+				</params>
+			</task>
+			<task>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
+				<params>
+					<group>NegControl</group>
+					<layers>0,2</layers>
+					<proportion>.5</proportion>
+					<constant>2.3</constant>
+				</params>
+			</task>
+		</beforeTrialTasks>
+		<!-- Episodes definition -->
+		<episodes>
+			<!-- Number of episodes -->
+			<number>1</number>
+			<!-- Sleep between cycles for visualization -->
+			<sleep>0</sleep>
+			<!-- Tasks to perform before each episode -->
+			<beforeEpisodeTasks>
+				<!-- Turn of the flash of all the feeders -->
+				<task>
+					<name>edu.usf.experiment.task.UnFlashAllFeeders</name>
+					<params>
+					</params>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.DeactivateAllFeeders</name>
+				</task>
+				<!-- Activate all enabled feeders so the rat decides which one to feed from -->
+				<task>
+					<name>edu.usf.experiment.task.ActivateRandomFeeder</name>
+					<params>
+					</params>
+				</task>
+				<!-- Add small obstacles -->
+				<task>
+					<name>edu.usf.experiment.task.AddSmallWallsTask</name>
+				</task>
+				<!-- Place the animat in a given place -->
+				<task>
+					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<params>
+						<point>
+							<x>0</x>
+							<y>0</y>
+							<theta>3.14</theta>
+						</point>
+					</params>
+				</task>
+			</beforeEpisodeTasks>
+			<!-- Tasks to performe before each cycle -->
+			<beforeCycleTasks>
+			</beforeCycleTasks>
+			<!-- Tasks to performe after each cycle -->
+			<afterCycleTasks>
+				<!-- Unflash feeders when rat has eaten -->
+				<task>
+					<name>edu.usf.experiment.task.UnFlashAllFeedersOnEating</name>
+				</task>
+				<!-- Switch the active feeder upon eating -->
+				<task>
+					<name>edu.usf.experiment.task.SwitchFeeder</name>
+				</task>
+				<!-- Release food from the feeder if the rat is close -->
+				<task>
+					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+				</task>
+				<!-- Upon timeout time without eating, flash a feeder -->
+				<task>
+					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
+					<params>
+						<timeout>150</timeout>
+					</params>
+				</task>
+			</afterCycleTasks>
+			<!-- Loggers to execute after each cycle -->
+			<afterCycleLoggers>
+				<!-- Log the subject position -->
+				<logger>
+					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
+					<params>
+					</params>
+				</logger>
+				<!-- Log feeding events -->
+				<logger>
+					<name>edu.usf.experiment.log.FeedingLogger</name>
+				</logger>
+
+			</afterCycleLoggers>
+			<!-- Loggers to execute after each episode -->
+			<afterEpisodeLoggers>
+				<!-- Log each wall position -->
+				<logger>
+					<name>edu.usf.experiment.log.WallLogger</name>
+					<params>
+					</params>
+				</logger>
+				<logger>
+					<name>edu.usf.experiment.log.FeederLogger</name>
+				</logger>
+				
+				<!-- Log each position estimated value -->
+				<!-- <logger> <name>edu.usf.experiment.log.ValueLogger</name> <params> <circle>false</circle>
+					<interval>.1</interval> <angleInterval>.78</angleInterval> <numIntentions>8</numIntentions>
+					</params> </logger> -->
+			</afterEpisodeLoggers>
+			<!-- Tasks to execute after each episode -->
+			<afterEpisodeTasks>
+			</afterEpisodeTasks>
+			<!-- Conditions upon which the episode ends -->
+			<stopConditions>
+				<!-- Timeout cycles -->
+				<condition>
+					<name>edu.usf.experiment.condition.MaxCycles</name>
+					<params>
+						<max>50000</max>
+					</params>
+				</condition>
+				<!-- Has eaten from 15 feeders with no errors and only up to two flashing feeders
+					in the sequence-->
+				<condition>
+					<name>edu.usf.experiment.condition.FoundNFoodNoMistakesStopCond</name>
+					<params>
+						<n>15</n>
+					</params>
+				</condition>
+			</stopConditions>
+			<!-- Plotters to execute after each episode -->
+			<afterEpisodePlotters>
+				<!-- Copy the maze file to the episode folder -->
+				<plotter>
+					<name>edu.usf.experiment.plot.CopyMazeFile</name>
+				</plotter>
+				<!-- Convert csv to rdata -->
+				<plotter>
+					<name>edu.usf.experiment.plot.CSVConverter</name>
+				</plotter>
+				<!-- Get time info from position information -->
+				<plotter>
+					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
+				</plotter>
+				<!-- Plot path for each episode -->
+				<plotter>
+					<name>edu.usf.experiment.plot.PathPlotter</name>
+				</plotter>
+				<!-- Plot value -->
+				<!-- <plotter> <name>edu.usf.experiment.plot.ValuePlotter</name> </plotter> -->
+				
+			</afterEpisodePlotters>
+		</episodes>
+		<!-- Tasks to perform after the trial has ended -->
+		<afterTrialTasks>
+		</afterTrialTasks>
+		<!-- Loggers to execute after the trial has ended -->
+		<afterTrialLoggers>
+		</afterTrialLoggers>
+		<!-- Plotters to execute after the trial has ended -->
+		<afterTrialPlotters>
+		</afterTrialPlotters>
+	</trial>
+	
+	
+	<trial>
+		<name>DelayedCueObs2</name>
+		<!-- Groups to apply the trial -->
+		<groups>
+			<group>Control</group>
+			<group>Dorsal</group>
+			<group>Ventral</group>
+			<group>NegControl</group>
+			<group>TimeoutControl</group>
+		</groups>
+		<!-- Tasks to perform beforehand -->
+		<beforeTrialTasks>
+			<!-- Deactivation of a proportion of HPC layers -->
+			<task>
+				<name>edu.usf.experiment.task.ReactivateHPCLayers</name>
+				<params>
+					<group>Ventral</group>
+					<layers>2</layers>
+				</params>
+			</task>
+			<task>
+				<name>edu.usf.experiment.task.ReactivateHPCLayers</name>
+				<params>
+					<group>Dorsal</group>
+					<layers>0</layers>
+					
+				</params>
+			</task>
+			<task>
+				<name>edu.usf.experiment.task.ReactivateHPCLayers</name>
+				<params>
+					<group>NegControl</group>
+					<layers>0,2</layers>
+				</params>
+			</task>
+		</beforeTrialTasks>
+		<!-- Episodes definition -->
+		<episodes>
+			<!-- Number of episodes -->
+			<number>1</number>
+			<!-- Sleep between cycles for visualization -->
+			<sleep>0</sleep>
+			<!-- Tasks to perform before each episode -->
+			<beforeEpisodeTasks>
+				<!-- Turn of the flash of all the feeders -->
+				<task>
+					<name>edu.usf.experiment.task.UnFlashAllFeeders</name>
+					<params>
+					</params>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.DeactivateAllFeeders</name>
+				</task>
+				<!-- Activate all enabled feeders so the rat decides which one to feed from -->
+				<task>
+					<name>edu.usf.experiment.task.ActivateRandomFeeder</name>
+					<params>
+					</params>
+				</task>
+				<!-- Place the animat in a given place -->
+				<task>
+					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<params>
+						<point>
+							<x>0</x>
+							<y>0</y>
+							<theta>3.14</theta>
+						</point>
+					</params>
+				</task>
+			</beforeEpisodeTasks>
+			<!-- Tasks to performe before each cycle -->
+			<beforeCycleTasks>
+			</beforeCycleTasks>
+			<!-- Tasks to performe after each cycle -->
+			<afterCycleTasks>
+				<!-- Unflash feeders when rat has eaten -->
+				<task>
+					<name>edu.usf.experiment.task.UnFlashAllFeedersOnEating</name>
+				</task>
+				<!-- Switch the active feeder upon eating -->
+				<task>
+					<name>edu.usf.experiment.task.SwitchFeeder</name>
+				</task>
+				<!-- Release food from the feeder if the rat is close -->
+				<task>
+					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+				</task>
+				<!-- Upon timeout time without eating, flash a feeder -->
+				<task>
+					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
+					<params>
+						<timeout>150</timeout>
+					</params>
+				</task>
+			</afterCycleTasks>
+			<!-- Loggers to execute after each cycle -->
+			<afterCycleLoggers>
+				<!-- Log the subject position -->
+				<logger>
+					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
+					<params>
+					</params>
+				</logger>
+				<!-- Log feeding events -->
+				<logger>
+					<name>edu.usf.experiment.log.FeedingLogger</name>
+				</logger>
+
+			</afterCycleLoggers>
+			<!-- Loggers to execute after each episode -->
+			<afterEpisodeLoggers>
+				<!-- Log each wall position -->
+				<logger>
+					<name>edu.usf.experiment.log.WallLogger</name>
+					<params>
+					</params>
+				</logger>
+				<logger>
+					<name>edu.usf.experiment.log.FeederLogger</name>
+				</logger>
+				
+				<!-- Log each position estimated value -->
+				<!-- <logger> <name>edu.usf.experiment.log.ValueLogger</name> <params> <circle>false</circle>
+					<interval>.1</interval> <angleInterval>.78</angleInterval> <numIntentions>8</numIntentions>
+					</params> </logger> -->
+			</afterEpisodeLoggers>
+			<!-- Tasks to execute after each episode -->
+			<afterEpisodeTasks>
+			</afterEpisodeTasks>
+			<!-- Conditions upon which the episode ends -->
+			<stopConditions>
+				<!-- Timeout cycles -->
+				<condition>
+					<name>edu.usf.experiment.condition.MaxCycles</name>
+					<params>
+						<max>50000</max>
+					</params>
+				</condition>
+				<!-- Has eaten from 15 feeders with no errors and only up to two flashing feeders
+					in the sequence-->
+				<condition>
+					<name>edu.usf.experiment.condition.FoundNFoodNoMistakesStopCond</name>
+					<params>
+						<n>15</n>
+					</params>
+				</condition>
+			</stopConditions>
+			<!-- Plotters to execute after each episode -->
+			<afterEpisodePlotters>
+				<!-- Copy the maze file to the episode folder -->
+				<plotter>
+					<name>edu.usf.experiment.plot.CopyMazeFile</name>
+				</plotter>
+				<!-- Convert csv to rdata -->
+				<plotter>
+					<name>edu.usf.experiment.plot.CSVConverter</name>
+				</plotter>
+				<!-- Get time info from position information -->
+				<plotter>
+					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
+				</plotter>
+				<!-- Plot path for each episode -->
+				<plotter>
+					<name>edu.usf.experiment.plot.PathPlotter</name>
+				</plotter>
+				<!-- Plot value -->
+				<!-- <plotter> <name>edu.usf.experiment.plot.ValuePlotter</name> </plotter> -->
+				
+			</afterEpisodePlotters>
+		</episodes>
+		<!-- Tasks to perform after the trial has ended -->
+		<afterTrialTasks>
+		</afterTrialTasks>
+		<!-- Loggers to execute after the trial has ended -->
+		<afterTrialLoggers>
+		</afterTrialLoggers>
+		<!-- Plotters to execute after the trial has ended -->
+		<afterTrialPlotters>
+		</afterTrialPlotters>
+	</trial>
+	
+	
+	<!-- Tasks to perform after the experiment is over -->
+	<afterExperimentTasks>
+	</afterExperimentTasks>
+	<!-- Loggers to execute after the experiment is over -->
+	<afterExperimentLoggers>
+	</afterExperimentLoggers>
+	<!-- Plotters to execute after the experiment is over -->
+	<afterExperimentPlotters>
+		<plotter>
+			<name>edu.usf.experiment.plot.RuntimePerTrialPlotter</name>
+		</plotter>
+		<plotter>
+			<name>edu.usf.experiment.plot.RPlotter</name>
+			<params>
+				<plotScript>/edu/usf/experiment/plot/plotErrors.r</plotScript>
+			</params>
+		</plotter>
+		<!--<plotter> <name>edu.usf.experiment.plot.RPlotter</name> <params> <plotScript>/edu/usf/experiment/plot/plotTimeouts.r</plotScript>
+			</params> </plotter> -->
+		<!-- <plotter> <name>edu.usf.experiment.plot.PlotGatherer</name> </plotter> -->
+		<!-- <plotter> <name>edu.usf.experiment.plot.PolicyPlotter</name> </plotter> -->
+	</afterExperimentPlotters>
+</experiment>

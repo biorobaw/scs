@@ -2,20 +2,19 @@ package edu.usf.ratsim.nsl.modules.goaldecider;
 
 import edu.usf.experiment.utils.Debug;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 public class LastAteGoalDecider extends Module {
 
-	public int[] goalFeeder;
+	private Int0dPort goalPort;
 	public static int currentGoal;
 
 	public LastAteGoalDecider(String name) {
 		super(name);
 
-		goalFeeder = new int[1];
-		addOutPort("goalFeeder", new Int1dPortArray(this, goalFeeder));
+		goalPort = new Int0dPort(this);
+		addOutPort("goalFeeder", goalPort);
 		
 		currentGoal = -1;
 	}
@@ -28,14 +27,14 @@ public class LastAteGoalDecider extends Module {
 			currentGoal = closestFeeder.get();				
 		}
 
-		goalFeeder[0] = currentGoal;
+		goalPort.set(currentGoal);
 		if (Debug.printActiveGoal)
 			System.out.println("Last Ate GD: " + currentGoal);
 	}
 
 	public void newTrial() {
 		currentGoal = -1;
-		goalFeeder[0] = currentGoal;
+		goalPort.set(currentGoal);
 	}
 
 	@Override

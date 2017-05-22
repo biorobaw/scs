@@ -36,13 +36,14 @@ public class ObstacleEndTaxic extends Module {
 	public ObstacleEndTaxic(String name, Robot robot,
 			float taxicVal, float negReward, float tooCloseDist) {
 		super(name);
+		
+		this.ar = (AffordanceRobot) robot;
+		this.wr = (WallRobot) robot;
+		
 		votes = new float[ar.getPossibleAffordances().size()];
 		addOutPort("votes", new Float1dPortArray(this, votes));
 
 		this.taxicVal = taxicVal;
-		this.ar = (AffordanceRobot) robot;
-		this.wr = (WallRobot) robot;
-
 		this.negReward = negReward;
 		this.tooCloseDist = tooCloseDist;
 	}

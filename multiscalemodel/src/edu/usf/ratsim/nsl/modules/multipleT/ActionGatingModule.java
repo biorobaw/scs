@@ -4,7 +4,7 @@ import javax.vecmath.Point3f;
 
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
-import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
+import edu.usf.vlwsim.VirtUniverse;
 
 /**
  * Module that sets the probability of an action to 0 if the action can not be performed
