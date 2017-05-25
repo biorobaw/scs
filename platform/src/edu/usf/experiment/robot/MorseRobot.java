@@ -185,11 +185,11 @@ public class MorseRobot
 	}
 
 	@Override
-	public boolean checkAffordance(Affordance af) {
+	public float checkAffordance(Affordance af) {
 		List<Affordance> l = new LinkedList<Affordance>();
 		l.add(af);
 		checkAffordances(l);
-		return l.get(0).isRealizable();
+		return l.get(0).isRealizable() ? 1 : 0;
 	}
 
 	@Override
