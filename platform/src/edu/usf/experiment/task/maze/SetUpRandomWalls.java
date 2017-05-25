@@ -11,9 +11,11 @@ import com.vividsolutions.jts.geom.LineSegment;
 
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
+import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.PlatformUniverse;
 import edu.usf.experiment.universe.Universe;
-import edu.usf.experiment.universe.WallUniverse;
+import edu.usf.experiment.universe.wall.WallUniverse;
+import edu.usf.experiment.universe.wall.WallUniverseUtilities;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
 
@@ -44,7 +46,9 @@ public class SetUpRandomWalls extends Task {
 		if (!(u instanceof PlatformUniverse))
 			throw new IllegalArgumentException("");
 		
-		PlatformUniverse pu = (PlatformUniverse) u;
+		PlatformUniverse pu = (PlatformUniverse) u; 
+		
+		GlobalCameraUniverse gcu = (GlobalCameraUniverse) u; 
 		
 		wu.revertWalls();
 		pu.clearPlatforms();
@@ -59,12 +63,12 @@ public class SetUpRandomWalls extends Task {
 		System.out.println("[+] Adding wmall walls");
 		wu.setRevertWallPoint();
 		
-		while (!placeWalls(wu, pu, s))
+		while (!placeWalls(wu, pu, gcu))
 			;
 		System.out.println("[+] Small walls added");
 	}
 	
-	public boolean placeWalls(WallUniverse wu, PlatformUniverse pu, Subject sub) {
+	public boolean placeWalls(WallUniverse wu, PlatformUniverse pu, GlobalCameraUniverse gcu) {
 		Random random = RandomSingleton.getInstance();
 		watchDogCount = 0;
 
@@ -79,7 +83,7 @@ public class SetUpRandomWalls extends Task {
 				float y = random.nextFloat() * 2 * Y_RADIUS - Y_RADIUS;
 				float angle = (float) (random.nextFloat() * 2 * Math.PI);
 				wall = getInnerWall(x, y, angle);
-			} while (!watchDog() && !suitableWall(wall, wu, pu));
+			} while (!watchDog() && !suitableWall(wall, wu, pu, gcu));
 
 			if (watchDog()) {
 				System.out.println("Watch dog reached");
@@ -100,13 +104,13 @@ public class SetUpRandomWalls extends Task {
 	}
 
 
-	private boolean suitableWall(LineSegment wall, WallUniverse wu, PlatformUniverse pu) {
+	private boolean suitableWall(LineSegment wall, WallUniverse wu, PlatformUniverse pu, GlobalCameraUniverse gcu) {
 		return wall.p0.x < X_RADIUS && wall.p0.y < Y_RADIUS
 				&& wall.p1.x < X_RADIUS && wall.p1.y < Y_RADIUS
 				&& wall.distance(new Coordinate(0, 0)) > 0.05 
-				&& wu.shortestDistanceToWalls(wall) > MIN_DIST_TO_OTHER_WALLS
+				&& WallUniverseUtilities.shortestDistanceToWalls(wu.getWalls(),wall) > MIN_DIST_TO_OTHER_WALLS
 				&& pu.shortestDistanceToPlatforms(wall) > MIN_DIST_TO_PLATFORM_INTERIOR
-				&& wu.shortestDistanceToRobot(wall) > MIN_DIST_TO_ROBOT;
+				&& WallUniverseUtilities.shortestDistanceToRobot(wall, gcu.getRobotPosition()) > MIN_DIST_TO_ROBOT;
 	}
 
 	private LineSegment getInnerWall(double x, double y, double angle) {

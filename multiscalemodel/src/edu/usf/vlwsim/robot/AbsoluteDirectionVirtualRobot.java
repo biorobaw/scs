@@ -12,6 +12,7 @@ import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.experiment.robot.affordance.EatAffordance;
 import edu.usf.experiment.universe.FeederUtils;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.wall.WallUniverseUtilities;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.vlwsim.universe.AbsoluteDirectionRobotVirtualUniverse;
 
@@ -84,7 +85,7 @@ public class AbsoluteDirectionVirtualRobot extends VirtualRobot implements Absol
 		if (af instanceof AbsoluteAngleAffordance) {
 			AbsoluteAngleAffordance aaa = (AbsoluteAngleAffordance) af;
 			// Get the distance to the wall in that angle
-			float dist = universe.distanceToNearestWall(aaa.getAngle(), maxSenseDistance);
+			float dist = WallUniverseUtilities.distanceToNearestWall(universe.getWalls(), universe.getRobotPosition(), aaa.getAngle(), maxSenseDistance);
 			// If we cannot even do the step, the affordance should not be realizable
 			float distAfterStep = Math.max(0, dist - aaa.getDistance());
 			// The afforance is fully realizable if there is nothing on the sensor reach

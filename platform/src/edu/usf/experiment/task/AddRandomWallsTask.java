@@ -12,9 +12,10 @@ import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
-import edu.usf.experiment.universe.WallUniverse;
 import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.experiment.universe.feeder.FeederUniverseUtilities;
+import edu.usf.experiment.universe.wall.WallUniverse;
+import edu.usf.experiment.universe.wall.WallUniverseUtilities;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
 
@@ -58,7 +59,7 @@ public class AddRandomWallsTask extends Task {
 						x1.x = random.nextFloat() * 2 * (RADIUS) - (RADIUS);
 						x1.y = random.nextFloat() * 2 * (RADIUS) - (RADIUS);
 					} while (x1.distance(new Point2f()) > RADIUS
-							|| wu.shortestDistanceToWalls(x1) > MAX_DIST_TO_PREV_WALLS);
+							|| WallUniverseUtilities.shortestDistanceToWalls(wu.getWalls(), x1) > MAX_DIST_TO_PREV_WALLS);
 
 					Point2f translation;
 					float orientation;
@@ -92,8 +93,8 @@ public class AddRandomWallsTask extends Task {
 					wall = new LineSegment(new Coordinate(x1.x, x1.y), new Coordinate(x2.x, x2.y));
 					wall2 = new LineSegment(new Coordinate(x2.x, x2.y), new Coordinate(x3.x, x3.y));
 
-				} while (wu.shortestDistanceToWalls(wall) < MIN_DIST_BETWEEN_WALLS
-						|| wu.shortestDistanceToWalls(wall2) < MIN_DIST_BETWEEN_WALLS
+				} while (WallUniverseUtilities.shortestDistanceToWalls(wu.getWalls(), wall) < MIN_DIST_BETWEEN_WALLS
+						|| WallUniverseUtilities.shortestDistanceToWalls(wu.getWalls(), wall2) < MIN_DIST_BETWEEN_WALLS
 						|| (feederUniverse && FeederUniverseUtilities
 								.wallDistanceToFeeders(((FeederUniverse) wu).getFeeders(), wall) < MIN_DIST_TO_FEEDERS)
 						|| (feederUniverse
@@ -123,7 +124,7 @@ public class AddRandomWallsTask extends Task {
 					wall = new LineSegment(new Coordinate(x1.x, x1.y), new Coordinate(x2.x, x2.y));
 
 					// } while (univ.wallIntersectsOtherWalls(wall));
-				} while (wu.shortestDistanceToWalls(wall) < MIN_DIST_BETWEEN_WALLS
+				} while (WallUniverseUtilities.shortestDistanceToWalls(wu.getWalls(), wall) < MIN_DIST_BETWEEN_WALLS
 						|| (feederUniverse && FeederUniverseUtilities.wallDistanceToFeeders(((FeederUniverse) wu).getFeeders(), wall) < MIN_DIST_TO_FEEDERS));
 
 				wu.addWall(x1.x, x1.y, x2.x, x2.y);

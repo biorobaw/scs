@@ -36,10 +36,10 @@ import edu.usf.experiment.universe.MovableRobotUniverse;
 import edu.usf.experiment.universe.Platform;
 import edu.usf.experiment.universe.PlatformUniverse;
 import edu.usf.experiment.universe.Wall;
-import edu.usf.experiment.universe.WallUniverse;
 import edu.usf.experiment.universe.element.MazeElement;
 import edu.usf.experiment.universe.element.MazeElementLoader;
 import edu.usf.experiment.universe.feeder.FeederUniverse;
+import edu.usf.experiment.universe.wall.WallUniverse;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
@@ -435,14 +435,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		return walls;
 	}
 
-	public float shortestDistanceToWalls(LineSegment wall) {
-		float shortestDistance = Float.MAX_VALUE;
-		for (Wall w : walls)
-			if (w.distanceTo(wall) < shortestDistance)
-				shortestDistance = w.distanceTo(wall);
-
-		return shortestDistance;
-	}
+	
 
 	
 	public void addWall(float x, float y, float x2, float y2) {
@@ -458,14 +451,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		}
 	}
 
-	public float shortestDistanceToWalls(Point2f x1) {
-		float shortestDistance = Float.MAX_VALUE;
-		for (Wall w : walls)
-			if (w.distanceTo(x1) < shortestDistance)
-				shortestDistance = w.distanceTo(x1);
-
-		return shortestDistance;
-	}
+	
 
 
 	public void addWall(LineSegment segment) {
@@ -481,28 +467,6 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		}
 	}
 
-	public boolean wallIntersectsOtherWalls(LineSegment wall) {
-		boolean intersects = false;
-		for (Wall w : walls)
-			intersects = intersects || w.intersects(wall);
-
-		return intersects;
-	}
-
-	public float getDistanceToClosestWall(Point3f p) {
-		Point2f p2 = new Point2f(p.x, p.y);
-
-		float shortestDistance = Float.MAX_VALUE;
-		for (Wall w : getWalls())
-			if (w.distanceTo(p2) < shortestDistance)
-				shortestDistance = w.distanceTo(p2);
-
-		return shortestDistance;
-	}
-
-	public float getDistanceToClosestWall() {
-		return getDistanceToClosestWall(getRobotPosition());
-	}
 
 	public boolean isFeederEnabled(int feeder) {
 		return feeders.get(feeder).isEnabled();
@@ -541,44 +505,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		wallNodes.clear();
 	}
 
-	public float shortestDistanceToRobot(LineSegment wall) {
-		return (float) wall.distance(new Coordinate(getRobotPosition().x, getRobotPosition().y));
 
-	}
-	
-	/**
-	 * Gives distance to nearest intersecting wall with the path (current pos,
-	 * pos + Vector(rayX,raY))
-	 * 
-	 * @param dx
-	 * @param dy
-	 * @return
-	 */
-	public double distanceToNearestWall(float dx, float dy, float maxDistance) {
-		// The current position with rotation
-		Vector3f p = new Vector3f();
-		robotPos.get(p);
-
-		Coordinate initCoordinate = new Coordinate(p.x, p.y);
-		Coordinate finalCoordinate = new Coordinate(p.x + dx, p.y + dy);
-
-		double minDistance = maxDistance;
-		LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
-		Coordinate inter;
-		double distance;
-		for (Wall wall : getWalls()) {
-
-			if ((inter = path.intersection(wall.s)) != null
-					&& (distance = inter.distance(initCoordinate)) < minDistance)
-				minDistance = distance;
-		}
- 
-		return minDistance;
-	}
-	
-	public float distanceToNearestWall(float angle, float distance) {
-		return (float) distanceToNearestWall((float)Math.cos(angle)*distance, (float)Math.sin(angle)*distance, distance);
-	}
 
 	/********************************* Platform Universe *************************************/
 	public List<Platform> getPlatforms() {

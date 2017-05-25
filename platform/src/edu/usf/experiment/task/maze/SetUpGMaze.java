@@ -6,7 +6,7 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.universe.PlatformUniverse;
 import edu.usf.experiment.universe.Universe;
-import edu.usf.experiment.universe.WallUniverse;
+import edu.usf.experiment.universe.wall.WallUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public class SetUpGMaze extends Task {

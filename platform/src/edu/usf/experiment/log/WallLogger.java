@@ -10,7 +10,7 @@ import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.Wall;
-import edu.usf.experiment.universe.WallUniverse;
+import edu.usf.experiment.universe.wall.WallUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public class WallLogger extends Logger {

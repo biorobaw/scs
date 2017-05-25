@@ -19,6 +19,7 @@ import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.FeederUtils;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.feeder.FeederUniverseUtilities;
+import edu.usf.experiment.universe.wall.WallUniverseUtilities;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
@@ -230,7 +231,7 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 
 	@Override
 	public float getDistanceToClosestWall() {
-		return universe.getDistanceToClosestWall();
+		return WallUniverseUtilities.getDistanceToClosestWall(universe.getWalls(), universe.getRobotPosition());
 	}
 
 	@Override

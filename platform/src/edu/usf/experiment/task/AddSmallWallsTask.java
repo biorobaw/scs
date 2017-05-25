@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.vecmath.Point2f;
+import javax.xml.bind.annotation.XmlElementDecl.GLOBAL;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
@@ -16,11 +17,13 @@ import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.RobotLoader;
 import edu.usf.experiment.subject.ModelLoader;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.UniverseLoader;
-import edu.usf.experiment.universe.WallUniverse;
 import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.experiment.universe.feeder.FeederUniverseUtilities;
+import edu.usf.experiment.universe.wall.WallUniverse;
+import edu.usf.experiment.universe.wall.WallUniverseUtilities;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -86,6 +89,7 @@ public class AddSmallWallsTask extends Task {
 			throw new IllegalArgumentException("");
 		
 		WallUniverse wu = (WallUniverse) univ;
+		GlobalCameraUniverse gcu = (GlobalCameraUniverse) univ;
 		
 		Random random = RandomSingleton.getInstance();
 		List<LineSegment> outerWalls = new LinkedList<LineSegment>();
@@ -113,7 +117,7 @@ public class AddSmallWallsTask extends Task {
 				angles.add(angle);
 				wall = getOuterWall(angle, doubleWall);
 
-			} while (!watchDog() && !suitableOuterWall(wall, wu, outerWalls));
+			} while (!watchDog() && !suitableOuterWall(wall, wu, gcu, outerWalls));
 
 			if (watchDog()) {
 				System.out.println("Watch dog reached");
@@ -137,7 +141,7 @@ public class AddSmallWallsTask extends Task {
 				float y = random.nextFloat() * 2 * RADIUS - RADIUS;
 				float angle = (float) (random.nextFloat() * 2 * Math.PI);
 				wall = getInnerWall(x, y, angle);
-			} while (!watchDog() && !suitableInnerWall(wall, wu));
+			} while (!watchDog() && !suitableInnerWall(wall, wu, gcu));
 
 			if (watchDog()) {
 				System.out.println("Watch dog reached");
@@ -166,27 +170,27 @@ public class AddSmallWallsTask extends Task {
 		return watchDogCount > MAX_WATCH_DOG;
 	}
 
-	private boolean suitableOuterWall(LineSegment wall, WallUniverse univ,
+	private boolean suitableOuterWall(LineSegment wall, WallUniverse univ, GlobalCameraUniverse gcu,
 			List<LineSegment> outerWalls) {
 		boolean feederUniverse = univ instanceof FeederUniverse;
 		
 		for (LineSegment w2 : outerWalls)
 			if (w2.distance(wall) < MIN_DIST_TO_OTHER_OUTER)
 				return false;
-		return univ.shortestDistanceToWalls(wall) > 0
+		return WallUniverseUtilities.shortestDistanceToWalls(univ.getWalls(), wall) > 0
 				&& (!feederUniverse || FeederUniverseUtilities.wallDistanceToFeeders(((FeederUniverse)univ).getFeeders(),wall) > MIN_DIST_TO_FEEDERS)
-				&& univ.shortestDistanceToRobot(wall) > MIN_DIST_TO_ROBOT;
+				&& WallUniverseUtilities.shortestDistanceToRobot(wall, gcu.getRobotPosition()) > MIN_DIST_TO_ROBOT;
 	}
 
-	private boolean suitableInnerWall(LineSegment wall, WallUniverse univ) {
+	private boolean suitableInnerWall(LineSegment wall, WallUniverse univ,GlobalCameraUniverse gcu) {
 		boolean feederUniverse = univ instanceof FeederUniverse;
 		
 		return wall.p0.distance(new Coordinate(0, 0)) < RADIUS
 				&& wall.p1.distance(new Coordinate(0, 0)) < RADIUS
 				&& wall.distance(new Coordinate(0, 0)) > 0.05 
-				&& univ.shortestDistanceToWalls(wall) > DISTANCE_INTERIOR_WALLS
+				&& WallUniverseUtilities.shortestDistanceToWalls(univ.getWalls(),wall) > DISTANCE_INTERIOR_WALLS
 				&& (!feederUniverse || FeederUniverseUtilities.wallDistanceToFeeders(((FeederUniverse)univ).getFeeders(),wall) > MIN_DIST_TO_FEEDERS_INTERIOR)
-				&& univ.shortestDistanceToRobot(wall) > MIN_DIST_TO_ROBOT;
+				&& WallUniverseUtilities.shortestDistanceToRobot(wall, gcu.getRobotPosition()) > MIN_DIST_TO_ROBOT;
 	}
 
 	private LineSegment getOuterWall(double angle, boolean doubleWall) {
