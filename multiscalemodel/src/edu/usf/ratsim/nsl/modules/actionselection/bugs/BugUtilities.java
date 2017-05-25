@@ -6,6 +6,7 @@ import edu.usf.experiment.utils.GeomUtils;
 
 public class BugUtilities {
 	
+	//TODO: change deltaT to be more realistic in seconds, and fix constants 
 	public static final float OBSTACLE_FOUND_THRS = .15f;
 	public static final float CLOSE_THRS = .15f;
 	

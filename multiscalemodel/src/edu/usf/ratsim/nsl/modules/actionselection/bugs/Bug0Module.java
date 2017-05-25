@@ -1,6 +1,7 @@
 
 package edu.usf.ratsim.nsl.modules.actionselection.bugs;
 
+import edu.usf.experiment.robot.DifferentialRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
@@ -8,13 +9,12 @@ import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.ratsim.support.SonarUtils;
-import edu.usf.vlwsim.VirtualRobot;
 
 public class Bug0Module extends Module {
 
 	private static final float FREE_PASSAGE_THRS = 1.5f * BugUtilities.OBSTACLE_FOUND_THRS;
 
-	private VirtualRobot r;
+	private DifferentialRobot r;
 
 	private enum State {
 		GOAL_SEEKING, WALL_FOLLOWING
@@ -26,7 +26,7 @@ public class Bug0Module extends Module {
 		super(name);
 
 		// TODO: set to differential robot?
-		this.r = (VirtualRobot) robot;
+		this.r = (DifferentialRobot) robot;
 
 	}
 
@@ -39,11 +39,11 @@ public class Bug0Module extends Module {
 		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
 
 		float front = SonarUtils.getReading(0f, readings, angles);
-		float left = SonarUtils.getReading((float) (Math.PI/2), readings, angles);
-		float leftFront = SonarUtils.getReading((float) (Math.PI/4), readings, angles);
-		
+		float left = SonarUtils.getReading((float) (Math.PI / 2), readings, angles);
+		float leftFront = SonarUtils.getReading((float) (Math.PI / 4), readings, angles);
+
 		// State switching criteria
-		
+
 		// Get the relative angle to the goal
 		// TODO: angleToPointWithOrientation seems to be returning negated
 		// angles (to the left angles should be positive)
@@ -82,10 +82,8 @@ public class Bug0Module extends Module {
 		v.trim();
 
 		// Execute commands
-		if (v.angular != 0)
-			r.rotate(v.angular);
-		if (v.linear != 0)
-			r.forward(v.linear);
+		r.setAngularVel(v.angular);
+		r.setLinearVel(v.linear);
 	}
 
 	@Override

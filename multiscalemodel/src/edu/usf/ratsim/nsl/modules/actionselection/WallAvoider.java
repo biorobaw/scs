@@ -2,9 +2,9 @@ package edu.usf.ratsim.nsl.modules.actionselection;
 
 import java.util.List;
 
-import edu.usf.experiment.robot.AffordanceRobot;
+import edu.usf.experiment.robot.affordance.Affordance;
+import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 

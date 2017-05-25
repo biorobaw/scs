@@ -2,9 +2,9 @@ package edu.usf.ratsim.nsl.modules.actionselection.taxic;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.affordance.LocalActionAffordanceRobot;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
@@ -14,7 +14,7 @@ public class FlashingTaxicValueSchema extends Module {
 	public float[] value;
 	private float reward;
 
-	private AffordanceRobot ar;
+	private LocalActionAffordanceRobot ar;
 	private FeederRobot fr;
 	private double lambda;
 	private boolean estimateValue;
@@ -31,7 +31,7 @@ public class FlashingTaxicValueSchema extends Module {
 		value = new float[1];
 		addOutPort("value", new Float1dPortArray(this, value));
 
-		this.ar = (AffordanceRobot) robot;
+		this.ar = (LocalActionAffordanceRobot) robot;
 		this.fr = (FeederRobot) robot;
 		this.lambda = lambda;
 		this.estimateValue = estimateValue;

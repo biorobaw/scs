@@ -3,10 +3,10 @@ package edu.usf.ratsim.nsl.modules.actionselection;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.affordance.Affordance;
-import edu.usf.experiment.subject.affordance.TurnAffordance;
+import edu.usf.experiment.robot.affordance.Affordance;
+import edu.usf.experiment.robot.affordance.LocalActionAffordanceRobot;
+import edu.usf.experiment.robot.affordance.TurnAffordance;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
@@ -25,7 +25,7 @@ public class ProportionalExplorer extends Module {
 	/**
 	 * The robot interface used to perform actions
 	 */
-	private AffordanceRobot ar;
+	private LocalActionAffordanceRobot ar;
 	/**
 	 * The output port describing the action taken by the module
 	 */
@@ -46,7 +46,7 @@ public class ProportionalExplorer extends Module {
 		takenAction = new Int0dPort(this);
 		addOutPort("takenAction", takenAction);
 
-		ar = (AffordanceRobot) robot;
+		ar = (LocalActionAffordanceRobot) robot;
 
 		lastAction = null;
 

@@ -4,13 +4,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.affordance.Affordance;
+import edu.usf.experiment.robot.affordance.AffordanceRobot;
+import edu.usf.experiment.robot.affordance.EatAffordance;
+import edu.usf.experiment.robot.affordance.ForwardAffordance;
+import edu.usf.experiment.robot.affordance.TurnAffordance;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.affordance.Affordance;
-import edu.usf.experiment.subject.affordance.EatAffordance;
-import edu.usf.experiment.subject.affordance.ForwardAffordance;
-import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
@@ -55,7 +55,8 @@ public class DecayingExplorationSchema extends Module {
 
 		double explorationValue = maxReward * Math.exp(-(episodeCount - 1) * alpha);
 //		System.out.println(explorationValue);
-		List<Affordance> affs = robot.checkAffordances(robot.getPossibleAffordances());
+		List<Affordance> possAffs = robot.getPossibleAffordances();
+		List<Affordance> affs = robot.checkAffordances(possAffs);
 
 		List<Affordance> performableAffs = new LinkedList<Affordance>();
 		for (Affordance a : affs)
@@ -84,7 +85,7 @@ public class DecayingExplorationSchema extends Module {
 							((TurnAffordance)pickedAffordance).getAngle() != ((TurnAffordance)lastPicked).getAngle() );
 			}
 			
-			votes[pickedAffordance.getIndex()] = (float) explorationValue;
+			votes[possAffs.indexOf(pickedAffordance)] = (float) explorationValue;
 
 			lastPicked = pickedAffordance;
 		}

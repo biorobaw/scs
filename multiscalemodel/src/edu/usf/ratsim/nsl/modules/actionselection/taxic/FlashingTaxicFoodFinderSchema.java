@@ -5,14 +5,15 @@ import java.util.List;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
-import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.affordance.Affordance;
+import edu.usf.experiment.robot.affordance.AffordanceRobot;
+import edu.usf.experiment.robot.affordance.EatAffordance;
+import edu.usf.experiment.robot.affordance.ForwardAffordance;
+import edu.usf.experiment.robot.affordance.LocalActionAffordanceRobot;
+import edu.usf.experiment.robot.affordance.TurnAffordance;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.affordance.Affordance;
-import edu.usf.experiment.subject.affordance.EatAffordance;
-import edu.usf.experiment.subject.affordance.ForwardAffordance;
-import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.FeederUtils;
 import edu.usf.experiment.utils.GeomUtils;
@@ -24,8 +25,7 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 	public float[] votes;
 	private float reward;
 
-	private Subject subject;
-	private AffordanceRobot ar;
+	private LocalActionAffordanceRobot ar;
 	private FeederRobot fr;
 	private float negReward;
 
@@ -36,7 +36,7 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 		this.reward = reward;
 		this.negReward = negReward;
 		
-		this.ar = (AffordanceRobot) robot;
+		this.ar = (LocalActionAffordanceRobot) robot;
 		this.fr = (FeederRobot) robot;
 
 		// Votes for action and value

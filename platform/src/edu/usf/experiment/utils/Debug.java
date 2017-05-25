@@ -22,7 +22,6 @@ public class Debug {
 	public static boolean printGiveFood = print && false;
 	public static boolean printTaxicBh = print && false;
 	public static boolean printSelectedValues = print && false;	
-	public static boolean printRobotEaten = print && false;
 	public static boolean printFeederCells = print && false;
 	public static boolean printJointMultiply = print && false;
 	public static boolean printExploration = print && false;

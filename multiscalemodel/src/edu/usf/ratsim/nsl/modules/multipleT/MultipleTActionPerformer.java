@@ -1,12 +1,8 @@
 package edu.usf.ratsim.nsl.modules.multipleT;
 
-import edu.usf.experiment.robot.AffordanceRobot;
-import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.affordance.EatAffordance;
-import edu.usf.experiment.subject.affordance.ForwardAffordance;
-import edu.usf.experiment.subject.affordance.TurnAffordance;
-import edu.usf.experiment.utils.GeomUtils;
+import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
@@ -17,31 +13,12 @@ import edu.usf.micronsl.port.singlevalue.Int0dPort;
  * 
  */
 public class MultipleTActionPerformer extends Module {
-	int numActions;	
-	
-	float stepSize;
-	//Point3f[] actions; 
-	float[] angles;
-	AffordanceRobot robot;
+	AffordanceRobot affRobot;
 
-	public MultipleTActionPerformer(String name,int numActions,float stepSize, Robot robot) {
+	public MultipleTActionPerformer(String name, Robot robot) {
 		super(name);
 
-		this.numActions = numActions;
-		this.angles = new float[numActions];
-		//this.actions = new Point3f[numActions];
-		this.robot = (AffordanceRobot) robot;
-		this.stepSize = stepSize;
-		
-		double deltaAngle = 2*Math.PI/numActions;
-		float angle = 0;
-		for (int i=0;i<numActions;i++)
-		{	
-			//actions[i] =new Point3f((float)Math.cos(angle)*stepSize,(float)Math.sin(angle)*stepSize,0);
-			angles[i] = angle;
-			angle+=deltaAngle;
-		}
-
+		this.affRobot = (AffordanceRobot) robot;
 	}
 
 	
@@ -49,14 +26,23 @@ public class MultipleTActionPerformer extends Module {
 		
 		int action = ((Int0dPort)getInPort("action")).get();
 		//System.out.println("performing: "+action);
-		float deltaAngle = GeomUtils.relativeAngle(angles[action], ((LocalizableRobot)robot).getOrientationAngle());
-		robot.executeAffordance(new TurnAffordance(deltaAngle, stepSize));
-		robot.executeAffordance(new ForwardAffordance(stepSize));
+//		float deltaAngle = GeomUtils.relativeAngle(angles[action], ((LocalizableRobot)robot).getOrientationAngle());
+//		robot.executeAffordance(new TurnAffordance(deltaAngle, stepSize));
+//		robot.executeAffordance(new ForwardAffordance(stepSize));
 		
-		EatAffordance eat = new EatAffordance();
-		if(robot.checkAffordance(eat)) robot.executeAffordance(eat);
 		
-		//System.out.println("iteration: " + i);
+		
+//		EatAffordance eat = new EatAffordance();
+//		if(fRobot.hasFoundFood()) 
+//			fRobot.eat();
+//		else {
+//			adRobot.setDirection(angles[action]);
+//			adRobot.setADStep(stepSize);
+//		}
+			
+
+		affRobot.executeAffordance(affRobot.getPossibleAffordances().get(action));
+//		System.out.println("Executed " + affRobot.getPossibleAffordances().get(action));
 		//System.out.println("");
 		
 	

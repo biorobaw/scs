@@ -2,18 +2,17 @@ package edu.usf.ratsim.nsl.modules.actionselection.bugs;
 
 import javax.vecmath.Point3f;
 
+import edu.usf.experiment.robot.DifferentialRobot;
 import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.Subject;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.ratsim.support.SonarUtils;
-import edu.usf.vlwsim.VirtualRobot;
 
 public class Bug1Module extends Module {
 
-	private VirtualRobot r;
+	private DifferentialRobot r;
 
 	private enum State {
 		GOAL_SEEKING, WF_AWAY_FROM_HP, WF_RETURN_TO_HP, WF_GO_TO_CP
@@ -28,7 +27,7 @@ public class Bug1Module extends Module {
 		super(name);
 
 		// TODO: set to differential robot?
-		this.r = (VirtualRobot) robot;
+		this.r = (DifferentialRobot) robot;
 
 		state = State.GOAL_SEEKING;
 	}
@@ -42,9 +41,9 @@ public class Bug1Module extends Module {
 		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
 
 		float front = SonarUtils.getReading(0f, readings, angles);
-		float left = SonarUtils.getReading((float) (Math.PI/2), readings, angles);
-		float leftFront = SonarUtils.getReading((float) (Math.PI/4), readings, angles);
-		
+		float left = SonarUtils.getReading((float) (Math.PI / 2), readings, angles);
+		float leftFront = SonarUtils.getReading((float) (Math.PI / 4), readings, angles);
+
 		// State switching criteria
 		switch (state) {
 		case GOAL_SEEKING:
@@ -92,8 +91,7 @@ public class Bug1Module extends Module {
 			}
 			break;
 		}
-		
-		
+
 		// Cmd depending on state
 		Velocities v = new Velocities();
 		switch (state) {
@@ -111,18 +109,16 @@ public class Bug1Module extends Module {
 		v.trim();
 
 		// Execute commands
-		if (v.angular != 0)
-			r.rotate(v.angular);
-		if (v.linear != 0)
-			r.forward(v.linear);
+		r.setAngularVel(v.angular);
+		r.setLinearVel(v.linear);
 	}
 
 	@Override
 	public boolean usesRandom() {
 		return false;
 	}
-	
-	public void newEpisode(){
+
+	public void newEpisode() {
 		state = State.GOAL_SEEKING;
 		hitPoint = null;
 		minDistPlace = null;

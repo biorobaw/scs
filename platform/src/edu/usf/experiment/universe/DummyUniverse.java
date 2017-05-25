@@ -4,6 +4,7 @@ import java.awt.geom.Rectangle2D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public class DummyUniverse implements GlobalCameraUniverse, BoundedUniverse {
@@ -35,6 +36,18 @@ public class DummyUniverse implements GlobalCameraUniverse, BoundedUniverse {
 
 	@Override
 	public void setBoundingRect(java.awt.geom.Rectangle2D.Float boundingRect) {
+		
+	}
+
+	@Override
+	public void step() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setRobot(Robot robot) {
+		// TODO Auto-generated method stub
 		
 	}
 }

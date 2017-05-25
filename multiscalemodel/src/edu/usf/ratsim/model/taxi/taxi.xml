@@ -5,8 +5,9 @@
 	<plot>false</plot>
 	
 	<universe>
-		<name>edu.usf.vlwsim.VirtUniverse</name>
+		<name>edu.usf.vlwsim.universe.StepRobotVirtualUniverse</name>
 		<params>
+			<deltaT>.1</deltaT>
 			<!-- Distance from which the food is accessible according to the universe -->
 			<closeToFoodThrs>0.1</closeToFoodThrs>
 			<!-- Map file -->
@@ -18,14 +19,14 @@
 	
 	<robot>
 		<!-- Robot to use. Use full name of the class -->
-		<name>edu.usf.vlwsim.VirtualRobot</name>
+		<name>edu.usf.vlwsim.robot.StepVirtualRobot</name>
 		<params>
 			<!-- Step length in meters -->
 			<step>.05</step>
 			<!-- Left rotation amount in radians -->
-			<leftAngle>0.195</leftAngle>
+			<leftAngle>.195</leftAngle>
 			<!-- Right rotation amount in radians -->
-			<rightAngle>-0.195</rightAngle>
+			<rightAngle>-.195</rightAngle>
 			<!-- Percentual translational noise -->
 			<noise>.05</noise>
 			<!-- Rotation noise added after translation -->
@@ -284,7 +285,7 @@
 			<!-- Number of episodes -->
 			<number>100</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>10</sleep>
+			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Place the animat in a given place -->

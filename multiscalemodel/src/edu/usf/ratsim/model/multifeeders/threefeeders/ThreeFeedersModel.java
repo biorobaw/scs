@@ -8,10 +8,10 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;

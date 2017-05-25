@@ -2,13 +2,12 @@ package edu.usf.ratsim.nsl.modules.actionselection;
 
 import java.util.List;
 
-import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.affordance.EatAffordance;
-import edu.usf.experiment.subject.affordance.ForwardAffordance;
-import edu.usf.experiment.subject.affordance.TurnAffordance;
+import edu.usf.experiment.robot.affordance.EatAffordance;
+import edu.usf.experiment.robot.affordance.ForwardAffordance;
+import edu.usf.experiment.robot.affordance.LocalActionAffordanceRobot;
+import edu.usf.experiment.robot.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
@@ -16,14 +15,14 @@ import edu.usf.micronsl.module.Module;
 public class FeederTraveler extends Module {
 
 	private FeederRobot fr;
-	private AffordanceRobot ar;
+	private LocalActionAffordanceRobot ar;
 	private List<Integer> feedersToVisit;
 
 	public FeederTraveler(String name, List<Integer> feederOrder, Robot robot) {
 		super(name);
 
 		this.fr = (FeederRobot) robot;
-		this.ar = (AffordanceRobot) robot;
+		this.ar = (LocalActionAffordanceRobot) robot;
 		
 		feedersToVisit = feederOrder;
 	}

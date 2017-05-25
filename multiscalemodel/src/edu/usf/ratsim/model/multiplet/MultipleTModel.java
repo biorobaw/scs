@@ -14,7 +14,7 @@ import edu.usf.micronsl.Model;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePortMatrix;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
-import edu.usf.vlwsim.VirtualRobot;
+import edu.usf.vlwsim.robot.VirtualRobot;
 
 public class MultipleTModel extends Model implements SaveModel {
 
@@ -94,7 +94,7 @@ public class MultipleTModel extends Model implements SaveModel {
 //
 //			modelAwake = new MultipleTModelAwake(params, this, lRobot, numActions, numPC);
 		} else {
-			modelAwake = new MultipleTModelAwake(params, robot, numActions, numPC, QTable, WTable, step);
+			modelAwake = new MultipleTModelAwake(params, robot, numPC, QTable, WTable, step);
 			// QTable = new SparseMatrix<Float>(numPC,numActions);
 			// WTable = new SparseMatrix<Float>(numPC,numPC);
 		}
@@ -145,7 +145,8 @@ public class MultipleTModel extends Model implements SaveModel {
 		// But first wait one extra cycle
 		if (fRobot.hasRobotEaten()) {
 			// Now we are ready to execute replay
-			lRobot.setCloseThreshold(asleepFoodDistanceThreshold);
+			// TODO: fix this, it has no effect currently
+			lRobot.setCloseThrs(asleepFoodDistanceThreshold);
 
 			// Execute replay episodes
 			for (int r = 0; r < cantReplay; r++) {
@@ -153,11 +154,11 @@ public class MultipleTModel extends Model implements SaveModel {
 				fRobot.clearEaten();
 				do {
 					modelAsleep.simRun();
-				} while (!fRobot.hasRobotEaten() && modelAsleep.getMaxActivation() > replayThres);
+				} while (!fRobot.hasFoundFood() && modelAsleep.getMaxActivation() > replayThres);
 
 			}
 
-			lRobot.setCloseThreshold(awakeFoodDistanceThreshold);
+			lRobot.setCloseThrs(awakeFoodDistanceThreshold);
 			
 			// Trick the condition to end simulation
 			fRobot.clearEaten();

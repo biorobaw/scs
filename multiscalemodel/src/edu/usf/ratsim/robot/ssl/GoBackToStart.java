@@ -71,7 +71,7 @@ public class GoBackToStart extends Task {
 		float angleToGoal = angleToPwithO(u.getRobotOrientation(), u.getRobotPosition(), toP);
 		while (Math.abs(angleToGoal) > init_rot_thrs) {
 			// If we are not receiving cam info, wait until we do
-			if (((GlobalCameraUniv) u).isCamInfoFresh()) {
+			if (((SSLCamUniverse) u).isCamInfoFresh()) {
 				angleToGoal = angleToPwithO(u.getRobotOrientation(), u.getRobotPosition(), toP);
 //				System.out.println(angleToGoal);
 				r.moveContinous(0, -p_rot * angleToGoal);
@@ -91,7 +91,7 @@ public class GoBackToStart extends Task {
 		float distanceToGoal = toP.distance(u.getRobotPosition());
 		while (distanceToGoal > dist_thrs) {
 			// If we are not receiving cam info, wait until we do
-			if (((GlobalCameraUniv) u).isCamInfoFresh()) {
+			if (((SSLCamUniverse) u).isCamInfoFresh()) {
 				angleToGoal = angleToPwithO(u.getRobotOrientation(), u.getRobotPosition(), toP);
 				distanceToGoal = toP.distance(u.getRobotPosition());
 				r.moveContinous(p_lin * distanceToGoal, -p_rot * angleToGoal);
@@ -110,7 +110,7 @@ public class GoBackToStart extends Task {
 		angleToGoal = GeomUtils.angleDiff(u.getRobotOrientationAngle(), t);
 		while (Math.abs(angleToGoal) > final_rot_thrs) {
 			// If we are not receiving cam info, wait until we do
-			if (((GlobalCameraUniv) u).isCamInfoFresh()) {
+			if (((SSLCamUniverse) u).isCamInfoFresh()) {
 				angleToGoal = GeomUtils.angleDiff(u.getRobotOrientationAngle(), t);
 				r.moveContinous(0, p_rot * angleToGoal);
 			} else {

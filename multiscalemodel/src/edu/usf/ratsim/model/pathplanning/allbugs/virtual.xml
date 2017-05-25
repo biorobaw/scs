@@ -2,12 +2,13 @@
 	
 <experiment>
 	
-	<!--	<seed>23423423</seed-->
 	<universe>
-		<name>edu.usf.vlwsim.VirtUniverse</name>
+		<name>edu.usf.vlwsim.universe.DifferentialRobotVirtualUniverse</name>
 		<params>
 			<!-- Distance from which the food is accessible according to the universe -->
 			<closeToFoodThrs>0.1</closeToFoodThrs>
+			<!-- Delta T step for simulation -->
+			<deltaT>1</deltaT>
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/model/pathplanning/Empty.xml</maze>
 			<!-- Display de window or run without GUI -->
@@ -17,7 +18,7 @@
 	
 	<robot>
 		<!-- Robot to use. Use full name of the class -->
-		<name>edu.usf.vlwsim.VirtualRobot</name>
+		<name>edu.usf.vlwsim.robot.DifferentialVirtualRobot</name>
 		<params>
 			<!-- Percentual translational noise -->
 			<noise>.05</noise>

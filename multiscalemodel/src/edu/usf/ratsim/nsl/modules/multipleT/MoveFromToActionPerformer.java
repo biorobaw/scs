@@ -2,14 +2,10 @@ package edu.usf.ratsim.nsl.modules.multipleT;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.experiment.robot.AffordanceRobot;
-import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.affordance.EatAffordance;
-import edu.usf.experiment.subject.affordance.ForwardAffordance;
-import edu.usf.experiment.subject.affordance.TurnAffordance;
-import edu.usf.experiment.utils.GeomUtils;
+import edu.usf.experiment.robot.TeleportRobot;
+import edu.usf.experiment.robot.affordance.EatAffordance;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 
@@ -22,13 +18,14 @@ import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 public class MoveFromToActionPerformer extends Module {
 	
 	//Point3f[] actions; 
-	AffordanceRobot robot;
+	TeleportRobot teleRobot;
+	private FeederRobot fRobot;
 
 	public MoveFromToActionPerformer(String name, Robot robot) {
 		super(name);
-
-		this.robot = (AffordanceRobot) robot;
-
+		
+		this.teleRobot = (TeleportRobot) robot;
+		this.fRobot = (FeederRobot) robot;
 	}
 
 	
@@ -38,20 +35,23 @@ public class MoveFromToActionPerformer extends Module {
 		Point3f pos = ((Point3fPort)getInPort("position")).get();
 		Point3f nextPos = ((Point3fPort)getInPort("nextPosition")).get();
 		
-		float dx = nextPos.x-pos.x;
-		float dy = nextPos.y-pos.y;
-		double theta = Math.atan2(dy,dx );
+//		float dx = nextPos.x-pos.x;
+//		float dy = nextPos.y-pos.y;
+//		double theta = Math.atan2(dy,dx );
+//		
+//		float distance = (float)Math.sqrt(dx*dx+dy*dy);
+//		
+//		
+//		//System.out.println("performing: "+action);
+//		float deltaAngle = GeomUtils.relativeAngle((float)theta, ((LocalizableRobot)robot).getOrientationAngle());
+//		robot.executeAffordance(new AbsoluteAngleAffordance(theta, distance));
+//		robot.executeAffordance(new TurnAffordance(deltaAngle, distance));
+//		robot.executeAffordance(new ForwardAffordance(distance));
+//		
+		teleRobot.setPosition(nextPos);
 		
-		float distance = (float)Math.sqrt(dx*dx+dy*dy);
 		
-		
-		//System.out.println("performing: "+action);
-		float deltaAngle = GeomUtils.relativeAngle((float)theta, ((LocalizableRobot)robot).getOrientationAngle());
-		robot.executeAffordance(new TurnAffordance(deltaAngle, distance));
-		robot.executeAffordance(new ForwardAffordance(distance));
-		
-		EatAffordance eat = new EatAffordance();
-		if(robot.checkAffordance(eat)) robot.executeAffordance(eat);
+//		if(fRobot.hasFoundFood()) fRobot.eat();
 		
 		//System.out.println("iteration: " + i);
 		//System.out.println("");

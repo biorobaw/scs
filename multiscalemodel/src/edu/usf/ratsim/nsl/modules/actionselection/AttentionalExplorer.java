@@ -5,14 +5,13 @@ import java.util.Random;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.experiment.robot.AffordanceRobot;
-import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.WallRobot;
+import edu.usf.experiment.robot.affordance.Affordance;
+import edu.usf.experiment.robot.affordance.EatAffordance;
+import edu.usf.experiment.robot.affordance.ForwardAffordance;
+import edu.usf.experiment.robot.affordance.LocalActionAffordanceRobot;
+import edu.usf.experiment.robot.affordance.TurnAffordance;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.affordance.Affordance;
-import edu.usf.experiment.subject.affordance.EatAffordance;
-import edu.usf.experiment.subject.affordance.ForwardAffordance;
-import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -34,18 +33,18 @@ public class AttentionalExplorer extends Module {
 	private float[] votes;
 	private Subject sub;
 	private float exploringVal;
-	private AffordanceRobot ar;
+	private LocalActionAffordanceRobot ar;
 	private WallRobot wr;
 	private Random r;
 	private Point3f currentInterest;
 	private int attentionRemaining;
 	private int maxAttentionSpan;
 
-	public AttentionalExplorer(String name, Subject sub, float exploringVal,
+	public AttentionalExplorer(String name, float exploringVal,
 			int maxAttentionSpan) {
 		super(name);
 
-		this.ar = (AffordanceRobot) sub.getRobot();
+		this.ar = (LocalActionAffordanceRobot) sub.getRobot();
 		this.wr = (WallRobot) sub.getRobot();
 
 		votes = new float[ar.getPossibleAffordances().size()];

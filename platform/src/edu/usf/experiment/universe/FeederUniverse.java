@@ -40,7 +40,7 @@ public interface FeederUniverse extends Universe {
 	// Involving position and food
 	public boolean hasRobotFoundFood();
 
-	public boolean robotEat();
+	public void robotEat();
 
 	public int getLastFeedingFeeder();
 

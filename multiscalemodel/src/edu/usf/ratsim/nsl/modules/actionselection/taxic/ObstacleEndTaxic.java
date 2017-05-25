@@ -5,14 +5,14 @@ import java.util.List;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
-import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.WallRobot;
+import edu.usf.experiment.robot.affordance.Affordance;
+import edu.usf.experiment.robot.affordance.EatAffordance;
+import edu.usf.experiment.robot.affordance.ForwardAffordance;
+import edu.usf.experiment.robot.affordance.LocalActionAffordanceRobot;
+import edu.usf.experiment.robot.affordance.TurnAffordance;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.affordance.Affordance;
-import edu.usf.experiment.subject.affordance.EatAffordance;
-import edu.usf.experiment.subject.affordance.ForwardAffordance;
-import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
@@ -28,7 +28,7 @@ public class ObstacleEndTaxic extends Module {
 	private float[] votes;
 	private Subject sub;
 	private float taxicVal;
-	private AffordanceRobot ar;
+	private LocalActionAffordanceRobot ar;
 	private WallRobot wr;
 	private float negReward;
 	private float tooCloseDist;
@@ -37,7 +37,7 @@ public class ObstacleEndTaxic extends Module {
 			float taxicVal, float negReward, float tooCloseDist) {
 		super(name);
 		
-		this.ar = (AffordanceRobot) robot;
+		this.ar = (LocalActionAffordanceRobot) robot;
 		this.wr = (WallRobot) robot;
 		
 		votes = new float[ar.getPossibleAffordances().size()];

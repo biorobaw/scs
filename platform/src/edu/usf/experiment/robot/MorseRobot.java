@@ -6,9 +6,11 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.experiment.subject.affordance.Affordance;
-import edu.usf.experiment.subject.affordance.ForwardAffordance;
-import edu.usf.experiment.subject.affordance.TurnAffordance;
+import edu.usf.experiment.robot.affordance.Affordance;
+import edu.usf.experiment.robot.affordance.AffordanceRobot;
+import edu.usf.experiment.robot.affordance.ForwardAffordance;
+import edu.usf.experiment.robot.affordance.LocalActionAffordanceRobot;
+import edu.usf.experiment.robot.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.morse.IRSensorProxy;
@@ -18,7 +20,7 @@ import edu.usf.experiment.utils.ElementWrapper;
 
 //TODO: Implement the functionality of all these interfaces
 public class MorseRobot
-		implements DifferentialRobot, LocalizableRobot, StepRobot, PlatformRobot, AffordanceRobot, SonarRobot {
+		implements DifferentialRobot, LocalizableRobot, StepRobot, PlatformRobot, LocalActionAffordanceRobot, SonarRobot {
 
 	private static final float FORWARD_THRS = .3f;
 	private static final float TURN_THRS = .2f;

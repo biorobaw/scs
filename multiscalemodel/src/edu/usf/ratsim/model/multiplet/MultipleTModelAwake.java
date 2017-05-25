@@ -6,7 +6,7 @@ import java.util.Map;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
@@ -28,8 +28,8 @@ import edu.usf.ratsim.nsl.modules.multipleT.UpdateQModuleAC;
 import edu.usf.ratsim.nsl.modules.rl.ActorCriticDeltaError;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
 import edu.usf.ratsim.support.NotImplementedException;
-import edu.usf.vlwsim.VirtUniverse;
-import edu.usf.vlwsim.drawingUtilities.DrawPolarGraph;
+import edu.usf.vlwsim.display.drawingUtilities.DrawPolarGraph;
+import edu.usf.vlwsim.universe.VirtUniverse;
 
 public class MultipleTModelAwake extends Model {
 
@@ -43,7 +43,7 @@ public class MultipleTModelAwake extends Model {
 	public MultipleTModelAwake() {
 	}
 
-	public MultipleTModelAwake(ElementWrapper params, Robot robot, int numActions, int numPC, Float2dSparsePort QTable,
+	public MultipleTModelAwake(ElementWrapper params, Robot robot, int numPC, Float2dSparsePort QTable,
 			Float2dSparsePort WTable, float step) {
 
 		// Get parameters frorm xml file
@@ -59,8 +59,11 @@ public class MultipleTModelAwake extends Model {
 		float maxDistanceSensorDistnace = params.getChildFloat("maxDistanceSensorDistance");
 
 		LocalizableRobot lRobot = (LocalizableRobot) robot;
+		AffordanceRobot affRobot = (AffordanceRobot) robot;
 
-		// Model overview:
+		int numActions = affRobot.getPossibleAffordances().size();	
+		
+		// Model overview:numActions
 
 		/**
 		 * Replay Model Johnson Redish 2005:
@@ -132,8 +135,7 @@ public class MultipleTModelAwake extends Model {
 
 		// Create ActionGatingModule -- sets the probabilities of impossible
 		// actions to 0 and then normalizes them
-		ActionGatingModule actionGating = new ActionGatingModule("actionGating", numActions, step,
-				maxDistanceSensorDistnace);
+		ActionGatingModule actionGating = new ActionGatingModule("actionGating", robot);
 		actionGating.addInPort("input", softmax.getOutPort("probabilities"));
 		addModule(actionGating);
 
@@ -159,8 +161,7 @@ public class MultipleTModelAwake extends Model {
 		biasModule.addInPort("action", actionCopy.getOutPort("copy"));
 
 		// Create Action Performer module
-		MultipleTActionPerformer actionPerformer = new MultipleTActionPerformer("actionPerformer", numActions,
-				step, robot);
+		MultipleTActionPerformer actionPerformer = new MultipleTActionPerformer("actionPerformer", robot);
 		actionPerformer.addInPort("action", actionSelection.getOutPort("action"));
 		addModule(actionPerformer);
 

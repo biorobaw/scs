@@ -5,17 +5,17 @@ import javax.vecmath.Point3f;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
+import edu.usf.experiment.robot.DifferentialRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.ratsim.support.SonarUtils;
-import edu.usf.vlwsim.VirtualRobot;
 
 public class Bug2Module extends Module {
 
-	private VirtualRobot r;
+	private DifferentialRobot r;
 
 	private enum State {
 		GOAL_SEEKING, WF_AWAY_FROM_ML, WF_RETURN_TO_ML
@@ -29,14 +29,12 @@ public class Bug2Module extends Module {
 		super(name);
 
 		// TODO: change to differential robot?
-		this.r = (VirtualRobot) robot;
+		this.r = (DifferentialRobot) robot;
 
 		state = State.GOAL_SEEKING;
 
 		mLine = null;
 	}
-	
-	
 
 	@Override
 	public void run() {
@@ -98,10 +96,8 @@ public class Bug2Module extends Module {
 		v.trim();
 
 		// Execute commands
-		if (v.angular != 0)
-			r.rotate(v.angular);
-		if (v.linear != 0)
-			r.forward(v.linear);
+		r.setAngularVel(v.angular);
+		r.setLinearVel(v.linear);
 	}
 
 	@Override

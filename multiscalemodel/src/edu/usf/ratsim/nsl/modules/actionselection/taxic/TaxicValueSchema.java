@@ -2,9 +2,9 @@ package edu.usf.ratsim.nsl.modules.actionselection.taxic;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.affordance.LocalActionAffordanceRobot;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
@@ -16,7 +16,7 @@ public class TaxicValueSchema extends Module {
 	public float[] value;
 	private float reward;
 
-	private AffordanceRobot ar;
+	private LocalActionAffordanceRobot ar;
 	private FeederRobot fr;
 	private double lambda;
 	private boolean estimateValue;
@@ -36,7 +36,7 @@ public class TaxicValueSchema extends Module {
 		this.lambda = lambda;
 		this.estimateValue = estimateValue;
 		
-		this.ar = (AffordanceRobot) robot;
+		this.ar = (LocalActionAffordanceRobot) robot;
 		this.fr = (FeederRobot) robot;
 	}
 

@@ -33,6 +33,7 @@ public class Last2ActionsActionGating extends Module {
 		super(name);
 
 		this.numActions = numActions;
+		
 		probabilities = new float[numActions];
 		precalculatedValues = new float[numActions][numActions][numActions];
 		chosenRing = new float[numActions];
@@ -174,13 +175,13 @@ public class Last2ActionsActionGating extends Module {
 				chosenRing[i] = precalculatedValues[action][last2Action][i];
 				sum+=probabilities[i];
 			}
-			//System.out.println("previous: "+action);
-			//System.out.print("Probabilities: (");
+//			System.out.println("previous: "+action);
+//			System.out.print("Probabilities: (");
 			for (int i = 0; i < numActions; i++) {
 				probabilities[i]/=sum;
-				//System.out.print(""+probabilities[i]+" ");
+//				System.out.print(""+probabilities[i]+" ");
 			}
-			//System.out.println(")");
+//			System.out.println(")");
 			
 			
 			last2Action = action;
@@ -191,12 +192,13 @@ public class Last2ActionsActionGating extends Module {
 		public void run(){
 			
 			Float1dPortArray input = (Float1dPortArray) getInPort("input");
-			
+//			System.out.print("Probabilities: (");
 			for (int i =0;i<numActions;i++){
 				probabilities[i] = input.get(i);
 				chosenRing[i] = (float)1.0/numActions;
+//				System.out.print(""+probabilities[i]+" ");
 			}
-			
+//			System.out.println(")");
 			run = new RunSecondTime();
 			
 		}

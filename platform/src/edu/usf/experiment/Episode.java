@@ -128,6 +128,8 @@ public class Episode {
 				t.perform(this);
 
 			getSubject().getModel().simRun();
+			
+			getUniverse().step();
 //			System.out.println("cycle");
 			// TODO: universe step cycle
 

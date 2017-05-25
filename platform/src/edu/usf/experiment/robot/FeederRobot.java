@@ -52,5 +52,9 @@ public interface FeederRobot extends VisionRobot {
 
 	public void clearEaten();
 
-	
+	/**
+	 * Function to set that the robot has successfully eaten
+	 * Used by the universe as a callback to inform the robot that the eat action was successful
+	 */
+	public void setAte();
 }

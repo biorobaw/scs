@@ -1,10 +1,14 @@
 package edu.usf.ratsim.nsl.modules.multipleT;
 
-import javax.vecmath.Point3f;
+import java.util.List;
 
+import edu.usf.experiment.robot.AbsoluteDirectionRobot;
+import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.affordance.Affordance;
+import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
-import edu.usf.vlwsim.VirtUniverse;
+import edu.usf.vlwsim.universe.VirtUniverse;
 
 /**
  * Module that sets the probability of an action to 0 if the action can not be performed
@@ -13,57 +17,39 @@ import edu.usf.vlwsim.VirtUniverse;
  * 
  */
 public class ActionGatingModule extends Module {
-	int numActions;	
 	
 	public float[] probabilities;
-	float minDistance;
-	float maxDistance;
 
-	Point3f[] endPoints;
-	
+	private AffordanceRobot robot;
 
-	public ActionGatingModule(String name,int numActions,float minDistance,float maxDistance) {
+
+	public ActionGatingModule(String name, Robot robot) {
 		super(name);
 
-		this.numActions = numActions;
-		this.minDistance = minDistance;
-		this.maxDistance = maxDistance;
+		this.robot = (AffordanceRobot) robot;
 		
-		probabilities = new float[numActions];
+		probabilities = new float[this.robot.getPossibleAffordances().size()];
 		this.addOutPort("probabilities", new Float1dPortArray(this, probabilities));
-		endPoints = new Point3f[numActions];
-		
-		double deltaAngle = 2*Math.PI/numActions;
-		float angle = 0;
-		for (int i=0;i<numActions;i++)
-		{	
-			double dx = Math.cos(angle), dy = Math.sin(angle);
-			endPoints[i] = new Point3f((float)dx*maxDistance,(float)dy*maxDistance,0);
-			angle+=deltaAngle;
-		}
 
 	}
 
 	
 	public void run() {
 		Float1dPortArray input = (Float1dPortArray) getInPort("input");
-		VirtUniverse universe = VirtUniverse.getInstance();
+		
+		List<Affordance> aff = robot.getPossibleAffordances();
+		aff = robot.checkAffordances(aff);
 		
 		float sum = 0;
-		for (int i =0;i<numActions;i++)
+		for (int i =0;i<aff.size();i++)
 		{
-			double distance = universe.distanceToNearestWall(endPoints[i].x,endPoints[i].y, maxDistance);
-			if(distance <= minDistance) probabilities[i] = 0;
-			else{
-				//System.out.println("action "+i+" posible");
-				probabilities[i] =  (float)(input.get(i)*distance);
-				sum += probabilities[i];
-			}
-			
+			probabilities[i] =  (float)(input.get(i)*aff.get(i).getRealizable());
+			sum += probabilities[i];
 		}
 		
+		
 		if(sum==0) throw new IllegalArgumentException("Argument 'divisor' is 0");
-		for (int i =0;i<numActions;i++) probabilities[i]/=sum;
+		for (int i =0;i<aff.size();i++) probabilities[i]/=sum;
 			
 		
 	}

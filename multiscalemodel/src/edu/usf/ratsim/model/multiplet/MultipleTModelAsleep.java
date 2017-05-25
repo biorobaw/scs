@@ -26,6 +26,7 @@ import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.nsl.modules.celllayer.TmazeRandomPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.input.Position;
 import edu.usf.ratsim.nsl.modules.input.SubjectAte;
+import edu.usf.ratsim.nsl.modules.input.SubjectFoundFood;
 import edu.usf.ratsim.nsl.modules.multipleT.ClosestActionSelection;
 import edu.usf.ratsim.nsl.modules.multipleT.MoveFromToActionPerformer;
 import edu.usf.ratsim.nsl.modules.multipleT.NextActiveModule;
@@ -33,7 +34,7 @@ import edu.usf.ratsim.nsl.modules.multipleT.NextPositionModule;
 import edu.usf.ratsim.nsl.modules.multipleT.UpdateQModuleAC;
 import edu.usf.ratsim.nsl.modules.rl.ActorCriticDeltaError;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
-import edu.usf.vlwsim.VirtUniverse;
+import edu.usf.vlwsim.universe.VirtUniverse;
 
 public class MultipleTModelAsleep extends Model {
 
@@ -182,14 +183,17 @@ public class MultipleTModelAsleep extends Model {
 		actionPerformer.addPreReq(placeCells);
 		
 		//create subAte module
-		SubjectAte subAte = new SubjectAte("Subject Ate",robot);
-		addModule(subAte);
-		subAte.addPreReq(actionPerformer);
+//		SubjectAte subAte = new SubjectAte("Subject Ate",robot);
+//		addModule(subAte);
+//		subAte.addPreReq(actionPerformer);
+		SubjectFoundFood subFoundFood = new SubjectFoundFood("Subject Found Food", robot);
+		addModule(subFoundFood);
+		subFoundFood.addPreReq(actionPerformer);
 		
 		//Create reward module
 		float nonFoodReward = 0;
 		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
-		r.addInPort("rewardingEvent", subAte.getOutPort("subAte")); 
+		r.addInPort("rewardingEvent", subFoundFood.getOutPort("subFoundFood")); 
 		addModule(r);
 		
 		//Create deltaSignal module

@@ -3,12 +3,12 @@ package edu.usf.ratsim.nsl.modules.actionselection;
 import java.util.List;
 import java.util.Random;
 
-import edu.usf.experiment.robot.AffordanceRobot;
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.StepRobot;
+import edu.usf.experiment.robot.affordance.AffordanceRobot;
+import edu.usf.experiment.robot.affordance.EatAffordance;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.FeederUtils;
 import edu.usf.experiment.utils.GeomUtils;
