@@ -16,7 +16,7 @@ import javax.vecmath.Quat4f;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.MovableRobotUniverse;
-import edu.usf.experiment.universe.Platform;
+import edu.usf.experiment.universe.platform.Platform;
 import edu.usf.experiment.universe.platform.PlatformUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;

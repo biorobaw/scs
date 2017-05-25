@@ -8,7 +8,6 @@ import javax.vecmath.Point3f;
 import com.vividsolutions.jts.geom.LineSegment;
 
 import edu.usf.experiment.universe.Universe;
-import edu.usf.experiment.universe.Wall;
 
 public interface WallUniverse extends Universe {
 	

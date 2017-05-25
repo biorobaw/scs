@@ -8,7 +8,7 @@ import edu.usf.experiment.robot.affordance.EatAffordance;
 import edu.usf.experiment.robot.affordance.ForwardAffordance;
 import edu.usf.experiment.robot.affordance.LocalActionAffordanceRobot;
 import edu.usf.experiment.robot.affordance.TurnAffordance;
-import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.universe.feeder.Feeder;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 

@@ -12,7 +12,7 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.index.quadtree.Quadtree;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.universe.feeder.Feeder;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;

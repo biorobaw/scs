@@ -9,8 +9,6 @@ import javax.vecmath.Vector3f;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
-import edu.usf.experiment.universe.Wall;
-
 public class WallUniverseUtilities {
 
 	// Wall and other walls

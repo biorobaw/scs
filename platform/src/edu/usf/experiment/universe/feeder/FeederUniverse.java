@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.Universe;
 
 public interface FeederUniverse extends Universe {

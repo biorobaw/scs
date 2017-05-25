@@ -2,7 +2,7 @@ package edu.usf.experiment.robot;
 
 import java.util.List;
 
-import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.universe.feeder.Feeder;
 
 public interface FeederRobot extends VisionRobot {
 

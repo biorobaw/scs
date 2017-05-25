@@ -2,7 +2,7 @@ package edu.usf.experiment.universe.element;
 
 import java.util.LinkedList;
 
-import edu.usf.experiment.universe.Wall;
+import edu.usf.experiment.universe.wall.Wall;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public abstract class MazeElement {

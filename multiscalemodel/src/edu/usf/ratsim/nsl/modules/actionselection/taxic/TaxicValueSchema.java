@@ -5,7 +5,7 @@ import javax.vecmath.Point3f;
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.affordance.LocalActionAffordanceRobot;
-import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.universe.feeder.Feeder;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;

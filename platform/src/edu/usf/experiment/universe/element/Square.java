@@ -1,6 +1,6 @@
 package edu.usf.experiment.universe.element;
 
-import edu.usf.experiment.universe.Wall;
+import edu.usf.experiment.universe.wall.Wall;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public class Square extends MazeElement {

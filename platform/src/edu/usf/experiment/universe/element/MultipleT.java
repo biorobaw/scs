@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.Random;
 
 import edu.usf.experiment.Globals;
-import edu.usf.experiment.universe.Wall;
+import edu.usf.experiment.universe.wall.Wall;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
 

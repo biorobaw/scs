@@ -6,7 +6,6 @@ import javax.vecmath.Point3f;
 
 import com.vividsolutions.jts.geom.LineSegment;
 
-import edu.usf.experiment.universe.Platform;
 import edu.usf.experiment.universe.Universe;
 
 public interface PlatformUniverse extends Universe {

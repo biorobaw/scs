@@ -9,8 +9,6 @@ import javax.vecmath.Point3f;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
-import edu.usf.experiment.universe.Feeder;
-
 public class FeederUniverseUtilities {
 
 	// Filter Methods

@@ -4,8 +4,8 @@ import java.util.Random;
 
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.Feeder;
-import edu.usf.experiment.universe.FeederUtils;
+import edu.usf.experiment.universe.feeder.Feeder;
+import edu.usf.experiment.universe.feeder.FeederUtils;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;

@@ -9,7 +9,7 @@ import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.universe.Universe;
-import edu.usf.experiment.universe.Wall;
+import edu.usf.experiment.universe.wall.Wall;
 import edu.usf.experiment.universe.wall.WallUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 

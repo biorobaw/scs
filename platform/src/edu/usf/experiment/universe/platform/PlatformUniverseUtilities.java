@@ -7,8 +7,6 @@ import javax.vecmath.Point3f;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
-import edu.usf.experiment.universe.Platform;
-
 public class PlatformUniverseUtilities {
 
 	public static boolean hasRobotFoundPlatform(List<Platform> platforms, Point3f robotPos) {

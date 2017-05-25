@@ -7,7 +7,7 @@ import javax.vecmath.Point3f;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
-import edu.usf.experiment.universe.Wall;
+import edu.usf.experiment.universe.wall.Wall;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public class WallNode extends ExpUniverseNode {

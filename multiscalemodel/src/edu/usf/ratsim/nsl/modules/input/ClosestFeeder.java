@@ -2,8 +2,8 @@ package edu.usf.ratsim.nsl.modules.input;
 
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.universe.Feeder;
-import edu.usf.experiment.universe.FeederUtils;
+import edu.usf.experiment.universe.feeder.Feeder;
+import edu.usf.experiment.universe.feeder.FeederUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
