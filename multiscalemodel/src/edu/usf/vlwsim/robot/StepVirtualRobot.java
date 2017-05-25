@@ -131,7 +131,7 @@ public class StepVirtualRobot extends VirtualRobot implements StepRobot, LocalAc
 	}
 
 	@Override
-	public boolean checkAffordance(Affordance af) {
+	public float checkAffordance(Affordance af) {
 		boolean realizable;
 		if (af instanceof TurnAffordance) {
 			TurnAffordance ta = (TurnAffordance) af;
@@ -154,7 +154,7 @@ public class StepVirtualRobot extends VirtualRobot implements StepRobot, LocalAc
 			throw new RuntimeException("Affordance " + af.getClass().getName() + " not supported by robot");
 
 		af.setRealizable(realizable);
-		return realizable;
+		return realizable ? 1 : 0;
 
 	}
 
