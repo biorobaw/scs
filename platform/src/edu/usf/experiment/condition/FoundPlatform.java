@@ -1,8 +1,10 @@
 package edu.usf.experiment.condition;
 
 import edu.usf.experiment.Episode;
-import edu.usf.experiment.universe.PlatformUniverse;
+import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.platform.PlatformUniverse;
+import edu.usf.experiment.universe.platform.PlatformUniverseUtilities;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public class FoundPlatform implements Condition {
@@ -18,8 +20,9 @@ public class FoundPlatform implements Condition {
 			throw new IllegalArgumentException("");
 		
 		PlatformUniverse pu = (PlatformUniverse) u;
+		GlobalCameraUniverse gcu = (GlobalCameraUniverse) u;
 		
-		return pu.hasRobotFoundPlatform();
+		return PlatformUniverseUtilities.hasRobotFoundPlatform(pu.getPlatforms(), gcu.getRobotPosition());
 	}
 
 }

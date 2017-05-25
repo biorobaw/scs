@@ -24,4 +24,8 @@ public class Platform {
 	public void setPosition(Point3f relFPos) {
 		this.position = new Point3f(relFPos);
 	}
+	
+	public float getRadius(){
+		return radius;
+	}
 }

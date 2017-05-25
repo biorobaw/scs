@@ -34,11 +34,11 @@ import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.MovableRobotUniverse;
 import edu.usf.experiment.universe.Platform;
-import edu.usf.experiment.universe.PlatformUniverse;
 import edu.usf.experiment.universe.Wall;
 import edu.usf.experiment.universe.element.MazeElement;
 import edu.usf.experiment.universe.element.MazeElementLoader;
 import edu.usf.experiment.universe.feeder.FeederUniverse;
+import edu.usf.experiment.universe.platform.PlatformUniverse;
 import edu.usf.experiment.universe.wall.WallUniverse;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -533,24 +533,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		}
 	}
 
-	public boolean hasRobotFoundPlatform() {
-		Point3f pos = getRobotPosition();
-		for (Platform plat : platforms)
-			if (plat.getPosition().distance(pos) < CLOSE_TO_FOOD_THRS)
-				return true;
-		return false;
-	}
-
-	public float shortestDistanceToPlatforms(LineSegment wall) {
-		float minDist = Float.MAX_VALUE;
-		for (Platform p : platforms) {
-			Point3f pos = p.getPosition();
-			Coordinate c = new Coordinate(pos.x, pos.y);
-			if (wall.distance(c) < minDist)
-				minDist = (float) wall.distance(c);
-		}
-		return minDist;
-	}
+	
 
 	/********************************* Global Camera Universe *************************************/
 	public Point3f getRobotPosition() {

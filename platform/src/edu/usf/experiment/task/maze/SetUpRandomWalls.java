@@ -12,8 +12,9 @@ import com.vividsolutions.jts.geom.LineSegment;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
-import edu.usf.experiment.universe.PlatformUniverse;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.platform.PlatformUniverse;
+import edu.usf.experiment.universe.platform.PlatformUniverseUtilities;
 import edu.usf.experiment.universe.wall.WallUniverse;
 import edu.usf.experiment.universe.wall.WallUniverseUtilities;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -109,7 +110,7 @@ public class SetUpRandomWalls extends Task {
 				&& wall.p1.x < X_RADIUS && wall.p1.y < Y_RADIUS
 				&& wall.distance(new Coordinate(0, 0)) > 0.05 
 				&& WallUniverseUtilities.shortestDistanceToWalls(wu.getWalls(),wall) > MIN_DIST_TO_OTHER_WALLS
-				&& pu.shortestDistanceToPlatforms(wall) > MIN_DIST_TO_PLATFORM_INTERIOR
+				&& PlatformUniverseUtilities.shortestDistanceToPlatforms(pu.getPlatforms(), wall) > MIN_DIST_TO_PLATFORM_INTERIOR
 				&& WallUniverseUtilities.shortestDistanceToRobot(wall, gcu.getRobotPosition()) > MIN_DIST_TO_ROBOT;
 	}
 

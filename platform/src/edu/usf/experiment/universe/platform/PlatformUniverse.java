@@ -1,10 +1,13 @@
-package edu.usf.experiment.universe;
+package edu.usf.experiment.universe.platform;
 
 import java.util.List;
 
 import javax.vecmath.Point3f;
 
 import com.vividsolutions.jts.geom.LineSegment;
+
+import edu.usf.experiment.universe.Platform;
+import edu.usf.experiment.universe.Universe;
 
 public interface PlatformUniverse extends Universe {
 
@@ -14,7 +17,4 @@ public interface PlatformUniverse extends Universe {
 	
 	public void addPlatform(Point3f pos, float radius);
 
-	public boolean hasRobotFoundPlatform();
-	
-	public float shortestDistanceToPlatforms(LineSegment wall);
 }

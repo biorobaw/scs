@@ -4,8 +4,8 @@ import javax.vecmath.Point3f;
 
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
-import edu.usf.experiment.universe.PlatformUniverse;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.platform.PlatformUniverse;
 import edu.usf.experiment.universe.wall.WallUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 

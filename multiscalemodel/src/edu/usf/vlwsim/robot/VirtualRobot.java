@@ -8,6 +8,8 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
+import com.sun.corba.se.impl.ior.GenericTaggedProfile;
+
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.Landmark;
 import edu.usf.experiment.robot.LocalizableRobot;
@@ -19,6 +21,7 @@ import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.FeederUtils;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.feeder.FeederUniverseUtilities;
+import edu.usf.experiment.universe.platform.PlatformUniverseUtilities;
 import edu.usf.experiment.universe.wall.WallUniverseUtilities;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -282,7 +285,7 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 
 	@Override
 	public boolean hasFoundPlatform() {
-		return universe.hasRobotFoundPlatform();
+		return PlatformUniverseUtilities.hasRobotFoundPlatform(universe.getPlatforms(), universe.getRobotPosition());
 	}
 
 	public void moveContinous(float lVel, float angVel) {

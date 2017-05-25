@@ -13,13 +13,11 @@ import java.util.Map;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
-import com.vividsolutions.jts.geom.LineSegment;
-
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.MovableRobotUniverse;
 import edu.usf.experiment.universe.Platform;
-import edu.usf.experiment.universe.PlatformUniverse;
+import edu.usf.experiment.universe.platform.PlatformUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
 
@@ -105,18 +103,6 @@ public class MorseUniverse implements GlobalCameraUniverse, PlatformUniverse, Mo
 	public void addPlatform(Point3f pos, float radius) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	@Override
-	public boolean hasRobotFoundPlatform() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public float shortestDistanceToPlatforms(LineSegment wall) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override
