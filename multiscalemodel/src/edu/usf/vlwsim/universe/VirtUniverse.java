@@ -31,7 +31,6 @@ import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.universe.BoundedUniverse;
 import edu.usf.experiment.universe.Feeder;
-import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.MovableRobotUniverse;
 import edu.usf.experiment.universe.Platform;
@@ -40,6 +39,7 @@ import edu.usf.experiment.universe.Wall;
 import edu.usf.experiment.universe.WallUniverse;
 import edu.usf.experiment.universe.element.MazeElement;
 import edu.usf.experiment.universe.element.MazeElementLoader;
+import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
@@ -299,27 +299,11 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		return feeders.get(i).getPosition();
 	}
 
-	public List<Integer> getFlashingFeeders() {
-		List<Integer> res = new LinkedList<Integer>();
-		for (Feeder f : feeders.values())
-			if (f.isFlashing())
-				res.add(f.getId());
+	
 
-		return res;
-	}
+	
 
-	public List<Integer> getActiveFeeders() {
-		List<Integer> res = new LinkedList<Integer>();
-		for (Feeder f : feeders.values())
-			if (f.isActive())
-				res.add(f.getId());
-
-		return res;
-	}
-
-	public int getNumFeeders() {
-		return feeders.size();
-	}
+	
 
 	public void setActiveFeeder(int i, boolean val) {
 		feeders.get(i).setActive(val);
@@ -335,9 +319,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 			feederNodes.get(i).setFlashing(flashing);
 	}
 
-	public List<Integer> getFeederNums() {
-		return new LinkedList<Integer>(feeders.keySet());
-	}
+	
 
 	public List<Feeder> getFeeders() {
 		return new LinkedList<Feeder>(feeders.values());
@@ -363,16 +345,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		return feeders.get(feeder).hasFood();
 	}
 
-	// Involving position and food
-	public boolean hasRobotFoundFood() {
-		Point3f robot = getRobotPosition();
-		for (Feeder f : feeders.values()) {
-			if (f.isActive() && f.hasFood() && robot.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS)
-				return true;
-		}
 
-		return false;
-	}
 
 	public void robotEat() {
 		robotTriedToEat = true;
@@ -402,61 +375,15 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		robotWantsToEat = false;
 	}
 
-	public int getLastFeedingFeeder() {
-		return lastAteFeeder;
-	}
+	
+	
+	
 
-	public boolean isRobotCloseToFeeder(int currentGoal) {
-		Point3f robot = getRobotPosition();
-		return robot.distance(feeders.get(currentGoal).getPosition()) < CLOSE_TO_FOOD_THRS;
-	}
+	
 
-	public int getFeedingFeeder() {
-		Point3f robotPos = getRobotPosition();
-		for (Feeder f : feeders.values()) {
-			if (f.isActive())
-				if (robotPos.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS)
-					return f.getId();
-		}
+	
 
-		return -1;
-	}
-
-	public boolean hasRobotFoundFeeder(int i) {
-		Point3f robot = getRobotPosition();
-		Feeder f = feeders.get(i);
-		return robot.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS;
-	}
-
-	public boolean isRobotCloseToAFeeder() {
-		Point3f robot = getRobotPosition();
-		for (Feeder f : feeders.values())
-			if (robot.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS)
-				return true;
-		return false;
-	}
-
-	public float getDistanceToFeeder(int i) {
-		return getRobotPosition().distance(feeders.get(i).getPosition());
-	}
-
-	public int getFoundFeeder() {
-		Point3f robot = getRobotPosition();
-		for (Feeder f : feeders.values())
-			if (robot.distance(f.getPosition()) < CLOSE_TO_FOOD_THRS)
-				return f.getId();
-
-		return -1;
-	}
-
-	public List<Integer> getEnabledFeeders() {
-		List<Integer> res = new LinkedList<Integer>();
-		for (Feeder f : feeders.values())
-			if (f.isEnabled())
-				res.add(f.getId());
-		return res;
-	}
-
+	
 	public void setEnableFeeder(Integer f, boolean enabled) {
 		feeders.get(f).setEnabled(enabled);
 	}
@@ -517,17 +444,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		return shortestDistance;
 	}
 
-	public float wallDistanceToFeeders(LineSegment wall) {
-		float minDist = Float.MAX_VALUE;
-		for (Feeder fn : feeders.values()) {
-			Point3f pos = fn.getPosition();
-			Coordinate c = new Coordinate(pos.x, pos.y);
-			if (wall.distance(c) < minDist)
-				minDist = (float) wall.distance(c);
-		}
-		return minDist;
-	}
-
+	
 	public void addWall(float x, float y, float x2, float y2) {
 		Wall wall = new Wall(x, y, x2, y2);
 		wallsToRevert.add(wall);
@@ -550,17 +467,6 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		return shortestDistance;
 	}
 
-	public float shortestDistanceToFeeders(Point2f x) {
-		float minDist = Float.MAX_VALUE;
-		Coordinate p = new Coordinate(x.x, x.y);
-		for (Feeder fn : feeders.values()) {
-			Point3f pos = fn.getPosition();
-			Coordinate c = new Coordinate(pos.x, pos.y);
-			if (p.distance(c) < minDist)
-				minDist = (float) p.distance(c);
-		}
-		return minDist;
-	}
 
 	public void addWall(LineSegment segment) {
 		Wall wall = new Wall(segment);
@@ -602,15 +508,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		return feeders.get(feeder).isEnabled();
 	}
 
-	public float shortestDistanceToFeeders(LineSegment wall) {
-		double distance = Float.MAX_VALUE;
-		for (Feeder f : feeders.values()) {
-			Coordinate p = new Coordinate(f.getPosition().x, f.getPosition().y);
-			if (wall.distance(p) < distance)
-				distance = wall.distance(p);
-		}
-		return (float) distance;
-	}
+	
 
 	public void removeWall(LineSegment wall) {
 		walls.remove(wall);
@@ -1225,4 +1123,8 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		this.deltaT = deltaT;
 	}
 
+	@Override
+	public float getCloseThrs() {
+		return CLOSE_TO_FOOD_THRS;
+	}
 }

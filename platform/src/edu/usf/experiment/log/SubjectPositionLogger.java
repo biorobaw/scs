@@ -7,8 +7,8 @@ import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public class SubjectPositionLogger extends PositionLogger {

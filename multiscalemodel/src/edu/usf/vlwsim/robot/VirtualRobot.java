@@ -18,6 +18,7 @@ import edu.usf.experiment.robot.WallRobot;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.FeederUtils;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.feeder.FeederUniverseUtilities;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
@@ -98,7 +99,7 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 	}
 
 	public boolean hasFoundFood() {
-		return universe.hasRobotFoundFood();
+		return FeederUniverseUtilities.hasRobotFoundFood(universe.getFeeders(), universe.getRobotPosition(), universe.getCloseThrs());
 	}
 
 	
@@ -119,7 +120,7 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 
 	public List<Landmark> getLandmarks(int except) {
 		List<Landmark> res = new LinkedList<Landmark>();
-		for (Integer i : universe.getFeederNums())
+		for (Integer i : FeederUniverseUtilities.getFeederNums(universe.getFeeders()))
 			if (i != except)
 				if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)) {
 					// Get relative position
@@ -141,7 +142,7 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 
 	public List<Feeder> getVisibleFeeders() {
 		List<Feeder> res = new LinkedList<Feeder>();
-		for (Integer i : universe.getFeederNums())
+		for (Integer i : FeederUniverseUtilities.getFeederNums(universe.getFeeders()))
 			if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)) {
 				// Get relative position
 				Point3f relFPos = getRelativePos(universe.getFoodPosition(i));
@@ -152,13 +153,6 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 			}
 
 		return res;
-	}
-
-	private boolean in(int o, int[] except) {
-		for (int i = 0; i < except.length; i++)
-			if (except[i] == o)
-				return true;
-		return false;
 	}
 
 	private Point3f getRelativePos(Point3f fPos) {
@@ -175,7 +169,7 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 
 	@Override
 	public Feeder getFlashingFeeder() {
-		for (Integer i : universe.getFeederNums())
+		for (Integer i : FeederUniverseUtilities.getFeederNums(universe.getFeeders()))
 			if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist) && universe.isFeederFlashing(i)) {
 				// Get relative position
 				Point3f fPos = universe.getFoodPosition(i);

@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.Random;
 
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.FeederUniverse;
+import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.feeder.FeederUniverse;
+import edu.usf.experiment.universe.feeder.FeederUniverseUtilities;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
 
@@ -24,24 +27,23 @@ public class SwitchFeeder extends Task {
 		random = RandomSingleton.getInstance();
 	}
 
-	public void perform(Universe u, Subject s){
+	public void perform(Universe u, Subject s) {
 		if (!(u instanceof FeederUniverse))
 			throw new IllegalArgumentException("");
-		
+
 		FeederUniverse fu = (FeederUniverse) u;
-		
+		GlobalCameraUniverse gcu = (GlobalCameraUniverse) u;
+
 		if (fu.hasRobotEaten()) {
-			int eatenFeeder = fu.getFeedingFeeder();
+			int eatenFeeder = FeederUniverseUtilities.getFeedingFeeder(fu.getFeeders(), gcu.getRobotPosition(),
+					fu.getCloseThrs());
 
 			// Deactivate the feeding one
 			fu.setActiveFeeder(eatenFeeder, false);
 
-			List<Integer> enabled = fu.getEnabledFeeders();
+			List<Integer> enabled = FeederUniverseUtilities
+					.getFeederNums(FeederUniverseUtilities.getEnabledFeeders(fu.getFeeders()));
 			enabled.remove(new Integer(eatenFeeder));
-			// for (Integer f : enabled){
-			// u.setActiveFeeder(f, true);
-			//
-			// }
 
 			// Activate only one
 			fu.setActiveFeeder(enabled.get(random.nextInt(enabled.size())), true);

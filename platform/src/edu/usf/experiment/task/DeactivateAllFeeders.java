@@ -1,11 +1,10 @@
 package edu.usf.experiment.task;
 
-import edu.usf.experiment.Episode;
-import edu.usf.experiment.Experiment;
-import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.FeederUniverse;
+import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.feeder.FeederUniverse;
+import edu.usf.experiment.universe.feeder.FeederUniverseUtilities;
 import edu.usf.experiment.utils.ElementWrapper;
 
 /**
@@ -25,9 +24,9 @@ public class DeactivateAllFeeders extends Task {
 		
 		FeederUniverse fu = (FeederUniverse) u;
 		
-		for (Integer f : fu.getEnabledFeeders()){
-			fu.setActiveFeeder(f, false);
-			fu.clearFoodFromFeeder(f);
+		for (Feeder f : FeederUniverseUtilities.getEnabledFeeders(fu.getFeeders())){
+			fu.setActiveFeeder(f.getId(), false);
+			fu.clearFoodFromFeeder(f.getId());
 		}
 	}
 

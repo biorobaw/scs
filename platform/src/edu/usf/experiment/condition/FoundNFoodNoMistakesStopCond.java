@@ -4,9 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.usf.experiment.Episode;
-import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.FeederUniverse;
+import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.feeder.FeederUniverse;
+import edu.usf.experiment.universe.feeder.FeederUniverseUtilities;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -31,17 +32,18 @@ public class FoundNFoodNoMistakesStopCond implements Condition {
 			throw new IllegalArgumentException("");
 		
 		FeederUniverse fu = (FeederUniverse) u;
+		GlobalCameraUniverse gcu = (GlobalCameraUniverse) u;
 		
-		Subject sub = episode.getSubject();
-		if (fu.hasRobotTriedToEat() && fu.getFoundFeeder() != -1) {
-			if (!fu.isFeederEnabled(fu.getFoundFeeder())) {
+		int foundFeeder = FeederUniverseUtilities.getFoundFeeder(fu.getFeeders(), gcu.getRobotPosition(), fu.getCloseThrs());
+		if (fu.hasRobotTriedToEat() &&  foundFeeder != -1) {
+			if (!fu.getFeeder(foundFeeder).isEnabled()) {
 				// Trying to eat from wrong feeder
 				toGo = n;
-			} else if (fu.getFoundFeeder() != lastFeeder) {
+			} else if (foundFeeder != lastFeeder) {
 				// Trying to eat from an enabled feeder
-				flashing.add(fu.isFeederFlashing(fu.getFoundFeeder()));
+				flashing.add(fu.getFeeder(foundFeeder).isFlashing());
 				toGo--;
-				lastFeeder = fu.getFoundFeeder();
+				lastFeeder = foundFeeder;
 			}
 
 

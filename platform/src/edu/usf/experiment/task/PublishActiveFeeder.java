@@ -1,17 +1,14 @@
 package edu.usf.experiment.task;
 
 import java.util.List;
-import java.util.Random;
 
-import edu.usf.experiment.Episode;
-import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
-import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.FeederUniverse;
+import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.feeder.FeederUniverse;
+import edu.usf.experiment.universe.feeder.FeederUniverseUtilities;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.experiment.utils.RandomSingleton;
 
 /**
  *Task to flash and activate a random feeder
@@ -32,8 +29,8 @@ public class PublishActiveFeeder extends Task {
 		
 		FeederUniverse fu = (FeederUniverse) u;
 		
-		List<Integer> activeFeeders = fu.getActiveFeeders();
-		PropertyHolder.getInstance().setProperty("activeFeeder", activeFeeders.get(0).toString());
+		List<Feeder> activeFeeders = FeederUniverseUtilities.getActiveFeeders(fu.getFeeders());
+		PropertyHolder.getInstance().setProperty("activeFeeder", "" + activeFeeders.get(0).getId());
 	}
 
 

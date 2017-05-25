@@ -1,8 +1,9 @@
 package edu.usf.experiment.task;
 
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.FeederUniverse;
+import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
 /**
@@ -22,10 +23,10 @@ public class SetAllFeedersPermanentFood extends Task {
 		
 		FeederUniverse fu = (FeederUniverse) u;
 		
-		for (Integer f : fu.getFeederNums()){
-			fu.setEnableFeeder(f, true);
-			fu.setActiveFeeder(f, true);
-			fu.setPermanentFeeder(f, true);
+		for (Feeder f : fu.getFeeders()){
+			fu.setEnableFeeder(f.getId(), true);
+			fu.setActiveFeeder(f.getId(), true);
+			fu.setPermanentFeeder(f.getId(), true);
 		}
 	}
 

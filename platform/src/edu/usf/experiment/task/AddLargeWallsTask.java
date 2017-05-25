@@ -14,10 +14,11 @@ import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.RobotLoader;
 import edu.usf.experiment.subject.ModelLoader;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.universe.WallUniverse;
+import edu.usf.experiment.universe.feeder.FeederUniverse;
+import edu.usf.experiment.universe.feeder.FeederUniverseUtilities;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -156,7 +157,7 @@ public class AddLargeWallsTask extends Task {
 				suitable = suitable
 						&& univ.shortestDistanceToWalls(wall) > 0
 						&& (!feederUniverse ||
-								((FeederUniverse)univ).wallDistanceToFeeders(wall) > MIN_DIST_TO_FEEDERS);
+								FeederUniverseUtilities.wallDistanceToFeeders(((FeederUniverse)univ).getFeeders(),wall) > MIN_DIST_TO_FEEDERS);
 			}
 		}
 		return suitable;
@@ -172,7 +173,7 @@ public class AddLargeWallsTask extends Task {
 				&& wall.distance(new Coordinate(0, 0)) > 0.05
 				&& univ.shortestDistanceToWalls(wall) > DISTANCE_INTERIOR_WALLS
 				&& (!feederUniv ||
-						((FeederUniverse)univ).shortestDistanceToFeeders(wall) > MIN_DIST_TO_FEEDERS_INTERIOR);
+						FeederUniverseUtilities.wallDistanceToFeeders(((FeederUniverse)univ).getFeeders(),wall) > MIN_DIST_TO_FEEDERS_INTERIOR);
 		return suitable;
 	}
 

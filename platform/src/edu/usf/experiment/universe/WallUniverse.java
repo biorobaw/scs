@@ -17,8 +17,6 @@ public interface WallUniverse extends Universe {
 
 	public float shortestDistanceToWalls(Point2f x1);
 
-	public float shortestDistanceToFeeders(Point2f x);
-
 	public void addWall(LineSegment segment);
 
 	public boolean wallIntersectsOtherWalls(LineSegment wall);

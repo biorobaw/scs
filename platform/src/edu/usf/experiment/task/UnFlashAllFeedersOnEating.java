@@ -1,11 +1,9 @@
 package edu.usf.experiment.task;
 
-import edu.usf.experiment.Episode;
-import edu.usf.experiment.Experiment;
-import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.FeederUniverse;
+import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
 /**
@@ -26,8 +24,8 @@ public class UnFlashAllFeedersOnEating extends Task {
 		FeederUniverse fu = (FeederUniverse) u;
 		
 		if (fu.hasRobotEaten())
-			for (Integer f : fu.getFeederNums())
-				fu.setFlashingFeeder(f, false);
+			for (Feeder f : fu.getFeeders())
+				fu.setFlashingFeeder(f.getId(), false);
 	}
 
 }

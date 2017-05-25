@@ -7,8 +7,8 @@ import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.universe.Feeder;
-import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public class FeederLogger extends Logger {

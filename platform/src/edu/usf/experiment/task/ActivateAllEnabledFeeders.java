@@ -1,8 +1,10 @@
 package edu.usf.experiment.task;
 
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.FeederUniverse;
+import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.feeder.FeederUniverse;
+import edu.usf.experiment.universe.feeder.FeederUniverseUtilities;
 import edu.usf.experiment.utils.ElementWrapper;
 
 /**
@@ -21,8 +23,8 @@ public class ActivateAllEnabledFeeders extends Task {
 			throw new IllegalArgumentException("");
 		
 		FeederUniverse fu = (FeederUniverse) u;
-		for (Integer f : fu.getEnabledFeeders())
-			fu.setActiveFeeder(f, true);
+		for (Feeder f : FeederUniverseUtilities.getEnabledFeeders(fu.getFeeders()))
+			fu.setActiveFeeder(f.getId(), true);
 	}
 
 }

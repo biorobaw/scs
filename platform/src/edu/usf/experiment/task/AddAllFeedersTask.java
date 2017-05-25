@@ -2,8 +2,8 @@ package edu.usf.experiment.task;
 
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.experiment.utils.CSVReader;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.IOUtils;

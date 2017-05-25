@@ -8,8 +8,9 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.FeederUniverse;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.feeder.FeederUniverse;
+import edu.usf.experiment.universe.feeder.FeederUniverseUtilities;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
 
@@ -34,7 +35,7 @@ public class EnableRandomFeedersTriangle extends Task {
 		FeederUniverse fu = (FeederUniverse) u;
 		
 		List<Integer> toEnable = new LinkedList<Integer>();
-		List<Integer> feeders = new LinkedList<Integer>(fu.getFeederNums());
+		List<Integer> feeders = new LinkedList<Integer>(FeederUniverseUtilities.getFeederNums(fu.getFeeders()));
 		int numFeeders = feeders.size();
 		
 		int first = r.nextInt(numFeeders);

@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Random;
 
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.FeederUniverse;
+import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.feeder.FeederUniverse;
+import edu.usf.experiment.universe.feeder.FeederUniverseUtilities;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
 
@@ -29,11 +31,11 @@ public class ActivateRandomFeeder extends Task {
 		
 		FeederUniverse fu = (FeederUniverse) u;
 		
-		List<Integer> enabledFeeders = fu.getEnabledFeeders();
+		List<Feeder> enabledFeeders = FeederUniverseUtilities.getEnabledFeeders(fu.getFeeders());
 
 		Random r = RandomSingleton.getInstance();
-		int feeder = enabledFeeders.get(r.nextInt(enabledFeeders.size()));
-		fu.setActiveFeeder(feeder, true);
+		Feeder feeder = enabledFeeders.get(r.nextInt(enabledFeeders.size()));
+		fu.setActiveFeeder(feeder.getId(), true);
 	}
 
 
