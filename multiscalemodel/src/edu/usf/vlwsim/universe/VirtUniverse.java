@@ -54,7 +54,6 @@ import edu.usf.vlwsim.display.j3d.DirectionalLightNode;
 import edu.usf.vlwsim.display.j3d.FeederNode;
 import edu.usf.vlwsim.display.j3d.PlatformNode;
 import edu.usf.vlwsim.display.j3d.RobotNode;
-import edu.usf.vlwsim.display.j3d.UniverseFrame;
 import edu.usf.vlwsim.display.j3d.ViewNode;
 import edu.usf.vlwsim.display.j3d.WallNode;
 import edu.usf.vlwsim.display.swing.VirtualUniversePanel;
@@ -126,10 +125,6 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	 * The main branch group
 	 */
 	private BranchGroup bg;
-	/**
-	 * The frame to display the universe
-	 */
-	UniverseFrame frame;
 
 	/**
 	 * The visual node for the robot
