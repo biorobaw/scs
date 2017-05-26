@@ -113,7 +113,7 @@
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.PublishPlatformPosition</name>
+				<name>edu.usf.experiment.task.platform.PublishPlatformPosition</name>
 				<params>
 				</params>
 			</task>
@@ -127,7 +127,7 @@
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<task>
-					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<point>
 							<x>.5</x>
@@ -235,7 +235,7 @@
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.PublishPlatformPosition</name>
+				<name>edu.usf.experiment.task.platform.PublishPlatformPosition</name>
 				<params>
 				</params>
 			</task>
@@ -249,7 +249,7 @@
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<task>
-					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<point>
 							<x>0</x>
@@ -322,7 +322,7 @@
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.PublishPlatformPosition</name>
+				<name>edu.usf.experiment.task.platform.PublishPlatformPosition</name>
 				<params>
 				</params>
 			</task>
@@ -336,7 +336,7 @@
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<task>
-					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<point>
 							<x>0</x>
@@ -409,7 +409,7 @@
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.PublishPlatformPosition</name>
+				<name>edu.usf.experiment.task.platform.PublishPlatformPosition</name>
 				<params>
 				</params>
 			</task>
@@ -423,7 +423,7 @@
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<task>
-					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<point>
 							<x>0</x>

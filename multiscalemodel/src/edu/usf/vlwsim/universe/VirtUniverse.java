@@ -90,7 +90,6 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	 * Feeder data
 	 */
 	private static Map<Integer, Feeder> feeders;
-	private int lastAteFeeder;
 	
 	/**
 	 * Wall data
@@ -293,18 +292,34 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		robotTriedToEat = false;
 		robotAte = false;
 	}
-
+	
+	@Override
+	public void setRobot(Robot robot) {
+		this.robot = robot;
+	}
+	
 	/********************************* Feeder Universe *************************************/
-	public Point3f getFoodPosition(int i) {
-		return feeders.get(i).getPosition();
+	// Insertion and Deletion
+
+	public void addFeeder(int id, float x, float y) {
+		feeders.put(id, new Feeder(id, new Point3f(x, y, 0)));
+		
+		if (display) {
+			FeederNode feeder = new FeederNode(id, x, y);
+			feederNodes.put(id, feeder);
+			bg.addChild(feeder);
+		}
+	}
+	
+	public Feeder getFeeder(int i) {
+		return feeders.get(i);
+	}
+	
+	public List<Feeder> getFeeders() {
+		return new LinkedList<Feeder>(feeders.values());
 	}
 
-	
-
-	
-
-	
-
+	// Modifiers
 	public void setActiveFeeder(int i, boolean val) {
 		feeders.get(i).setActive(val);
 		
@@ -319,34 +334,27 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 			feederNodes.get(i).setFlashing(flashing);
 	}
 
+	public void setEnableFeeder(Integer f, boolean enabled) {
+		feeders.get(f).setEnabled(enabled);
+	}
+
+	public void setPermanentFeeder(Integer id, boolean b) {
+		feeders.get(id).setPermanent(b);
+	}
 	
-
-	public List<Feeder> getFeeders() {
-		return new LinkedList<Feeder>(feeders.values());
-	}
-
-	public Feeder getFeeder(int i) {
-		return feeders.get(i);
-	}
-
-	public boolean isFeederActive(int feeder) {
-		return feeders.get(feeder).isActive();
-	}
-
-	public boolean isFeederFlashing(int feeder) {
-		return feeders.get(feeder).isFlashing();
-	}
-
 	public void releaseFood(int feeder) {
 		feeders.get(feeder).releaseFood();
 	}
-
-	public boolean hasFoodFeeder(int feeder) {
-		return feeders.get(feeder).hasFood();
+	
+	public void clearFoodFromFeeder(Integer f) {
+		feeders.get(f).clearFood();
 	}
 
-
-
+	@Override
+	public float getCloseThrs() {
+		return CLOSE_TO_FOOD_THRS;
+	}
+	// Simulation methods
 	public void robotEat() {
 		robotTriedToEat = true;
 		int feedingFeeder = -1;
@@ -360,7 +368,6 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 
 		if (feedingFeeder != -1) {
 			feeders.get(feedingFeeder).clearFood();
-			lastAteFeeder = feedingFeeder;
 			robotAte = true;
 			if (Debug.printRobotAte)
 				System.out.println("Robot has eaten");
@@ -375,52 +382,31 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		robotWantsToEat = false;
 	}
 
-	
-	
-	
-
-	
-
-	
-
-	
-	public void setEnableFeeder(Integer f, boolean enabled) {
-		feeders.get(f).setEnabled(enabled);
+	@Override
+	public boolean hasRobotEaten() {
+		return robotAte;
 	}
 
-	public void clearFoodFromFeeder(Integer f) {
-		feeders.get(f).clearFood();
-	}
-
-	public void addFeeder(int id, float x, float y) {
-		feeders.put(id, new Feeder(id, new Point3f(x, y, 0)));
-		
-		if (display) {
-			FeederNode feeder = new FeederNode(id, x, y);
-			feederNodes.put(id, feeder);
-			bg.addChild(feeder);
-		}
+	@Override
+	public boolean hasRobotTriedToEat() {
+		return robotTriedToEat;
 	}
 	
-	public void addFeeder(Feeder f) {
-		feeders.put(f.getId(), f);
-		
-		if (display) {
-			FeederNode feeder = new FeederNode(f.getId(), f.getPosition().x, f.getPosition().y);
-			feederNodes.put(f.getId(), feeder);
-			bg.addChild(feeder);
-		}
+	/**
+	 * This method allows the virtual robot to inform the universe that the robot wants to eat in the next step
+	 */
+	public void setRobotEat() {
+		robotWantsToEat = true;
 	}
 
-	public void setPermanentFeeder(Integer id, boolean b) {
-		feeders.get(id).setPermanent(b);
-	}
-
+	// Display methods
 	@Override
 	public void setWantedFeeder(int feeder, boolean wanted) {
 		if (display)
 			feederNodes.get(feeder).setWanted(wanted);
 	}
+	
+	
 	/********************************* Bounded Universe *************************************/
 	public Rectangle2D.Float getBoundingRect() {
 		return boundingRect;
@@ -431,13 +417,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	}
 
 	/********************************* Wall Universe *************************************/
-	public List<Wall> getWalls() {
-		return walls;
-	}
-
-	
-
-	
+	// Insertion and Deletions
 	public void addWall(float x, float y, float x2, float y2) {
 		Wall wall = new Wall(x, y, x2, y2);
 		wallsToRevert.add(wall);
@@ -450,9 +430,6 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 			wallNodes.add(w);
 		}
 	}
-
-	
-
 
 	public void addWall(LineSegment segment) {
 		Wall wall = new Wall(segment);
@@ -467,12 +444,9 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		}
 	}
 
-
-	public boolean isFeederEnabled(int feeder) {
-		return feeders.get(feeder).isEnabled();
+	public List<Wall> getWalls() {
+		return walls;
 	}
-
-	
 
 	public void removeWall(LineSegment wall) {
 		walls.remove(wall);
@@ -495,7 +469,6 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 			}
 	}
 
-
 	public void clearWalls() {
 		walls.clear();
 		
@@ -504,8 +477,6 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 
 		wallNodes.clear();
 	}
-
-
 
 	/********************************* Platform Universe *************************************/
 	public List<Platform> getPlatforms() {
@@ -532,8 +503,6 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 			bg.addChild(p);
 		}
 	}
-
-	
 
 	/********************************* Global Camera Universe *************************************/
 	public Point3f getRobotPosition() {
@@ -626,6 +595,30 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	}
 
 	/********************************* Simulation Functions *************************************/
+	public float getDeltaT() {
+		return deltaT;
+	}
+
+	public void setDeltaT(float deltaT) {
+		this.deltaT = deltaT;
+	}
+	
+	/**
+	 * This method process a simulation step. In this universe only eat actions are processed. Motion actions are delegated to specific Universes.
+	 */
+	@Override
+	public void step() {
+		if (robotWantsToEat){
+			robotEat();
+		} else {
+			stepMotion();
+		}
+	}
+
+	/**
+	 * This function processes a simulation step for motion (non-eat) actions.
+	 */
+	public abstract void stepMotion();
 	
 	/**
 	 * Move the virtual robot a certain amount of distance
@@ -749,27 +742,6 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		return !intesectsWall;
 	}
 
-	public void clearWantedFeeders() {
-		for (FeederNode f : feederNodes.values())
-			f.setWanted(false);
-	}
-
-	// @Override
-	// public int getWantedFeeder() {
-	// int wantedFeeder = -1;
-	// for (int i = 0; i < feeders.size(); i++)
-	// if (feeders.get(i).isWanted()) {
-	// wantedFeeder = i;
-	// break;
-	// }
-	//
-	// return wantedFeeder;
-	// }
-
-	// public List<WallNode> getWalls() {
-	// return wallNodes;
-	// }
-
 	public void dispose() {
 		for (FeederNode f : feederNodes.values())
 			f.terminate();
@@ -782,13 +754,13 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 
 		boolean intersects = false;
 		Coordinate rPos = new Coordinate(getRobotPosition().x, getRobotPosition().y);
-		Point3f fPosV = getFoodPosition(fn);
+		Point3f fPosV = feeders.get(fn).getPosition();
 		Coordinate fPos = new Coordinate(fPosV.x, fPosV.y);
 		LineSegment lineOfSight = new LineSegment(rPos, fPos);
 		for (Wall w : getWalls())
 			intersects = intersects || w.intersects(lineOfSight);
 
-		boolean closeEnough = getRobotPosition().distance(new Point3f(getFoodPosition(fn))) < visionDist;
+		boolean closeEnough = getRobotPosition().distance(new Point3f(feeders.get(fn).getPosition())) < visionDist;
 
 		return inField && !intersects && closeEnough;
 	}
@@ -801,7 +773,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	 */
 	private float angleToFeeder(Integer fn) {
 		return Math.abs(
-				GeomUtils.angleToPointWithOrientation(getRobotOrientation(), getRobotPosition(), getFoodPosition(fn)));
+				GeomUtils.angleToPointWithOrientation(getRobotOrientation(), getRobotPosition(), feeders.get(fn).getPosition()));
 
 	}
 
@@ -985,56 +957,5 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 
 		return closestDist;
 	}
-
-	public void setTriedToEat() {
-		robotTriedToEat = true;
-	}
-
-	public void setHasEaten() {
-		robotAte = true;
-	}
-
-	@Override
-	public boolean hasRobotEaten() {
-		return robotAte;
-	}
-
-	@Override
-	public boolean hasRobotTriedToEat() {
-		return robotTriedToEat;
-	}
-
-	@Override
-	public void step() {
-		if (robotWantsToEat){
-			robotEat();
-		} else {
-			stepMotion();
-		}
-	}
-
-	public abstract void stepMotion();
-
 	
-	@Override
-	public void setRobot(Robot robot) {
-		this.robot = robot;
-	}
-
-	public void setRobotEat() {
-		robotWantsToEat = true;
-	}
-
-	public float getDeltaT() {
-		return deltaT;
-	}
-
-	public void setDeltaT(float deltaT) {
-		this.deltaT = deltaT;
-	}
-
-	@Override
-	public float getCloseThrs() {
-		return CLOSE_TO_FOOD_THRS;
-	}
 }

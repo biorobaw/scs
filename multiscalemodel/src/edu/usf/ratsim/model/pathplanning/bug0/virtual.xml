@@ -65,7 +65,7 @@
 	
 	<beforeExperimentTasks>
 		<task>
-			<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+			<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 			<params>
 				<point>
 					<x>1</x>
@@ -75,7 +75,7 @@
 			</params>
 		</task>
 		<task>
-			<name>edu.usf.experiment.task.PublishPlatformPosition</name>
+			<name>edu.usf.experiment.task.platform.PublishPlatformPosition</name>
 			<params>
 			</params>
 		</task>

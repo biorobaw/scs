@@ -16,6 +16,7 @@ import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePortMatrix;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.vlwsim.robot.VirtualRobot;
 
+//TODO: some trials are starting from a different place 
 public class MultipleTModel extends Model implements SaveModel {
 
 	public float step;
@@ -154,7 +155,7 @@ public class MultipleTModel extends Model implements SaveModel {
 				fRobot.clearEaten();
 				do {
 					modelAsleep.simRun();
-				} while (!fRobot.hasFoundFood() && modelAsleep.getMaxActivation() > replayThres);
+				} while (!fRobot.hasFoundFood() && modelAsleep.getMaxActivation() > replayThres); 
 
 			}
 

@@ -169,7 +169,7 @@
 	<beforeExperimentTasks>
 		<!-- Enable feeders for the to be able to give food -->
 		<task>
-			<name>edu.usf.experiment.task.EnableRandomFeedersTriangle</name>
+			<name>edu.usf.experiment.task.feeder.EnableRandomFeedersTriangle</name>
 			
 		</task>
 		<!--<task> <name>edu.usf.experiment.task.EnableFeeders</name> <params> <feeders>1,3,5</feeders>
@@ -214,13 +214,13 @@
 			<beforeEpisodeTasks>
 				<!-- Flash one of the feeders -->
 				<task>
-					<name>edu.usf.experiment.task.FlashActivateRandomFeeder</name>
+					<name>edu.usf.experiment.task.feeder.FlashActivateRandomFeeder</name>
 					<params>
 					</params>
 				</task>
 				<!-- Place the animat in a given place -->
 				<task>
-					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<point>
 							<x>0</x>
@@ -237,11 +237,11 @@
 			<afterCycleTasks>
 				<!-- Switch which feeder is flashing if the robot ate -->
 				<task>
-					<name>edu.usf.experiment.task.SwitchFlashingFeeder</name>
+					<name>edu.usf.experiment.task.feeder.SwitchFlashingFeeder</name>
 				</task>
 				<!-- Release food from the feeder if the rat is close -->
 				<task>
-					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+					<name>edu.usf.experiment.task.feeder.ReleaseFoodFromFeeders</name>
 				</task>
 			</afterCycleTasks>
 			<!-- Loggers to execute after each cycle -->
@@ -357,22 +357,22 @@
 			<beforeEpisodeTasks>
 				<!-- Turn of the flash of all the feeders -->
 				<task>
-					<name>edu.usf.experiment.task.UnFlashAllFeeders</name>
+					<name>edu.usf.experiment.task.feeder.UnFlashAllFeeders</name>
 					<params>
 					</params>
 				</task>
 				<task>
-					<name>edu.usf.experiment.task.DeactivateAllFeeders</name>
+					<name>edu.usf.experiment.task.feeder.DeactivateAllFeeders</name>
 				</task>
 				<!-- Activate all enabled feeders so the rat decides which one to feed from -->
 				<task>
-					<name>edu.usf.experiment.task.ActivateRandomFeeder</name>
+					<name>edu.usf.experiment.task.feeder.ActivateRandomFeeder</name>
 					<params>
 					</params>
 				</task>
 				<!-- Place the animat in a given place -->
 				<task>
-					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<point>
 							<x>0</x>
@@ -389,19 +389,19 @@
 			<afterCycleTasks>
 				<!-- Unflash feeders when rat has eaten -->
 				<task>
-					<name>edu.usf.experiment.task.UnFlashAllFeedersOnEating</name>
+					<name>edu.usf.experiment.task.feeder.UnFlashAllFeedersOnEating</name>
 				</task>
 				<!-- Switch the active feeder upon eating -->
 				<task>
-					<name>edu.usf.experiment.task.SwitchFeeder</name>
+					<name>edu.usf.experiment.task.feeder.SwitchFeeder</name>
 				</task>
 				<!-- Release food from the feeder if the rat is close -->
 				<task>
-					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+					<name>edu.usf.experiment.task.feeder.ReleaseFoodFromFeeders</name>
 				</task>
 				<!-- Upon timeout time without eating, flash a feeder -->
 				<task>
-					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
+					<name>edu.usf.experiment.task.feeder.TimeoutFlashFeeder</name>
 					<params>
 						<timeout>150</timeout>
 					</params>
@@ -509,7 +509,7 @@
 		<beforeTrialTasks>
 			<!-- Deactivation of a proportion of HPC layers -->
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
+				<name>edu.usf.experiment.task.placecell.DeactivateHPCLayersRadial</name>
 				<params>
 					<group>Ventral</group>
 					<layers>2</layers>
@@ -518,7 +518,7 @@
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
+				<name>edu.usf.experiment.task.placecell.DeactivateHPCLayersRadial</name>
 				<params>
 					<group>Dorsal</group>
 					<layers>0</layers>
@@ -527,7 +527,7 @@
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
+				<name>edu.usf.experiment.task.placecell.DeactivateHPCLayersRadial</name>
 				<params>
 					<group>NegControl</group>
 					<layers>0,2</layers>
@@ -546,26 +546,26 @@
 			<beforeEpisodeTasks>
 				<!-- Turn of the flash of all the feeders -->
 				<task>
-					<name>edu.usf.experiment.task.UnFlashAllFeeders</name>
+					<name>edu.usf.experiment.task.feeder.UnFlashAllFeeders</name>
 					<params>
 					</params>
 				</task>
 				<task>
-					<name>edu.usf.experiment.task.DeactivateAllFeeders</name>
+					<name>edu.usf.experiment.task.feeder.DeactivateAllFeeders</name>
 				</task>
 				<!-- Activate all enabled feeders so the rat decides which one to feed from -->
 				<task>
-					<name>edu.usf.experiment.task.ActivateRandomFeeder</name>
+					<name>edu.usf.experiment.task.feeder.ActivateRandomFeeder</name>
 					<params>
 					</params>
 				</task>
 				<!-- Add small obstacles -->
 				<task>
-					<name>edu.usf.experiment.task.AddSmallWallsTask</name>
+					<name>edu.usf.experiment.task.wall.AddSmallWallsTask</name>
 				</task>
 				<!-- Place the animat in a given place -->
 				<task>
-					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<point>
 							<x>0</x>
@@ -582,19 +582,19 @@
 			<afterCycleTasks>
 				<!-- Unflash feeders when rat has eaten -->
 				<task>
-					<name>edu.usf.experiment.task.UnFlashAllFeedersOnEating</name>
+					<name>edu.usf.experiment.task.feeder.UnFlashAllFeedersOnEating</name>
 				</task>
 				<!-- Switch the active feeder upon eating -->
 				<task>
-					<name>edu.usf.experiment.task.SwitchFeeder</name>
+					<name>edu.usf.experiment.task.feeder.SwitchFeeder</name>
 				</task>
 				<!-- Release food from the feeder if the rat is close -->
 				<task>
-					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+					<name>edu.usf.experiment.task.feeder.ReleaseFoodFromFeeders</name>
 				</task>
 				<!-- Upon timeout time without eating, flash a feeder -->
 				<task>
-					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
+					<name>edu.usf.experiment.task.feeder.TimeoutFlashFeeder</name>
 					<params>
 						<timeout>150</timeout>
 					</params>
@@ -701,14 +701,14 @@
 		<beforeTrialTasks>
 			<!-- Deactivation of a proportion of HPC layers -->
 			<task>
-				<name>edu.usf.experiment.task.ReactivateHPCLayers</name>
+				<name>edu.usf.experiment.task.placecell.ReactivateHPCLayers</name>
 				<params>
 					<group>Ventral</group>
 					<layers>2</layers>
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.ReactivateHPCLayers</name>
+				<name>edu.usf.experiment.task.placecell.ReactivateHPCLayers</name>
 				<params>
 					<group>Dorsal</group>
 					<layers>0</layers>
@@ -716,7 +716,7 @@
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.ReactivateHPCLayers</name>
+				<name>edu.usf.experiment.task.placecell.ReactivateHPCLayers</name>
 				<params>
 					<group>NegControl</group>
 					<layers>0,2</layers>
@@ -733,22 +733,22 @@
 			<beforeEpisodeTasks>
 				<!-- Turn of the flash of all the feeders -->
 				<task>
-					<name>edu.usf.experiment.task.UnFlashAllFeeders</name>
+					<name>edu.usf.experiment.task.feeder.UnFlashAllFeeders</name>
 					<params>
 					</params>
 				</task>
 				<task>
-					<name>edu.usf.experiment.task.DeactivateAllFeeders</name>
+					<name>edu.usf.experiment.task.feeder.DeactivateAllFeeders</name>
 				</task>
 				<!-- Activate all enabled feeders so the rat decides which one to feed from -->
 				<task>
-					<name>edu.usf.experiment.task.ActivateRandomFeeder</name>
+					<name>edu.usf.experiment.task.feeder.ActivateRandomFeeder</name>
 					<params>
 					</params>
 				</task>
 				<!-- Place the animat in a given place -->
 				<task>
-					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<point>
 							<x>0</x>
@@ -765,19 +765,19 @@
 			<afterCycleTasks>
 				<!-- Unflash feeders when rat has eaten -->
 				<task>
-					<name>edu.usf.experiment.task.UnFlashAllFeedersOnEating</name>
+					<name>edu.usf.experiment.task.feeder.UnFlashAllFeedersOnEating</name>
 				</task>
 				<!-- Switch the active feeder upon eating -->
 				<task>
-					<name>edu.usf.experiment.task.SwitchFeeder</name>
+					<name>edu.usf.experiment.task.feeder.SwitchFeeder</name>
 				</task>
 				<!-- Release food from the feeder if the rat is close -->
 				<task>
-					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+					<name>edu.usf.experiment.task.feeder.ReleaseFoodFromFeeders</name>
 				</task>
 				<!-- Upon timeout time without eating, flash a feeder -->
 				<task>
-					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
+					<name>edu.usf.experiment.task.feeder.TimeoutFlashFeeder</name>
 					<params>
 						<timeout>150</timeout>
 					</params>

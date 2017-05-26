@@ -141,7 +141,7 @@
 			<beforeEpisodeTasks>
 				<!-- Place the animat in a given place -->
 				<task>
-					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<point>
 							<x>-.5</x>
@@ -269,7 +269,7 @@
 			<beforeEpisodeTasks>
 				<!-- Place the animat in a given place -->
 				<task>
-					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<point>
 							<x>-.5</x>
@@ -286,7 +286,7 @@
 			<afterCycleTasks>
 				<!-- Release food from the feeder if the rat is close -->
 				<task>
-					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+					<name>edu.usf.experiment.task.feeder.ReleaseFoodFromFeeders</name>
 				</task>
 			</afterCycleTasks>
 			<!-- Loggers to execute after each cycle -->

@@ -267,17 +267,17 @@
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
 			<task>
-				<name>edu.usf.experiment.task.EnableFeeders</name>
+				<name>edu.usf.experiment.task.feeder.EnableFeeders</name>
 				<params>
 					<feeders>0</feeders>
 				</params>
 			</task>
 			
 			<task>
-				<name>edu.usf.experiment.task.FlashActivateRandomFeeder</name>
+				<name>edu.usf.experiment.task.feeder.FlashActivateRandomFeeder</name>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.PublishActiveFeeder</name>
+				<name>edu.usf.experiment.task.feeder.PublishActiveFeeder</name>
 			</task>
 		</beforeTrialTasks>
 		<!-- Episodes definition -->
@@ -290,7 +290,7 @@
 			<beforeEpisodeTasks>
 				<!-- Place the animat in a given place -->
 				<task>
-					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<point>
 							<x>1</x>
@@ -308,7 +308,7 @@
 			<afterCycleTasks>
 				<!-- Release food from the feeder if the rat is close -->
 				<task>
-					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+					<name>edu.usf.experiment.task.feeder.ReleaseFoodFromFeeders</name>
 				</task>
 			</afterCycleTasks>
 			<!-- Loggers to execute after each cycle -->

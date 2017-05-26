@@ -86,7 +86,6 @@ public class StepVirtualRobot extends VirtualRobot implements StepRobot, LocalAc
 			forward(((ForwardAffordance) af).getDistance());
 		} else if (af instanceof EatAffordance) {
 			// Updates food in universe
-			universe.setTriedToEat();
 			if (isFeederClose()) {
 				eat(); // TODO: should the robot check for feeder close or just
 						// execute action

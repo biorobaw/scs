@@ -128,7 +128,7 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 			if (i != except)
 				if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)) {
 					// Get relative position
-					Point3f fPos = universe.getFoodPosition(i);
+					Point3f fPos = universe.getFeeder(i).getPosition();
 					Point3f rPos = universe.getRobotPosition();
 					Point3f relFPos = new Point3f(GeomUtils.pointsToVector(rPos, fPos));
 					// Rotate to robots framework
@@ -149,7 +149,7 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 		for (Integer i : FeederUniverseUtilities.getFeederNums(universe.getFeeders()))
 			if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)) {
 				// Get relative position
-				Point3f relFPos = getRelativePos(universe.getFoodPosition(i));
+				Point3f relFPos = getRelativePos(universe.getFeeder(i).getPosition());
 				// Return the landmark
 				Feeder relFeeder = new Feeder(universe.getFeeder(i));
 				relFeeder.setPosition(relFPos);
@@ -174,9 +174,9 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 	@Override
 	public Feeder getFlashingFeeder() {
 		for (Integer i : FeederUniverseUtilities.getFeederNums(universe.getFeeders()))
-			if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist) && universe.isFeederFlashing(i)) {
+			if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist) && universe.getFeeder(i).isFlashing()) {
 				// Get relative position
-				Point3f fPos = universe.getFoodPosition(i);
+				Point3f fPos = universe.getFeeder(i).getPosition();
 				Point3f rPos = universe.getRobotPosition();
 				Point3f relFPos = new Point3f(GeomUtils.pointsToVector(rPos, fPos));
 				// Rotate to robots framework

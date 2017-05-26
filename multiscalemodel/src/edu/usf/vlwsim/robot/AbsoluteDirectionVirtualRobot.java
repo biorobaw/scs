@@ -59,8 +59,6 @@ public class AbsoluteDirectionVirtualRobot extends VirtualRobot implements Absol
 			setDirection(aaa.getAngle());
 			setADStep(aaa.getDistance());
 		} else if (af instanceof EatAffordance) {
-			// Updates food in universe
-			universe.setTriedToEat();
 			if (isFeederClose()) {
 				eat(); // TODO: should the robot check for feeder close or just
 						// execute action

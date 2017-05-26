@@ -172,7 +172,7 @@
 			<beforeEpisodeTasks>
 				<!-- Place the animat in a given place -->
 				<task>
-					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<!--<filename>$(ratpath)</filename>-->
 						<!--<pointXYW>$(startPosition)</pointXYW> -->
@@ -216,7 +216,7 @@
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
 				<task>
-					<name>edu.usf.experiment.task.SaveModel</name>
+					<name>edu.usf.experiment.task.model.SaveModel</name>
 				</task>
 			</afterEpisodeTasks>
 			<!-- Conditions upon which the episode ends -->
@@ -285,7 +285,7 @@
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
 			<task>
-				<name>edu.usf.experiment.task.AddFeederTask</name>
+				<name>edu.usf.experiment.task.feeder.AddFeederTask</name>
 				<params>
 					<id>1</id>
 					<x>0</x> 
@@ -294,7 +294,7 @@
 			</task>
 
 			<task>
-				<name>edu.usf.experiment.task.SetAllFeedersPermanentFood</name>
+				<name>edu.usf.experiment.task.feeder.SetAllFeedersPermanentFood</name>
 			</task>
 		</beforeTrialTasks>
 		<!-- Episodes definition -->
@@ -310,7 +310,7 @@
 				</task> -->
 				<!-- Place the animat in a given place -->
 				<task>
-					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<point>
 							<x>0</x>
@@ -358,7 +358,7 @@
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
 				<task>
-					<name>edu.usf.experiment.task.SaveModel</name>
+					<name>edu.usf.experiment.task.model.SaveModel</name>
 				</task>
 			</afterEpisodeTasks>
 			<!-- Conditions upon which the episode ends -->

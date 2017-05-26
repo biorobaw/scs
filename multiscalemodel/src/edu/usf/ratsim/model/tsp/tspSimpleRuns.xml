@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-	<seed>-59875563504154406</seed>
 	
 	<universe>
-		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
+		<name>edu.usf.vlwsim.universe.VirtUniverse</name>
 		<params>
 			<!-- Distance from which the food is accessible according to the universe -->
 			<closeToFoodThrs>0.1</closeToFoodThrs>
@@ -17,7 +16,7 @@
 	
 	<robot>
 		<!-- Robot to use. Use full name of the class -->
-		<name>edu.usf.ratsim.robot.virtual.VirtualRobot</name>
+		<name>edu.usf.vlwsim.robot.VirtualRobot</name>
 		<params>
 			<!-- Percentual translational noise -->
 			<noise>.0</noise>
@@ -37,7 +36,7 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.experiment.subject.TSPSubject</name>
+		<name>edu.usf.ratsim.model.tsp.TSPModel</name>
 		<params>
 			<!-- Step length in meters -->
 			<step>.05</step>
@@ -78,14 +77,14 @@
 	<beforeExperimentTasks>
 		<!-- Enable feeders all feeders -->
 		<task>
-			<name>edu.usf.experiment.task.AddAllFeedersTask</name>
+			<name>edu.usf.experiment.task.feeder.AddAllFeedersTask</name>
 			<params>
 				<feederFile>multiscalemodel/src/edu/usf/ratsim/experiment/feederPositions/positionsTSP21Feeders</feederFile>
 			</params>
 		</task>
 		
 		<task>
-			<name>edu.usf.experiment.task.EnableAllFeeders</name>
+			<name>edu.usf.experiment.task.feeder.EnableAllFeeders</name>
 		</task>
 	</beforeExperimentTasks>
 	
@@ -123,11 +122,11 @@
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<task>
-					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
+					<name>edu.usf.experiment.task.feeder.ActivateAllEnabledFeeders</name>
 				</task>
 				<!-- Place the animat in a given place -->
 				<task>
-					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<!--<filename>$(ratpath)</filename>-->
 						<!--<pointXYW>$(startPosition)</pointXYW> -->
@@ -141,7 +140,7 @@
 					</params>
 				</task>
 				<task>
-					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+					<name>edu.usf.experiment.task.feeder.ReleaseFoodFromFeeders</name>
 				</task>
 				
 				
@@ -152,10 +151,10 @@
 			<!-- Tasks to performe after each cycle -->
 			<afterCycleTasks>
 				<task>
-					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+					<name>edu.usf.experiment.task.feeder.ReleaseFoodFromFeeders</name>
 				</task>
 				<!--<task>
-					<name>edu.usf.experiment.task.PlaceRobotFile</name>
+					<name>edu.usf.experiment.task.feeder.PlaceRobotFile</name>
 					<params>
 						<filename>$(ratpath)</filename>
 					</params> 
@@ -170,7 +169,7 @@
 					</params>
 				</logger>
 				<logger>
-					<name>edu.usf.ratsim.experiment.log.PCActivityLogger</name>
+					<name>edu.usf.ratsim.log.PCActivityLogger</name>
 				</logger>
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->
@@ -185,7 +184,7 @@
 					<name>edu.usf.experiment.log.FeederLogger</name>
 				</logger>
 				<logger>
-					<name>edu.usf.ratsim.experiment.log.PCLogger</name>
+					<name>edu.usf.ratsim.log.PCLogger</name>
 				</logger>
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
@@ -233,7 +232,7 @@
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
 				<plotter>
-					<name>edu.usf.ratsim.experiment.plot.PCPlotter</name>
+					<name>edu.usf.ratsim.plot.PCPlotter</name>
 				</plotter>
 				
 			</afterEpisodePlotters>
