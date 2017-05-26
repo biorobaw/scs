@@ -28,9 +28,9 @@
 			<!-- Right rotation amount in radians -->
 			<rightAngle>-.195</rightAngle>
 			<!-- Percentual translational noise -->
-			<noise>.2</noise>
+			<noise>.05</noise>
 			<!-- Rotation noise added after translation -->
-			<translationRotationNoise>.195</translationRotationNoise>
+			<translationRotationNoise>.0195</translationRotationNoise>
 			<!-- How many steps are projected for obstacle avoidance purpose -->
 			<lookaheadSteps>1</lookaheadSteps>
 			<!-- Half the field of view of the rat -->

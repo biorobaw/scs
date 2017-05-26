@@ -6,6 +6,8 @@ import java.util.List;
 
 import edu.usf.experiment.condition.Condition;
 import edu.usf.experiment.condition.ConditionLoader;
+import edu.usf.experiment.display.Display;
+import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.log.LoggerLoader;
 import edu.usf.experiment.plot.Plotter;
@@ -117,6 +119,7 @@ public class Episode {
 		Plotter.plot(beforeEpisodePlotters);
 
 		// Execute cycles until stop condition holds
+		Display display = DisplaySingleton.getDisplay();
 		boolean finished = false;
 		int cycle = 0;
 		while (!finished) {
@@ -130,6 +133,8 @@ public class Episode {
 			getSubject().getModel().simRun();
 			
 			getUniverse().step();
+			
+			display.repaint();
 //			System.out.println("cycle");
 			// TODO: universe step cycle
 

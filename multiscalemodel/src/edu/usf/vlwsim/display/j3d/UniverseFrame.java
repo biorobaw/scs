@@ -1,4 +1,4 @@
-package edu.usf.vlwsim.display;
+package edu.usf.vlwsim.display.j3d;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
 import edu.usf.vlwsim.display.drawingUtilities.DrawingFunction;
+import edu.usf.vlwsim.display.swing.VirtualUniversePanel;
 import edu.usf.vlwsim.universe.VirtUniverse;
 
 public class UniverseFrame extends JFrame {
@@ -36,23 +37,40 @@ public class UniverseFrame extends JFrame {
 		GraphicsConfiguration config = SimpleUniverse
 				.getPreferredConfiguration();
 		
-		topViewCanvas = new Canvas3D(config){
-			private static final long serialVersionUID = 2278728176596780651L;
-			
-			public void postRender()
-	        {
-				
-				for (Runnable r : drawingFunctions)
-					r.run();
-				
-	        }
-		};
-		world.getTopView().addCanvas3D(topViewCanvas);
-		topViewCanvas.setSize(new Dimension(100,100));
-		topViewPanel.add(topViewCanvas);
+//		topViewCanvas = new Canvas3D(config){
+//			private static final long serialVersionUID = 2278728176596780651L;
+//			
+//			public void postRender()
+//	        {
+//				
+//				for (Runnable r : drawingFunctions)
+//					r.run();
+//				
+//	        }
+//		};
+//		world.getTopView().addCanvas3D(topViewCanvas);
+//		topViewCanvas.setSize(new Dimension(100,100));
+//		topViewPanel.add(topViewCanvas);
+		VirtualUniversePanel vup = new VirtualUniversePanel(world);
+		topViewPanel.add(vup);
 		
+		// Maximize screen
 		setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
-
+		
+//		new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+//				while (true){
+//					repaint();
+//					try {
+//						Thread.sleep(10);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//		}).start();
 	}
 	
 	public void addDrawingFunction(DrawingFunction function){

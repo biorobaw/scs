@@ -1,4 +1,4 @@
-package edu.usf.vlwsim.display;
+package edu.usf.vlwsim.display.j3d;
 
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;

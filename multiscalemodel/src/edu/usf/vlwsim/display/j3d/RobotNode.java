@@ -1,4 +1,4 @@
-package edu.usf.vlwsim.display;
+package edu.usf.vlwsim.display.j3d;
 
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;

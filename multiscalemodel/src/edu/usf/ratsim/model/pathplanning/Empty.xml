@@ -2,10 +2,10 @@
 
 <world>
 	<boundingRect>
-		<x>-1</x>
-		<y>-1</y>
-		<w>1</w>
-		<h>1</h>
+		<x>-2.5</x>
+		<y>-2.5</y>
+		<w>5</w>
+		<h>5</h>
 	</boundingRect>
 
 	<!-- Views -->

@@ -1,19 +1,26 @@
 package edu.usf.experiment.utils;
 
+import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
-import edu.usf.experiment.robot.LocalizableRobot;
+import com.vividsolutions.jts.geom.Coordinate;
+
 import edu.usf.experiment.robot.affordance.Affordance;
 import edu.usf.experiment.robot.affordance.EatAffordance;
 import edu.usf.experiment.robot.affordance.ForwardAffordance;
 import edu.usf.experiment.robot.affordance.TurnAffordance;
-import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.feeder.Feeder;
+import edu.usf.experiment.universe.platform.Platform;
+import edu.usf.experiment.universe.wall.Wall;
 
 public class GeomUtils {
 
@@ -266,6 +273,32 @@ public class GeomUtils {
 			return position;
 		} else 
 			throw new RuntimeException("Simulation of unknown affordance");
+	}
+
+	public static java.awt.geom.Rectangle2D.Float computeBoundingRect(Collection<Feeder> feeders, Collection<Wall> walls, Collection<Platform> platforms) {
+		float minx = Float.MAX_VALUE, miny = Float.MAX_VALUE;
+		float maxx = -Float.MAX_VALUE, maxy = -Float.MAX_VALUE;
+		
+		List<Coordinate> coords = new LinkedList<Coordinate>();
+		
+		for (Feeder f : feeders)
+			coords.add(new Coordinate(f.getPosition().x, f.getPosition().y));
+		for (Wall w : walls){
+			coords.add(w.s.p0);
+			coords.add(w.s.p1);
+		}
+		for (Platform p : platforms)
+			coords.add(new Coordinate(p.getPosition().x, p.getPosition().y));
+
+		for (Coordinate c : coords){
+			if (c.x > maxx)	maxx = (float) c.x;
+			if (c.y > maxy)	maxy = (float) c.y;
+			if (c.x < minx)	minx = (float) c.x;
+			if (c.y < miny)	miny = (float) c.y;
+		}
+		
+		return  new Rectangle2D.Float(minx, miny, maxx - minx, maxy - miny);
+		
 	}
 
 }

@@ -1,5 +1,7 @@
 package edu.usf.vlwsim.universe;
 
+import java.awt.Dimension;
+import java.awt.GraphicsConfiguration;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
@@ -14,9 +16,9 @@ import javax.media.j3d.Locale;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.View;
 import javax.media.j3d.VirtualUniverse;
+import javax.swing.JPanel;
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Color3f;
-import javax.vecmath.Point2f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3d;
@@ -24,9 +26,11 @@ import javax.vecmath.Vector3f;
 
 import org.w3c.dom.Document;
 
+import com.sun.j3d.utils.universe.SimpleUniverse;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
+import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.universe.BoundedUniverse;
@@ -44,15 +48,16 @@ import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.ratsim.support.XMLDocReader;
-import edu.usf.vlwsim.display.CylinderNode;
-import edu.usf.vlwsim.display.DirectionalLightNode;
-import edu.usf.vlwsim.display.FeederNode;
-import edu.usf.vlwsim.display.PlatformNode;
-import edu.usf.vlwsim.display.RobotNode;
-import edu.usf.vlwsim.display.UniverseFrame;
-import edu.usf.vlwsim.display.ViewNode;
-import edu.usf.vlwsim.display.WallNode;
 import edu.usf.vlwsim.display.drawingUtilities.DrawingFunction;
+import edu.usf.vlwsim.display.j3d.CylinderNode;
+import edu.usf.vlwsim.display.j3d.DirectionalLightNode;
+import edu.usf.vlwsim.display.j3d.FeederNode;
+import edu.usf.vlwsim.display.j3d.PlatformNode;
+import edu.usf.vlwsim.display.j3d.RobotNode;
+import edu.usf.vlwsim.display.j3d.UniverseFrame;
+import edu.usf.vlwsim.display.j3d.ViewNode;
+import edu.usf.vlwsim.display.j3d.WallNode;
+import edu.usf.vlwsim.display.swing.VirtualUniversePanel;
 
 /**
  * This universe class creates a universe from an XML file and exposes
@@ -61,19 +66,21 @@ import edu.usf.vlwsim.display.drawingUtilities.DrawingFunction;
  * @author ludo
  * 
  */
-public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUniverse, GlobalCameraUniverse, BoundedUniverse, MovableRobotUniverse{
+public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUniverse, GlobalCameraUniverse,
+		BoundedUniverse, MovableRobotUniverse {
 
 	/**
 	 * Singleton instance for the universe
 	 */
 	private static VirtUniverse instance = null;
-	
+
 	/**
 	 * How close has food to be to consider it available to the agent
 	 */
 	private final float CLOSE_TO_FOOD_THRS;
 	/**
-	 * How far one end of a wall hast to be to consider it an open end (not part of a biger wall)
+	 * How far one end of a wall hast to be to consider it an open end (not part
+	 * of a biger wall)
 	 */
 	private final float OPEN_END_THRS = 0.1f;
 	/**
@@ -85,31 +92,34 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	 * The robot object for accounting reasons - e.g. position tracking
 	 */
 	private Transform3D robotPos;
-	
+
 	/**
 	 * Feeder data
 	 */
 	private static Map<Integer, Feeder> feeders;
-	
+
 	/**
 	 * Wall data
 	 */
 	private List<Wall> walls;
 	private List<Wall> wallsToRevert;
-	
+
 	/**
 	 * Platform data
 	 */
 	private List<Platform> platforms;
-	
+
 	/**
 	 * Bounding rect data
 	 */
 	private Rectangle2D.Float boundingRect;
-	
+
 	// Display information
 	/**
-	 * Whether to display the universe
+	 * This boolean is read from the xml and controls whether the 3d panel
+	 * should be used. The user has to additionally specify -display in the
+	 * execution to get a display.
+	 * If -display is specified but this boolean is not set, the default 2d version is used
 	 */
 	private boolean display;
 	/**
@@ -120,7 +130,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	 * The frame to display the universe
 	 */
 	UniverseFrame frame;
-	
+
 	/**
 	 * The visual node for the robot
 	 */
@@ -130,18 +140,18 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	 * Visual nodes for feeders
 	 */
 	private Map<Integer, FeederNode> feederNodes;
-	
+
 	/**
 	 * Visual nodes for walls
 	 */
 	private List<WallNode> wallNodes;
 	private List<WallNode> wallNodesToRevert;
-	
+
 	/**
 	 * Visual nodes for platforms
 	 */
 	private LinkedList<PlatformNode> platformNodes;
-	
+
 	/**
 	 * The top view node
 	 */
@@ -157,10 +167,17 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 
 	private float deltaT;
 
+	private List<DrawingFunction> drawingFunctions;
+
+	private Canvas3D topViewCanvas;
+
 	/**
 	 * Main constructor for the simulator universe
-	 * @param params the parameters in the form of an XML node
-	 * @param logPath the path to where to log 
+	 * 
+	 * @param params
+	 *            the parameters in the form of an XML node
+	 * @param logPath
+	 *            the path to where to log
 	 */
 	public VirtUniverse(ElementWrapper params, String logPath) {
 		CLOSE_TO_FOOD_THRS = params.getChildFloat("closeToFoodThrs");
@@ -181,6 +198,10 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		setBoundingRect(new Rectangle2D.Float(brEW.getChildFloat("x"), brEW.getChildFloat("y"), brEW.getChildFloat("w"),
 				brEW.getChildFloat("h")));
 
+		robotPos = new Transform3D();
+
+		robotWantsToEat = false;
+		
 		if (display) {
 			VirtualUniverse vu = new VirtualUniverse();
 			Locale l = new Locale(vu);
@@ -213,14 +234,10 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 			bg.addChild(new DirectionalLightNode(new Vector3f(0f, 5f, 5), new Color3f(.5f, .5f, .5f)));
 			bg.addChild(new DirectionalLightNode(new Vector3f(0f, -5, 0), new Color3f(1f, 1f, 1f)));
 
-			frame = new UniverseFrame(this);
-			frame.setVisible(true);
+			// frame = new UniverseFrame(this);
+			// frame.setVisible(true);
 		}
 
-		robotPos = new Transform3D();
-		
-		robotWantsToEat = false;
-		
 		// Walls
 		list = maze.getChildren("wall");
 		wallNodes = new LinkedList<WallNode>();
@@ -244,7 +261,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 			MazeElement e = meloader.load(element);
 			for (Wall w : e.walls) {
 				walls.add(w);
-				
+
 				if (display) {
 					WallNode wn = new WallNode(w);
 					wallNodes.add(wn);
@@ -269,7 +286,6 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 			}
 			i++;
 		}
-		
 
 		list = maze.getChildren("platform");
 		platformNodes = new LinkedList<PlatformNode>();
@@ -288,33 +304,58 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		}
 
 		instance = this;
-		
+
 		robotTriedToEat = false;
 		robotAte = false;
+
+		if (display){
+			drawingFunctions = new LinkedList<DrawingFunction>();
+			GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
+			topViewCanvas = new Canvas3D(config) {
+				private static final long serialVersionUID = 2278728176596780651L;
+
+				public void postRender() {
+
+					for (Runnable r : drawingFunctions)
+						r.run();
+
+				}
+			};
+			topView.addCanvas3D(topViewCanvas);
+			topViewCanvas.setPreferredSize(new Dimension(600, 600));
+			JPanel topViewPanel = new JPanel();
+			topViewPanel.add(topViewCanvas);
+			DisplaySingleton.getDisplay().addPanel(topViewPanel, 0, 0, 1, 1);
+		} else {
+			DisplaySingleton.getDisplay().addPanel(new VirtualUniversePanel(this), 0, 0, 1, 1);
+		}
+
 	}
-	
+
 	@Override
 	public void setRobot(Robot robot) {
 		this.robot = robot;
 	}
-	
-	/********************************* Feeder Universe *************************************/
+
+	/*********************************
+	 * Feeder Universe
+	 *************************************/
 	// Insertion and Deletion
 
 	public void addFeeder(int id, float x, float y) {
 		feeders.put(id, new Feeder(id, new Point3f(x, y, 0)));
-		
+
 		if (display) {
 			FeederNode feeder = new FeederNode(id, x, y);
 			feederNodes.put(id, feeder);
 			bg.addChild(feeder);
 		}
 	}
-	
+
 	public Feeder getFeeder(int i) {
 		return feeders.get(i);
 	}
-	
+
 	public List<Feeder> getFeeders() {
 		return new LinkedList<Feeder>(feeders.values());
 	}
@@ -322,14 +363,14 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	// Modifiers
 	public void setActiveFeeder(int i, boolean val) {
 		feeders.get(i).setActive(val);
-		
+
 		if (display)
 			feederNodes.get(i).setActive(val);
 	}
 
 	public void setFlashingFeeder(int i, boolean flashing) {
 		feeders.get(i).setFlashing(flashing);
-		
+
 		if (display)
 			feederNodes.get(i).setFlashing(flashing);
 	}
@@ -341,11 +382,11 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	public void setPermanentFeeder(Integer id, boolean b) {
 		feeders.get(id).setPermanent(b);
 	}
-	
+
 	public void releaseFood(int feeder) {
 		feeders.get(feeder).releaseFood();
 	}
-	
+
 	public void clearFoodFromFeeder(Integer f) {
 		feeders.get(f).clearFood();
 	}
@@ -354,6 +395,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	public float getCloseThrs() {
 		return CLOSE_TO_FOOD_THRS;
 	}
+
 	// Simulation methods
 	public void robotEat() {
 		robotTriedToEat = true;
@@ -371,14 +413,14 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 			robotAte = true;
 			if (Debug.printRobotAte)
 				System.out.println("Robot has eaten");
-			
-			((FeederRobot)robot).setAte();
+
+			((FeederRobot) robot).setAte();
 		} else {
 			robotAte = false;
 			if (Debug.printRobotAte)
 				System.out.println("Robot tried to eat far from food");
 		}
-		
+
 		robotWantsToEat = false;
 	}
 
@@ -391,9 +433,10 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	public boolean hasRobotTriedToEat() {
 		return robotTriedToEat;
 	}
-	
+
 	/**
-	 * This method allows the virtual robot to inform the universe that the robot wants to eat in the next step
+	 * This method allows the virtual robot to inform the universe that the
+	 * robot wants to eat in the next step
 	 */
 	public void setRobotEat() {
 		robotWantsToEat = true;
@@ -405,9 +448,10 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		if (display)
 			feederNodes.get(feeder).setWanted(wanted);
 	}
-	
-	
-	/********************************* Bounded Universe *************************************/
+
+	/*********************************
+	 * Bounded Universe
+	 *************************************/
 	public Rectangle2D.Float getBoundingRect() {
 		return boundingRect;
 	}
@@ -416,13 +460,15 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		this.boundingRect = boundingRect;
 	}
 
-	/********************************* Wall Universe *************************************/
+	/*********************************
+	 * Wall Universe
+	 *************************************/
 	// Insertion and Deletions
 	public void addWall(float x, float y, float x2, float y2) {
 		Wall wall = new Wall(x, y, x2, y2);
 		wallsToRevert.add(wall);
 		walls.add(wall);
-		
+
 		if (display) {
 			WallNode w = new WallNode(x, y, 0, x2, y2, 0, 0.025f);
 			wallNodesToRevert.add(w);
@@ -435,7 +481,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		Wall wall = new Wall(segment);
 		wallsToRevert.add(wall);
 		walls.add(wall);
-		
+
 		if (display) {
 			WallNode w = new WallNode(segment, 0.025f);
 			wallNodesToRevert.add(w);
@@ -461,7 +507,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	public void revertWalls() {
 		for (Wall w : wallsToRevert)
 			walls.remove(w);
-		
+
 		if (display)
 			for (WallNode wn : wallNodesToRevert) {
 				wallNodes.remove(wn);
@@ -471,21 +517,23 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 
 	public void clearWalls() {
 		walls.clear();
-		
+
 		for (WallNode wn : wallNodes)
 			bg.removeChild(wn);
 
 		wallNodes.clear();
 	}
 
-	/********************************* Platform Universe *************************************/
+	/*********************************
+	 * Platform Universe
+	 *************************************/
 	public List<Platform> getPlatforms() {
 		return platforms;
 	}
 
 	public void clearPlatforms() {
 		platforms.clear();
-		
+
 		if (display) {
 			for (PlatformNode pn : platformNodes)
 				bg.removeChild(pn);
@@ -496,7 +544,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 
 	public void addPlatform(Point3f pos, float radius) {
 		platforms.add(new Platform(pos, radius));
-		
+
 		if (display) {
 			PlatformNode p = new PlatformNode(pos.x, pos.y, radius);
 			platformNodes.add(p);
@@ -504,7 +552,9 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		}
 	}
 
-	/********************************* Global Camera Universe *************************************/
+	/*********************************
+	 * Global Camera Universe
+	 *************************************/
 	public Point3f getRobotPosition() {
 		Transform3D t = new Transform3D(robotPos);
 		Vector3f pos = new Vector3f();
@@ -512,7 +562,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 
 		return new Point3f(pos);
 	}
-	
+
 	public Quat4f getRobotOrientation() {
 		Transform3D t = new Transform3D(robotPos);
 		// Get the rotation from the quaternion
@@ -522,7 +572,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 
 		return rot;
 	}
-	
+
 	public float getRobotOrientationAngle() {
 		Transform3D t = new Transform3D(robotPos);
 		// Get the rotation from the quaternion
@@ -531,8 +581,10 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		t.get(rot);
 		return (float) (2 * Math.acos(rot.w) * Math.signum(rot.z));
 	}
-	
-	/********************************* Movable Robot Universe *************************************/
+
+	/*********************************
+	 * Movable Robot Universe
+	 *************************************/
 	public void setRobotPosition(Point2D.Float pos, float angle) {
 		Transform3D translate = new Transform3D();
 		translate.setTranslation(new Vector3f(pos.x, pos.y, 0));
@@ -542,10 +594,10 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		robotPos = translate;
 		if (display)
 			robotNode.getTransformGroup().setTransform(translate);
-		
+
 		robotAte = robotTriedToEat = false;
 	}
-	
+
 	public void setRobotOrientation(float angle) {
 		Transform3D newOrient = new Transform3D();
 		newOrient.rotZ(angle);
@@ -568,16 +620,20 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		robotPos = rPos;
 		if (display)
 			robotNode.getTransformGroup().setTransform(rPos);
-		
+
 		robotAte = robotTriedToEat = false;
 	}
 
-	/********************************* Visual Functions *************************************/
+	/*********************************
+	 * Visual Functions
+	 *************************************/
 	public void addDrawingFunction(DrawingFunction function) {
-		if (display)
-			frame.addDrawingFunction(function);
+		if (display) {
+			drawingFunctions.add(function);
+			function.setGraphics(topViewCanvas.getGraphics2D());
+		}
 	}
-	
+
 	public View getTopView() {
 		return topView;
 	}
@@ -594,7 +650,9 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		return robotNode.getOffScreenImages();
 	}
 
-	/********************************* Simulation Functions *************************************/
+	/*********************************
+	 * Simulation Functions
+	 *************************************/
 	public float getDeltaT() {
 		return deltaT;
 	}
@@ -602,13 +660,14 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	public void setDeltaT(float deltaT) {
 		this.deltaT = deltaT;
 	}
-	
+
 	/**
-	 * This method process a simulation step. In this universe only eat actions are processed. Motion actions are delegated to specific Universes.
+	 * This method process a simulation step. In this universe only eat actions
+	 * are processed. Motion actions are delegated to specific Universes.
 	 */
 	@Override
 	public void step() {
-		if (robotWantsToEat){
+		if (robotWantsToEat) {
 			robotEat();
 		} else {
 			stepMotion();
@@ -619,7 +678,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	 * This function processes a simulation step for motion (non-eat) actions.
 	 */
 	public abstract void stepMotion();
-	
+
 	/**
 	 * Move the virtual robot a certain amount of distance
 	 * 
@@ -658,7 +717,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 			if (display)
 				robotNode.getTransformGroup().setTransform(rPos);
 		}
-		
+
 		robotAte = robotTriedToEat = false;
 	}
 
@@ -691,7 +750,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 
 		return !intesectsWall;
 	}
-	
+
 	public boolean canRobotMoveAbsAngle(float angle, float step) {
 		// The current position with rotation
 		Transform3D rPos = new Transform3D(robotPos);
@@ -772,8 +831,8 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	 * @return
 	 */
 	private float angleToFeeder(Integer fn) {
-		return Math.abs(
-				GeomUtils.angleToPointWithOrientation(getRobotOrientation(), getRobotPosition(), feeders.get(fn).getPosition()));
+		return Math.abs(GeomUtils.angleToPointWithOrientation(getRobotOrientation(), getRobotPosition(),
+				feeders.get(fn).getPosition()));
 
 	}
 
@@ -957,5 +1016,5 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 
 		return closestDist;
 	}
-	
+
 }

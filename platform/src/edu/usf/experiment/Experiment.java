@@ -7,11 +7,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
+import edu.usf.experiment.display.Display;
+import edu.usf.experiment.display.DisplaySingleton;
+import edu.usf.experiment.display.NoDisplay;
+import edu.usf.experiment.display.SCSFrame;
 import edu.usf.experiment.plot.Plotter;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.RobotLoader;
-import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.ModelLoader;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.task.TaskLoader;
 import edu.usf.experiment.universe.Universe;
@@ -246,7 +250,7 @@ public class Experiment implements Runnable {
 	public static void main(String[] args) {
 		if (args.length < 4)
 		{
-			System.out.println("Usage: java edu.usf.experiment "
+			System.out.println("Usage: java edu.usf.experiment [-display]"
 					+ "exprimentLayout logPath group individual [ARGNAME ARGVAL]*");
 			
 			System.out.println();
@@ -257,19 +261,32 @@ public class Experiment implements Runnable {
 			System.out.println("startPosition x,y,theta - indicates rat's starting position");
 			
 		}
+		
+		int nextArg = 0;
+		
+		boolean display = args[nextArg].equals("-display");
+		Display displayer;
+		if (display){
+			displayer = new SCSFrame();
+			nextArg++;
+		} else {
+			displayer = new NoDisplay();
+		}
+		DisplaySingleton.setDisplay(displayer);
+			
 
+		String xml = args[nextArg++];
 		//set global variables:
 		Globals g = Globals.getInstance();
-		if (args[1].endsWith("/"))
-			args[1] = args[1].substring(0, args[1].length()-1);			
-		g.put("logPath",args[1]);
-		g.put("groupName", args[2]);
-		g.put("subName", args[3]);
+		if (args[nextArg].endsWith("/"))
+			args[nextArg] = args[nextArg].substring(0, args[nextArg].length()-1);			
+		g.put("logPath",args[nextArg++]);
+		g.put("groupName", args[nextArg++]);
+		g.put("subName", args[nextArg++]);
 		
-		int nextVar = 4;
 		for(int i =0; i < (args.length-4)/2;i++){
-			g.put(args[nextVar], args[nextVar+1]);
-			nextVar+=2;
+			g.put(args[nextArg], args[nextArg+1]);
+			nextArg+=2;
 		}
 
 		
@@ -289,7 +306,7 @@ public class Experiment implements Runnable {
 		}
 			
 		
-		Experiment e = new Experiment(args[0],(String)g.get("logPath") , args[2], args[3]);
+		Experiment e = new Experiment(xml,(String)g.get("logPath") , (String)g.get("groupName"), (String)g.get("subName"));
 		e.run();
 
 		System.out.println("[+] Finished running");

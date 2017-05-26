@@ -1,4 +1,4 @@
-package edu.usf.vlwsim.display;
+package edu.usf.vlwsim.display.j3d;
 
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.PhysicalBody;
