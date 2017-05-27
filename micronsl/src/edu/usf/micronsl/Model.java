@@ -14,6 +14,7 @@ import edu.usf.micronsl.exec.Debug;
 import edu.usf.micronsl.exec.DependencyRunnable;
 import edu.usf.micronsl.exec.ThreadDependencyExecutor;
 import edu.usf.micronsl.module.Module;
+import edu.usf.micronsl.port.Port;
 
 public class Model {
 
@@ -80,7 +81,7 @@ public class Model {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
 		// System.out.println("************ Finished executing");
 	}
 

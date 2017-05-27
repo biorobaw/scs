@@ -34,9 +34,14 @@ public abstract class Module extends DependencyRunnable {
 	 */
 	private List<Port> inPortsList;
 	/**
+	 * A list of the output ports
+	 */
+	private List<Port> outPortList;
+	/**
 	 * Module's name
 	 */
 	private String name;
+
 
 	/**
 	 * Create the module
@@ -52,6 +57,7 @@ public abstract class Module extends DependencyRunnable {
 		outPorts = new LinkedHashMap<String, Port>();
 		inPorts = new LinkedHashMap<String, Port>();
 		inPortsList = new LinkedList<Port>();
+		outPortList = new LinkedList<Port>();
 		this.name = name;
 	}
 
@@ -144,6 +150,7 @@ public abstract class Module extends DependencyRunnable {
 	 */
 	public void addOutPort(String name, Port port) {
 		outPorts.put(name, port);
+		outPortList.add(port);
 	}
 
 	/**
@@ -191,6 +198,14 @@ public abstract class Module extends DependencyRunnable {
 	}
 	
 	/**
+	 * Returns a list of the module's outports
+	 * @return A list of the module's outports
+	 */
+	public List<Port> getOutPorts() {
+		return outPortList;
+	}
+	
+	/**
 	 * Method called before each new episode
 	 */
 	public void newEpisode(){ };
@@ -198,5 +213,6 @@ public abstract class Module extends DependencyRunnable {
 	/**
 	 * Method called before each new trial
 	 */
-	public void newTrial() { };
+	public void newTrial() { }
+
 }

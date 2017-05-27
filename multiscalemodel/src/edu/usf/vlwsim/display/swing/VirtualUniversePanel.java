@@ -51,7 +51,7 @@ public class VirtualUniversePanel extends JPanel {
 
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-
+		
 		// Define scaling factors
 		Float univRect = u.getBoundingRect();
 		Dimension panelRect = getSize();

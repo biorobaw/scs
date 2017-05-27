@@ -50,4 +50,9 @@ public class SCSFrame extends JFrame implements Display {
 	public void log(String s) {
 		System.out.println(s);
 	}
+	
+	@Override
+	public void repaint(){
+		super.repaint();
+	}
 }

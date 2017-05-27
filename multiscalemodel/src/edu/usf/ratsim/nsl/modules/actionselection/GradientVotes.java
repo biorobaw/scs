@@ -17,13 +17,15 @@ public class GradientVotes extends Module implements Voter {
 	private int numActions;
 	private boolean[] connected;
 	private float foodReward;
+	private Float1dPortArray votesPort;
 
 	public GradientVotes(String name, int numActions, List<Float> connProbs,
 			List<Integer> statesPerLayer, float normalizer, float foodReward) {
 		super(name);
 
 		actionVote = new float[numActions];
-		addOutPort("votes", new Float1dPortArray(this, actionVote));
+		votesPort = new Float1dPortArray(this, actionVote);
+		addOutPort("votes", votesPort);
 
 		this.numActions = numActions;
 

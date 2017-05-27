@@ -39,7 +39,7 @@ public class Float1dPortSum extends Float1dPort {
 			allSameSize = sizeFirst == source.getSize();
 		if (!allSameSize)
 			throw new IllegalArgumentException("All sources should be the same size");
-
+		
 		this.sources = sources;
 	}
 

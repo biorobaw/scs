@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
+import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.model.ValueModel;
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
@@ -20,6 +21,7 @@ import edu.usf.micronsl.module.concat.Float1dSparseConcatModule;
 import edu.usf.micronsl.module.copy.Float1dCopyModule;
 import edu.usf.micronsl.module.copy.Float1dSparseCopyModule;
 import edu.usf.micronsl.module.sum.Float1dSumModule;
+import edu.usf.micronsl.plot.Float1dSeriesPlot;
 import edu.usf.micronsl.port.Port;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
@@ -230,6 +232,10 @@ public class ActorCriticModel extends Model implements ValueModel{
 		msac.addInPort("rlValueEstimationBefore", getModule("RL Value Estimation Before").getOutPort("copy"));
 		addModule(msac);
 		rlAlg = msac;
+		
+		
+		// Displays
+		DisplaySingleton.getDisplay().addPanel(new Float1dSeriesPlot((Float1dPort)jointVotes.getOutPort("jointState")), 0, 0, 1, 1);
 	}
 
 	public List<RndHDPCellLayer> getPCLLayers() {

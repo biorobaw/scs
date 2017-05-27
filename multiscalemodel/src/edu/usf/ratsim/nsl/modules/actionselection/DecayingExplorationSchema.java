@@ -26,6 +26,7 @@ public class DecayingExplorationSchema extends Module {
 	private AffordanceRobot robot;
 	private int episodeCount;
 	private Affordance lastPicked;
+	private Float1dPortArray votesPort;
 
 	public DecayingExplorationSchema(String name, Robot robot, float maxReward,
 			float explorationHalfLifeVal) {
@@ -40,7 +41,8 @@ public class DecayingExplorationSchema extends Module {
 			this.alpha = 0;
 
 		votes = new float[this.robot.getPossibleAffordances().size()];
-		addOutPort("votes", new Float1dPortArray(this, votes));
+		votesPort = new Float1dPortArray(this, votes);
+		addOutPort("votes", votesPort);
 
 		r = RandomSingleton.getInstance();
 
@@ -89,6 +91,7 @@ public class DecayingExplorationSchema extends Module {
 
 			lastPicked = pickedAffordance;
 		}
+		
 	}
 
 	private boolean containsForward(List<Affordance> affs) {

@@ -138,7 +138,7 @@
 			<!-- Number of episodes -->
 			<number>40</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>0</sleep>
+			<sleep>100</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Place the animat in a given place -->
