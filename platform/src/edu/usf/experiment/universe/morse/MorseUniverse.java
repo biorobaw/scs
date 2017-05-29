@@ -64,10 +64,10 @@ public class MorseUniverse implements GlobalCameraUniverse, PlatformUniverse, Mo
 	}
 
 	@Override
-	public void setRobotPosition(Float p, float w) {
+	public void setRobotPosition(Float p) {
 		// Move the robot by teleporting it
 		try {
-			writer.write("id robot.tele teleport [" + p.getX() + ", " + p.getY() + ",0.2,0,0," + w + "]\n");
+			writer.write("id robot.tele teleport [" + p.getX() + ", " + p.getY() + ",0.2,0,0," + 0 + "]\n");
 			writer.flush();
 			if(!reader.readLine().contains("SUCCESS"))
 				System.err.println("Teleport of the robot failed");
@@ -76,15 +76,15 @@ public class MorseUniverse implements GlobalCameraUniverse, PlatformUniverse, Mo
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public void setRobotOrientation(float degrees) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	public static void main(String[] args) {
 
-	}
-
-	@Override
-	public void rotateRobot(double degrees) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -116,5 +116,7 @@ public class MorseUniverse implements GlobalCameraUniverse, PlatformUniverse, Mo
 		// TODO Auto-generated method stub
 		
 	}
+
+
 
 }

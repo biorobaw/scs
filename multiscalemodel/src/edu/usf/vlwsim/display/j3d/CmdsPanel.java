@@ -156,12 +156,12 @@ public class CmdsPanel extends JPanel {
 
 	// accion asociada al boton de girar horario
 	private void turnRightBtnAction(java.awt.event.ActionEvent evt) {
-		expUniv.rotateRobot(Math.toRadians(-45));
+		expUniv.setRobotOrientation((float)Math.toRadians(-45));
 	}
 
 	// accion asociada al boton de girar anti-horario
 	private void turnLeftBtnAction(java.awt.event.ActionEvent evt) {
-		expUniv.rotateRobot(Math.toRadians(45));
+		expUniv.setRobotOrientation((float)Math.toRadians(45));
 	}
 
 	// accion asociada al boton de mover izquierda

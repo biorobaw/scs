@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
+import javax.vecmath.Quat4d;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
@@ -489,10 +490,6 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		return walls;
 	}
 
-	public void removeWall(LineSegment wall) {
-		walls.remove(wall);
-	}
-
 	public void setRevertWallPoint() {
 		wallsToRevert.clear();
 		if (display)
@@ -580,15 +577,13 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	/*********************************
 	 * Movable Robot Universe
 	 *************************************/
-	public void setRobotPosition(Point2D.Float pos, float angle) {
-		Transform3D translate = new Transform3D();
-		translate.setTranslation(new Vector3f(pos.x, pos.y, 0));
-		Transform3D rot = new Transform3D();
-		rot.rotZ(angle);
-		translate.mul(rot);
-		robotPos = translate;
+	public void setRobotPosition(Point2D.Float pos) {
+		Quat4f currRot = new Quat4f();
+		robotPos.get(currRot);
+		
+		robotPos = new Transform3D(currRot, new Vector3f(pos.x, pos.y, 0), 1);
 		if (display)
-			robotNode.getTransformGroup().setTransform(translate);
+			robotNode.getTransformGroup().setTransform(robotPos);
 
 		robotAte = robotTriedToEat = false;
 	}
@@ -601,22 +596,6 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		robotPos.setRotation(rotQuat);
 		if (display)
 			robotNode.getTransformGroup().setTransform(robotPos);
-	}
-
-	public void rotateRobot(double degrees) {
-		// Create a new transforme with the translation
-		Transform3D trans = new Transform3D();
-		trans.rotZ(degrees);
-		// Get the old pos transform
-		Transform3D rPos = new Transform3D(robotPos);
-		// Apply translation to old transform
-		rPos.mul(trans);
-		// Set the new transform
-		robotPos = rPos;
-		if (display)
-			robotNode.getTransformGroup().setTransform(rPos);
-
-		robotAte = robotTriedToEat = false;
 	}
 
 	/*********************************
@@ -715,6 +694,19 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 
 		robotAte = robotTriedToEat = false;
 	}
+	
+	public void rotateRobot(float degrees) {
+		// Create a new transforme with the translation
+		Transform3D rotT = new Transform3D();
+		rotT.rotZ(degrees);
+		// Set the new transform
+		robotPos.mul(rotT);
+		if (display)
+			robotNode.getTransformGroup().setTransform(robotPos);
+
+		robotAte = robotTriedToEat = false;
+	}
+
 
 	public boolean canRobotMove(float angle, float step) {
 		// The current position with rotation

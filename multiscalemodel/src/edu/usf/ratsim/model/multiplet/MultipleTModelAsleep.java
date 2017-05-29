@@ -250,8 +250,7 @@ public class MultipleTModelAsleep extends Model {
 		nextActiveModule.setVisitedArray(visitedNodes);
 		((Int0dPort)nextActiveModule.getOutPort("nextActive")).set(startingPlaceCell);
 		Point3f initPos = getPlaceCells().get(startingPlaceCell).getPreferredLocation();
-		float theta = 0; //dont really care about head dir
-		VirtUniverse.getInstance().setRobotPosition(new Point2D.Float(initPos.x, initPos.y),theta);
+		VirtUniverse.getInstance().setRobotPosition(new Point2D.Float(initPos.x, initPos.y));
 		
 	}
 

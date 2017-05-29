@@ -8,6 +8,8 @@ import java.util.Random;
 import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.WallRobot;
 import edu.usf.experiment.universe.feeder.Feeder;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
@@ -30,7 +32,7 @@ public class RndHDPCellLayer extends Module {
 	/**
 	 * A pointer to the robot. This is used to get the robot's current location
 	 */
-	private LocalizableRobot robot;
+	private LocalizableRobot lRobot;
 
 	/**
 	 * A copy of the random number generator
@@ -46,16 +48,6 @@ public class RndHDPCellLayer extends Module {
 	private float xmin;
 
 	/**
-	 * The proportion of cells that are located near a goal
-	 */
-	private float nearGoalProb;
-
-	/**
-	 * The list of goal locations
-	 */
-	private List<Feeder> goals;
-
-	/**
 	 * The physical length of the layer, used when simulating the effects of
 	 * inactivation
 	 */
@@ -65,6 +57,8 @@ public class RndHDPCellLayer extends Module {
 	 * The output port. A sparse port is used for efficiency sake.
 	 */
 	private Float1dSparsePortMap activationPort;
+
+	private WallRobot wRobot;
 
 	/**
 	 * Create all cells in the layer.
@@ -109,9 +103,9 @@ public class RndHDPCellLayer extends Module {
 	 *            A parameter passed to wall modulated cells
 	 *            (WallExponentialConjCell).
 	 */
-	public RndHDPCellLayer(String name, LocalizableRobot robot, float placeRadius, float minDirectionRadius,
-			float maxDirectionRadius, int numCells, String placeCellType, float xmin, float ymin,
-			float xmax, float ymax, List<Feeder> goals, float nearGoalProb, float layerLength) {
+	public RndHDPCellLayer(String name, Robot robot, float placeRadius, float minDirectionRadius,
+			float maxDirectionRadius, int numCells, String placeCellType, float xmin, float ymin, float xmax,
+			float ymax, float layerLength) {
 		super(name);
 
 		if (!(placeCellType.equals("ExponentialHDPC"))) {
@@ -119,8 +113,6 @@ public class RndHDPCellLayer extends Module {
 			System.exit(1);
 		}
 
-		this.goals = goals;
-		this.nearGoalProb = nearGoalProb;
 		this.xmin = xmin;
 		this.xmax = xmax;
 		this.ymin = ymin;
@@ -136,7 +128,7 @@ public class RndHDPCellLayer extends Module {
 			float directionRadius;
 
 			// All cells have a preferred location
-			prefLocation = createrPreferredLocation(nearGoalProb, goals, xmin, xmax, ymin, ymax);
+			prefLocation = createrPreferredLocation(xmin, xmax, ymin, ymax);
 			preferredDirection = (float) (random.nextFloat() * Math.PI * 2);
 			// Using Inverse transform sampling to sample from k/x between
 			// min and max
@@ -145,20 +137,21 @@ public class RndHDPCellLayer extends Module {
 			float k = (float) (1 / (Math.log(maxDirectionRadius) - Math.log(minDirectionRadius)));
 			float s = random.nextFloat();
 			directionRadius = (float) Math.exp(s / k + Math.log(minDirectionRadius));
-			
 
-//			if (placeCellType.equals("ExponentialHDPC") && placeRadius < .1f) {
-				cells.add(new ExponentialHDPC(prefLocation, preferredDirection, placeRadius, directionRadius));
-//			} else if (placeCellType.equals("ExponentialHDPC"))
-//				cells.add(new ExponentialPlaceCell(prefLocation, placeRadius));
+			// if (placeCellType.equals("ExponentialHDPC") && placeRadius < .1f)
+			// {
+			cells.add(new ExponentialHDPC(prefLocation, preferredDirection, placeRadius, directionRadius));
+			// } else if (placeCellType.equals("ExponentialHDPC"))
+			// cells.add(new ExponentialPlaceCell(prefLocation, placeRadius));
 
 			i++;
 		} while (i < numCells);
 
-		activationPort = new Float1dSparsePortMap(this, cells.size(), 1f/4000);
+		activationPort = new Float1dSparsePortMap(this, cells.size(), 1f / 4000);
 		addOutPort("activation", activationPort);
 
-		this.robot = robot;
+		this.lRobot = (LocalizableRobot) robot;
+		this.wRobot = (WallRobot) robot;
 	}
 
 	/**
@@ -185,19 +178,11 @@ public class RndHDPCellLayer extends Module {
 	 *            located
 	 * @return The location of the new cell.
 	 */
-	private Point3f createrPreferredLocation(float nearGoalProb, List<Feeder> goals, float xmin, float xmax, float ymin,
-			float ymax) {
+	private Point3f createrPreferredLocation(float xmin, float xmax, float ymin, float ymax) {
 		float x, y;
-		if (random.nextFloat() < nearGoalProb) {
-			int fIndex = random.nextInt(goals.size());
-			Point3f p = goals.get(fIndex).getPosition();
-			x = (float) (p.x + random.nextFloat() * .2 - .1);
-			y = (float) (p.y + random.nextFloat() * .2 - .1);
-		} else {
-			// TODO change them to have different centers among layers
-			x = random.nextFloat() * (xmax - xmin) + xmin;
-			y = random.nextFloat() * (ymax - ymin) + ymin;
-		}
+		// TODO change them to have different centers among layers
+		x = random.nextFloat() * (xmax - xmin) + xmin;
+		y = random.nextFloat() * (ymax - ymin) + ymin;
 		return new Point3f(x, y, 0);
 	}
 
@@ -205,7 +190,7 @@ public class RndHDPCellLayer extends Module {
 	 * Computes the current activation of all cells
 	 */
 	public void run() {
-		run(robot.getPosition(), robot.getOrientationAngle(), robot.getDistanceToClosestWall());
+		run(lRobot.getPosition(), lRobot.getOrientationAngle(), wRobot.getDistanceToClosestWall());
 	}
 
 	/**
@@ -246,7 +231,8 @@ public class RndHDPCellLayer extends Module {
 	 * efficiency inversely proportional to the cube of the distance to the
 	 * point of injection (based on the volume of the sphere)
 	 * 
-	 * @param constant A constant multiplying the modulation 
+	 * @param constant
+	 *            A constant multiplying the modulation
 	 */
 	public void anesthtizeRadial(float constant) {
 		// active = false;
@@ -265,7 +251,9 @@ public class RndHDPCellLayer extends Module {
 
 	/**
 	 * A proportion of the cell are fully deactivated
-	 * @param proportion The proportion of cells to be deactivated
+	 * 
+	 * @param proportion
+	 *            The proportion of cells to be deactivated
 	 */
 	public void anesthtizeProportion(float proportion) {
 		// active = false;
@@ -290,7 +278,7 @@ public class RndHDPCellLayer extends Module {
 	 */
 	public void remap() {
 		for (ConjCell cell : cells) {
-			Point3f prefLocation = createrPreferredLocation(nearGoalProb, goals, xmin, xmax, ymin, ymax);
+			Point3f prefLocation = createrPreferredLocation(xmin, xmax, ymin, ymax);
 			float preferredDirection = (float) (random.nextFloat() * Math.PI * 2);
 			cell.setPreferredLocation(prefLocation);
 			cell.setPreferredDirection(preferredDirection);

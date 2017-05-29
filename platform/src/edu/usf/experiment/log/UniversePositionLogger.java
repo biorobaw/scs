@@ -11,7 +11,7 @@ import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class UniversePositionLogger extends PositionLogger {
+public class UniversePositionLogger extends PositionFeedingLogger {
 
 	public UniversePositionLogger(ElementWrapper params, String logPath) {
 		super(params, logPath);

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<!-- Just a test of new format -->
+
+<experiment>
+	<plot>false</plot>
+	
+	<universe>
+		<name>edu.usf.vlwsim.discrete.DiscreteVirtualUniverse</name>
+		<params>
+			<width>20</width>
+			<height>20</height>
+		</params>
+	</universe>
+	
+	<robot>
+		<!-- Robot to use. Use full name of the class -->
+		<name>edu.usf.vlwsim.discrete.FourNAbsDirDiscreteRobot</name>
+		<params>
+		</params>
+	</robot>
+	
+	<model>
+		<!-- Model implementation -->
+		<name>edu.usf.ratsim.model.taxi.discrete.DiscreteTaxiModel</name>
+		<params>
+			<discountFactor>.9</discountFactor>
+			<learningRate>.1</learningRate>
+			<foodReward>1</foodReward>
+			<nonFoodReward>.01</nonFoodReward>
+			<gridSize>20</gridSize>
+		</params>
+	</model>
+	
+	<group>
+		<name>Naive</name>
+		<numMembers>64</numMembers>
+		<params>
+			<learningRate>0.0</learningRate>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	
+	<group>
+		<name>Control</name>
+		<numMembers>64</numMembers>
+		<params></params>
+		<tasks></tasks>
+	</group>
+	
+	<beforeExperimentTasks>
+		<task>
+			<name>edu.usf.experiment.task.maze.SetUpTaxi</name>
+		</task>
+	</beforeExperimentTasks>
+	
+	<!-- Training trial - Non-delayed cue phase -->
+	<trial>
+		<name>Training</name>
+		<!-- Groups to apply the trial -->
+		<groups>
+			<group>Naive</group>
+			<group>Control</group>
+		</groups>
+		<!-- Tasks to perform beforehand -->
+		<beforeTrialTasks>
+			
+		</beforeTrialTasks>
+		<!-- Episodes definition -->
+		<episodes>
+			<!-- Number of episodes -->
+			<number>100</number>
+			<!-- Sleep between cycles for visualization -->
+			<sleep>0</sleep>
+			<!-- Tasks to perform before each episode -->
+			<beforeEpisodeTasks>
+				<!-- Place the animat in a given place -->
+				<task>
+					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
+					<params>
+						<point>
+							<x>10</x>
+							<y>10</y>
+							<theta>1.57</theta>
+						</point>
+					</params>
+				</task>
+				
+			</beforeEpisodeTasks>
+			<!-- Tasks to performe before each cycle -->
+			<beforeCycleTasks>
+			</beforeCycleTasks>
+			<!-- Tasks to performe after each cycle -->
+			<afterCycleTasks>
+			</afterCycleTasks>
+			<!-- Loggers to execute after each cycle -->
+			<afterCycleLoggers>
+				<!-- Log the subject position -->
+				<logger>
+					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
+					<params>
+					</params>
+				</logger>
+			</afterCycleLoggers>
+			<!-- Loggers to execute after each episode -->
+			<afterEpisodeLoggers>
+				<!-- Log each wall position -->
+				<logger>
+					<name>edu.usf.experiment.log.WallLogger</name>
+					<params>
+					</params>
+				</logger>
+				<logger>
+					<name>edu.usf.experiment.log.PlatformLogger</name>
+				</logger>
+				
+			</afterEpisodeLoggers>
+			<!-- Tasks to execute after each episode -->
+			<afterEpisodeTasks>
+			</afterEpisodeTasks>
+			<!-- Conditions upon which the episode ends -->
+			<stopConditions>
+				<!-- Timeout cycles -->
+				<condition>
+					<name>edu.usf.experiment.condition.MaxCycles</name>
+					<params>
+						<max>1000</max>
+					</params>
+				</condition>
+				<!-- Has eaten from 100 feeders -->
+				<condition>
+					<name>edu.usf.experiment.condition.FoundPlatform</name>
+					<params>
+					</params>
+				</condition>
+			</stopConditions>
+			<!-- Plotters to execute after each episode -->
+			<afterEpisodePlotters>
+				<plotter>
+					<name>edu.usf.experiment.plot.CSVConverter</name>
+				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
+				</plotter>
+			</afterEpisodePlotters>
+		</episodes>
+		<!-- Tasks to perform after the trial has ended -->
+		<afterTrialTasks>
+		</afterTrialTasks>
+		<!-- Loggers to execute after the trial has ended -->
+		<afterTrialLoggers>
+			
+		</afterTrialLoggers>
+		<!-- Plotters to execute after the trial has ended -->
+		<afterTrialPlotters>
+			<!-- Make a gif out of all value plots for this trial -->
+			<plotter>
+				<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
+			</plotter>
+			<plotter>
+				<name>edu.usf.experiment.plot.PlotGatherer</name>
+			</plotter>
+		</afterTrialPlotters>
+	</trial>
+	
+	<afterExperimentPlotters>
+		<plotter>
+			<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
+		</plotter>
+		<plotter>
+			<name>edu.usf.experiment.plot.PlotGatherer</name>
+		</plotter>
+	</afterExperimentPlotters>
+	
+	
+	
+</experiment>		

@@ -8,6 +8,8 @@ import java.util.Random;
 import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.WallRobot;
 import edu.usf.experiment.universe.feeder.Feeder;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
@@ -43,12 +45,14 @@ public class RndPlaceCellLayer extends Module {
 	/**
 	 * A pointer to the robot. This is used to get the robot's current location
 	 */
-	private LocalizableRobot robot;
+	private LocalizableRobot lRobot;
 
 	/**
 	 * The output port. A sparse port is used for efficiency.
 	 */
 	private Float1dSparsePortMap activationPort;
+
+	private WallRobot wRobot;
 
 	/**
 	 * Create all cells in the layer
@@ -83,7 +87,7 @@ public class RndPlaceCellLayer extends Module {
 	 *            The probability of a place cell being place near a goal
 	 *            instead of a generic place
 	 */
-	public RndPlaceCellLayer(String name, LocalizableRobot robot, float placeRadius, int numCells, String placeCellType,
+	public RndPlaceCellLayer(String name, Robot robot, float placeRadius, int numCells, String placeCellType,
 			float xmin, float ymin, float xmax, float ymax, List<Feeder> goals, float nearGoalProb) {
 		super(name);
 
@@ -114,7 +118,8 @@ public class RndPlaceCellLayer extends Module {
 
 		addOutPort("activation", activationPort);
 
-		this.robot = robot;
+		this.lRobot = (LocalizableRobot) robot;
+		this.wRobot = (WallRobot) robot;
 	}
 
 	private Point3f createrPreferredLocation(float nearGoalProb, List<Feeder> goals, float xmin, float xmax, float ymin,
@@ -138,7 +143,7 @@ public class RndPlaceCellLayer extends Module {
 		Map<Integer, Float> nonZero = activationPort.getNonZero();
 		nonZero.clear();
 		for (PlaceCell pCell : cells) {
-			float val = pCell.getActivation(robot.getPosition(), robot.getDistanceToClosestWall());
+			float val = pCell.getActivation(lRobot.getPosition(), wRobot.getDistanceToClosestWall());
 			if (val != 0)
 				nonZero.put(i, val);
 			total += val;

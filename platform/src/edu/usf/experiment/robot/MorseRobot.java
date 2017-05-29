@@ -87,37 +87,6 @@ public class MorseRobot
 	}
 
 	@Override
-	public boolean seesFeeder() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public List<Feeder> getAllFeeders() {
-		return new LinkedList<Feeder>();
-	}
-
-	@Override
-	public float getDistanceToClosestWall() {
-		return 30;
-	}
-
-	@Override
-	public float getHalfFieldView() {
-		return 30;
-	}
-
-	@Override
-	public int closeToNoseWalls(float distToConsider) {
-		return 0;
-	}
-
-	@Override
-	public Feeder getFeederInFront() {
-		return null;
-	}
-
-	@Override
 	public void startRobot() {
 		// TODO Auto-generated method stub
 

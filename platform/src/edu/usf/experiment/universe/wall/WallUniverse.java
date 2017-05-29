@@ -18,8 +18,6 @@ public interface WallUniverse extends Universe {
 
 	public List<Wall> getWalls();
 	
-	public void removeWall(LineSegment wall);
-
 	public void setRevertWallPoint();
 
 	public void revertWalls();

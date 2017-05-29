@@ -8,4 +8,5 @@ public interface WallRobot extends VisionRobot {
 	
 	public abstract List<Point3f> getVisibleWallEnds();
 
+	public float getDistanceToClosestWall();
 }

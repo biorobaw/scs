@@ -4,18 +4,16 @@ import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.vividsolutions.jts.geom.Coordinate;
-
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public abstract class PositionLogger extends Logger {
+public abstract class PositionFeedingLogger extends Logger {
 
-	private List<Coordinate> poses;
+	private List<Pose> poses;
 	
-	public PositionLogger(ElementWrapper params, String logPath){
+	public PositionFeedingLogger(ElementWrapper params, String logPath){
 		super(params, logPath);
-		poses = new LinkedList<Coordinate>();
+		poses = new LinkedList<Pose>();
 	}
 
 	public void finalizeLog() {
@@ -26,17 +24,18 @@ public abstract class PositionLogger extends Logger {
 		String episode = props.getProperty("episode");
 		
 		System.out.println("Steps: " + poses.size());
-		synchronized (PositionLogger.class) {
+		synchronized (PositionFeedingLogger.class) {
 			PrintWriter writer = getWriter();
-			for (Coordinate pose : poses)
+			for (Pose pose : poses)
 				writer.println(trialName + '\t' + groupName + '\t' + subName
-						+ '\t' + episode + '\t' + pose.x + '\t' + pose.y);
+						+ '\t' + episode + '\t' + pose.x + "\t" + pose.y + "\t"
+						+ pose.randomAction + '\t' + pose.triedToEat + '\t' + pose.ate);
 			poses.clear();
 		}
 	}
 
-	public void addPose(Coordinate c){
-		poses.add(c);
+	public void addPose(Pose p){
+		poses.add(p);
 	}
 	
 

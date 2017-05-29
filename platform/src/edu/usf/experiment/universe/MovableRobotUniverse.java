@@ -10,7 +10,7 @@ public interface MovableRobotUniverse extends Universe {
 	 * @param vector
 	 *            Robots position
 	 */
-	public abstract void setRobotPosition(Point2D.Float float1, float w);
+	public abstract void setRobotPosition(Point2D.Float newPos);
 	
 	/**
 	 * Rotate the virtual world robot.
@@ -18,6 +18,6 @@ public interface MovableRobotUniverse extends Universe {
 	 * @param degrees
 	 *            Amount to rotate in radians.
 	 */
-	public void rotateRobot(double degrees);
+	public void setRobotOrientation(float degrees);
 	
 }

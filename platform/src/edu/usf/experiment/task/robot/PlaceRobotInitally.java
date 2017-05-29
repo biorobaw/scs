@@ -61,7 +61,11 @@ public class PlaceRobotInitally extends Task{
 		
 		MovableRobotUniverse mru = (MovableRobotUniverse) u;
 		
-		mru.setRobotPosition(new Point2D.Float(initPos.x, initPos.y), initPos.w);
+		mru.setRobotPosition(new Point2D.Float(initPos.x, initPos.y));
+		mru.setRobotOrientation(initPos.w);
+		
+		
 	}
+	
 
 }

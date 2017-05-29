@@ -165,10 +165,9 @@ public class MultiScaleArtificialPCModel extends Model implements DeactivableMod
 		// For each layer
 		for (int i = 0; i < numCCLayers; i++) {
 			RndConjCellLayer ccl = new RndConjCellLayer("CCL "
-					+ i, lRobot, radius, minHDRadius, maxHDRadius,
+					+ i, robot, radius, minHDRadius, maxHDRadius,
 					numIntentions, numCCCellsPerLayer.get(i), placeCellType,
-					xmin, ymin, xmax, ymax, lRobot.getAllFeeders(),
-					goalCellProportion, layerLengths.get(i), wallParamA, wallParamB);
+					xmin, ymin, xmax, ymax, layerLengths.get(i), wallParamA, wallParamB);
 			ccl.addInPort("intention", intention.getOutPort("intention"));
 			conjCellLayers.add(ccl);
 			conjCellLayersPorts.add(ccl.getOutPort("activation"));

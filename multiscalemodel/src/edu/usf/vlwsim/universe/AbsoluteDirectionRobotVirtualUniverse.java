@@ -1,5 +1,7 @@
 package edu.usf.vlwsim.universe;
 
+import java.awt.geom.Point2D.Float;
+
 import javax.vecmath.Vector3f;
 
 import edu.usf.experiment.utils.ElementWrapper;
@@ -28,8 +30,6 @@ public class AbsoluteDirectionRobotVirtualUniverse extends VirtUniverse {
 	public void setRobotADStep(float step) {
 		this.step = step;
 	}
-
-
 
 
 }

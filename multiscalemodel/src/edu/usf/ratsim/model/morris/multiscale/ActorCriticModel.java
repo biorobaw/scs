@@ -128,8 +128,8 @@ public class ActorCriticModel extends Model implements ValueModel{
 		List<Port> conjCellLayersPorts = new LinkedList<Port>();
 		// For each layer
 		for (int i = 0; i < numCCLayers; i++) {
-			RndHDPCellLayer ccl = new RndHDPCellLayer("CCL " + i, lRobot, radius, minHDRadius, maxHDRadius,
-					numCCCellsPerLayer.get(i), "ExponentialHDPC", xmin, ymin, xmax, ymax, null, 0f,
+			RndHDPCellLayer ccl = new RndHDPCellLayer("CCL " + i, robot, radius, minHDRadius, maxHDRadius,
+					numCCCellsPerLayer.get(i), "ExponentialHDPC", xmin, ymin, xmax, ymax,
 					layerLengths.get(i));
 			conjCellLayers.add(ccl);
 			conjCellLayersPorts.add(ccl.getOutPort("activation"));

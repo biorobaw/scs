@@ -1,6 +1,7 @@
 package edu.usf.ratsim.robot.ssl;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Float;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
@@ -23,7 +24,8 @@ public class SSLCamUniverse extends VirtUniverse {
 	public Point3f getRobotPosition() {
 		Point3f p = vision.getRobotPoint();
 //		System.out.println(p);
-		setRobotPosition(new Point2D.Float(p.x, p.z), vision.getRobotOrientation());
+		setRobotPosition(new Point2D.Float(p.x, p.z));
+		setRobotOrientation(vision.getRobotOrientation());
 		return vision.getRobotPoint();
 	}
 
@@ -31,14 +33,16 @@ public class SSLCamUniverse extends VirtUniverse {
 	public Quat4f getRobotOrientation() {
 		
 		Point3f p = vision.getRobotPoint();
-		setRobotPosition(new Point2D.Float(p.x, p.z), vision.getRobotOrientation());
+		setRobotPosition(new Point2D.Float(p.x, p.z));
+		setRobotOrientation(vision.getRobotOrientation());
 		return GeomUtils.angleToRot(vision.getRobotOrientation());
 	}
 
 	@Override
 	public float getRobotOrientationAngle() {
 		Point3f p = vision.getRobotPoint();
-		setRobotPosition(new Point2D.Float(p.x, p.z), vision.getRobotOrientation());
+		setRobotPosition(new Point2D.Float(p.x, p.z));
+		setRobotOrientation(vision.getRobotOrientation());
 		return vision.getRobotOrientation();
 	}
 
@@ -48,6 +52,12 @@ public class SSLCamUniverse extends VirtUniverse {
 
 	@Override
 	public void stepMotion() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setRobotPosition(Float float1) {
 		// TODO Auto-generated method stub
 		
 	}

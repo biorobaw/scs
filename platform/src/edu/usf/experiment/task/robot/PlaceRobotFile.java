@@ -58,7 +58,8 @@ public class PlaceRobotFile extends Task {
 		MovableRobotUniverse mru = (MovableRobotUniverse) u;
 		
 		Point4f p = positions.get(nextPos);
-		mru.setRobotPosition(new Point2D.Float(p.x, p.y), p.w);
+		mru.setRobotPosition(new Point2D.Float(p.x, p.y));
+		mru.setRobotOrientation(p.w);
 		if (nextPos+1 < positions.size()) nextPos++;
 		else Globals.getInstance().put("done", true);
 		

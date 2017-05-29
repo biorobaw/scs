@@ -82,7 +82,7 @@ public class ThreeFeedersModel extends Model {
 		float minHDRadius = params.getChildFloat("minHDRadius");
 		float maxHDRadius = params.getChildFloat("maxHDRadius");
 		String placeCellType = params.getChildText("placeCells");
-		float goalCellProportion = params.getChildFloat("goalCellProportion");
+		float goalCellProportion = 0;
 		float rlDiscountFactor = params.getChildFloat("rlDiscountFactor");
 		float taxicDiscountFactor = params.getChildFloat("taxicDiscountFactor");
 		float alpha = params.getChildFloat("alpha");
@@ -158,10 +158,9 @@ public class ThreeFeedersModel extends Model {
 		// For each layer
 		for (int i = 0; i < numCCLayers; i++) {
 			RndConjCellLayer ccl = new RndConjCellLayer("CCL "
-					+ i, lRobot, radius, minHDRadius, maxHDRadius,
+					+ i, robot, radius, minHDRadius, maxHDRadius,
 					numIntentions, numCCCellsPerLayer.get(i), placeCellType,
-					xmin, ymin, xmax, ymax, fRobot.getAllFeeders(),
-					goalCellProportion, layerLengths.get(i), 10, wallParamB);
+					xmin, ymin, xmax, ymax, layerLengths.get(i), 10, wallParamB);
 			ccl.addInPort("intention", intention.getOutPort("intention"));
 			conjCellLayers.add(ccl);
 			conjCellLayersPorts.add(ccl.getOutPort("activation"));

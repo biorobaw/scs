@@ -78,7 +78,8 @@ public class Experiment implements Runnable {
 		g.put("simulationSpeed",9); //speed defined in xml file (sleep value)
 		String mazeFile = root.getChild("universe").getChild("params")
 				.getChildText("maze");
-		IOUtils.copyFile(mazeFile, logPath + "/maze.xml");
+		if (mazeFile != null)
+			IOUtils.copyFile(mazeFile, logPath + "/maze.xml");
 
 		setup(root, logPath, groupName, subjectName);
 	}

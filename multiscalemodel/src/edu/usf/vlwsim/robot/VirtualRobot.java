@@ -220,13 +220,6 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 	// return universe.getRobotOrientation();
 	// }
 
-	
-
-	@Override
-	public boolean seesFeeder() {
-		return FeederUtils.getClosestFeeder(getVisibleFeeders()) != null;
-	}
-
 	@Override
 	public List<Feeder> getAllFeeders() {
 		return universe.getFeeders();
@@ -250,11 +243,6 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 	@Override
 	public float getHalfFieldView() {
 		return halfFieldOfView;
-	}
-
-	@Override
-	public int closeToNoseWalls(float distToConsider) {
-		return universe.isWallCloseToSides(getRobotLength() / 2, distToConsider);
 	}
 
 	@Override
@@ -357,7 +345,7 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 
 	@Override
 	public void setPosition(Point3f pos) {
-		universe.setRobotPosition(new Point2D.Float(pos.x, pos.y), 0f);
+		universe.setRobotPosition(new Point2D.Float(pos.x, pos.y));
 	}
 
 }

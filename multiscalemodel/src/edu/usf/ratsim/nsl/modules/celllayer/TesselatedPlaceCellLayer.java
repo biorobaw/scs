@@ -7,6 +7,8 @@ import java.util.Map;
 import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.WallRobot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
@@ -36,12 +38,14 @@ public class TesselatedPlaceCellLayer extends Module {
 	/**
 	 * A robot to provide localization information
 	 */
-	private LocalizableRobot robot;
+	private LocalizableRobot lRobot;
 
 	/**
 	 * The activation output port. A sparse port is used for efficiency.
 	 */
 	private Float1dSparsePortMap activationPort;
+
+	private WallRobot wRobot;
 
 	/**
 	 * Creates all the place cells and locates them in a tesselated grid laid
@@ -71,7 +75,7 @@ public class TesselatedPlaceCellLayer extends Module {
 	 *            The maximum y value of the box in which place cells are
 	 *            located
 	 */
-	public TesselatedPlaceCellLayer(String name, LocalizableRobot robot, float radius, int numCellsPerSide,
+	public TesselatedPlaceCellLayer(String name, Robot robot, float radius, int numCellsPerSide,
 			String placeCellType, float xmin, float ymin, float xmax, float ymax) {
 		super(name);
 
@@ -96,14 +100,15 @@ public class TesselatedPlaceCellLayer extends Module {
 		activationPort = new Float1dSparsePortMap(this, cells.size(), 4000);
 		addOutPort("activation", activationPort);
 
-		this.robot = robot;
+		this.lRobot = (LocalizableRobot) robot;
+		this.wRobot = (WallRobot) robot;
 	}
 	
 	/**
 	 * Computes the current activation of all cells
 	 */
 	public void run() {
-		run(robot.getPosition(), robot.getDistanceToClosestWall());
+		run(lRobot.getPosition(), wRobot.getDistanceToClosestWall());
 	}
 	
 	/**
@@ -142,7 +147,7 @@ public class TesselatedPlaceCellLayer extends Module {
 	 * @return An array of the activation values
 	 */
 	public float[] getActivationValues(Point3f pos) {
-		float distanceToClosestWall = robot.getDistanceToClosestWall();
+		float distanceToClosestWall = wRobot.getDistanceToClosestWall();
 		float[] res = new float[cells.size()];
 
 		for (int i = 0; i < cells.size(); i++) {

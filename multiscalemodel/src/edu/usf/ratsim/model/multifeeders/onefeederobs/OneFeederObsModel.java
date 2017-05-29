@@ -130,10 +130,9 @@ public class OneFeederObsModel extends Model {
 		// For each layer
 		for (int i = 0; i < numCCLayers; i++) {
 			RndConjCellLayer ccl = new RndConjCellLayer("CCL "
-					+ i, lRobot, radius, minHDRadius, maxHDRadius,
+					+ i, robot, radius, minHDRadius, maxHDRadius,
 					numIntentions, numCCCellsPerLayer.get(i), placeCellType,
-					xmin, ymin, xmax, ymax, new LinkedList<Feeder>(),
-					goalCellProportion, layerLengths.get(i), 10, wallParamB);
+					xmin, ymin, xmax, ymax, layerLengths.get(i), 10, wallParamB);
 			ccl.addInPort("intention", intention.getOutPort("intention"));
 			conjCellLayers.add(ccl);
 			conjCellLayersPorts.add(ccl.getOutPort("activation"));

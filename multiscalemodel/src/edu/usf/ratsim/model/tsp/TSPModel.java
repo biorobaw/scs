@@ -48,7 +48,7 @@ public class TSPModel extends Model {
 
 		// Create the layers
 		placeCells = new TesselatedPlaceCellLayer(
-				"PCLayer", lRobot, PCRadius, numCCCellsPerSide, placeCellType,
+				"PCLayer", robot, PCRadius, numCCCellsPerSide, placeCellType,
 				xmin, ymin, xmax, ymax);
 		addModule(placeCells);
 		

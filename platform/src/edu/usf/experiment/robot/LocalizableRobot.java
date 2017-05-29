@@ -1,11 +1,6 @@
 package edu.usf.experiment.robot;
 
-import java.util.List;
-
 import javax.vecmath.Point3f;
-
-import edu.usf.experiment.universe.feeder.Feeder;
-import edu.usf.experiment.utils.ElementWrapper;
 
 public interface LocalizableRobot {
 
@@ -21,26 +16,4 @@ public interface LocalizableRobot {
 	 */
 	public abstract float getOrientationAngle();
 	
-	/**
-	 * Returns the orientation of the animal as thought by the subject
-	 * @return
-	 */
-//	public abstract Quat4f getOrientation();
-
-	public abstract boolean seesFeeder();
-	
-	/**
-	 * Return a list with all universe feeders for place cell layout purposes
-	 * @return
-	 */
-	public abstract List<Feeder> getAllFeeders();
-
-	public abstract float getDistanceToClosestWall();
-
-	public abstract float getHalfFieldView();
-
-	public abstract int closeToNoseWalls(float distToConsider);
-
-	public abstract Feeder getFeederInFront() ;
-
 }

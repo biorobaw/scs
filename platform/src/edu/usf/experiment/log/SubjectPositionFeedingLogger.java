@@ -2,19 +2,18 @@ package edu.usf.experiment.log;
 
 import javax.vecmath.Point3f;
 
-import com.vividsolutions.jts.geom.Coordinate;
-
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class SubjectPositionLogger extends PositionLogger {
+public class SubjectPositionFeedingLogger extends PositionFeedingLogger {
 
-	public SubjectPositionLogger(ElementWrapper params, String logPath) {
+	public SubjectPositionFeedingLogger(ElementWrapper params, String logPath) {
 		super(params, logPath);
 	}
 
@@ -22,10 +21,12 @@ public class SubjectPositionLogger extends PositionLogger {
 		if (!(sub.getRobot() instanceof LocalizableRobot))
 			throw new RuntimeException("SubjectPositionLogger needs a localizable robot to work");
 		
+		FeederUniverse fu = (FeederUniverse) u;
+		
 		LocalizableRobot r = (LocalizableRobot) sub.getRobot();
 		Point3f pos = r.getPosition();
-		addPose(new Coordinate(pos.x, pos.y));
-	} 
+		addPose(new Pose(pos.x, pos.y, false, fu.hasRobotTriedToEat(), fu.hasRobotEaten()));
+	}
 	
 	@Override
 	public void log(Trial trial) {
