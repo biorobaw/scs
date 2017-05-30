@@ -8,6 +8,7 @@ import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.platform.PlatformUniverse;
 import edu.usf.experiment.universe.wall.WallUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.experiment.utils.RandomSingleton;
 
 public class SetUpTaxi extends Task {
 
@@ -35,10 +36,22 @@ public class SetUpTaxi extends Task {
 		wu.addWall(SIZE/5*2,SIZE, SIZE/5*2,SIZE/5*3);
 		wu.addWall(SIZE/5*3, 0, SIZE/5*3, SIZE/5*2);
 		
-		pu.addPlatform(new Point3f(SIZE/20 * 12, 0, 0), 1); 
-		pu.addPlatform(new Point3f(0, 0, 0), 1); 
-		pu.addPlatform(new Point3f(0, SIZE -1, 0), 1); 
-		pu.addPlatform(new Point3f(SIZE - 1, SIZE -1, 0), 1); 
-	}
+		int which = RandomSingleton.getInstance().nextInt(4);
+		switch (which){
+		case 0:
+			pu.addPlatform(new Point3f(SIZE/20 * 12, 0, 0), 1); 
+			break;
+		case 1:
+			pu.addPlatform(new Point3f(0, 0, 0), 1);
+			break;
+		case 2:
+			pu.addPlatform(new Point3f(0, SIZE -1, 0), 1);
+			break;
+		case 3:
+			pu.addPlatform(new Point3f(SIZE - 1, SIZE -1, 0), 1);
+			break;
+		}
+		}
+		
 
 }

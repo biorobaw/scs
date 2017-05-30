@@ -15,6 +15,15 @@ public class PlatformUniverseUtilities {
 				return true;
 		return false;
 	}
+	
+	public static boolean hasRobotFoundPlatformDiscrete(List<Platform> platforms, Point3f robotPos) {
+		for (Platform plat : platforms){
+			Point3f platPos = plat.getPosition();
+			if (platPos.x == robotPos.x && platPos.y == robotPos.y)
+				return true;
+		}
+		return false;
+	}
 
 	public static float shortestDistanceToPlatforms(List<Platform> platforms, LineSegment wall) {
 		float minDist = Float.MAX_VALUE;
