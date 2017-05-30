@@ -1,5 +1,7 @@
 package edu.usf.ratsim.nsl.modules.actionselection;
 
+import java.util.Map;
+
 import edu.usf.experiment.utils.Debug;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
@@ -19,47 +21,42 @@ public class ProportionalVotes extends Module implements Voter {
 	private int numActions;
 	private boolean normalize;
 
-	
-	
-	public ProportionalVotes(String name, int numActions,boolean normalize) {
+	public ProportionalVotes(String name, int numActions, boolean normalize) {
 		super(name);
 		this.numActions = numActions;
 		actionVote = new float[numActions];
 		addOutPort("votes", new Float1dPortArray(this, actionVote));
-		//this.normalize = normalize;
+		// this.normalize = normalize;
 	}
-	
+
 	public ProportionalVotes(String name, int numActions) {
-		this(name, numActions, true); //default value of normalize defined as true to keep back compatibility
+		this(name, numActions, true); // default value of normalize defined as
+										// true to keep back compatibility
 	};
 
 	public void run() {
 		Float1dSparsePort states = (Float1dSparsePort) getInPort("states");
 		Float2dPort value = (Float2dPort) getInPort("value");
+
+		run(states.getNonZero(), value);
+
+	}
+
+	public void run(Map<Integer, Float> nonZero, Float2dPort value) {
 		for (int action = 0; action < numActions; action++)
 			actionVote[action] = 0f;
-
-		double sum = 0;
-		//float cantStates = states.getSize();
-		for (int state : states.getNonZero().keySet()) {
-			float stateVal = states.get(state);
+		
+		// float cantStates = states.getSize();
+		for (int state : nonZero.keySet()) {
+			float stateVal = nonZero.get(state);
 			if (stateVal != 0) {
-				double p1 =sum / (sum+stateVal);
-				double p2 = stateVal / (sum+stateVal);
 				for (int action = 0; action < numActions; action++) {
 					float actionVal = value.get(state, action);
 					if (actionVal != 0)
-						actionVote[action] = (float)(p1*actionVote[action] + p2* actionVal);
+						actionVote[action] += (float) (stateVal * actionVal);
 				}
-				sum += stateVal;
 			}
 		}
-
-
-//		if (sum != 0)
-//			for (int action = 0; action < numActions; action++)
-//				// Normalize with real value and revert previous normalization
-//				actionVote[action] = (float) (actionVote[action] / sum);
 
 		if (Debug.printValues) {
 			System.out.println("RL votes");
@@ -67,12 +64,12 @@ public class ProportionalVotes extends Module implements Voter {
 				System.out.print(actionVote[action] + " ");
 			System.out.println();
 		}
-
 	}
-	
-	public String voteString(){
+
+	public String voteString() {
 		String res = "";
-		for(float a : actionVote) res += a+", ";
+		for (float a : actionVote)
+			res += a + ", ";
 		return res;
 	}
 
