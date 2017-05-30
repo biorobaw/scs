@@ -33,6 +33,10 @@ public class ActionFromProbabilities extends Module {
 			sum+=input.get(i);
 		outport.set(i-1);
 
+//		do {
+//			i = rand.nextInt(input.getSize());
+//		} while (input.get(i) <= 0);
+//		outport.set(i);
 	}
 
 

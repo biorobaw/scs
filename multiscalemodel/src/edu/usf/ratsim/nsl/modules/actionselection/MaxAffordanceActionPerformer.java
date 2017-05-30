@@ -1,6 +1,5 @@
 package edu.usf.ratsim.nsl.modules.actionselection;
 
-import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.micronsl.module.Module;

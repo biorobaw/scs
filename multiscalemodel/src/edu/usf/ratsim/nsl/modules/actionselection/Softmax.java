@@ -28,27 +28,27 @@ public class Softmax extends Module {
 	public void run() {
 		Float1dPort input = (Float1dPort) getInPort("input");
 
+		float max = -Float.MAX_VALUE;
+		for (int i =0; i < numActions; i++)
+			max = input.get(i) > max ? input.get(i) : max;
+			
 		float sum = 0;
-		float max = 0;
-//		for(int i=0;i<numActions;i++)
-//			max = Math.abs(input.get(i)) > max ? Math.abs(input.get(i)) : max;
-		//System.out.print("Q: ");
-		if (max==0) max=1;
 		for (int i=0;i<numActions;i++){
-			//System.out.print(""+input.get(i) + " ");
-			probabilities[i] = (float)Math.exp( input.get(i)/max);
+			// Use the max to normalize - this takes care of too high values and also too low values
+//			probabilities[i] = (float)Math.exp(input.get(i) - max);
+			probabilities[i] = (float)Math.exp(input.get(i));
 			sum+=probabilities[i];
 		}
 		//System.out.print("\nsum: "+sum+"\nP: ");
 		
 //		System.out.print("Softmax output: ");
-		if (sum==Float.POSITIVE_INFINITY) throw new IllegalArgumentException("Argument 'divisor' is Infinity");
-		if (sum==0) throw new IllegalArgumentException("Argument 'divisor' is 0");
+		if (sum==Float.POSITIVE_INFINITY) 
+			throw new IllegalArgumentException("Argument 'divisor' is Infinity");
+		if (sum==0) 
+			throw new IllegalArgumentException("Argument 'divisor' is 0");
 		for (int i=0;i<numActions;i++){
 			probabilities[i]/=sum;
-//			System.out.print(""+probabilities[i]+ " ");
 		}
-//		System.out.println("");
 
 
 	}

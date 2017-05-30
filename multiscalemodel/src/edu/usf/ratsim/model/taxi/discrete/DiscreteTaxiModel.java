@@ -5,7 +5,6 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.experiment.Globals;
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.model.ValueModel;
 import edu.usf.experiment.robot.LocalizableRobot;
@@ -46,6 +45,8 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 	private int gridSize;
 
 	private int numActions;
+
+	private UpdateQModule updateQ;
 
 	public DiscreteTaxiModel() {
 	}
@@ -94,7 +95,7 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 
 		// Create SoftMax module
 		Softmax softmax = new Softmax("softmax", numActions);
-		softmax.addInPort("input", actionGating.getOutPort("probabilities"), true); 
+		softmax.addInPort("input", actionGating.getOutPort("probabilities")); 
 		addModulePre(softmax);
 		DisplaySingleton.getDisplay().addComponent(new Float1dSeriesPlot((Float1dPort)softmax.getOutPort("probabilities")), 0, 2, 1, 1);
 
@@ -115,11 +116,10 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 		// create subAte module
 		SubFoundPlatform subFoundPlat = new SubFoundPlatform("Subject Found Plat", robot);
 		addModulePost(subFoundPlat);
-		subFoundPlat.addPreReq(actionPerformer);
 
 		// Create reward module
 		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
-		r.addInPort("rewardingEvent", subFoundPlat.getOutPort("foundPlatform"), true); 
+		r.addInPort("rewardingEvent", subFoundPlat.getOutPort("foundPlatform")); 
 		addModulePost(r);
 
 		// Create deltaSignal module
@@ -130,7 +130,7 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 		addModulePost(deltaError);
 
 		// Create update Q module
-		Module updateQ = new UpdateQModule("updateQ", learningRate);
+		updateQ = new UpdateQModule("updateQ", learningRate);
 		updateQ.addInPort("delta", deltaError.getOutPort("delta"));
 		updateQ.addInPort("action", actionSelection.getOutPort("action"));
 		updateQ.addInPort("Q", QTable);
@@ -143,14 +143,13 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 
 	public void newEpisode() {
 		super.newEpisode();
-//		Globals g = Globals.getInstance();
-//		g.put("simulationSpeed", 5);
-		// Compute place cell output before making the first decision
+//		 Compute place cell output before making the first decision
 		pos.run();
 		placeCells.run();
 		currentStateQ.run();
 		
 		deltaError.saveQ();
+		updateQ.savePCs();
 	}
 
 	@Override

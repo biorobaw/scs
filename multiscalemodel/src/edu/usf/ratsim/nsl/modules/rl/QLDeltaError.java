@@ -6,7 +6,7 @@ import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 /**
- * Module that computes the delta for actor critic modules
+ * Module that computes the delta for QLearning modules
  * @author biorob
  * 
  */

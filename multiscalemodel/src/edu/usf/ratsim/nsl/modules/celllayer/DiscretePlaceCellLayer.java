@@ -44,8 +44,9 @@ public class DiscretePlaceCellLayer extends Module {
 		int i = 0;
 		for (DiscretePlaceCell c : cells) {
 			float activation = c.getActivation((int) position.x, (int) position.y);
-			if (activation != 0)
+			if (activation != 0){
 				aPort.set(i, activation);
+			}
 			i += 1;
 		}		
 	}

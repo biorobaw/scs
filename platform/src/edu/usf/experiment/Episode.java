@@ -49,7 +49,7 @@ public class Episode {
 	private List<Logger> afterEpisodeLoggers;
 	private boolean makePlots;
 	
-	private int[] sleepValues = new int[] {0,30,100,300,500,1000,2000,4000,8000,0};
+	private int[] sleepValues = new int[] {0,1,10,50,100,500,1000,2000,3000,0};
 
 	public Episode(ElementWrapper episodeNode, String parentLogPath, Trial trial, int episodeNumber, boolean makePlots) {
 		this.trial = trial;
@@ -108,14 +108,17 @@ public class Episode {
 		System.out.println("[+] Episode " + trial.getName() + " "
 				+ trial.getGroup() + " " + trial.getSubjectName() + " "
 				+ episodeNumber + " started.");
-
-		getSubject().getModel().newEpisode();
 		
 		// Do all before trial tasks
-		for (Logger logger : beforeEpisodeLoggers)
-			logger.log(this);
 		for (Task task : beforeEpisodeTasks)
 			task.perform(this);
+		
+		// New episode is called after tasks are executed (e.g. reposition the robot)
+		getSubject().getModel().newEpisode();
+		
+		for (Logger logger : beforeEpisodeLoggers)
+			logger.log(this);
+		
 		Plotter.plot(beforeEpisodePlotters);
 
 		// Execute cycles until stop condition holds
@@ -132,7 +135,7 @@ public class Episode {
 
 			getSubject().getModel().runPre();
 			
-			display.repaint();
+//			display.repaint();
 			
 			getUniverse().step();
 			

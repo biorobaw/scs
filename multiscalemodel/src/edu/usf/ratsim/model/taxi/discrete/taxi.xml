@@ -2,7 +2,6 @@
 <!-- Just a test of new format -->
 
 <experiment>
-	<plot>false</plot>
 	
 	<universe>
 		<name>edu.usf.vlwsim.discrete.DiscreteVirtualUniverse</name>
@@ -23,10 +22,10 @@
 		<!-- Model implementation -->
 		<name>edu.usf.ratsim.model.taxi.discrete.DiscreteTaxiModel</name>
 		<params>
-			<discountFactor>.9</discountFactor>
+			<discountFactor>1</discountFactor>
 			<learningRate>.1</learningRate>
 			<foodReward>1</foodReward>
-			<nonFoodReward>.01</nonFoodReward>
+			<nonFoodReward>-.1</nonFoodReward>
 			<gridSize>20</gridSize>
 		</params>
 	</model>
@@ -69,9 +68,9 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>100</number>
+			<number>1000</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>0</sleep>
+			<sleep>1000</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Place the animat in a given place -->
@@ -124,7 +123,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>1000</max>
+						<max>10000</max>
 					</params>
 				</condition>
 				<!-- Has eaten from 100 feeders -->

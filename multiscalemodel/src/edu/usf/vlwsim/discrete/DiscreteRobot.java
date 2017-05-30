@@ -30,7 +30,7 @@ public class DiscreteRobot implements LocalizableRobot, PlatformRobot, TeleportR
 
 	@Override
 	public boolean hasFoundPlatform() {
-		return PlatformUniverseUtilities.hasRobotFoundPlatform(u.getPlatforms(), u.getRobotPosition());
+		return PlatformUniverseUtilities.hasRobotFoundPlatformDiscrete(u.getPlatforms(), u.getRobotPosition());
 	}
 
 	@Override
