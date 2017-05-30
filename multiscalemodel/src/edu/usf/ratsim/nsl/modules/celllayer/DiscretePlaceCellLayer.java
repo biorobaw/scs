@@ -3,9 +3,10 @@ package edu.usf.ratsim.nsl.modules.celllayer;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.usf.experiment.robot.LocalizableRobot;
+import javax.vecmath.Point3f;
+
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
+import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.ratsim.nsl.modules.cell.DiscretePlaceCell;
@@ -31,19 +32,33 @@ public class DiscretePlaceCellLayer extends Module {
 	@Override
 	public void run() {
 		Point3fPort position = (Point3fPort) getInPort("position");
+		activationPort.clear();
 		
+		getActive(activationPort, position.get());
+		
+		if (activationPort.getNonZero().size() != 1)
+			throw new RuntimeException("There should be one and only one active cell");
+	}
+
+	public void getActive(Float1dSparsePort aPort, Point3f position) {
 		int i = 0;
 		for (DiscretePlaceCell c : cells) {
-			float activation = c.getActivation((int) position.get().x, (int) position.get().y);
+			float activation = c.getActivation((int) position.x, (int) position.y);
 			if (activation != 0)
-				activationPort.set(i, activation);
+				aPort.set(i, activation);
 			i += 1;
-		}
+		}		
 	}
 
 	@Override
 	public boolean usesRandom() {
 		return false;
 	}
+
+	public List<DiscretePlaceCell> getCells() {
+		return cells;
+	}
+	
+	
 
 }
