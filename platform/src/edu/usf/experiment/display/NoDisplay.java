@@ -1,6 +1,9 @@
 package edu.usf.experiment.display;
 
-import javax.swing.JPanel;
+import javax.swing.JComponent;
+
+import edu.usf.experiment.display.drawer.Drawer;
+import edu.usf.experiment.universe.BoundedUniverse;
 
 /**
  * A dummy display to be able to run headless.
@@ -10,18 +13,29 @@ import javax.swing.JPanel;
 public class NoDisplay implements Display {
 
 	@Override
-	public void addPanel(JPanel panel, int gridx, int gridy, int gridwidth, int gridheight) {
-		// Do nothing
-	}
-
-	@Override
 	public void log(String s) {
 		System.out.println(s);		
 	}
 
 	@Override
 	public void repaint() {
-		// Do nothing
+	}
+
+	@Override
+	public void addComponent(JComponent component, int gridx, int gridy, int gridwidth, int gridheight) {
+	}
+
+	@Override
+	public void setupUniversePanel(BoundedUniverse bu) {
+	}
+
+	@Override
+	public void addUniverseDrawer(Drawer d) {
+	}
+
+	@Override
+	public void addUniverseDrawer(Drawer d, int pos) {
+		
 	}
 
 }

@@ -1,6 +1,9 @@
 package edu.usf.experiment.display;
 
-import javax.swing.JPanel;
+import javax.swing.JComponent;
+
+import edu.usf.experiment.display.drawer.Drawer;
+import edu.usf.experiment.universe.BoundedUniverse;
 
 /**
  * This interface represents a means of displaying information. 
@@ -10,14 +13,14 @@ import javax.swing.JPanel;
 public interface Display {
 
 	/**
-	 * Add a panel to display information or include controls.
+	 * Add a component (e.g. a panel) to display information or include controls.
 	 * @param panel The JPanel to display
 	 * @param gridx The grid x coordinate, see GridBagConstraints
 	 * @param gridy The grid y coordinate, see GridBagConstraints
 	 * @param gridwidth The grid width, see GridBagConstraints
 	 * @param gridheight The grid height, see GridBagConstraints
 	 */
-	public void addPanel(JPanel panel, int gridx, int gridy, int gridwidth, int gridheight);
+	public void addComponent(JComponent component, int gridx, int gridy, int gridwidth, int gridheight);
 	
 	/**
 	 * Log a certain string using the display specific method (e.g. textbox or system.out)
@@ -29,5 +32,19 @@ public interface Display {
 	 * Update the display to reflect the most current data
 	 */
 	public void repaint();
+	
+	/**
+	 * Sets up the universe panel
+	 * @param bu A bounded universe needed to compute the scaling factors
+	 */
+	public void setupUniversePanel(BoundedUniverse bu);
+	
+	/**
+	 * Adds a drawer layer to the universe panel
+	 * @param d
+	 */
+	public void addUniverseDrawer(Drawer d);
+
+	public void addUniverseDrawer(Drawer d, int pos);
 	
 }

@@ -2,6 +2,7 @@ package edu.usf.vlwsim.discrete;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Float;
+import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,7 +13,12 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
 import edu.usf.experiment.display.DisplaySingleton;
+import edu.usf.experiment.display.drawer.WallDrawer;
+import edu.usf.experiment.display.drawer.discrete.DiscretePlatformDrawer;
+import edu.usf.experiment.display.drawer.discrete.DiscreteRobotDrawer;
+import edu.usf.experiment.display.drawer.discrete.GridDrawer;
 import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.universe.BoundedUniverse;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.GridUniverse;
 import edu.usf.experiment.universe.MovableRobotUniverse;
@@ -22,10 +28,9 @@ import edu.usf.experiment.universe.wall.Wall;
 import edu.usf.experiment.universe.wall.WallUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
-import edu.usf.vlwsim.display.swing.VirtualUniversePanel;
 
 public class DiscreteVirtualUniverse
-		implements PlatformUniverse, WallUniverse, GlobalCameraUniverse, MovableRobotUniverse, GridUniverse {
+		implements PlatformUniverse, WallUniverse, GlobalCameraUniverse, MovableRobotUniverse, GridUniverse, BoundedUniverse {
 
 	private static final float HALF_CELL = .5f;
 	private Robot robot;
@@ -54,7 +59,12 @@ public class DiscreteVirtualUniverse
 		robotDx = 0;
 		robotDy = 0;
 
-		DisplaySingleton.getDisplay().addPanel(new DiscreteVirtualUniversePanel(this), 1, 0, 1, 1);
+//		DisplaySingleton.getDisplay().addComponent(new DiscreteVirtualUniversePanel(this), 1, 0, 1, 1);
+		DisplaySingleton.getDisplay().setupUniversePanel(this);
+		DisplaySingleton.getDisplay().addUniverseDrawer(new DiscretePlatformDrawer(this));
+		DisplaySingleton.getDisplay().addUniverseDrawer(new GridDrawer(this));
+		DisplaySingleton.getDisplay().addUniverseDrawer(new WallDrawer(this));
+		DisplaySingleton.getDisplay().addUniverseDrawer(new DiscreteRobotDrawer(this));
 	}
 
 	@Override
@@ -178,6 +188,16 @@ public class DiscreteVirtualUniverse
 			intersects |= w.intersects(path);
 
 		return !intersects;
+	}
+
+	@Override
+	public java.awt.geom.Rectangle2D.Float getBoundingRect() {
+		return new Rectangle2D.Float(0, 0, getGridWidth(), getGridHeight());
+	}
+
+	@Override
+	public void setBoundingRect(java.awt.geom.Rectangle2D.Float boundingRect) {
+		
 	}
 
 }

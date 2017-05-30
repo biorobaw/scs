@@ -18,6 +18,7 @@ import edu.usf.experiment.subject.ModelLoader;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.task.TaskLoader;
+import edu.usf.experiment.universe.BoundedUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.utils.Debug;
@@ -57,6 +58,7 @@ public class Experiment implements Runnable {
 	 * @param logPath
 	 * @param groupName
 	 * @param subjectName
+	 * @param display 
 	 */
 	public Experiment(String experimentFile, String logPath, String groupName,
 			String subjectName) {
@@ -274,7 +276,6 @@ public class Experiment implements Runnable {
 			displayer = new NoDisplay();
 		}
 		DisplaySingleton.setDisplay(displayer);
-			
 
 		String xml = args[nextArg++];
 		//set global variables:
