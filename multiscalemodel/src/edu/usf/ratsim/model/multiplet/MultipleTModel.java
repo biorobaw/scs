@@ -139,8 +139,8 @@ public class MultipleTModel extends Model implements SaveModel {
 	}
 
 	@Override
-	public void simRun() {
-		modelAwake.simRun();
+	public void runPre() {
+		modelAwake.runPre();
 
 		// Replay after eating
 		// But first wait one extra cycle
@@ -154,7 +154,7 @@ public class MultipleTModel extends Model implements SaveModel {
 				modelAsleep.newEpisode();
 				fRobot.clearEaten();
 				do {
-					modelAsleep.simRun();
+					modelAsleep.runPre();
 				} while (!fRobot.hasFoundFood() && modelAsleep.getMaxActivation() > replayThres); 
 
 			}

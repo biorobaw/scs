@@ -79,21 +79,27 @@ public class ThreadDependencyExecutor extends ThreadPoolExecutor {
 		numDependencies = new HashMap<DependencyRunnable, Integer>();
 		// Iterate over all to submit tasks
 		for (DependencyRunnable dr : tasks) {
-			// Add each task to the dependency bins
+			// Add each task to the dependency bins and count dependencies
+			int numDepsInTasks = 0;
 			for (DependencyRunnable dep : dr.getPreReqs()) {
-				if (!byDependOn.containsKey(dep))
-					byDependOn
-							.put(dep, new LinkedHashSet<DependencyRunnable>());
-				byDependOn.get(dep).add(dr);
+				// Only add a dependency if it's in the collection - it will hang forever otherwise
+				if (tasks.contains(dep)){
+					if (!byDependOn.containsKey(dep))
+						byDependOn
+								.put(dep, new LinkedHashSet<DependencyRunnable>());
+					byDependOn.get(dep).add(dr);
+					numDepsInTasks++;
+				}
 			}
+			
+			
 			// Add each task to the bins by how many it depends on
-			int numDeps = dr.getPreReqs().size();
-			if (!byNumDependencies.containsKey(numDeps))
-				byNumDependencies.put(numDeps,
+			if (!byNumDependencies.containsKey(numDepsInTasks))
+				byNumDependencies.put(numDepsInTasks,
 						new LinkedHashSet<DependencyRunnable>());
-			byNumDependencies.get(numDeps).add(dr);
+			byNumDependencies.get(numDepsInTasks).add(dr);
 			// Add it to a map to its dependencies
-			numDependencies.put(dr, numDeps);
+			numDependencies.put(dr, numDepsInTasks);
 		}
 
 		numTasksToExecute = tasks.size();

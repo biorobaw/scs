@@ -68,12 +68,12 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 		
 		// Create pos module
 		pos = new Position("position", lRobot);
-		addModule(pos);
+		addModulePost(pos);
 
 		// Create Place Cells module
 		placeCells = new DiscretePlaceCellLayer("PCLayer", gridSize, gridSize, "small");
 		placeCells.addInPort("position", pos.getOutPort("position"));
-		addModule(placeCells);
+		addModulePost(placeCells);
 		
 		float[][] qvals = new float[gridSize*gridSize][numActions];
 		this.QTable = new FloatMatrixPort(null, qvals);
@@ -82,52 +82,52 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 		currentStateQ = new ProportionalVotes("currentStateQ", numActions, true);
 		currentStateQ.addInPort("states", placeCells.getOutPort("output"));
 		currentStateQ.addInPort("value", QTable);
-		addModule(currentStateQ);
+		addModulePost(currentStateQ);
 		DisplaySingleton.getDisplay().addComponent(new Float1dSeriesPlot((Float1dPort)currentStateQ.getOutPort("votes")), 0, 0, 1, 1);
 		
 		// Create ActionGatingModule -- sets the probabilities of impossible
 		// actions to 0 and then normalizes them
 		ActionGatingModule actionGating = new ActionGatingModule("actionGating", robot);
 		actionGating.addInPort("input", currentStateQ.getOutPort("votes"));
-		addModule(actionGating);
+		addModulePre(actionGating);
 		DisplaySingleton.getDisplay().addComponent(new Float1dSeriesPlot((Float1dPort)actionGating.getOutPort("probabilities")), 0, 1, 1, 1);
 
 		// Create SoftMax module
 		Softmax softmax = new Softmax("softmax", numActions);
 		softmax.addInPort("input", actionGating.getOutPort("probabilities"), true); 
-		addModule(softmax);
+		addModulePre(softmax);
 		DisplaySingleton.getDisplay().addComponent(new Float1dSeriesPlot((Float1dPort)softmax.getOutPort("probabilities")), 0, 2, 1, 1);
 
 		// Create action selection module -- choose action according to
 		// probability distribution
 		Module actionSelection = new ActionFromProbabilities("actionFromProbabilities");
 		actionSelection.addInPort("probabilities", softmax.getOutPort("probabilities"));
-		addModule(actionSelection);
+		addModulePre(actionSelection);
 
 		// Create Action Performer module
 		MaxAffordanceActionPerformer actionPerformer = new MaxAffordanceActionPerformer("actionPerformer", robot);
 		actionPerformer.addInPort("action", actionSelection.getOutPort("action"));
-		addModule(actionPerformer);
+		addModulePre(actionPerformer);
 		
-		// Cells are only computed after performing an action
-		placeCells.addPreReq(actionPerformer);
+//		// Cells are only computed after performing an action
+//		placeCells.addPreReq(actionPerformer);
 
 		// create subAte module
 		SubFoundPlatform subFoundPlat = new SubFoundPlatform("Subject Found Plat", robot);
-		addModule(subFoundPlat);
+		addModulePost(subFoundPlat);
 		subFoundPlat.addPreReq(actionPerformer);
 
 		// Create reward module
 		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
 		r.addInPort("rewardingEvent", subFoundPlat.getOutPort("foundPlatform"), true); 
-		addModule(r);
+		addModulePost(r);
 
 		// Create deltaSignal module
 		deltaError = new QLDeltaError("error", discountFactor);
 		deltaError.addInPort("reward", r.getOutPort("reward"));
 		deltaError.addInPort("Q", currentStateQ.getOutPort("votes"));
 		deltaError.addInPort("action", actionSelection.getOutPort("action"));
-		addModule(deltaError);
+		addModulePost(deltaError);
 
 		// Create update Q module
 		Module updateQ = new UpdateQModule("updateQ", learningRate);
@@ -135,14 +135,15 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 		updateQ.addInPort("action", actionSelection.getOutPort("action"));
 		updateQ.addInPort("Q", QTable);
 		updateQ.addInPort("placeCells", placeCells.getOutPort("output"));
-		addModule(updateQ);
+		addModulePost(updateQ);
 		
 		DisplaySingleton.getDisplay().addUniverseDrawer(new QValueDrawer(this), 0);
 
 	}
 
 	public void newEpisode() {
-		Globals g = Globals.getInstance();
+		super.newEpisode();
+//		Globals g = Globals.getInstance();
 //		g.put("simulationSpeed", 5);
 		// Compute place cell output before making the first decision
 		pos.run();

@@ -130,9 +130,13 @@ public class Episode {
 			for (Task t : beforeCycleTasks)
 				t.perform(this);
 
-			getSubject().getModel().simRun();
+			getSubject().getModel().runPre();
+			
+			display.repaint();
 			
 			getUniverse().step();
+			
+			getSubject().getModel().runPost();
 			
 			display.repaint();
 //			System.out.println("cycle");
