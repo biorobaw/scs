@@ -49,7 +49,7 @@ public class Episode {
 	private List<Logger> afterEpisodeLoggers;
 	private boolean makePlots;
 	
-	private int[] sleepValues = new int[] {0,1,10,50,100,500,1000,2000,3000,0};
+	private int[] sleepValues = new int[] {0,1,10,50,100,500,1000,2000,3000,5000};
 
 	public Episode(ElementWrapper episodeNode, String parentLogPath, Trial trial, int episodeNumber, boolean makePlots) {
 		this.trial = trial;
@@ -58,7 +58,7 @@ public class Episode {
 		this.makePlots = makePlots;
 		
 		
-		this.sleepValues[sleepValues.length-1] = episodeNode.getChildInt("sleep");
+//		this.sleepValues[sleepValues.length-1] = episodeNode.getChildInt("sleep");
 
 
 		logPath = parentLogPath
