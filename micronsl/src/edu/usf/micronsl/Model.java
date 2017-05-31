@@ -2,7 +2,7 @@ package edu.usf.micronsl;
 
 import edu.usf.micronsl.module.Module;
 
-public abstract class Model {
+public class Model {
 
 	private ModuleSetRunner modulesPre;
 	private ModuleSetRunner modulesPost;
