@@ -8,8 +8,6 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
-import com.sun.corba.se.impl.ior.GenericTaggedProfile;
-
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.Landmark;
 import edu.usf.experiment.robot.LocalizableRobot;
