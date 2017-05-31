@@ -31,7 +31,6 @@ public class QValueDrawer implements Drawer {
 			Point ul = s.scale(new Coordinate(p.x, p.y + 1));
 			Point lr = s.scale(new Coordinate(p.x +1, p.y));
 			float val = vps.get(p);
-			System.out.println(val);
 			Color b = new Color(val < 0 ? 1 : 0,0,val > 0 ? 1 : 0,Math.min(1, Math.abs(val)));
 			g.setColor(b);
 			
