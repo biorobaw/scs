@@ -22,9 +22,9 @@
 		<name>edu.usf.ratsim.model.taxi.discrete.DiscreteTaxiModelAC</name>
 		<params>
 			<discountFactor>1</discountFactor>
-			<learningRate>.1</learningRate>
+			<learningRate>.5</learningRate>
 			<foodReward>1</foodReward>
-			<nonFoodReward>-.01</nonFoodReward>
+			<nonFoodReward>-.1</nonFoodReward>
 			<gridSize>20</gridSize>
 			<multiScale>true</multiScale>
 		</params>
@@ -80,7 +80,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>500</number>
+			<number>200</number>
 			<!-- Sleep between cycles for visualization -->
 			<sleep>00</sleep>
 			<!-- Tasks to perform before each episode -->

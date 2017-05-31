@@ -26,6 +26,8 @@ public class LargeDiscretePlaceCell implements DiscretePlaceCell {
 		if (blockDist == 0)
 			return 1;
 		else if (blockDist == 1)
+			return 0.75f;
+		else if (blockDist == 2)
 			return 0.5f;
 		else
 			return 0;
