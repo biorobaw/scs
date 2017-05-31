@@ -7,6 +7,7 @@ import javax.vecmath.Point3f;
 
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.model.ValueModel;
+import edu.usf.experiment.robot.GlobalWallRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.affordance.AffordanceRobot;
@@ -48,6 +49,8 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 
 	private UpdateQModule updateQ;
 
+	private int numCells;
+
 	public DiscreteTaxiModel() {
 	}
 
@@ -58,6 +61,7 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 		float learningRate = params.getChildFloat("learningRate");
 		float foodReward = params.getChildFloat("foodReward");
 		float nonFoodReward = params.getChildFloat("nonFoodReward");
+		boolean multiScale = params.getChildBoolean("multiScale");
 		
 		// Universe parameters
 		gridSize = params.getChildInt("gridSize");
@@ -66,17 +70,21 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 		AffordanceRobot affRobot = (AffordanceRobot) robot;
 
 		numActions = affRobot.getPossibleAffordances().size();	
+		if (multiScale)
+			numCells = gridSize*gridSize * 2;
+		else
+			numCells = gridSize*gridSize;
 		
 		// Create pos module
 		pos = new Position("position", lRobot);
 		addModulePost(pos);
 
 		// Create Place Cells module
-		placeCells = new DiscretePlaceCellLayer("PCLayer", gridSize, gridSize, "small");
+		placeCells = new DiscretePlaceCellLayer("PCLayer", gridSize, gridSize, multiScale, (GlobalWallRobot) robot);
 		placeCells.addInPort("position", pos.getOutPort("position"));
 		addModulePost(placeCells);
 		
-		float[][] qvals = new float[gridSize*gridSize][numActions];
+		float[][] qvals = new float[numCells][numActions];
 		this.QTable = new FloatMatrixPort(null, qvals);
 
 		// Create currentStateQ Q module
@@ -160,7 +168,7 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 		currentStateQ.addInPort("states", placeCells.getOutPort("output"));
 		currentStateQ.addInPort("value", QTable);
 		
-		Float1dSparsePort activeCells = new Float1dSparsePortMap(null, gridSize*gridSize, 1/gridSize*gridSize);
+		Float1dSparsePort activeCells = new Float1dSparsePortMap(null, numCells, 6/gridSize*gridSize);
 		for (int x = 0; x < gridSize; x++)
 			for (int y = 0; y < gridSize; y++){
 				Point3f pos = new Point3f(x,y,0);

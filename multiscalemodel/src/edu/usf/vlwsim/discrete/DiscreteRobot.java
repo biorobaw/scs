@@ -1,17 +1,20 @@
 package edu.usf.vlwsim.discrete;
 
 import java.awt.geom.Point2D.Float;
+import java.util.List;
 
 import javax.vecmath.Point3f;
 
+import edu.usf.experiment.robot.GlobalWallRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.PlatformRobot;
 import edu.usf.experiment.robot.TeleportRobot;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.platform.PlatformUniverseUtilities;
+import edu.usf.experiment.universe.wall.Wall;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class DiscreteRobot implements LocalizableRobot, PlatformRobot, TeleportRobot {
+public class DiscreteRobot implements LocalizableRobot, PlatformRobot, TeleportRobot, GlobalWallRobot {
 
 	private DiscreteVirtualUniverse u;
 
@@ -41,6 +44,11 @@ public class DiscreteRobot implements LocalizableRobot, PlatformRobot, TeleportR
 	@Override
 	public float getOrientationAngle() {
 		return u.getRobotOrientationAngle();
+	}
+
+	@Override
+	public List<Wall> getWalls() {
+		return u.getWalls();
 	}
 
 }

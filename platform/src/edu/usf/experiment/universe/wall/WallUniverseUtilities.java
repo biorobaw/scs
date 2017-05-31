@@ -12,7 +12,7 @@ import com.vividsolutions.jts.geom.LineSegment;
 public class WallUniverseUtilities {
 
 	// Wall and other walls
-	public static boolean wallIntersectsOtherWalls(List<Wall> walls, LineSegment wall) {
+	public static boolean segmentIntersectsWalls(List<Wall> walls, LineSegment wall) {
 		boolean intersects = false;
 		for (Wall w : walls)
 			intersects = intersects || w.intersects(wall);

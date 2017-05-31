@@ -2,7 +2,6 @@
 <!-- Just a test of new format -->
 
 <experiment>
-	
 	<universe>
 		<name>edu.usf.vlwsim.discrete.DiscreteVirtualUniverse</name>
 		<params>
@@ -27,6 +26,7 @@
 			<foodReward>1</foodReward>
 			<nonFoodReward>-.1</nonFoodReward>
 			<gridSize>20</gridSize>
+			<multiScale>false</multiScale>
 		</params>
 	</model>
 	
@@ -43,8 +43,18 @@
 	<group>
 		<name>Control</name>
 		<numMembers>64</numMembers>
-		<params></params>
+		<params>
+			<multiScale>false</multiScale>
+		</params>
 		<tasks></tasks>
+	</group>
+	
+	<group>
+		<name>MultiScale</name>
+		<numMembers>64</numMembers>
+		<params>
+			<multiScale>true</multiScale>
+		</params>
 	</group>
 	
 	<beforeExperimentTasks>
@@ -60,6 +70,7 @@
 		<groups>
 			<group>Naive</group>
 			<group>Control</group>
+			<group>MultiScale</group>
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
@@ -68,9 +79,9 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>1000</number>
+			<number>500</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>1000</sleep>
+			<sleep>00</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Place the animat in a given place -->
@@ -104,6 +115,7 @@
 			<!-- Loggers to execute after each episode -->
 			<afterEpisodeLoggers>
 				<!-- Log each wall position -->
+<!--							
 				<logger>
 					<name>edu.usf.experiment.log.WallLogger</name>
 					<params>
@@ -111,6 +123,10 @@
 				</logger>
 				<logger>
 					<name>edu.usf.experiment.log.PlatformLogger</name>
+				</logger>
+-->
+				<logger>
+					<name>edu.usf.experiment.log.CyclesLogger</name>
 				</logger>
 				
 			</afterEpisodeLoggers>
@@ -135,13 +151,15 @@
 			</stopConditions>
 			<!-- Plotters to execute after each episode -->
 			<afterEpisodePlotters>
+<!--			
 				<plotter>
 					<name>edu.usf.experiment.plot.CSVConverter</name>
 				</plotter>
 				<plotter>
 					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
 				</plotter>
-			</afterEpisodePlotters>
+
+-->			</afterEpisodePlotters>
 		</episodes>
 		<!-- Tasks to perform after the trial has ended -->
 		<afterTrialTasks>

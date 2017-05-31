@@ -38,8 +38,8 @@ plotArrival <- function(pathData, plotName){
 }
 
 # Plot runtimes per episode
-files <- list.files('.', 'summary.RData', recursive=T)
-runtimeFrames<-lapply(files,function(x) {load(x); summarizedRunTimes['file'] <- x; summarizedRunTimes})
+files <- list.files('.', 'runtimes.csv', recursive=T)
+runtimeFrames<-lapply(files,function(x) {data <- read.csv(x,sep='\t'); data['file'] <- x; data})
 library(data.table)
 runtimes<-rbindlist(runtimeFrames)
 save(runtimes, file="runtimes.RData")
