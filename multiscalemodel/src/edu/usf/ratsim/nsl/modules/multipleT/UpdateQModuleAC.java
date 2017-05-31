@@ -18,53 +18,28 @@ import edu.usf.micronsl.port.twodimensional.Float2dPort;
  */
 public class UpdateQModuleAC extends Module {
 
-	private float nu; // learning rate
 	private int numActions;
 
-	float[][] dotProducts;
 	private HashMap<Integer, Float> oldPCs;
+	private float alpha;
 
-	public UpdateQModuleAC(String name, int numActions, float nu) {
+	public UpdateQModuleAC(String name, int numActions, float alpha) {
 		super(name);
 
 		this.numActions = numActions;
-		this.nu = nu;
-		dotProducts = new float[numActions][numActions];
-
-		double deltaAngle = 2 * Math.PI / numActions;
-		float anglei = 0;
-		for (int i = 0; i < numActions; i++) {
-			float x = (float) Math.cos(anglei);
-			float y = (float) Math.sin(anglei);
-
-			float anglej = 0;
-			for (int j = 0; j < numActions; j++) {
-				dotProducts[i][j] = Math.max(x * (float) Math.cos(anglej) + y * (float) Math.sin(anglej), 0);
-				// dotProducts[i][j] *=(dotProducts[i][j]*dotProducts[i][j]);
-				dotProducts[i][j] = i == j ? 1 : 0;
-				// System.out.print("\t"+dotProducts[i][j]);
-				anglej += deltaAngle;
-			}
-			// System.out.println("");
-			anglei += deltaAngle;
-		}
+		this.alpha = alpha;
 	}
 
 	public void run() {
-		float nuDelta = nu * ((Float0dPort) getInPort("delta")).get();
+		float alphaDelta = alpha * ((Float0dPort) getInPort("delta")).get();
 		int action = ((Int0dPort) getInPort("action")).get();
 		Float2dPort Q = (Float2dPort) getInPort("Q");
 
-		if (nuDelta == 0)
-			return;
-
-		if (oldPCs != null) {
+		if (oldPCs != null && alphaDelta != 0) {
 			for (int i : oldPCs.keySet()) {
-				for (int j = 0; j < numActions; j++) {
-					Q.set(i, j, Q.get(i, j) + nuDelta * oldPCs.get(i) * dotProducts[j][action]);
-				}
+				Q.set(i, action, Q.get(i, action) + alphaDelta * oldPCs.get(i));
 				// Update value
-				Q.set(i, numActions, Q.get(i, numActions) + nuDelta * oldPCs.get(i));
+				Q.set(i, numActions, Q.get(i, numActions) + alphaDelta * oldPCs.get(i));
 			}
 		}
 
@@ -77,7 +52,13 @@ public class UpdateQModuleAC extends Module {
 		return false;
 	}
 	
+	@Override
 	public void newEpisode() {
 		oldPCs = null;
+	}
+
+	public void savePCs() {
+		Float1dSparsePort PCs = (Float1dSparsePort) getInPort("placeCells");
+		oldPCs = new HashMap<Integer, Float>(PCs.getNonZero());
 	}
 }

@@ -19,14 +19,14 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.model.taxi.discrete.DiscreteTaxiModel</name>
+		<name>edu.usf.ratsim.model.taxi.discrete.DiscreteTaxiModelAC</name>
 		<params>
 			<discountFactor>1</discountFactor>
 			<learningRate>.1</learningRate>
 			<foodReward>1</foodReward>
-			<nonFoodReward>-.1</nonFoodReward>
+			<nonFoodReward>-.01</nonFoodReward>
 			<gridSize>20</gridSize>
-			<multiScale>false</multiScale>
+			<multiScale>true</multiScale>
 		</params>
 	</model>
 	

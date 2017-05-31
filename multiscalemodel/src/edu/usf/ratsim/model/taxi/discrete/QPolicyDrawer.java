@@ -12,6 +12,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
+import edu.usf.experiment.model.PolicyModel;
 import edu.usf.experiment.robot.affordance.AbsoluteAngleDiscreteAffordance;
 import edu.usf.experiment.robot.affordance.Affordance;
 import edu.usf.experiment.robot.affordance.AffordanceRobot;
@@ -20,10 +21,10 @@ public class QPolicyDrawer implements Drawer {
 
 	private static final float TRIANGLE_HEIGHT = .4f;
 	private static final float GRID_HALF = 0.5f;
-	private DiscreteTaxiModel model;
+	private PolicyModel model;
 	private ArrayList<Float> angles;
 
-	public QPolicyDrawer(DiscreteTaxiModel model, AffordanceRobot robot) {
+	public QPolicyDrawer(PolicyModel model, AffordanceRobot robot) {
 		this.model = model;
 
 		angles = new ArrayList<Float>();

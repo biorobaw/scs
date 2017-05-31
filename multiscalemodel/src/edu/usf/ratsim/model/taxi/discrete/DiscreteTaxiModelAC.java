@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.vecmath.Point3f;
 
 import edu.usf.experiment.display.DisplaySingleton;
+import edu.usf.experiment.model.PolicyModel;
 import edu.usf.experiment.model.ValueModel;
 import edu.usf.experiment.robot.GlobalWallRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
@@ -27,11 +28,11 @@ import edu.usf.ratsim.nsl.modules.celllayer.DiscretePlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.input.Position;
 import edu.usf.ratsim.nsl.modules.input.SubFoundPlatform;
 import edu.usf.ratsim.nsl.modules.multipleT.ActionGatingModule;
-import edu.usf.ratsim.nsl.modules.multipleT.UpdateQModule;
-import edu.usf.ratsim.nsl.modules.rl.QLDeltaError;
+import edu.usf.ratsim.nsl.modules.multipleT.UpdateQModuleAC;
+import edu.usf.ratsim.nsl.modules.rl.ActorCriticDeltaError;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
 
-public class DiscreteTaxiModel extends Model implements ValueModel {
+public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyModel{
 
 	public DiscretePlaceCellLayer placeCells;
 
@@ -41,20 +42,20 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 
 	private Position pos;
 
-	private QLDeltaError deltaError;
+	private ActorCriticDeltaError deltaError;
 
 	private int gridSize;
 
 	private int numActions;
 
-	private UpdateQModule updateQ;
+	private UpdateQModuleAC updateQ;
 
 	private int numCells;
 
-	public DiscreteTaxiModel() {
+	public DiscreteTaxiModelAC() {
 	}
 
-	public DiscreteTaxiModel(ElementWrapper params, Robot robot) {
+	public DiscreteTaxiModelAC(ElementWrapper params, Robot robot) {
 
 		// Model parameters
 		float discountFactor = params.getChildFloat("discountFactor");
@@ -82,11 +83,11 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 		
 		numCells = placeCells.getCells().size();
 		
-		float[][] qvals = new float[numCells][numActions];
+		float[][] qvals = new float[numCells][numActions+1];
 		this.QTable = new FloatMatrixPort(null, qvals);
 
 		// Create currentStateQ Q module
-		currentStateQ = new ProportionalVotes("currentStateQ", numActions, true);
+		currentStateQ = new ProportionalVotes("currentStateQ", numActions+1, true);
 		currentStateQ.addInPort("states", placeCells.getOutPort("output"));
 		currentStateQ.addInPort("value", QTable);
 		addModulePost(currentStateQ);
@@ -129,14 +130,14 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 		addModulePost(r);
 
 		// Create deltaSignal module
-		deltaError = new QLDeltaError("error", discountFactor);
+		deltaError = new ActorCriticDeltaError("error", discountFactor, numActions);
 		deltaError.addInPort("reward", r.getOutPort("reward"));
 		deltaError.addInPort("Q", currentStateQ.getOutPort("votes"));
 		deltaError.addInPort("action", actionSelection.getOutPort("action"));
 		addModulePost(deltaError);
 
 		// Create update Q module
-		updateQ = new UpdateQModule("updateQ", learningRate);
+		updateQ = new UpdateQModuleAC("updateQ", numActions, learningRate);
 		updateQ.addInPort("delta", deltaError.getOutPort("delta"));
 		updateQ.addInPort("action", actionSelection.getOutPort("action"));
 		updateQ.addInPort("Q", QTable);
@@ -162,7 +163,7 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 	public Map<Point3f, Float> getValuePoints() {
 		Map<Point3f, Float> valuePoints = new HashMap<Point3f, Float>();
 		
-		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions, true);
+		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions+1, true);
 		currentStateQ.addInPort("states", placeCells.getOutPort("output"));
 		currentStateQ.addInPort("value", QTable);
 		
@@ -174,11 +175,7 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 				placeCells.getActive(activeCells, pos);
 				votes.run(activeCells.getNonZero(), QTable);
 				
-				float max = -Float.MAX_VALUE;
-				for (float v : votes.actionVote)
-					max = v > max ? v : max;
-				
-				valuePoints.put(pos, max);
+				valuePoints.put(pos, votes.actionVote[numActions]);
 			}
 			
 		return valuePoints;
@@ -192,7 +189,7 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 	public Map<Point3f, Integer> getPolicyPoints() {
 		Map<Point3f, Integer> policyPoints = new HashMap<Point3f, Integer>();
 		
-		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions, true);
+		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions + 1, true);
 		currentStateQ.addInPort("states", placeCells.getOutPort("output"));
 		currentStateQ.addInPort("value", QTable);
 		
@@ -207,8 +204,9 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 				float maxVal = -Float.MAX_VALUE;
 				int maxAction = 0;
 				int i = 0;
-				for (float v : votes.actionVote){
-					maxAction = v > maxVal ? i : maxAction;
+				for (int action = 0; action < numActions; action++){
+					float v = votes.actionVote[action];
+					maxAction =  v > maxVal ? i : maxAction;
 					maxVal = v > maxVal ? v : maxVal;
 					i++;
 				}

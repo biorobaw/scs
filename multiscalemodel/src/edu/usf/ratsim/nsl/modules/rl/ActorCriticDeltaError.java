@@ -54,4 +54,13 @@ public class ActorCriticDeltaError extends Module {
 	public void newEpisode() {
 		oldQ = null;
 	}
+
+	/**
+	 * Save the current Q state. Usually called at the beginning of an episode to update from the first move.
+	 */
+	public void saveQ() {
+		float[] Q = ((Float1dPortArray)getInPort("Q")).getData();
+		oldQ = new float[Q.length];
+		System.arraycopy(Q, 0, oldQ, 0, Q.length);
+	}
 }
