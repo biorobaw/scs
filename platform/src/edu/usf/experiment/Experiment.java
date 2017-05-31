@@ -59,9 +59,10 @@ public class Experiment implements Runnable {
 	 * @param groupName
 	 * @param subjectName
 	 * @param display 
+	 * @param display 
 	 */
 	public Experiment(String experimentFile, String logPath, String groupName,
-			String subjectName) {
+			String subjectName, boolean display) {
 		Globals g = Globals.getInstance();
 		System.out.println("[+] Creating directories");
 		File file = new File(logPath +"/");
@@ -83,7 +84,7 @@ public class Experiment implements Runnable {
 		if (mazeFile != null)
 			IOUtils.copyFile(mazeFile, logPath + "/maze.xml");
 
-		setup(root, logPath, groupName, subjectName);
+		setup(root, logPath, groupName, subjectName, display);
 	}
 	
 	/**
@@ -106,13 +107,21 @@ public class Experiment implements Runnable {
 		g.put("pause", false);
 		g.put("simulationSpeed",0); //speed defined in xml file (sleep value)
 		
-		setup(root, logPath, groupName, subName);
+		setup(root, logPath, groupName, subName, false);
 	}
 
 	private void setup(ElementWrapper root, String logPath, String groupName,
-			String subjectName) {
+			String subjectName, boolean display) {
 		//Get globals:
 		Globals g = Globals.getInstance();
+		
+		Display displayer;
+		if (display){
+			displayer = new SCSFrame();
+		} else {
+			displayer = new NoDisplay();
+		}
+		DisplaySingleton.setDisplay(displayer);
 		
 		// System.out.println(System.getProperty("java.class.path"));
 		System.out.println("[+] Starting group " + groupName + " individual "
@@ -268,14 +277,9 @@ public class Experiment implements Runnable {
 		int nextArg = 0;
 		
 		boolean display = args[nextArg].equals("-display");
-		Display displayer;
 		if (display){
-			displayer = new SCSFrame();
 			nextArg++;
-		} else {
-			displayer = new NoDisplay();
-		}
-		DisplaySingleton.setDisplay(displayer);
+		} 
 
 		String xml = args[nextArg++];
 		//set global variables:
@@ -308,7 +312,7 @@ public class Experiment implements Runnable {
 		}
 			
 		
-		Experiment e = new Experiment(xml,(String)g.get("logPath") , (String)g.get("groupName"), (String)g.get("subName"));
+		Experiment e = new Experiment(xml,(String)g.get("logPath") , (String)g.get("groupName"), (String)g.get("subName"), display);
 		e.run();
 
 		System.out.println("[+] Finished running");
