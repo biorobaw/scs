@@ -70,10 +70,6 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 		AffordanceRobot affRobot = (AffordanceRobot) robot;
 
 		numActions = affRobot.getPossibleAffordances().size();	
-		if (multiScale)
-			numCells = gridSize*gridSize * 2;
-		else
-			numCells = gridSize*gridSize;
 		
 		// Create pos module
 		pos = new Position("position", lRobot);
@@ -83,6 +79,8 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 		placeCells = new DiscretePlaceCellLayer("PCLayer", gridSize, gridSize, multiScale, (GlobalWallRobot) robot);
 		placeCells.addInPort("position", pos.getOutPort("position"));
 		addModulePost(placeCells);
+		
+		numCells = placeCells.getCells().size();
 		
 		float[][] qvals = new float[numCells][numActions];
 		this.QTable = new FloatMatrixPort(null, qvals);
@@ -146,7 +144,7 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 		addModulePost(updateQ);
 		
 		DisplaySingleton.getDisplay().addUniverseDrawer(new QValueDrawer(this), 0);
-
+		DisplaySingleton.getDisplay().addUniverseDrawer(new QPolicyDrawer(this, (AffordanceRobot) robot));
 	}
 
 	public void newEpisode() {
@@ -189,6 +187,36 @@ public class DiscreteTaxiModel extends Model implements ValueModel {
 	@Override
 	public float getValueEntropy() {
 		return 0;
+	}
+
+	public Map<Point3f, Integer> getPolicyPoints() {
+		Map<Point3f, Integer> policyPoints = new HashMap<Point3f, Integer>();
+		
+		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions, true);
+		currentStateQ.addInPort("states", placeCells.getOutPort("output"));
+		currentStateQ.addInPort("value", QTable);
+		
+		Float1dSparsePort activeCells = new Float1dSparsePortMap(null, numCells, 6/gridSize*gridSize);
+		for (int x = 0; x < gridSize; x++)
+			for (int y = 0; y < gridSize; y++){
+				Point3f pos = new Point3f(x,y,0);
+				activeCells.clear();
+				placeCells.getActive(activeCells, pos);
+				votes.run(activeCells.getNonZero(), QTable);
+				
+				float maxVal = -Float.MAX_VALUE;
+				int maxAction = 0;
+				int i = 0;
+				for (float v : votes.actionVote){
+					maxAction = v > maxVal ? i : maxAction;
+					maxVal = v > maxVal ? v : maxVal;
+					i++;
+				}
+				
+				policyPoints.put(pos, maxAction);
+			}
+			
+		return policyPoints;
 	}
 
 }

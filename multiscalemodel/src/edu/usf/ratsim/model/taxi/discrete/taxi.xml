@@ -32,9 +32,10 @@
 	
 	<group>
 		<name>Naive</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 			<learningRate>0.0</learningRate>
+			<multiScale>false</multiScale>
 		</params>
 		<tasks>
 		</tasks>
@@ -42,7 +43,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 			<multiScale>false</multiScale>
 		</params>
@@ -51,7 +52,7 @@
 	
 	<group>
 		<name>MultiScale</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 			<multiScale>true</multiScale>
 		</params>
