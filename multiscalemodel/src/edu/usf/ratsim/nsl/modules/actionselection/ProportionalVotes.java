@@ -58,6 +58,10 @@ public class ProportionalVotes extends Module implements Voter {
 			}
 		}
 
+		// Max value is food reward
+		for (int action = 0; action < numActions; action++)
+			actionVote[action] = Math.max(-10, Math.min(actionVote[action], 10));
+		
 		if (Debug.printValues) {
 			System.out.println("RL votes");
 			for (int action = 0; action < numActions; action++)
