@@ -92,13 +92,16 @@ public class Trial implements Runnable {
 			props.setProperty("trial", name);
 			props.setProperty("log.directory", logPath);
 			
-			getSubject().getModel().newTrial();
+			
 			
 			// Do all before trial tasks
 			for (Task task : beforeTasks)
 				task.perform(this);
 			for (Logger logger : beforeLoggers)
 				logger.log(this);
+			
+			getSubject().getModel().newTrial();
+			
 			for (Logger logger : beforeLoggers)
 				logger.finalizeLog();
 			Plotter.plot(beforePlotters);

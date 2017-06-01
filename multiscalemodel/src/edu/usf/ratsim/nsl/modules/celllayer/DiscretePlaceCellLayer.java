@@ -31,6 +31,9 @@ public class DiscretePlaceCellLayer extends Module {
 	 * their cached activation
 	 */
 	private HashMap<DiscreteCoord, Map<Integer, Float>> stateActivationPerGridCell;
+	private int width;
+	private int height;
+	private Object robot;
 
 	public DiscretePlaceCellLayer(String name, int width, int height, boolean multiScale, GlobalWallRobot gwr) {
 		super(name);
@@ -49,24 +52,28 @@ public class DiscretePlaceCellLayer extends Module {
 			for (int y = 0; y < height; y++) {
 				addSmallCell(new SmallDiscretePlaceCell(x, y), x, y, gwr);
 				if (multiScale)
-					addLargeCell(new LargeDiscretePlaceCell(x, y), width, height, gwr);
+					addLargeCell(new LargeDiscretePlaceCell(x, y));
 			}
 		
 		// Normalize cell activation
-		for (DiscreteCoord coord : stateActivationPerGridCell.keySet()){
-			float total = 0;
-			Map<Integer, Float> activeCells = stateActivationPerGridCell.get(coord);
-			for (Integer cellIndex : activeCells.keySet()){
-				total += activeCells.get(cellIndex);
-			}
-			for (Integer cellIndex : activeCells.keySet()){
-				activeCells.put(cellIndex, activeCells.get(cellIndex) / total);
-			}
-		}
+//		for (DiscreteCoord coord : stateActivationPerGridCell.keySet()){
+//			float total = 0;
+//			Map<Integer, Float> activeCells = stateActivationPerGridCell.get(coord);
+//			for (Integer cellIndex : activeCells.keySet()){
+//				total += activeCells.get(cellIndex);
+//			}
+//			for (Integer cellIndex : activeCells.keySet()){
+//				activeCells.put(cellIndex, activeCells.get(cellIndex) / total);
+//			}
+//		}
 
 		// Initialize the port
 		activationPort = new Float1dSparsePortMap(this, cells.size() * 2, 6 / cells.size());
 		addOutPort("output", activationPort);
+		
+		this.width = width;
+		this.height = height;
+		this.robot = gwr;
 	}
 
 	/**
@@ -75,15 +82,9 @@ public class DiscretePlaceCellLayer extends Module {
 	 * 
 	 * @param c
 	 *            the cell
-	 * @param x
-	 *            the x coordinate
-	 * @param y
-	 *            the y coordinate
 	 */
 	private void addSmallCell(SmallDiscretePlaceCell c, int x, int y, GlobalWallRobot gwr) {
 		cells.add(c);
-		float activation = c.getActivation(x, y, gwr);
-		stateActivationPerGridCell.get(new DiscreteCoord(x, y)).put(cells.size() - 1, activation);
 	}
 
 	/**
@@ -92,21 +93,9 @@ public class DiscretePlaceCellLayer extends Module {
 	 * 
 	 * @param c
 	 *            the cell
-	 * @param width
-	 *            the width of the grid cell
-	 * @param height
-	 *            the height of the grid cell
-	 * @param gwr
 	 */
-	private void addLargeCell(LargeDiscretePlaceCell c, int width, int height, GlobalWallRobot gwr) {
+	private void addLargeCell(LargeDiscretePlaceCell c) {
 		cells.add(c);
-		for (int x = 0; x < width; x++)
-			for (int y = 0; y < height; y++){
-				float activation = c.getActivation(x, y, gwr);
-				if (activation > 0) {
-					stateActivationPerGridCell.get(new DiscreteCoord(x, y)).put(cells.size() - 1, activation);
-				}
-			}
 	}
 
 	@Override
@@ -133,5 +122,26 @@ public class DiscretePlaceCellLayer extends Module {
 	public List<DiscretePlaceCell> getCells() {
 		return cells;
 	}
+
+	@Override
+	public void newTrial() {
+		super.newTrial();
+		
+		// Upon a new trial, recompute place cell activations with the new wall setup
+		// Assumes walls don't change throughout trial
+		int i = 0;
+		for (DiscretePlaceCell c : cells){
+			for (int x = 0; x < width; x++)
+				for (int y = 0; y < height; y++){
+					float activation = c.getActivation(x, y, (GlobalWallRobot)robot);
+					if (activation > 0) {
+						stateActivationPerGridCell.get(new DiscreteCoord(x, y)).put(i, activation);
+					}
+			}
+			i++;
+		}
+	}
+	
+	
 
 }
