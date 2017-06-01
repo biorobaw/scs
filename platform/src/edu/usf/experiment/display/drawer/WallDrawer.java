@@ -23,7 +23,7 @@ public class WallDrawer implements Drawer {
 		g.setColor(Color.BLACK);
 		Graphics2D g2d = (Graphics2D)g;
 		Stroke oldStroke = g2d.getStroke();
-		g2d.setStroke(new BasicStroke(3));
+		g2d.setStroke(new BasicStroke(2));
 		for (Wall w : u.getWalls()){
 			Point p0 = s.scale(w.s.p0);
 			Point p1 = s.scale(w.s.p1);

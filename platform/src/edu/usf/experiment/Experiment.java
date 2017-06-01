@@ -10,6 +10,7 @@ import java.util.Random;
 import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.NoDisplay;
+import edu.usf.experiment.display.PDFDisplay;
 import edu.usf.experiment.display.SCSFrame;
 import edu.usf.experiment.plot.Plotter;
 import edu.usf.experiment.robot.Robot;
@@ -78,7 +79,7 @@ public class Experiment implements Runnable {
 			g.put("loadType",load.getChildText("type"));
 		}
 		g.put("pause", false);
-		g.put("simulationSpeed",9); //speed defined in xml file (sleep value)
+		g.put("simulationSpeed",0); //speed defined in xml file (sleep value)
 		String mazeFile = root.getChild("universe").getChild("params")
 				.getChildText("maze");
 		if (mazeFile != null)
@@ -115,13 +116,7 @@ public class Experiment implements Runnable {
 		//Get globals:
 		Globals g = Globals.getInstance();
 		
-		Display displayer;
-		if (display){
-			displayer = new SCSFrame();
-		} else {
-			displayer = new NoDisplay();
-		}
-		DisplaySingleton.setDisplay(displayer);
+		
 		
 		// System.out.println(System.getProperty("java.class.path"));
 		System.out.println("[+] Starting group " + groupName + " individual "
@@ -137,6 +132,15 @@ public class Experiment implements Runnable {
 		props.setProperty("subject", subjectName);
 		
 		props.setProperty("maze.file", logPath + "maze.xml");
+		
+		Display displayer;
+		if (display){
+//			displayer = new PDFDisplay();
+			displayer = new SCSFrame();
+		} else {
+			displayer = new NoDisplay();
+		}
+		DisplaySingleton.setDisplay(displayer);
 
 		universe = UniverseLoader.getInstance().load(root, logPath);
 
