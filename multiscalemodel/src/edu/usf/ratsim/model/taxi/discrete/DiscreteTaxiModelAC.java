@@ -15,7 +15,10 @@ import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.plot.Float1dSeriesPlot;
+import edu.usf.micronsl.plot.float0d.Float1dSeriesPlot;
+import edu.usf.micronsl.plot.float1d.Float1dBarPlot;
+import edu.usf.micronsl.plot.float1d.Float1dFillPlot;
+import edu.usf.micronsl.plot.float1d.Float1dDiscPlot;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
@@ -91,20 +94,21 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		currentStateQ.addInPort("states", placeCells.getOutPort("output"));
 		currentStateQ.addInPort("value", QTable);
 		addModulePost(currentStateQ);
-		DisplaySingleton.getDisplay().addComponent(new Float1dSeriesPlot((Float1dPort)currentStateQ.getOutPort("votes")), 0, 0, 1, 1);
+		DisplaySingleton.getDisplay().addComponent(new Float1dDiscPlot((Float1dPort)currentStateQ.getOutPort("votes")), 0, 0, 1, 1);
+		DisplaySingleton.getDisplay().addComponent(new Float1dSeriesPlot((Float1dPort)currentStateQ.getOutPort("votes"), numActions), 0, 1, 1, 1);
 		
 		// Create ActionGatingModule -- sets the probabilities of impossible
 		// actions to 0 and then normalizes them
 		ActionGatingModule actionGating = new ActionGatingModule("actionGating", robot);
 		actionGating.addInPort("input", currentStateQ.getOutPort("votes"));
 		addModulePre(actionGating);
-		DisplaySingleton.getDisplay().addComponent(new Float1dSeriesPlot((Float1dPort)actionGating.getOutPort("probabilities")), 0, 1, 1, 1);
+		DisplaySingleton.getDisplay().addComponent(new Float1dBarPlot((Float1dPort)actionGating.getOutPort("probabilities")), 0, 2, 1, 1);
 
 		// Create SoftMax module
 		Softmax softmax = new Softmax("softmax", numActions);
 		softmax.addInPort("input", actionGating.getOutPort("probabilities")); 
 		addModulePre(softmax);
-		DisplaySingleton.getDisplay().addComponent(new Float1dSeriesPlot((Float1dPort)softmax.getOutPort("probabilities")), 0, 2, 1, 1);
+		DisplaySingleton.getDisplay().addComponent(new Float1dFillPlot((Float1dPort)softmax.getOutPort("probabilities")), 0, 3, 1, 1);
 
 		// Create action selection module -- choose action according to
 		// probability distribution
