@@ -2,6 +2,7 @@
 <!-- Just a test of new format -->
 
 <experiment>
+	
 	<universe>
 		<name>edu.usf.vlwsim.discrete.DiscreteVirtualUniverse</name>
 		<params>
@@ -22,17 +23,17 @@
 		<name>edu.usf.ratsim.model.taxi.discrete.DiscreteTaxiModelAC</name>
 		<params>
 			<discountFactor>1</discountFactor>
-			<learningRate>.5</learningRate>
+			<learningRate>.1</learningRate>
 			<foodReward>1</foodReward>
 			<nonFoodReward>-.1</nonFoodReward>
 			<gridSize>20</gridSize>
 			<multiScale>true</multiScale>
 		</params>
 	</model>
-	
+<!--
 	<group>
 		<name>Naive</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 			<learningRate>0.0</learningRate>
 			<multiScale>false</multiScale>
@@ -40,10 +41,11 @@
 		<tasks>
 		</tasks>
 	</group>
-	
+
+-->	
 	<group>
 		<name>Control</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 			<multiScale>false</multiScale>
 		</params>
@@ -52,7 +54,7 @@
 	
 	<group>
 		<name>MultiScale</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 			<multiScale>true</multiScale>
 		</params>
@@ -80,7 +82,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>200</number>
+			<number>100</number>
 			<!-- Sleep between cycles for visualization -->
 			<sleep>00</sleep>
 			<!-- Tasks to perform before each episode -->
