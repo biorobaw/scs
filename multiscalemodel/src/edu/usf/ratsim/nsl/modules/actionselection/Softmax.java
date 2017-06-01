@@ -15,6 +15,7 @@ public class Softmax extends Module {
 	public float[] probabilities;
 	int numActions;
 	
+	private final float TAU = 1;
 
 	public Softmax(String name,int numActions) {
 		super(name);
@@ -36,7 +37,7 @@ public class Softmax extends Module {
 		for (int i=0;i<numActions;i++){
 			// Use the max to normalize - this takes care of too high values and also too low values
 //			probabilities[i] = (float)Math.exp(input.get(i) - max);
-			probabilities[i] = (float)Math.exp(input.get(i));
+			probabilities[i] = (float)Math.exp(input.get(i)/TAU);
 			sum+=probabilities[i];
 		}
 		//System.out.print("\nsum: "+sum+"\nP: ");
