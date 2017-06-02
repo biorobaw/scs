@@ -87,7 +87,7 @@ public class DiscreteTaxiModelQL extends Model implements ValueModel, PolicyMode
 		this.QTable = new FloatMatrixPort(null, qvals);
 
 		// Create currentStateQ Q module
-		currentStateQ = new ProportionalVotes("currentStateQ", numActions, true);
+		currentStateQ = new ProportionalVotes("currentStateQ", numActions);
 		currentStateQ.addInPort("states", placeCells.getOutPort("output"));
 		currentStateQ.addInPort("value", QTable);
 		addModulePost(currentStateQ);
@@ -163,7 +163,7 @@ public class DiscreteTaxiModelQL extends Model implements ValueModel, PolicyMode
 	public Map<Point3f, Float> getValuePoints() {
 		Map<Point3f, Float> valuePoints = new HashMap<Point3f, Float>();
 		
-		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions, true);
+		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions);
 		currentStateQ.addInPort("states", placeCells.getOutPort("output"));
 		currentStateQ.addInPort("value", QTable);
 		
@@ -193,7 +193,7 @@ public class DiscreteTaxiModelQL extends Model implements ValueModel, PolicyMode
 	public Map<Point3f, Integer> getPolicyPoints() {
 		Map<Point3f, Integer> policyPoints = new HashMap<Point3f, Integer>();
 		
-		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions, true);
+		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions);
 		currentStateQ.addInPort("states", placeCells.getOutPort("output"));
 		currentStateQ.addInPort("value", QTable);
 		

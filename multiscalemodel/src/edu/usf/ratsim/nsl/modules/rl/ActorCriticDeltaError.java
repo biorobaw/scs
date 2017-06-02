@@ -14,35 +14,33 @@ public class ActorCriticDeltaError extends Module {
 	Float0dPort delta = new Float0dPort(this);
 	
 	float gamma; //discountFactor	
+	
+	float oldValue;
+	boolean validOldValue;
 
-	/**
-	 * The index of the value in the q table
-	 */
-	private int valueIndex;
-
-	private float[] oldQ;
-
-	public ActorCriticDeltaError(String name,float discountFactor, int valueIndex) {
+	public ActorCriticDeltaError(String name,float discountFactor) {
 		super(name);
 		gamma = discountFactor;
 		this.addOutPort("delta", delta);
-		this.valueIndex = valueIndex;
+		
+		oldValue = 0;
+		validOldValue = false;
 	}
 
 	
 	public void run() {
 		float r = ((Float0dPort)getInPort("reward")).get();
-		float[] Q = ((Float1dPortArray)getInPort("Q")).getData();
+		float value = ((Float0dPort)getInPort("value")).get();
 		
-		if (oldQ != null){
-			delta.set(r + gamma*Q[valueIndex] - oldQ[valueIndex]);
+		if (validOldValue){
+			delta.set(r + gamma*value - oldValue);
 		} else {
 			delta.set(0);
-			oldQ = new float[Q.length];
 		}
 			
 		// Assumes Q is always the same size
-		System.arraycopy(Q, 0, oldQ, 0, Q.length);
+		oldValue = value;
+		validOldValue = true;
 	}
 
 
@@ -52,15 +50,14 @@ public class ActorCriticDeltaError extends Module {
 	}
 	
 	public void newEpisode() {
-		oldQ = null;
+		validOldValue = false;
 	}
 
 	/**
 	 * Save the current Q state. Usually called at the beginning of an episode to update from the first move.
 	 */
-	public void saveQ() {
-		float[] Q = ((Float1dPortArray)getInPort("Q")).getData();
-		oldQ = new float[Q.length];
-		System.arraycopy(Q, 0, oldQ, 0, Q.length);
+	public void saveValue() {
+		oldValue = ((Float0dPort)getInPort("value")).get();
+		validOldValue = true;
 	}
 }

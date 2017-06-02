@@ -31,7 +31,7 @@ public class Float1dSparseConcatModule extends Module {
 	@Override
 	public void addInPorts(List<Port> ports) {
 		super.addInPorts(ports);
-		addOutPort("jointState", new Float1dPortSparseConcatenate(this,
+		addOutPort("output", new Float1dPortSparseConcatenate(this,
 				(List<Float1dSparsePortMap>) (List<?>) ports));
 	}
 

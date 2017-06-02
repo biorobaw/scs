@@ -1,6 +1,8 @@
 package edu.usf.ratsim.model.taxi.discrete;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.vecmath.Point3f;
@@ -15,16 +17,20 @@ import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.plot.float0d.Float1dSeriesPlot;
+import edu.usf.micronsl.module.concat.Float1dSparseConcatModule;
+import edu.usf.micronsl.plot.float0d.Float0dSeriesPlot;
 import edu.usf.micronsl.plot.float1d.Float1dBarPlot;
-import edu.usf.micronsl.plot.float1d.Float1dFillPlot;
 import edu.usf.micronsl.plot.float1d.Float1dDiscPlot;
+import edu.usf.micronsl.plot.float1d.Float1dFillPlot;
+import edu.usf.micronsl.port.Port;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
+import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromProbabilities;
 import edu.usf.ratsim.nsl.modules.actionselection.MaxAffordanceActionPerformer;
+import edu.usf.ratsim.nsl.modules.actionselection.ProportionalValue;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.actionselection.Softmax;
 import edu.usf.ratsim.nsl.modules.celllayer.DiscretePlaceCellLayer;
@@ -37,7 +43,7 @@ import edu.usf.ratsim.nsl.modules.rl.Reward;
 
 public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyModel{
 
-	public DiscretePlaceCellLayer placeCells;
+	public DiscretePlaceCellLayer actionPlaceCells, valuePlaceCells;
 
 	public ProportionalVotes currentStateQ;
 
@@ -55,6 +61,16 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 
 	private int numCells;
 
+	private ProportionalValue currentValue;
+
+	private int numActionCells;
+
+	private int numValueCells;
+
+	private FloatMatrixPort VTable;
+
+	private Float1dSparseConcatModule placeCells;
+
 	public DiscreteTaxiModelAC() {
 	}
 
@@ -65,7 +81,6 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		float learningRate = params.getChildFloat("learningRate");
 		float foodReward = params.getChildFloat("foodReward");
 		float nonFoodReward = params.getChildFloat("nonFoodReward");
-		boolean multiScale = params.getChildBoolean("multiScale");
 		
 		// Universe parameters
 		gridSize = params.getChildInt("gridSize");
@@ -79,23 +94,44 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		pos = new Position("position", lRobot);
 		addModulePost(pos);
 
+		List<Port> placeCellPorts = new LinkedList<Port>();
+		
 		// Create Place Cells module
-		placeCells = new DiscretePlaceCellLayer("PCLayer", gridSize, gridSize, multiScale, (GlobalWallRobot) robot);
-		placeCells.addInPort("position", pos.getOutPort("position"));
+		actionPlaceCells = new DiscretePlaceCellLayer("PCLayer Small", gridSize, gridSize, false, (GlobalWallRobot) robot);
+		actionPlaceCells.addInPort("position", pos.getOutPort("position"));
+		addModulePost(actionPlaceCells);
+		placeCellPorts.add(actionPlaceCells.getOutPort("output"));
+
+		valuePlaceCells = new DiscretePlaceCellLayer("PCLayer Large", gridSize, gridSize, true, (GlobalWallRobot) robot);
+		valuePlaceCells.addInPort("position", pos.getOutPort("position"));
+		addModulePost(valuePlaceCells);
+		placeCellPorts.add(valuePlaceCells.getOutPort("output"));
+//		valuePlaceCells = actionPlaceCells;
+
+		placeCells = new Float1dSparseConcatModule("Place Cells");
+		placeCells.addInPorts(placeCellPorts);
 		addModulePost(placeCells);
 		
-		numCells = placeCells.getCells().size();
+		numActionCells = placeCells.getOutPort("output").getSize();
+		numValueCells = placeCells.getOutPort("output").getSize();
 		
-		float[][] qvals = new float[numCells][numActions+1];
+		float[][] qvals = new float[numActionCells][numActions];
 		this.QTable = new FloatMatrixPort(null, qvals);
+		float[][] vVals = new float[numValueCells][1];
+		this.VTable = new FloatMatrixPort(null, vVals);
 
 		// Create currentStateQ Q module
-		currentStateQ = new ProportionalVotes("currentStateQ", numActions+1, true);
+		currentStateQ = new ProportionalVotes("currentStateQ", numActions);
 		currentStateQ.addInPort("states", placeCells.getOutPort("output"));
-		currentStateQ.addInPort("value", QTable);
+		currentStateQ.addInPort("qValues", QTable);
 		addModulePost(currentStateQ);
 		DisplaySingleton.getDisplay().addComponent(new Float1dDiscPlot((Float1dPort)currentStateQ.getOutPort("votes")), 0, 0, 1, 1);
-		DisplaySingleton.getDisplay().addComponent(new Float1dSeriesPlot((Float1dPort)currentStateQ.getOutPort("votes"), numActions), 0, 1, 1, 1);
+		
+		currentValue = new ProportionalValue("currentValueQ");
+		currentValue.addInPort("states", placeCells.getOutPort("output"));
+		currentValue.addInPort("value", VTable);
+		addModulePost(currentValue);
+		DisplaySingleton.getDisplay().addComponent(new Float0dSeriesPlot((Float0dPort)currentValue.getOutPort("value")), 0, 1, 1, 1);
 		
 		// Create ActionGatingModule -- sets the probabilities of impossible
 		// actions to 0 and then normalizes them
@@ -134,18 +170,19 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		addModulePost(r);
 
 		// Create deltaSignal module
-		deltaError = new ActorCriticDeltaError("error", discountFactor, numActions);
+		deltaError = new ActorCriticDeltaError("error", discountFactor);
 		deltaError.addInPort("reward", r.getOutPort("reward"));
-		deltaError.addInPort("Q", currentStateQ.getOutPort("votes"));
-		deltaError.addInPort("action", actionSelection.getOutPort("action"));
+		deltaError.addInPort("value", currentValue.getOutPort("value"));
 		addModulePost(deltaError);
 
 		// Create update Q module
-		updateQ = new UpdateQModuleAC("updateQ", numActions, learningRate);
+		updateQ = new UpdateQModuleAC("updateQ", learningRate);
 		updateQ.addInPort("delta", deltaError.getOutPort("delta"));
 		updateQ.addInPort("action", actionSelection.getOutPort("action"));
 		updateQ.addInPort("Q", QTable);
-		updateQ.addInPort("placeCells", placeCells.getOutPort("output"));
+		updateQ.addInPort("V", VTable);
+		updateQ.addInPort("actionPlaceCells", placeCells.getOutPort("output"));
+		updateQ.addInPort("valuePlaceCells", placeCells.getOutPort("output"));
 		addModulePost(updateQ);
 		
 		DisplaySingleton.getDisplay().addUniverseDrawer(new QValueDrawer(this), 0);
@@ -156,10 +193,13 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		super.newEpisode();
 //		 Compute place cell output before making the first decision
 		pos.run();
+		actionPlaceCells.run();
+		valuePlaceCells.run();
 		placeCells.run();
 		currentStateQ.run();
+		currentValue.run();
 		
-		deltaError.saveQ();
+		deltaError.saveValue();
 		updateQ.savePCs();
 	}
 
@@ -167,19 +207,17 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 	public Map<Point3f, Float> getValuePoints() {
 		Map<Point3f, Float> valuePoints = new HashMap<Point3f, Float>();
 		
-		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions+1, true);
-		currentStateQ.addInPort("states", placeCells.getOutPort("output"));
-		currentStateQ.addInPort("value", QTable);
+		ProportionalValue votes = new ProportionalValue("Logging Value");
 		
 		Float1dSparsePort activeCells = new Float1dSparsePortMap(null, numCells, 6/gridSize*gridSize);
 		for (int x = 0; x < gridSize; x++)
 			for (int y = 0; y < gridSize; y++){
 				Point3f pos = new Point3f(x,y,0);
 				activeCells.clear();
-				placeCells.getActive(activeCells, pos);
-				votes.run(activeCells.getNonZero(), QTable);
+				valuePlaceCells.getActive(activeCells, pos);
+				votes.run(activeCells.getNonZero(), VTable);
 				
-				valuePoints.put(pos, votes.actionVote[numActions]);
+				valuePoints.put(pos, votes.valuePort.get());
 			}
 			
 		return valuePoints;
@@ -193,16 +231,14 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 	public Map<Point3f, Integer> getPolicyPoints() {
 		Map<Point3f, Integer> policyPoints = new HashMap<Point3f, Integer>();
 		
-		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions + 1, true);
-		currentStateQ.addInPort("states", placeCells.getOutPort("output"));
-		currentStateQ.addInPort("value", QTable);
+		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions);
 		
 		Float1dSparsePort activeCells = new Float1dSparsePortMap(null, numCells, 6/gridSize*gridSize);
 		for (int x = 0; x < gridSize; x++)
 			for (int y = 0; y < gridSize; y++){
 				Point3f pos = new Point3f(x,y,0);
 				activeCells.clear();
-				placeCells.getActive(activeCells, pos);
+				actionPlaceCells.getActive(activeCells, pos);
 				votes.run(activeCells.getNonZero(), QTable);
 				
 				float maxVal = -Float.MAX_VALUE;

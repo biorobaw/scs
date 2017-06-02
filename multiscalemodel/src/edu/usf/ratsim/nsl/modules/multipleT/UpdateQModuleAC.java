@@ -18,15 +18,14 @@ import edu.usf.micronsl.port.twodimensional.Float2dPort;
  */
 public class UpdateQModuleAC extends Module {
 
-	private int numActions;
 
-	private HashMap<Integer, Float> oldPCs;
+	private HashMap<Integer, Float> oldActionPCs;
+	private HashMap<Integer, Float> oldValuePCs;
 	private float alpha;
 
-	public UpdateQModuleAC(String name, int numActions, float alpha) {
+	public UpdateQModuleAC(String name, float alpha) {
 		super(name);
 
-		this.numActions = numActions;
 		this.alpha = alpha;
 	}
 
@@ -34,17 +33,24 @@ public class UpdateQModuleAC extends Module {
 		float alphaDelta = alpha * ((Float0dPort) getInPort("delta")).get();
 		int action = ((Int0dPort) getInPort("action")).get();
 		Float2dPort Q = (Float2dPort) getInPort("Q");
+		Float2dPort V = (Float2dPort) getInPort("V");
 
-		if (oldPCs != null && alphaDelta != 0) {
-			for (int i : oldPCs.keySet()) {
-				Q.set(i, action, Q.get(i, action) + alphaDelta * oldPCs.get(i));
-				// Update value
-				Q.set(i, numActions, Q.get(i, numActions) + alphaDelta * oldPCs.get(i));
+		if (oldActionPCs != null && alphaDelta != 0) {
+			for (int i : oldActionPCs.keySet()) {
+				Q.set(i, action, Q.get(i, action) + alphaDelta * oldActionPCs.get(i));
 			}
 		}
-
-		Float1dSparsePort PCs = (Float1dSparsePort) getInPort("placeCells");
-		oldPCs = new HashMap<Integer, Float>(PCs.getNonZero());
+		
+		if (oldValuePCs != null && alphaDelta != 0) {
+			for (int i : oldValuePCs.keySet()) {
+				V.set(i, 0, V.get(i, 0) + alphaDelta * oldValuePCs.get(i));
+			}
+		}
+		
+		Float1dSparsePort actionPCs = (Float1dSparsePort) getInPort("actionPlaceCells");
+		oldActionPCs = new HashMap<Integer, Float>(actionPCs.getNonZero());
+		Float1dSparsePort valuePCs = (Float1dSparsePort) getInPort("valuePlaceCells");
+		oldValuePCs = new HashMap<Integer, Float>(valuePCs.getNonZero());
 	}
 
 	@Override
@@ -54,11 +60,14 @@ public class UpdateQModuleAC extends Module {
 	
 	@Override
 	public void newEpisode() {
-		oldPCs = null;
+		oldActionPCs = null;
+		oldValuePCs = null;
 	}
 
 	public void savePCs() {
-		Float1dSparsePort PCs = (Float1dSparsePort) getInPort("placeCells");
-		oldPCs = new HashMap<Integer, Float>(PCs.getNonZero());
+		Float1dSparsePort actionPCs = (Float1dSparsePort) getInPort("actionPlaceCells");
+		oldActionPCs = new HashMap<Integer, Float>(actionPCs.getNonZero());
+		Float1dSparsePort valuePCs = (Float1dSparsePort) getInPort("valuePlaceCells");
+		oldValuePCs = new HashMap<Integer, Float>(valuePCs.getNonZero());
 	}
 }

@@ -19,24 +19,17 @@ public class ProportionalVotes extends Module implements Voter {
 
 	public float[] actionVote;
 	private int numActions;
-	private boolean normalize;
 
-	public ProportionalVotes(String name, int numActions, boolean normalize) {
+	public ProportionalVotes(String name, int numActions) {
 		super(name);
 		this.numActions = numActions;
 		actionVote = new float[numActions];
 		addOutPort("votes", new Float1dPortArray(this, actionVote));
-		// this.normalize = normalize;
 	}
-
-	public ProportionalVotes(String name, int numActions) {
-		this(name, numActions, true); // default value of normalize defined as
-										// true to keep back compatibility
-	};
 
 	public void run() {
 		Float1dSparsePort states = (Float1dSparsePort) getInPort("states");
-		Float2dPort value = (Float2dPort) getInPort("value");
+		Float2dPort value = (Float2dPort) getInPort("qValues");
 
 		run(states.getNonZero(), value);
 

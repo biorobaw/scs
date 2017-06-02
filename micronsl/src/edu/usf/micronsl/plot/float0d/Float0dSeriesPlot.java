@@ -6,14 +6,10 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import info.monitorenter.gui.chart.Chart2D;
-import info.monitorenter.gui.chart.ITrace2D;
 import info.monitorenter.gui.chart.rangepolicies.RangePolicyFixedViewport;
 import info.monitorenter.gui.chart.traces.Trace2DLtd;
-import info.monitorenter.gui.chart.traces.Trace2DSimple;
-import info.monitorenter.gui.chart.traces.painters.TracePainterDisc;
 import info.monitorenter.gui.chart.traces.painters.TracePainterLine;
 import info.monitorenter.util.Range;
 

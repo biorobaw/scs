@@ -35,7 +35,7 @@ public class DiscretePlaceCellLayer extends Module {
 	private int height;
 	private Object robot;
 
-	public DiscretePlaceCellLayer(String name, int width, int height, boolean multiScale, GlobalWallRobot gwr) {
+	public DiscretePlaceCellLayer(String name, int width, int height, boolean large, GlobalWallRobot gwr) {
 		super(name);
 
 		cells = new ArrayList<DiscretePlaceCell>();
@@ -50,52 +50,19 @@ public class DiscretePlaceCellLayer extends Module {
 		// Add cells and precompute activation
 		for (int x = 0; x < width; x++)
 			for (int y = 0; y < height; y++) {
-				addSmallCell(new SmallDiscretePlaceCell(x, y), x, y, gwr);
-				if (multiScale)
-					addLargeCell(new LargeDiscretePlaceCell(x, y));
+				if (large)
+					cells.add(new LargeDiscretePlaceCell(x, y));
+				else 
+					cells.add(new SmallDiscretePlaceCell(x, y));
 			}
 		
-		// Normalize cell activation
-//		for (DiscreteCoord coord : stateActivationPerGridCell.keySet()){
-//			float total = 0;
-//			Map<Integer, Float> activeCells = stateActivationPerGridCell.get(coord);
-//			for (Integer cellIndex : activeCells.keySet()){
-//				total += activeCells.get(cellIndex);
-//			}
-//			for (Integer cellIndex : activeCells.keySet()){
-//				activeCells.put(cellIndex, activeCells.get(cellIndex) / total);
-//			}
-//		}
-
 		// Initialize the port
-		activationPort = new Float1dSparsePortMap(this, cells.size() * 2, 6 / cells.size());
+		activationPort = new Float1dSparsePortMap(this, cells.size(), (large ? 6 : 1) / cells.size());
 		addOutPort("output", activationPort);
 		
 		this.width = width;
 		this.height = height;
 		this.robot = gwr;
-	}
-
-	/**
-	 * Adds the small cell to the cell list and to the corresponding bin in the
-	 * map
-	 * 
-	 * @param c
-	 *            the cell
-	 */
-	private void addSmallCell(SmallDiscretePlaceCell c, int x, int y, GlobalWallRobot gwr) {
-		cells.add(c);
-	}
-
-	/**
-	 * Adds the large cell to the list and to all bins of the map in which the
-	 * cell is active
-	 * 
-	 * @param c
-	 *            the cell
-	 */
-	private void addLargeCell(LargeDiscretePlaceCell c) {
-		cells.add(c);
 	}
 
 	@Override
@@ -106,11 +73,11 @@ public class DiscretePlaceCellLayer extends Module {
 		getActive(activationPort, position.get());
 	}
 
-	public void getActive(Float1dSparsePort aPort, Point3f position) {
+	public void getActive(Float1dSparsePort port, Point3f position) {
 		DiscreteCoord coord = new DiscreteCoord((int) position.x, (int) position.y);
 		Map<Integer, Float> activeCells = stateActivationPerGridCell.get(coord);
 		for (Integer cellIndex : activeCells.keySet()) {
-			aPort.set(cellIndex, activeCells.get(cellIndex));
+			port.set(cellIndex, activeCells.get(cellIndex));
 		}
 	}
 

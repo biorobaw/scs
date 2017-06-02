@@ -1,9 +1,12 @@
 package edu.usf.ratsim.nsl.modules.actionselection;
 
+import java.util.Map;
+
 import edu.usf.experiment.utils.Debug;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.Float1dPort;
-import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
+import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
+import edu.usf.micronsl.port.singlevalue.Float0dPort;
+import edu.usf.micronsl.port.twodimensional.Float2dPort;
 import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
 
 /**
@@ -13,50 +16,47 @@ import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
  * @author ludo
  *
  */
-public class ProportionalValue extends Module implements Voter {
+public class ProportionalValue extends Module {
 
-	public float[] valueEst;
-	private int numActions;
+	public Float0dPort valuePort;
 
-	public ProportionalValue(String name, int numActions) {
+	public ProportionalValue(String name) {
 		super(name);
-		valueEst = new float[1];
-		this.numActions = numActions;
-		addOutPort("valueEst", new Float1dPortArray(this, valueEst));
+		valuePort = new Float0dPort(this);
+		addOutPort("value",valuePort);
 	}
 
 	public void run() {
-		Float1dPort states = (Float1dPort) getInPort("states");
+		Float1dSparsePort states = (Float1dSparsePort) getInPort("states");
 		FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
-		valueEst[0] = 0f;
+		
+		run(states.getNonZero(), value);
+	}
+	
 
-		double sum = 0;
-		float cantStates = states.getSize();
-		for (int state = 0; state < cantStates; state++) {
-			float stateVal = states.get(state);
+	public void run(Map<Integer, Float> states, Float2dPort value) {
+		float valueEst = 0f;
+
+		for (Integer s : states.keySet()){
+			float stateVal = states.get(s);
 			if (stateVal != 0) {
-				sum += stateVal;
-				float val = value.get(state, numActions);
+				float val = value.get(s, 0);
 				if (val != 0)
-					valueEst[0] = valueEst[0] + stateVal * val;
+					valueEst += stateVal * val;
 			}
 		}
-
-		// Normalize
-		if (sum != 0)
-			valueEst[0] = (float) (valueEst[0] / sum);
-
+		
+		// Max value is food reward
+		valueEst = Math.max(-10, Math.min(valueEst, 10));
+		
+		valuePort.set(valueEst);
+		
 		if (Debug.printValues) {
 			System.out.println("RL value");
-			System.out.print(valueEst[0] + " ");
+			System.out.print(valueEst + " ");
 			System.out.println();
 		}
 
-	}
-
-	@Override
-	public float[] getVotes() {
-		return valueEst;
 	}
 
 	@Override
