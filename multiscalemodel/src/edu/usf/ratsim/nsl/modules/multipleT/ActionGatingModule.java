@@ -40,13 +40,18 @@ public class ActionGatingModule extends Module {
 		List<Affordance> aff = robot.getPossibleAffordances();
 		aff = robot.checkAffordances(aff);
 		
+		float sum = 0;
 		for (int i =0;i<aff.size();i++)
 		{
 			probabilities[i] =  (float)(input.get(i)*aff.get(i).getRealizable());
+			sum += probabilities[i];
 		}
 		
-		
-		
+		// Normalize - its probabilities
+		for (int i =0;i<aff.size();i++)
+		{
+			probabilities[i] /= sum;
+		}
 	}
 
 

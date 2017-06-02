@@ -31,12 +31,11 @@ public class Softmax extends Module {
 
 		float max = -Float.MAX_VALUE;
 		for (int i =0; i < numActions; i++)
-			max = input.get(i) > max ? input.get(i) : max;
+			max = Math.max(input.get(i), max);
 			
 		float sum = 0;
 		for (int i=0;i<numActions;i++){
 			// Use the max to normalize - this takes care of too high values and also too low values
-//			probabilities[i] = (float)Math.exp(input.get(i) - max);
 			probabilities[i] = (float)Math.exp(input.get(i)/TAU);
 			sum+=probabilities[i];
 		}
@@ -47,6 +46,8 @@ public class Softmax extends Module {
 			throw new IllegalArgumentException("Argument 'divisor' is Infinity");
 		if (sum==0) 
 			throw new IllegalArgumentException("Argument 'divisor' is 0");
+		
+		// Normalize
 		for (int i=0;i<numActions;i++){
 			probabilities[i]/=sum;
 		}
