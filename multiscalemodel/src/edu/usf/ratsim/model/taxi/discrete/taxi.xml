@@ -27,7 +27,8 @@
 			<foodReward>1</foodReward>
 			<nonFoodReward>-.1</nonFoodReward>
 			<gridSize>20</gridSize>
-			<contribution>onlySmall</contribution>
+			<actionValueSizes>1</actionValueSizes>
+			<stateValueSizes>1</stateValueSizes>
 		</params>
 	</model>
 <!--
@@ -47,7 +48,8 @@
 		<name>Small</name>
 		<numMembers>64</numMembers>
 		<params>
-			<contribution>onlySmall</contribution>
+			<actionValueSizes>0</actionValueSizes>
+			<stateValueSizes>0</stateValueSizes>
 		</params>
 		<tasks></tasks>
 	</group>
@@ -56,7 +58,8 @@
 		<name>Large</name>
 		<numMembers>64</numMembers>
 		<params>
-			<contribution>onlyLarge</contribution>
+			<actionValueSizes>2</actionValueSizes>
+			<stateValueSizes>2</stateValueSizes>
 		</params>
 		<tasks></tasks>
 	</group>
@@ -65,7 +68,8 @@
 		<name>MultiScale</name>
 		<numMembers>64</numMembers>
 		<params>
-			<contribution>both</contribution>
+			<actionValueSizes>0,2</actionValueSizes>
+			<stateValueSizes>0,2</stateValueSizes>
 		</params>
 	</group>
 	
@@ -73,7 +77,8 @@
 		<name>Asymmetric</name>
 		<numMembers>64</numMembers>
 		<params>
-			<contribution>asymmetric</contribution>
+			<actionValueSizes>0</actionValueSizes>
+			<stateValueSizes>2</stateValueSizes>
 		</params>
 	</group>
 	

@@ -15,6 +15,7 @@ import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.ratsim.nsl.modules.cell.DiscretePlaceCell;
 import edu.usf.ratsim.nsl.modules.cell.LargeDiscretePlaceCell;
+import edu.usf.ratsim.nsl.modules.cell.SizeNDiscretePlaceCell;
 import edu.usf.ratsim.nsl.modules.cell.SmallDiscretePlaceCell;
 
 public class DiscretePlaceCellLayer extends Module implements PlaceCellLayer {
@@ -35,9 +36,9 @@ public class DiscretePlaceCellLayer extends Module implements PlaceCellLayer {
 	private int width;
 	private int height;
 	private Object robot;
-	private int maxActivation;
+	private float maxActivation;
 
-	public DiscretePlaceCellLayer(String name, int width, int height, boolean large, GlobalWallRobot gwr) {
+	public DiscretePlaceCellLayer(String name, int width, int height, List<Integer> cellSizes, GlobalWallRobot gwr) {
 		super(name);
 
 		cells = new ArrayList<DiscretePlaceCell>();
@@ -49,24 +50,39 @@ public class DiscretePlaceCellLayer extends Module implements PlaceCellLayer {
 				stateActivationPerGridCell.put(new DiscreteCoord(x, y), new HashMap<Integer, Float>());
 			}
 
-		// Add cells and precompute activation
+		// Add cells 
 		for (int x = 0; x < width; x++)
 			for (int y = 0; y < height; y++) {
-				if (large)
-					cells.add(new LargeDiscretePlaceCell(x, y));
-				else 
-					cells.add(new SmallDiscretePlaceCell(x, y));
+				for (Integer cellSize : cellSizes )
+					cells.add(new SizeNDiscretePlaceCell(x, y, cellSize));
+				
 			}
 		
+		// Compute maximum number of concurrently active
+		int maxActive = 0;
+		for (Integer cellSize : cellSizes )
+			// Active cells are the sum from i=0..Size of 4^i
+			maxActive += Math.pow(4, cellSize) -1 / (4 -1);
+		maxActivation = 0;
+		for (Integer cellSize : cellSizes )
+			maxActivation += getMaxActivationSize(cellSize);
+		System.out.println("Max activation " + maxActivation);
+		
 		// Initialize the port
-		activationPort = new Float1dSparsePortMap(this, cells.size(), (large ? 6 : 1) / cells.size());
+		activationPort = new Float1dSparsePortMap(this, cells.size(), maxActive / cells.size());
 		addOutPort("output", activationPort);
 		
 		this.width = width;
 		this.height = height;
 		this.robot = gwr;
 		
-		this.maxActivation = large ? 8 : 1;
+	}
+
+	private float getMaxActivationSize(Integer size) {
+		float maxActivation = 1;
+		for (int i = 1; i <= size; i++)
+			maxActivation += (4 * i) * (1 - ((float)i)/(2*size));
+		return maxActivation;
 	}
 
 	@Override
@@ -97,24 +113,25 @@ public class DiscretePlaceCellLayer extends Module implements PlaceCellLayer {
 	@Override
 	public void newTrial() {
 		super.newTrial();
-		
+
 		stateActivationPerGridCell = new HashMap<DiscreteCoord, Map<Integer, Float>>();
 		for (int x = 0; x < width; x++)
 			for (int y = 0; y < height; y++) {
 				stateActivationPerGridCell.put(new DiscreteCoord(x, y), new HashMap<Integer, Float>());
 			}
-		
-		// Upon a new trial, recompute place cell activations with the new wall setup
+
+		// Upon a new trial, recompute place cell activations with the new wall
+		// setup
 		// Assumes walls don't change throughout trial
 		int i = 0;
-		for (DiscretePlaceCell c : cells){
+		for (DiscretePlaceCell c : cells) {
 			for (int x = 0; x < width; x++)
-				for (int y = 0; y < height; y++){
-					float activation = c.getActivation(x, y, (GlobalWallRobot)robot);
+				for (int y = 0; y < height; y++) {
+					float activation = c.getActivation(x, y, (GlobalWallRobot) robot);
 					if (activation > 0) {
 						stateActivationPerGridCell.get(new DiscreteCoord(x, y)).put(i, activation);
 					}
-			}
+				}
 			i++;
 		}
 	}
@@ -128,7 +145,5 @@ public class DiscretePlaceCellLayer extends Module implements PlaceCellLayer {
 	public float getMaxActivation() {
 		return maxActivation;
 	}
-	
-	
 
 }

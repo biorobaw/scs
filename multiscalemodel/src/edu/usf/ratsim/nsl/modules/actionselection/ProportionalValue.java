@@ -19,11 +19,13 @@ import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
 public class ProportionalValue extends Module {
 
 	public Float0dPort valuePort;
+	private float maxVal;
 
-	public ProportionalValue(String name) {
+	public ProportionalValue(String name, float maxVal) {
 		super(name);
 		valuePort = new Float0dPort(this);
 		addOutPort("value",valuePort);
+		this.maxVal = maxVal;
 	}
 
 	public void run() {
@@ -47,7 +49,7 @@ public class ProportionalValue extends Module {
 		}
 		
 		// Max value is food reward
-		valueEst = Math.max(-10, Math.min(valueEst, 10));
+		valueEst = Math.max(-maxVal, Math.min(valueEst, maxVal));
 		
 		valuePort.set(valueEst);
 		

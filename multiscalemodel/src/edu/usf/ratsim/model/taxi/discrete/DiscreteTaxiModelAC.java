@@ -40,7 +40,7 @@ import edu.usf.ratsim.nsl.modules.rl.Reward;
 
 public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyModel{
 
-	public PlaceCellLayer actionPlaceCells, valuePlaceCells;
+	public DiscretePlaceCellLayer actionPlaceCells, valuePlaceCells;
 
 	public ProportionalVotes currentStateQ;
 
@@ -64,12 +64,6 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 
 	private FloatMatrixPort VTable;
 
-	private DiscretePlaceCellLayer smallPlaceCellLayer;
-
-	private DiscretePlaceCellLayer largePlaceCellLayer;
-
-	private DiscretePlaceCellLayerCombination allPlaceCells;
-
 	private float maxVotes;
 
 	private float maxVal;
@@ -85,7 +79,8 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		float learningRate = params.getChildFloat("learningRate");
 		float foodReward = params.getChildFloat("foodReward");
 		float nonFoodReward = params.getChildFloat("nonFoodReward");
-		String contribution = params.getChildText("contribution");
+		List<Integer> actionValueSizes = params.getChildIntList("actionValueSizes");
+		List<Integer> stateValueSizes = params.getChildIntList("stateValueSizes");
 		
 		// Universe parameters
 		gridSize = params.getChildInt("gridSize");
@@ -102,37 +97,16 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		List<DiscretePlaceCellLayer> pcLayers = new LinkedList<DiscretePlaceCellLayer>();
 		
 		// Create Place Cells module
-		smallPlaceCellLayer = new DiscretePlaceCellLayer("PCLayer Small", gridSize, gridSize, false, (GlobalWallRobot) robot);
-		smallPlaceCellLayer.addInPort("position", pos.getOutPort("position"));
-		addModulePost(smallPlaceCellLayer);
-		pcLayers.add(smallPlaceCellLayer);
+		actionPlaceCells = new DiscretePlaceCellLayer("PCLayer Small", gridSize, gridSize, actionValueSizes, (GlobalWallRobot) robot);
+		actionPlaceCells.addInPort("position", pos.getOutPort("position"));
+		addModulePost(actionPlaceCells);
+		pcLayers.add(actionPlaceCells);
 
-		largePlaceCellLayer = new DiscretePlaceCellLayer("PCLayer Large", gridSize, gridSize, true, (GlobalWallRobot) robot);
-		largePlaceCellLayer.addInPort("position", pos.getOutPort("position"));
-		addModulePost(largePlaceCellLayer);
-		pcLayers.add(largePlaceCellLayer);
+		valuePlaceCells = new DiscretePlaceCellLayer("PCLayer Large", gridSize, gridSize, stateValueSizes, (GlobalWallRobot) robot);
+		valuePlaceCells.addInPort("position", pos.getOutPort("position"));
+		addModulePost(valuePlaceCells);
+		pcLayers.add(valuePlaceCells);
 
-		allPlaceCells = new DiscretePlaceCellLayerCombination("Place Cells", pcLayers);
-		addModulePost(allPlaceCells);
-		
-		if (contribution.equals("onlySmall")){
-			actionPlaceCells = smallPlaceCellLayer;
-			valuePlaceCells = smallPlaceCellLayer;
-		} else if (contribution.equals("onlyLarge")){
-			actionPlaceCells = largePlaceCellLayer;
-			valuePlaceCells = largePlaceCellLayer;
-		} else if (contribution.equals("both")){
-			actionPlaceCells = allPlaceCells;
-			valuePlaceCells = allPlaceCells;
-		} else if (contribution.equals("asymmetric")){
-			actionPlaceCells = smallPlaceCellLayer;
-			valuePlaceCells = largePlaceCellLayer;
-		} else {
-			throw new IllegalArgumentException("Contribution " + contribution + " not defined");
-		}
-		
-
-		
 		numActionCells = actionPlaceCells.getActivationPort().getSize();
 		numValueCells = valuePlaceCells.getActivationPort().getSize();
 		maxVotes = foodReward  * actionPlaceCells.getMaxActivation();
@@ -145,13 +119,13 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		this.VTable = new FloatMatrixPort(null, vVals);
 
 		// Create currentStateQ Q module
-		currentStateQ = new ProportionalVotes("currentStateQ", numActions);
+		currentStateQ = new ProportionalVotes("currentStateQ", numActions, maxVotes);
 		currentStateQ.addInPort("states", actionPlaceCells.getActivationPort());
 		currentStateQ.addInPort("qValues", QTable);
 		addModulePost(currentStateQ);
 		DisplaySingleton.getDisplay().addComponent(new Float1dDiscPlot((Float1dPort)currentStateQ.getOutPort("votes")), 0, 0, 1, 1);
 		
-		currentValue = new ProportionalValue("currentValueQ");
+		currentValue = new ProportionalValue("currentValueQ", maxVal);
 		currentValue.addInPort("states", valuePlaceCells.getActivationPort());
 		currentValue.addInPort("value", VTable);
 		addModulePost(currentValue);
@@ -217,9 +191,8 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		super.newEpisode();
 //		 Compute place cell output before making the first decision
 		pos.run();
-		smallPlaceCellLayer.run();
-		largePlaceCellLayer.run();
-		allPlaceCells.run();
+		actionPlaceCells.run();
+		valuePlaceCells.run();
 		currentStateQ.run();
 		currentValue.run();
 		
@@ -231,7 +204,7 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 	public Map<Point3f, Float> getValuePoints() {
 		Map<Point3f, Float> valuePoints = new HashMap<Point3f, Float>();
 		
-		ProportionalValue votes = new ProportionalValue("Logging Value");
+		ProportionalValue votes = new ProportionalValue("Logging Value", maxVal);
 		
 		for (int x = 0; x < gridSize; x++)
 			for (int y = 0; y < gridSize; y++){
@@ -253,7 +226,7 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 	public Map<Point3f, Integer> getPolicyPoints() {
 		Map<Point3f, Integer> policyPoints = new HashMap<Point3f, Integer>();
 		
-		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions);
+		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions, maxVotes);
 		
 		for (int x = 0; x < gridSize; x++)
 			for (int y = 0; y < gridSize; y++){
