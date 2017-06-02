@@ -17,7 +17,7 @@ public class LargeDiscretePlaceCell implements DiscretePlaceCell {
 	}
 
 	public float getActivation(int x, int y, GlobalWallRobot gwr) {
-		LineSegment path = new LineSegment(new Coordinate(this.x, this.y), new Coordinate(x, y));
+		LineSegment path = new LineSegment(new Coordinate(this.x + .5, this.y + .5), new Coordinate(x + .5, y + .5));
 		if (WallUniverseUtilities.segmentIntersectsWalls(gwr.getWalls(), path))
 			return 0;
 		

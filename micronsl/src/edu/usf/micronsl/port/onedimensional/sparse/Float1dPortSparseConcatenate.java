@@ -25,10 +25,6 @@ public class Float1dPortSparseConcatenate extends Float1dSparsePort {
 	 */
 	private int size;
 	/**
-	 * The map of non-zero values
-	 */
-	private HashMap<Integer, Float> nonZero;
-	/**
 	 * The average sparseness of the source ports
 	 */
 	private float sparseness;
@@ -54,7 +50,6 @@ public class Float1dPortSparseConcatenate extends Float1dSparsePort {
 		}
 		sparseness = (sparseness / sources.size());
 
-		nonZero = new HashMap<Integer, Float>(Math.round(size * sparseness));
 	}
 
 	@Override
@@ -108,7 +103,7 @@ public class Float1dPortSparseConcatenate extends Float1dSparsePort {
 	@Override
 	public Map<Integer, Float> getNonZero() {
 		int previousSizes = 0;
-		nonZero.clear();
+		HashMap<Integer, Float> nonZero = new HashMap<Integer, Float>(Math.round(size * sparseness));
 		for (Float1dSparsePortMap source : sources) {
 			for (Entry<Integer, Float> entry : source.getNonZero().entrySet()) {
 				nonZero.put(entry.getKey() + previousSizes, entry.getValue());

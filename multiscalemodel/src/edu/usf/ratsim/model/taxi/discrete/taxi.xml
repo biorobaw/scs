@@ -27,7 +27,7 @@
 			<foodReward>1</foodReward>
 			<nonFoodReward>-.1</nonFoodReward>
 			<gridSize>20</gridSize>
-			<multiScale>true</multiScale>
+			<contribution>onlySmall</contribution>
 		</params>
 	</model>
 <!--
@@ -44,10 +44,19 @@
 
 -->	
 	<group>
-		<name>Control</name>
+		<name>Small</name>
 		<numMembers>64</numMembers>
 		<params>
-			<multiScale>false</multiScale>
+			<contribution>onlySmall</contribution>
+		</params>
+		<tasks></tasks>
+	</group>
+	
+	<group>
+		<name>Large</name>
+		<numMembers>64</numMembers>
+		<params>
+			<contribution>onlyLarge</contribution>
 		</params>
 		<tasks></tasks>
 	</group>
@@ -56,7 +65,15 @@
 		<name>MultiScale</name>
 		<numMembers>64</numMembers>
 		<params>
-			<multiScale>true</multiScale>
+			<contribution>both</contribution>
+		</params>
+	</group>
+	
+	<group>
+		<name>Asymmetric</name>
+		<numMembers>64</numMembers>
+		<params>
+			<contribution>asymmetric</contribution>
 		</params>
 	</group>
 	
@@ -72,8 +89,10 @@
 		<!-- Groups to apply the trial -->
 		<groups>
 			<group>Naive</group>
-			<group>Control</group>
+			<group>Small</group>
+			<group>Large</group>
 			<group>MultiScale</group>
+			<group>Asymmetric</group>
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>

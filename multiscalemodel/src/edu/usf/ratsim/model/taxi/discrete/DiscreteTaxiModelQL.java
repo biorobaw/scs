@@ -167,13 +167,11 @@ public class DiscreteTaxiModelQL extends Model implements ValueModel, PolicyMode
 		currentStateQ.addInPort("states", placeCells.getOutPort("output"));
 		currentStateQ.addInPort("value", QTable);
 		
-		Float1dSparsePort activeCells = new Float1dSparsePortMap(null, numCells, 6/gridSize*gridSize);
 		for (int x = 0; x < gridSize; x++)
 			for (int y = 0; y < gridSize; y++){
 				Point3f pos = new Point3f(x,y,0);
-				activeCells.clear();
-				placeCells.getActive(activeCells, pos);
-				votes.run(activeCells.getNonZero(), QTable);
+				Map<Integer, Float> active = placeCells.getActive( pos);
+				votes.run(active, QTable);
 				
 				float max = -Float.MAX_VALUE;
 				for (float v : votes.actionVote)
@@ -202,8 +200,8 @@ public class DiscreteTaxiModelQL extends Model implements ValueModel, PolicyMode
 			for (int y = 0; y < gridSize; y++){
 				Point3f pos = new Point3f(x,y,0);
 				activeCells.clear();
-				placeCells.getActive(activeCells, pos);
-				votes.run(activeCells.getNonZero(), QTable);
+				Map<Integer, Float> active = placeCells.getActive(pos);
+				votes.run(active, QTable);
 				
 				float maxVal = -Float.MAX_VALUE;
 				int maxAction = 0;
