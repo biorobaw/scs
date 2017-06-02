@@ -82,6 +82,24 @@
 		</params>
 	</group>
 	
+	<group>
+		<name>Medium</name>
+		<numMembers>64</numMembers>
+		<params>
+			<actionValueSizes>1</actionValueSizes>
+			<stateValueSizes>1</stateValueSizes>
+		</params>
+	</group>
+	
+	<group>
+		<name>SuperLarge</name>
+		<numMembers>64</numMembers>
+		<params>
+			<actionValueSizes>3</actionValueSizes>
+			<stateValueSizes>3</stateValueSizes>
+		</params>
+	</group>
+	
 	<beforeExperimentTasks>
 		<task>
 			<name>edu.usf.experiment.task.maze.SetUpTaxi</name>
