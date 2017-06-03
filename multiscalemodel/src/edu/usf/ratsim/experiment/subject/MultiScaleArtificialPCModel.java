@@ -287,37 +287,37 @@ public class MultiScaleArtificialPCModel extends Model {
 		// attExpl.addInPort("takenAction", takenActionPort, true);
 //		stillExpl.addInPort("takenAction", takenActionPort, true);
 
-		List<Port> taxicValueEstimationPorts = new LinkedList<Port>();
-		TaxicValueSchema taxVal = new TaxicValueSchema("Taxic Value Estimator",
-				subject, lRobot, nonFlashingReward, nonFoodReward,
-				taxicDiscountFactor, estimateValue);
-		taxVal.addInPort("goalFeeder",
-				lastTriedToEatGoalDecider.getOutPort("goalFeeder"));
-		taxVal.addInPort("takenAction", takenActionPort); // just for dependency
-		taxicValueEstimationPorts.add(taxVal.getOutPort("value"));
-		addModule(taxVal);
-
-		FlashingTaxicValueSchema flashTaxVal = new FlashingTaxicValueSchema(
-				"Flashing Taxic Value Estimator", subject, lRobot,
-				flashingReward, nonFoodReward, taxicDiscountFactor,
-				estimateValue);
-		flashTaxVal.addInPort("goalFeeder",
-				flashingGoalDecider.getOutPort("goalFeeder"));
-		flashTaxVal.addInPort("takenAction", takenActionPort); // just for
-																// dependency
-		taxicValueEstimationPorts.add(flashTaxVal.getOutPort("value"));
-		addModule(flashTaxVal);
-
-		Float1dSumModule sumTaxicValue = new Float1dSumModule(
-				"Taxic joint value estimation");
-		sumTaxicValue.addInPorts(taxicValueEstimationPorts);
-		addModule(sumTaxicValue);
-
-		Float1dCopyModule taxicValueCopy = new Float1dCopyModule(
-				"Taxic Value Estimation Before");
-		taxicValueCopy.addInPort("toCopy",
-				(Float1dPort) sumTaxicValue.getOutPort("jointState"), true);
-		addModule(taxicValueCopy);
+//		List<Port> taxicValueEstimationPorts = new LinkedList<Port>();
+//		TaxicValueSchema taxVal = new TaxicValueSchema("Taxic Value Estimator",
+//				subject, lRobot, nonFlashingReward, nonFoodReward,
+//				taxicDiscountFactor, estimateValue);
+//		taxVal.addInPort("goalFeeder",
+//				lastTriedToEatGoalDecider.getOutPort("goalFeeder"));
+//		taxVal.addInPort("takenAction", takenActionPort); // just for dependency
+//		taxicValueEstimationPorts.add(taxVal.getOutPort("value"));
+//		addModule(taxVal);
+//
+//		FlashingTaxicValueSchema flashTaxVal = new FlashingTaxicValueSchema(
+//				"Flashing Taxic Value Estimator", subject, lRobot,
+//				flashingReward, nonFoodReward, taxicDiscountFactor,
+//				estimateValue);
+//		flashTaxVal.addInPort("goalFeeder",
+//				flashingGoalDecider.getOutPort("goalFeeder"));
+//		flashTaxVal.addInPort("takenAction", takenActionPort); // just for
+//																// dependency
+//		taxicValueEstimationPorts.add(flashTaxVal.getOutPort("value"));
+//		addModule(flashTaxVal);
+//
+//		Float1dSumModule sumTaxicValue = new Float1dSumModule(
+//				"Taxic joint value estimation");
+//		sumTaxicValue.addInPorts(taxicValueEstimationPorts);
+//		addModule(sumTaxicValue);
+//
+//		Float1dCopyModule taxicValueCopy = new Float1dCopyModule(
+//				"Taxic Value Estimation Before");
+//		taxicValueCopy.addInPort("toCopy",
+//				(Float1dPort) sumTaxicValue.getOutPort("jointState"), true);
+//		addModule(taxicValueCopy);
 
 		if (voteType.equals("gradient")) {
 			valueConnProbs = params.getChildFloatList("valueConnProbs");
@@ -403,12 +403,12 @@ public class MultiScaleArtificialPCModel extends Model {
 			mspac.addInPort("statesAfter",
 					jointPCHDIntentionState.getOutPort("jointState"));
 			mspac.addInPort("value", valuePort);
-			mspac.addInPort("taxicValueEstimationAfter",
-					sumTaxicValue.getOutPort("jointState"));
-			mspac.addInPort(
-					"taxicValueEstimationBefore",
-					getModule("Taxic Value Estimation Before").getOutPort(
-							"copy"));
+//			mspac.addInPort("taxicValueEstimationAfter",
+//					sumTaxicValue.getOutPort("jointState"));
+//			mspac.addInPort(
+//					"taxicValueEstimationBefore",
+//					getModule("Taxic Value Estimation Before").getOutPort(
+//							"copy"));
 			mspac.addInPort("rlValueEstimationAfter",
 					rlValue.getOutPort("valueEst"));
 			mspac.addInPort("rlValueEstimationBefore",

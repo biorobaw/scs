@@ -135,12 +135,18 @@ public class MultiStateACNoTraces extends Module implements QLAlgorithm {
 			// Update value
 			if (updateValue){
 				float currValue = value.get(state, numActions);
-				float newValue = Math.min(1000, Math.max(-1000,currValue + alpha * activation * valueDelta));
+//				if (currValue >= 1000)
+//					System.out.println("1000 value");
+//				float newValue = Math.min(1000, Math.max(-1000,currValue + alpha * activation * valueDelta));
+				float newValue = currValue + alpha * activation * valueDelta;
+				
 				if (Float.isInfinite(newValue) || Float.isNaN(newValue)) {
 					System.out.println("Numeric Error");
 					System.exit(1);
 				}
 				value.set(state, numActions, newValue);
+				
+				
 			}
 
 			// Update action value
@@ -159,6 +165,7 @@ public class MultiStateACNoTraces extends Module implements QLAlgorithm {
 				}
 				value.set(state, ui.action, newActionValue);
 			}
+			
 		}
 	}
 	

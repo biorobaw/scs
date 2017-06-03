@@ -5,6 +5,8 @@ logPath=$2
 fromIndiv=$3
 toIndiv=$4
 
+echo Executing from $fromIndiv to $toIndiv
+
 ant compile
 
 ./scripts/preProcessCalibration.sh $calibrationFile $logPath

@@ -46,9 +46,9 @@ mazePlot <- function(mazeFile, wantedFeeder = -1){
     dat <- circleFun(c(x,y),2*r,npoints = 100, 0, 2, TRUE)
     if (wantedFeeder == as.numeric(feeder$id) ){
       p <- geom_polygon(data=dat, aes(x,y), color="green", fill="green")
-     } else {
+    } else {
       p <- geom_polygon(data=dat, aes(x,y), color="grey", fill="grey")
-     } 
+    } 
   })
   
   feeders
@@ -74,7 +74,7 @@ ratEndPointPlot <- function (pathData, p){
 }
 
 wallPlot <- function(wallData,p){
-
+  
   if (!is.null(wallData)){
     
     p + geom_segment(data=wallData, aes(x,y,xend=xend,yend=yend),  col="black", cex=2)
@@ -85,27 +85,30 @@ wallPlot <- function(wallData,p){
 
 plotValue <- function(valData){
   # geom_point(data=valData, aes(x=x,y=y,color = val))
-  list(geom_point(data=valData, aes(x=x,y=y,color = val)),
-       scale_color_gradient2(low = "blue", mid="white", high = "red", limits = c(min(valData$val), max(valData$val)))
-       )
+  maxVal <- 1000
+  valData$val <- pmin(maxVal, pmax(valData$val, -maxVal))
+  list(geom_point(data=valData[valData$val != 00,], aes(x=x,y=y,color = val)),
+       scale_color_gradient2(low = "blue", mid="white", high = "red", limits = c(-maxVal,maxVal))
+  )
   
 }
 
 plotValueOnMaze <- function (preName, name, valData, wallData, pathData, maze){
   # Get the individual components of the plot
   p <- ggplot()
-
+  
   p <- p + plotValue(valData)
   
   p <- wallPlot(wallData, p)
   
   p <- p + maze
   
-  p <- ratPathPlot(pathData, p)
-
+  # p <- ratPathPlot(pathData, p)
+  
   # Some aesthetic stuff
   p <- mazePlotTheme(p)
   # Save the plot to an image
+  print(p)  
   if (name == '')
     print(p)  
   else
@@ -134,6 +137,6 @@ invisible(
   llply(
     names(splitValCycle), 
     function(x){
-          plotValueOnMaze("", x, splitValCycle[[x]], wallData, pathData, maze)
+      plotValueOnMaze("", x, splitValCycle[[x]], wallData, pathData, maze)
     }, .parallel = FALSE)
-  )
+)
