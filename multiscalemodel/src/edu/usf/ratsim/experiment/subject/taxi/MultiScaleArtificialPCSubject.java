@@ -1,4 +1,4 @@
-package edu.usf.ratsim.experiment.subject;
+package edu.usf.ratsim.experiment.subject.taxi;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -146,5 +146,12 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	public Affordance getRightAffordance() {
 		return new TurnAffordance(rightAngle, step);
 	}
+
+	@Override
+	public Map<Point3f, Float> getValuePoints() {
+		return model.getValuePoints();
+	}
+	
+	
 
 }
