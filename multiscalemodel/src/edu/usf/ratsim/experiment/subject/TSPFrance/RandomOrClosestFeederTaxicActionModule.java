@@ -8,6 +8,7 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.List.Int1dPortList;
+import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.ratsim.nsl.modules.port.ModelActionPort;
 
@@ -25,6 +26,10 @@ public class RandomOrClosestFeederTaxicActionModule extends Module {
 	float moveToClosestProbability = 0;
 	
 	Subject sub;
+	
+	
+//	int nextDecision[] = new int[] {3,18,5,21,9,1};
+//	int next = 0;
 	
 	
 	//MUST RECEIVE PORTS: feederSet,  currentFeeder
@@ -48,6 +53,8 @@ public class RandomOrClosestFeederTaxicActionModule extends Module {
 		Int1dPortList feeders = (Int1dPortList)getInPort("feederSet"); 
 		int cantFeeders = feeders.getSize();
 		
+//		nextDestiny = nextDecision[next++];
+//		action.setId(nextDestiny);
 		
 		if(cantFeeders==0 ){
 			//I dont see any feeders or I'm standing in the only feeder I see
@@ -105,21 +112,24 @@ public class RandomOrClosestFeederTaxicActionModule extends Module {
 
 		@Override
 		public void run() {
-			//System.out.println("General time");
-			int currentFeeder = ((Int0dPort)getInPort("currentFeeder")).get();
+//			//System.out.println("General time");
+//			int currentFeeder = ((Int0dPort)getInPort("currentFeeder")).get();
+//			
+//			boolean previousGoalCompleted = nextDestiny == currentFeeder;				// check if previous goal was achieved
+//			
+//			//Check if external module forces to make new decision:
+//			int newSelection = 0;
+//			try{
+//				Int0dPort newSelectionPort = ((Int0dPort)getInPort("newSelection")); //optional port, if 1 forces a new decision
+//				newSelection = newSelectionPort.get();
+//			} catch(RuntimeException e){};
+//			 			
+//			
+//			//check if the module must make a new selection
+//			if(newSelection == 1 || previousGoalCompleted) makeNewChoice();
 			
-			boolean previousGoalCompleted = nextDestiny == currentFeeder;				// check if previous goal was achieved
 			
-			//Check if external module forces to make new decision:
-			int newSelection = 0;
-			try{
-				Int0dPort newSelectionPort = ((Int0dPort)getInPort("newSelection")); //optional port, if 1 forces a new decision
-				newSelection = newSelectionPort.get();
-			} catch(RuntimeException e){};
-			 			
-			
-			//check if the module must make a new selection
-			if(newSelection == 1 || previousGoalCompleted) makeNewChoice();
+			if(((Bool0dPort)getInPort("newSelection")).get()) makeNewChoice();
 			
 		}
 		

@@ -13,6 +13,7 @@ import edu.usf.experiment.robot.componentInterfaces.LocalizationInterface;
 import edu.usf.experiment.robot.specificActions.DifferentialNavigationAction;
 import edu.usf.experiment.robot.specificActions.DifferentialNavigationPolarAction;
 import edu.usf.experiment.robot.specificActions.FeederTaxicAction;
+import edu.usf.experiment.robot.specificActions.MoveToAction;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.Universe;
@@ -31,6 +32,9 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 	
 	RobotAction currentAction = null;
 	VirtUniverse universe;
+	
+	
+	Float closeEnoughToTargetPosition = 0.02f*0.02f; //distance squared
 	
 	
 	public PuckRobot(ElementWrapper params, Universe univ){
@@ -75,44 +79,82 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 				Point3f feederPos = universe.getFeeder(destinyId).getPosition();	
 				//System.out.println("feederPos "+feederPos);
 				
-				float hd = getHD();
-				Point3f pos = getPosition();
-				
-				
-				//System.out.println("pos + hd "+pos + " " + hd);
-				
-				float angleToFeeder = (float)Math.atan2(feederPos.y - pos.y, feederPos.x - pos.x);
-				angleToFeeder = GeomUtils.relativeAngle(angleToFeeder, hd);
-				
-				
-				if(Math.abs(angleToFeeder) > 8f/180 * Math.PI){
-					//must spin towards goal
-					if(angleToFeeder < 0)
-						//must spin right
-						navigation.setSpeeds(0.1f, -0.1f);
-					else
-						navigation.setSpeeds(-0.1f, 0.1f);
-					
-					moveRobot(navigation.getDisplacement(deltaT));
-					
-				}else{
-					navigation.setSpeeds(0.5f, 0.5f);
-					
-					moveRobot(navigation.getDisplacement(deltaT));
+				if( navigateToCoordinate(feederPos, deltaT,closeEnoughToTargetPosition) ){
+					//if goeal reached, try to eat from feeder
 					
 					if(tryToEatIfCloseToFeeder(destinyId)){
-						navigation.setSpeeds(0, 0);
 						//if I successfully eat remove food from feeder -- this logic should be inside the feeder
 						universe.setEnableFeeder(destinyId, false);
 					}
 					
+					//signal action completion
+					actionMessageBoard.put(currentAction.actionId, "done");
 					
-					
-				}
+				};
+				
 				
 			}
 			
+		} else if (currentAction instanceof MoveToAction ) {
+			MoveToAction a = (MoveToAction)currentAction;
+			
+			if(navigateToCoordinate(new Point3f(a.x(),a.y(),a.z()), deltaT, closeEnoughToTargetPosition)){
+				
+				actionMessageBoard.put(currentAction.actionId,"done");
+				
+			}
+			
+			
 		}
+		
+	}
+	
+	public boolean navigateToCoordinate(Point3f targetPos, float deltaT,float errorTolerance){
+		
+		Vector3f deltaV = GeomUtils.deltaVector(getPosition(), targetPos);
+		
+		//check if already on target position
+		if( deltaV.lengthSquared() < errorTolerance ) {
+			// already in target position
+			navigation.setSpeeds(0, 0);
+			return true;
+		}
+		
+		
+		//check if pointing towards goal
+		float hd = getHD();		
+		float angleToTarget = (float)Math.atan2(deltaV.y, deltaV.x);
+		angleToTarget = GeomUtils.relativeAngle(angleToTarget, hd);
+		
+		
+		if(Math.abs(angleToTarget) > 8f/180 * Math.PI){
+			//must spin towards goal
+			if(angleToTarget < 0)
+				//must spin right
+				navigation.setSpeeds(0.1f, -0.1f);
+			else
+				navigation.setSpeeds(-0.1f, 0.1f);
+			
+			moveRobot(navigation.getDisplacement(deltaT));
+			
+			return false; //still in same location so target not reached yet
+			
+		}else{
+			navigation.setSpeeds(0.5f, 0.5f);
+			
+			moveRobot(navigation.getDisplacement(deltaT));
+			
+			//check if reached target
+			if(GeomUtils.deltaVector(getPosition(), targetPos).lengthSquared() < errorTolerance){
+				navigation.setSpeeds(0, 0);
+				return true;
+				
+			} else return false;
+			
+		}
+		
+		
+		
 		
 	}
 	

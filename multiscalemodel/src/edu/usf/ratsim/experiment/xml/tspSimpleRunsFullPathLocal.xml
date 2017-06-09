@@ -14,7 +14,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/tspSimpleRuns.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>false</display>
+			<display>true</display>
 		</params>
 	</universe>
 	
@@ -139,7 +139,7 @@
 			<!-- time that advances on each sim cycle -->
 			<timeStep>0.1</timeStep>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>0</sleep>
+			<sleep>30</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 			

@@ -25,8 +25,8 @@ public class Model {
 	
 	
 	
-	private InitialModule initialModule = new InitialModule();
-	private FinalModule finalModule = new FinalModule();
+	public InitialModule initialModule = new InitialModule();
+	public FinalModule finalModule = new FinalModule();
 
 	public Model() {
 		modules = new LinkedHashMap<String, Module>();

@@ -150,6 +150,13 @@ public class GeomUtils {
 		return fVect;
 	}
 
+	public static Vector3f deltaVector(Point3f from, Point3f to) {
+		Vector3f fVect = new Vector3f(to);
+		fVect.sub(from);
+
+		return fVect;
+	}
+	
 	public static Quat4f angleToRot(float angle) {
 		Quat4f res = new Quat4f();
 		Transform3D t = new Transform3D();

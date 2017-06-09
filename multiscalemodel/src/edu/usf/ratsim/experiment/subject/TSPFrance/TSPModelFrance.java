@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import edu.usf.experiment.robot.specificActions.FeederTaxicAction;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
@@ -49,9 +50,16 @@ public class TSPModelFrance extends Model {
 	
 	
 	
+	Bool0dPort chooseNewFeeder = new Bool0dPort(initialModule);
+
+	
+	
 	//REFERENCES for ease of access
 	TSPSubjectFrance subject;
 	VirtUniverse universe = VirtUniverse.getInstance();
+	
+	
+	PuckRobot robot;
 	
 	
 
@@ -95,6 +103,8 @@ public class TSPModelFrance extends Model {
 		float ymin = params.getChildFloat("ymin");
 		float xmax = params.getChildFloat("xmax");
 		float ymax = params.getChildFloat("ymax");
+		
+		this.robot = robot;
 		
 		List<Integer> order = params.getChildIntList("feederOrder");
 		
@@ -164,9 +174,9 @@ public class TSPModelFrance extends Model {
 		//feeder taxic
 		randomOrClosestFeederTaxicActionModule = new RandomOrClosestFeederTaxicActionModule("randomFeederTaxicActionModule",subject,moveToClosestFeederInSubsetProbability);
 		addModule(randomOrClosestFeederTaxicActionModule);
-		randomOrClosestFeederTaxicActionModule.addInPort("currentFeeder", currentFeeder.getOutPort("currentFeeder"));
+//		randomOrClosestFeederTaxicActionModule.addInPort("currentFeeder", currentFeeder.getOutPort("currentFeeder"));
 		randomOrClosestFeederTaxicActionModule.addInPort("feederSet", nonVisitedFeederSetMoudle.getOutPort("feederSubSet"));
-		
+		randomOrClosestFeederTaxicActionModule.addInPort("newSelection", chooseNewFeeder);
 		
 		//MOVE USING A PATH:
 		actionFromPathModule = new ActionFromPathModule("actionFromPath", pathFile);
@@ -239,10 +249,12 @@ public class TSPModelFrance extends Model {
 		return activation;
 	}
 	
+	@Override
 	public void initialTask(){
 		//System.out.println("Initial Task");
+		chooseNewFeeder.set(robot.actionMessageBoard.get(FeederTaxicAction.actionID) != null);
 		
-		// here, or in a new module, i should check weather a new calculation of a taxic action should be forced.
+		
 		
 	}
 	
