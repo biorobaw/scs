@@ -3,6 +3,8 @@ package edu.usf.experiment;
 import java.io.File;
 import java.util.List;
 
+import edu.usf.experiment.display.DisplaySingleton;
+import edu.usf.experiment.display.NoDisplay;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.log.LoggerLoader;
 import edu.usf.experiment.plot.Plotter;
@@ -37,6 +39,7 @@ public class PostExperiment extends Experiment implements Runnable {
 
 		ElementWrapper root = XMLExperimentParser.loadRoot(logPath + "experiment.xml");
 
+		DisplaySingleton.setDisplay(new NoDisplay());
 		setUniverse(UniverseLoader.getInstance().load(root, logPath));
 
 		afterPlotters = PlotterLoader.getInstance().load(
