@@ -30,13 +30,13 @@ import edu.usf.ratsim.nsl.modules.actionselection.ProportionalValue;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.actionselection.Softmax;
 import edu.usf.ratsim.nsl.modules.celllayer.DiscretePlaceCellLayer;
-import edu.usf.ratsim.nsl.modules.celllayer.PlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.input.Position;
 import edu.usf.ratsim.nsl.modules.input.SubFoundPlatform;
 import edu.usf.ratsim.nsl.modules.multipleT.ActionGatingModule;
-import edu.usf.ratsim.nsl.modules.multipleT.UpdateQModuleAC;
 import edu.usf.ratsim.nsl.modules.rl.ActorCriticDeltaError;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
+import edu.usf.ratsim.nsl.modules.rl.UpdateQModuleAC;
+import edu.usf.ratsim.nsl.modules.rl.UpdateQModuleACTraces;
 
 public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyModel{
 
@@ -54,7 +54,7 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 
 	private int numActions;
 
-	private UpdateQModuleAC updateQ;
+	private UpdateQModuleACTraces updateQ;
 
 	private ProportionalValue currentValue;
 
@@ -77,6 +77,8 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		// Model parameters
 		float discountFactor = params.getChildFloat("discountFactor");
 		float learningRate = params.getChildFloat("learningRate");
+		float tracesDecay = params.getChildFloat("tracesDecay");
+		float minTrace = params.getChildFloat("minTrace");
 		float foodReward = params.getChildFloat("foodReward");
 		float nonFoodReward = params.getChildFloat("nonFoodReward");
 		List<Integer> actionValueSizes = params.getChildIntList("actionValueSizes");
@@ -112,11 +114,13 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		maxVotes = foodReward  * actionPlaceCells.getMaxActivation();
 		maxVal = foodReward * valuePlaceCells.getMaxActivation();
 		
-		
 		float[][] qvals = new float[numActionCells][numActions];
 		this.QTable = new FloatMatrixPort(null, qvals);
 		float[][] vVals = new float[numValueCells][1];
 		this.VTable = new FloatMatrixPort(null, vVals);
+		
+		// Traces
+		
 
 		// Create currentStateQ Q module
 		currentStateQ = new ProportionalVotes("currentStateQ", numActions, maxVotes);
@@ -174,7 +178,7 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		addModulePost(deltaError);
 
 		// Create update Q module
-		updateQ = new UpdateQModuleAC("updateQ", learningRate);
+		updateQ = new UpdateQModuleACTraces("updateQ", learningRate, tracesDecay, minTrace);
 		updateQ.addInPort("delta", deltaError.getOutPort("delta"));
 		updateQ.addInPort("action", actionSelection.getOutPort("action"));
 		updateQ.addInPort("Q", QTable);
