@@ -1,8 +1,10 @@
 #!/bin/bash
 
-#SBATCH --time=0:40:00
+#SBATCH --time=0:10:00
 #SBATCH --cpus-per-task 2 
 #SBATCH --qos=preempt
+#SBATCH --mem=2000M
+#SBATCH -p mri2016
 
 logPath=$1
 if [ -z "$SLURM_ARRAY_TASK_ID" ]; then
@@ -25,5 +27,5 @@ else
   java -version
 fi
 
-java -cp "./platform/src/:./multiscalemodel/src/:./bin/:./deps/*:./deps/j3dport/*" edu.usf.experiment.RunIndividualByNumber $logPath $individual
+java -Xmx1500m -cp "./platform/src/:./multiscalemodel/src/:./bin/:./deps/*:./deps/j3dport/*" edu.usf.experiment.RunIndividualByNumber $logPath $individual
 
