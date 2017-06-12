@@ -137,6 +137,15 @@
 		<tasks></tasks>
 	</group>
 	
+	<group>
+		<name>Combined Sizes - Traces</name>
+		<numMembers>64</numMembers>
+		<params>
+			<actionValueSizes>0,1,2</actionValueSizes>
+			<stateValueSizes>0,1,2</stateValueSizes>
+			<tracesDecay>.9</tracesDecay>
+		</params>
+	</group>
 	
 	
 	<beforeExperimentTasks>
@@ -159,6 +168,8 @@
 			<group>Size 1 - Traces</group>
 			<group>Size 2 - Traces</group>
 			<group>Size 3 - Traces</group>
+			<group>Combined Sizes - Traces</group>
+			
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
