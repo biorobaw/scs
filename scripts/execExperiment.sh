@@ -17,5 +17,5 @@ ant compile
 #idMessage=`sbatch --dependency=afterok:$preprocId -a $fromIndiv-$toIndiv ./scripts/execOne.sh $logPath`
 idMessage=`sbatch -a $fromIndiv-$toIndiv ./scripts/execOne.sh $logPath`
 ratsId=`echo $idMessage | cut -d " " -f 4`
-sbatch --dependency=afterok:$ratsId scripts/postProcess.sh $logPath
+sbatch --qos=preempt -p mri2016 --dependency=afterok:$ratsId scripts/postProcess.sh $logPath
 
