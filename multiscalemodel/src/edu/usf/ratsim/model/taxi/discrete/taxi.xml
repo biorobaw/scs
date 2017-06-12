@@ -259,12 +259,6 @@
 		<!-- Plotters to execute after the trial has ended -->
 		<afterTrialPlotters>
 			<!-- Make a gif out of all value plots for this trial -->
-			<plotter>
-				<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
-			</plotter>
-			<plotter>
-				<name>edu.usf.experiment.plot.PlotGatherer</name>
-			</plotter>
 		</afterTrialPlotters>
 	</trial>
 	
