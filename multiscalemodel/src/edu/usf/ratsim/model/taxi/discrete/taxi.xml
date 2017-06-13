@@ -76,20 +76,11 @@
 	</group>
 	
 	<group>
-		<name>Size 3</name>
-		<numMembers>64</numMembers>
-		<params>
-			<actionValueSizes>3</actionValueSizes>
-			<stateValueSizes>3</stateValueSizes>
-		</params>
-	</group>
-	
-	<group>
 		<name>Combined Sizes</name>
 		<numMembers>64</numMembers>
 		<params>
-			<actionValueSizes>0,1,2</actionValueSizes>
-			<stateValueSizes>0,1,2</stateValueSizes>
+			<actionValueSizes>0,1</actionValueSizes>
+			<stateValueSizes>0,1</stateValueSizes>
 		</params>
 	</group>
 	
@@ -127,22 +118,11 @@
 	</group>
 	
 	<group>
-		<name>Size 3 - Traces</name>
-		<numMembers>64</numMembers>
-		<params>
-			<actionValueSizes>3</actionValueSizes>
-			<stateValueSizes>3</stateValueSizes>
-			<tracesDecay>.9</tracesDecay>
-		</params>
-		<tasks></tasks>
-	</group>
-	
-	<group>
 		<name>Combined Sizes - Traces</name>
 		<numMembers>64</numMembers>
 		<params>
-			<actionValueSizes>0,1,2</actionValueSizes>
-			<stateValueSizes>0,1,2</stateValueSizes>
+			<actionValueSizes>0,1</actionValueSizes>
+			<stateValueSizes>0,1</stateValueSizes>
 			<tracesDecay>.9</tracesDecay>
 		</params>
 	</group>
@@ -162,12 +142,10 @@
 			<group>Size 0</group>
 			<group>Size 1</group>
 			<group>Size 2</group>
-			<group>Size 3</group>
 			<group>Combined Sizes</group>
 			<group>Size 0 - Traces</group>
 			<group>Size 1 - Traces</group>
 			<group>Size 2 - Traces</group>
-			<group>Size 3 - Traces</group>
 			<group>Combined Sizes - Traces</group>
 			
 		</groups>

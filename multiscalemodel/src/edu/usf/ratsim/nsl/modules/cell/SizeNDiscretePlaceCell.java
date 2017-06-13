@@ -34,7 +34,7 @@ public class SizeNDiscretePlaceCell implements DiscretePlaceCell {
 		
 		if (blockDist == 0)
 			return 1;
-		else if (blockDist >= size)
+		else if (blockDist > size)
 			return 0;
 		else
 			return 1 - blockDist / (2*size);
@@ -42,7 +42,7 @@ public class SizeNDiscretePlaceCell implements DiscretePlaceCell {
 	}
 
 	private int blockDist(int x1, int y1, int x2, int y2) {
-		return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+		return (int) Math.floor(Math.abs(x1 - x2) + Math.abs(y1 - y2));
 	}
 
 }
