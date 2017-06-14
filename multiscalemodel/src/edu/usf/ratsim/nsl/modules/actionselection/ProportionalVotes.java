@@ -19,14 +19,14 @@ public class ProportionalVotes extends Module implements Voter {
 
 	public float[] actionVote;
 	private int numActions;
-	private float maxVotes;
+	private float foodReward;
 
-	public ProportionalVotes(String name, int numActions, float maxVotes) {
+	public ProportionalVotes(String name, int numActions, float foodReward) {
 		super(name);
 		this.numActions = numActions;
 		actionVote = new float[numActions];
 		addOutPort("votes", new Float1dPortArray(this, actionVote));
-		this.maxVotes = maxVotes;
+		this.foodReward = foodReward;
 	}
 
 	public void run() {
@@ -58,9 +58,9 @@ public class ProportionalVotes extends Module implements Voter {
 			}
 		}
 
-		// Max value is food reward
+//		 Max value is food reward
 		for (int action = 0; action < numActions; action++)
-			actionVote[action] = Math.max(-1, Math.min(actionVote[action], 1));
+			actionVote[action] = Math.max(-foodReward, Math.min(actionVote[action], foodReward));
 		
 		if (Debug.printValues) {
 			System.out.println("RL votes");

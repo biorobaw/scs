@@ -35,7 +35,6 @@ import edu.usf.ratsim.nsl.modules.input.SubFoundPlatform;
 import edu.usf.ratsim.nsl.modules.multipleT.ActionGatingModule;
 import edu.usf.ratsim.nsl.modules.rl.ActorCriticDeltaError;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
-import edu.usf.ratsim.nsl.modules.rl.UpdateQModuleAC;
 import edu.usf.ratsim.nsl.modules.rl.UpdateQModuleACTraces;
 
 public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyModel{
@@ -64,9 +63,7 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 
 	private FloatMatrixPort VTable;
 
-	private float maxVotes;
-
-	private float maxVal;
+	private float foodReward;
 
 
 	public DiscreteTaxiModelAC() {
@@ -79,7 +76,7 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		float learningRate = params.getChildFloat("learningRate");
 		float tracesDecay = params.getChildFloat("tracesDecay");
 		float minTrace = params.getChildFloat("minTrace");
-		float foodReward = params.getChildFloat("foodReward");
+		foodReward = params.getChildFloat("foodReward");
 		float nonFoodReward = params.getChildFloat("nonFoodReward");
 		List<Integer> actionValueSizes = params.getChildIntList("actionValueSizes");
 		List<Integer> stateValueSizes = params.getChildIntList("stateValueSizes");
@@ -111,8 +108,6 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 
 		numActionCells = actionPlaceCells.getActivationPort().getSize();
 		numValueCells = valuePlaceCells.getActivationPort().getSize();
-		maxVotes = foodReward  * actionPlaceCells.getMaxActivation();
-		maxVal = foodReward * valuePlaceCells.getMaxActivation();
 		
 		float[][] qvals = new float[numActionCells][numActions];
 		this.QTable = new FloatMatrixPort(null, qvals);
@@ -123,13 +118,13 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		
 
 		// Create currentStateQ Q module
-		currentStateQ = new ProportionalVotes("currentStateQ", numActions, maxVotes);
+		currentStateQ = new ProportionalVotes("currentStateQ", numActions, foodReward);
 		currentStateQ.addInPort("states", actionPlaceCells.getActivationPort());
 		currentStateQ.addInPort("qValues", QTable);
 		addModulePost(currentStateQ);
 		DisplaySingleton.getDisplay().addComponent(new Float1dDiscPlot((Float1dPort)currentStateQ.getOutPort("votes")), 0, 0, 1, 1);
 		
-		currentValue = new ProportionalValue("currentValueQ", maxVal);
+		currentValue = new ProportionalValue("currentValueQ", foodReward);
 		currentValue.addInPort("states", valuePlaceCells.getActivationPort());
 		currentValue.addInPort("value", VTable);
 		addModulePost(currentValue);
@@ -208,7 +203,7 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 	public Map<Point3f, Float> getValuePoints() {
 		Map<Point3f, Float> valuePoints = new HashMap<Point3f, Float>();
 		
-		ProportionalValue votes = new ProportionalValue("Logging Value", maxVal);
+		ProportionalValue votes = new ProportionalValue("Logging Value", foodReward);
 		
 		for (int x = 0; x < gridSize; x++)
 			for (int y = 0; y < gridSize; y++){
@@ -230,7 +225,7 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 	public Map<Point3f, Integer> getPolicyPoints() {
 		Map<Point3f, Integer> policyPoints = new HashMap<Point3f, Integer>();
 		
-		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions, maxVotes);
+		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions, foodReward);
 		
 		for (int x = 0; x < gridSize; x++)
 			for (int y = 0; y < gridSize; y++){
