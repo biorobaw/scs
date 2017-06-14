@@ -39,8 +39,13 @@ public class ProportionalValue extends Module {
 	public void run(Map<Integer, Float> states, Float2dPort value) {
 		float valueEst = 0f;
 
+		float sum = 0;
+		for (int state : states.keySet()) {
+			sum += states.get(state);
+		}
+		
 		for (Integer s : states.keySet()){
-			float stateVal = states.get(s);
+			float stateVal = states.get(s) / sum;
 			if (stateVal != 0) {
 				float val = value.get(s, 0);
 				if (val != 0)
@@ -49,7 +54,7 @@ public class ProportionalValue extends Module {
 		}
 		
 		// Max value is food reward
-		valueEst = Math.max(-maxVal, Math.min(valueEst, maxVal));
+		valueEst = Math.max(-1, Math.min(valueEst, 1));
 		
 		valuePort.set(valueEst);
 		

@@ -41,9 +41,14 @@ public class ProportionalVotes extends Module implements Voter {
 		for (int action = 0; action < numActions; action++)
 			actionVote[action] = 0f;
 		
+		
+		float sum = 0;
+		for (int state : nonZero.keySet()) {
+			sum += nonZero.get(state);
+		}
 		// float cantStates = states.getSize();
 		for (int state : nonZero.keySet()) {
-			float stateVal = nonZero.get(state);
+			float stateVal = nonZero.get(state) / sum;
 			if (stateVal != 0) {
 				for (int action = 0; action < numActions; action++) {
 					float actionVal = value.get(state, action);
@@ -55,7 +60,7 @@ public class ProportionalVotes extends Module implements Voter {
 
 		// Max value is food reward
 		for (int action = 0; action < numActions; action++)
-			actionVote[action] = Math.max(-maxVotes, Math.min(actionVote[action], maxVotes));
+			actionVote[action] = Math.max(-1, Math.min(actionVote[action], 1));
 		
 		if (Debug.printValues) {
 			System.out.println("RL votes");
