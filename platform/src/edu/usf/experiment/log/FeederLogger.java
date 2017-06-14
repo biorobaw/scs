@@ -11,7 +11,7 @@ import edu.usf.experiment.universe.feeder.Feeder;
 import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class FeederLogger extends Logger {
+public class FeederLogger extends DistributedLogger {
 
 	public FeederLogger(ElementWrapper params, String logPath) {
 		super(params, logPath);

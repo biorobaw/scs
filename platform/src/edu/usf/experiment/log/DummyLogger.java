@@ -6,7 +6,7 @@ import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class DummyLogger extends Logger {
+public class DummyLogger extends DistributedLogger {
 
 	public DummyLogger(ElementWrapper params, String logPath){
 		super(params, logPath);

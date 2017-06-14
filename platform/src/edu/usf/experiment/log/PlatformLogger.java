@@ -11,7 +11,7 @@ import edu.usf.experiment.universe.platform.Platform;
 import edu.usf.experiment.universe.platform.PlatformUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class PlatformLogger extends Logger {
+public class PlatformLogger extends DistributedLogger {
 
 	public PlatformLogger(ElementWrapper params, String logPath) {
 		super(params, logPath);

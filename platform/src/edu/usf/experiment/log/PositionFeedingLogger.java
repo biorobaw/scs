@@ -7,7 +7,7 @@ import java.util.List;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public abstract class PositionFeedingLogger extends Logger {
+public abstract class PositionFeedingLogger extends DistributedLogger {
 
 	private List<Pose> poses;
 	

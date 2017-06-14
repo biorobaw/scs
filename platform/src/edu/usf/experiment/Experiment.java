@@ -126,6 +126,7 @@ public class Experiment implements Runnable {
 
 		PropertyHolder props = PropertyHolder.getInstance();
 		props.setProperty("log.directory", logPath);
+		props.setProperty("root.path", logPath);
 		props.setProperty("group", groupName);
 		props.setProperty("subject", subjectName);
 		

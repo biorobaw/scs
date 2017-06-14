@@ -14,7 +14,7 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class ValueLogger extends Logger {
+public class ValueLogger extends DistributedLogger {
 
 	private PrintWriter writer;
 

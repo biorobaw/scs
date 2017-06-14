@@ -12,7 +12,7 @@ import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class FeedingLogger extends Logger {
+public class FeedingLogger extends DistributedLogger {
 
 	private LinkedList<FeedingLog> feederLogs;
 

@@ -13,7 +13,7 @@ import edu.usf.experiment.universe.wall.Wall;
 import edu.usf.experiment.universe.wall.WallUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class WallLogger extends Logger {
+public class WallLogger extends DistributedLogger {
 
 	private List<Wall> walls;
 

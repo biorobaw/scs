@@ -9,7 +9,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public abstract class PositionLogger extends Logger {
+public abstract class PositionLogger extends DistributedLogger {
 
 	private List<Coordinate> poses;
 	

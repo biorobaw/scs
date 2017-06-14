@@ -1,14 +1,12 @@
 package edu.usf.experiment.log;
 
-import java.io.PrintWriter;
-
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class CyclesLogger extends Logger {
+public class CyclesLogger extends SingleFileLogger {
 
 	public CyclesLogger(ElementWrapper params, String logPath) {
 		super(params, logPath);
@@ -20,7 +18,6 @@ public class CyclesLogger extends Logger {
 	}
 
 	private void log() {
-		
 		synchronized (CyclesLogger.class) {
 			PropertyHolder props = PropertyHolder.getInstance();
 			String groupName = props.getProperty("group");
@@ -29,8 +26,7 @@ public class CyclesLogger extends Logger {
 			int episode = Integer.parseInt(props.getProperty("episode"));
 			int cycle = Integer.parseInt(props.getProperty("cycle"));
 			
-			PrintWriter writer = getWriter();
-				writer.println(trial + '\t' + groupName + '\t' + subName + '\t' + episode + '\t' 
+			append(trial + '\t' + groupName + '\t' + subName + '\t' + episode + '\t' 
 						+ cycle);
 		}
 	}
@@ -42,24 +38,16 @@ public class CyclesLogger extends Logger {
 
 	@Override
 	public void log(Experiment experiment) {
-
-	}
-
-	@Override
-	public void finalizeLog() {
-
-	}
-	
-	
-
-	@Override
-	public String getHeader() {
-		return "trial\tgroup\tsubject\trepetition\truntime";
 	}
 
 	@Override
 	public String getFileName() {
 		return "runtimes.csv";
+	}
+
+	@Override
+	public String getName() {
+		return "Runtimes";
 	}
 
 }
