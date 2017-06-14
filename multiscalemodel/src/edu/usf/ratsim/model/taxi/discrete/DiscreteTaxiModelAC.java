@@ -139,19 +139,19 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		Softmax softmax = new Softmax("softmax", numActions);
 		softmax.addInPort("input", currentStateQ.getOutPort("votes")); 
 		addModulePre(softmax);
-		DisplaySingleton.getDisplay().addComponent(new Float1dFillPlot((Float1dPort)softmax.getOutPort("probabilities")), 0, 3, 1, 1);
+		DisplaySingleton.getDisplay().addComponent(new Float1dFillPlot((Float1dPort)softmax.getOutPort("probabilities")), 0, 2, 1, 1);
 		
 		// Create ActionGatingModule -- sets the probabilities of impossible
 		// actions to 0 and then normalizes them
 		ActionGatingModule actionGating = new ActionGatingModule("actionGating", robot);
 		actionGating.addInPort("input", softmax.getOutPort("probabilities"));
 		addModulePre(actionGating);
-		DisplaySingleton.getDisplay().addComponent(new Float1dBarPlot((Float1dPort)actionGating.getOutPort("probabilities")), 0, 2, 1, 1);
+		DisplaySingleton.getDisplay().addComponent(new Float1dBarPlot((Float1dPort)actionGating.getOutPort("probabilities")), 0, 3, 1, 1);
 
 		// Create action selection module -- choose action according to
 		// probability distribution
 		Module actionSelection = new ActionFromProbabilities("actionFromProbabilities");
-		actionSelection.addInPort("probabilities", softmax.getOutPort("probabilities"));
+		actionSelection.addInPort("probabilities", actionGating.getOutPort("probabilities"));
 		addModulePre(actionSelection);
 
 		// Create Action Performer module
