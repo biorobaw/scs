@@ -196,7 +196,7 @@
 					</params>
 				</logger>
 				<logger>
-					<name>edu.usf.ratsim.experiment.subject.TSPFrance.loggers.PCActivityLogger</name>
+					<name>edu.usf.ratsim.experiment.log.PCActivityLogger</name>
 				</logger>
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->

@@ -3,23 +3,28 @@ package edu.usf.ratsim.experiment.subject.pablo.morris_replay;
 import java.util.List;
 import java.util.Map;
 
-import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.robot.RobotOld;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
+import edu.usf.ratsim.experiment.subject.interfaces.ActivityLoggerSubject;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import platform.simulatorVirtual.robots.PuckRobot;
 
 
-public class MorrisReplaySubject extends Subject {
+public class MorrisReplaySubject extends Subject implements ActivityLoggerSubject {
 
 	public float step;
 	public float leftAngle;
 	public float rightAngle;
 	
 	private MorrisReplayModel model;
+	
+	
+	//path matrix for replay:
+	public Float2dSparsePort WTable;
+	
 	
 	public PuckRobot robot;
 

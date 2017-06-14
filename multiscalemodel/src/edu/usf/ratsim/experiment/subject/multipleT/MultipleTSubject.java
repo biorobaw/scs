@@ -19,12 +19,13 @@ import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePortMatrix;
 import edu.usf.ratsim.experiment.subject.NotImplementedException;
+import edu.usf.ratsim.experiment.subject.interfaces.ActivityLoggerSubject;
 import edu.usf.ratsim.experiment.universe.virtual.CanvasRecorder;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.robot.virtual.VirtualRobot;
 
-public class MultipleTSubject extends SubjectOld {
+public class MultipleTSubject extends SubjectOld implements ActivityLoggerSubject {
 
 	public float step;
 

@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -47,6 +48,35 @@ public class BinaryFile {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void writeFloatList(OutputStream out,List<Float> iterableData){
+		
+		int totalSize =  1*Integer.SIZE + iterableData.size()*Float.SIZE;
+		ByteBuffer data = ByteBuffer.allocate(totalSize);
+		data.putInt(iterableData.size());
+		for(float v : iterableData)
+			data.putFloat(v);
+		
+		write(out, data.array());		
+		
+	}
+	
+	public static void writeIntList(OutputStream out, List<Integer> iterableData){
+		
+		int totalSize =  1*Integer.SIZE + iterableData.size()*Integer.SIZE;
+		ByteBuffer data = ByteBuffer.allocate(totalSize);
+		data.putInt(iterableData.size());
+		for(int v : iterableData)
+			data.putInt(v);
+		
+		write(out, data.array());	
+		
+	}
+	
+
+	
+	
+	
 	
 	public static void close(OutputStream out){
 		try {

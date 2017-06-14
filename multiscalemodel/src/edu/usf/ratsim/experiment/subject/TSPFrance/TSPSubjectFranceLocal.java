@@ -8,12 +8,13 @@ import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.RobotOld;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.ratsim.experiment.subject.interfaces.ActivityLoggerSubject;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import platform.simulatorVirtual.robots.PuckRobot;
 
 
-public class TSPSubjectFranceLocal extends Subject {
+public class TSPSubjectFranceLocal extends Subject implements ActivityLoggerSubject {
 
 	public float step;
 	public float leftAngle;

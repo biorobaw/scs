@@ -13,6 +13,7 @@ import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.experiment.subject.TSPSubject;
 import edu.usf.ratsim.experiment.subject.TSPFrance.TSPSubjectFrance;
 import edu.usf.ratsim.experiment.subject.TSPFrance.TSPSubjectFranceLocal;
+import edu.usf.ratsim.experiment.subject.interfaces.ActivityLoggerSubject;
 import edu.usf.ratsim.experiment.subject.multipleT.MultipleTSubject;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 
@@ -25,17 +26,11 @@ public class PCLogger extends Logger {
 	}
 
 	public void log(Subject sub) {
-		if (sub instanceof TSPSubject)
-			cells = ((TSPSubject) sub).getPlaceCells();
-		else if (sub instanceof MultipleTSubject)
-			cells = ((MultipleTSubject) sub).getPlaceCells();
-		else if (sub instanceof TSPSubjectFrance)
-			cells = ((TSPSubjectFrance) sub).getPlaceCells();
-		else if (sub instanceof TSPSubjectFranceLocal)
-			cells = ((TSPSubjectFranceLocal) sub).getPlaceCells();
+		if (sub instanceof ActivityLoggerSubject)
+			cells = ((ActivityLoggerSubject) sub).getPlaceCells();
 		else
 			throw new IllegalArgumentException(
-					"PC logger can only be used with TSPModel or MultipleTModel");
+					"PC logger can only be used subjects implementing the ActivityLoggerSubject interface");
 
 
 		

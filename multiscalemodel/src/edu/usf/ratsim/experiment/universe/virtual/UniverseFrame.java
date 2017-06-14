@@ -168,6 +168,7 @@ public class UniverseFrame extends java.awt.Frame {
 	
 	public void addDrawingFunction(DrawingFunction function){
 		function.setGraphics(topViewCanvas.getGraphics2D());
+		function.setCanvas3D(topViewCanvas);
 		drawingFunctions.push(function);
 	}
 

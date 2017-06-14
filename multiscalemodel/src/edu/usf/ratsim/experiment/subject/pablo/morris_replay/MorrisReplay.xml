@@ -40,7 +40,7 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.experiment.subject.pablo.morris_replay.MorrisReplayModel</name>
+		<name>edu.usf.ratsim.experiment.subject.pablo.morris_replay.MorrisReplaySubject</name>
 		<params>
 			<!-- Step length in meters -->
 			<step>.05</step>
@@ -66,6 +66,10 @@
 			<!--<feederOrder>$(feederOrder)</feederOrder>-->
 			<feederOrder></feederOrder> 
 			<pathFile>$(ratpath)</pathFile>
+			
+			
+			<numReplays>200</numReplays>
+			<replayThreshold>0</replayThreshold>
 			
 			
 			<filterVisitedFeedersProbability>$(P1)</filterVisitedFeedersProbability>
@@ -196,7 +200,7 @@
 					</params>
 				</logger>
 				<logger>
-					<name>edu.usf.ratsim.experiment.subject.TSPFrance.loggers.PCActivityLogger</name>
+					<name>edu.usf.ratsim.experiment.log.PCActivityLogger</name>
 				</logger>
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->

@@ -6,11 +6,12 @@ import java.util.Map;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.ratsim.experiment.subject.interfaces.ActivityLoggerSubject;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import platform.simulatorVirtual.robots.PuckRobot;
 
 
-public class TSPSubjectFrance extends Subject {
+public class TSPSubjectFrance extends Subject implements ActivityLoggerSubject {
 
 	public float step;
 	public float leftAngle;
