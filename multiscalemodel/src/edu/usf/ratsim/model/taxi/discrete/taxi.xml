@@ -57,41 +57,32 @@
 	</group>
 	
 	<group>
-		<name>Size 1</name>
-		<numMembers>64</numMembers>
-		<params>
-			<actionValueSizes>1</actionValueSizes>
-			<stateValueSizes>1</stateValueSizes>
-		</params>
-	</group>
-	
-	<group>
 		<name>Size 2</name>
 		<numMembers>64</numMembers>
 		<params>
 			<actionValueSizes>2</actionValueSizes>
 			<stateValueSizes>2</stateValueSizes>
 		</params>
-		<tasks></tasks>
 	</group>
 	
 	<group>
-		<name>Size 3</name>
+		<name>Size 4</name>
 		<numMembers>64</numMembers>
 		<params>
-			<actionValueSizes>7</actionValueSizes>
-			<stateValueSizes>7</stateValueSizes>
+			<actionValueSizes>4</actionValueSizes>
+			<stateValueSizes>4</stateValueSizes>
 		</params>
 		<tasks></tasks>
 	</group>
 	
 	<group>
-		<name>Combined Sizes</name>
+		<name>Size 8</name>
 		<numMembers>64</numMembers>
 		<params>
-			<actionValueSizes>0,1</actionValueSizes>
-			<stateValueSizes>0,1</stateValueSizes>
+			<actionValueSizes>8</actionValueSizes>
+			<stateValueSizes>8</stateValueSizes>
 		</params>
+		<tasks></tasks>
 	</group>
 	
 	<group>
@@ -100,17 +91,6 @@
 		<params>
 			<actionValueSizes>0</actionValueSizes>
 			<stateValueSizes>0</stateValueSizes>
-			<tracesDecay>.9</tracesDecay>
-		</params>
-		<tasks></tasks>
-	</group>
-	
-	<group>
-		<name>Size 1 - Traces</name>
-		<numMembers>64</numMembers>
-		<params>
-			<actionValueSizes>1</actionValueSizes>
-			<stateValueSizes>1</stateValueSizes>
 			<tracesDecay>.9</tracesDecay>
 		</params>
 		<tasks></tasks>
@@ -128,26 +108,26 @@
 	</group>
 	
 	<group>
-		<name>Size 3 - Traces</name>
+		<name>Size 4 - Traces</name>
 		<numMembers>64</numMembers>
 		<params>
-			<actionValueSizes>3</actionValueSizes>
-			<stateValueSizes>3</stateValueSizes>
+			<actionValueSizes>4</actionValueSizes>
+			<stateValueSizes>4</stateValueSizes>
 			<tracesDecay>.9</tracesDecay>
 		</params>
 		<tasks></tasks>
 	</group>
 	
 	<group>
-		<name>Combined Sizes - Traces</name>
+		<name>Size 8 - Traces</name>
 		<numMembers>64</numMembers>
 		<params>
-			<actionValueSizes>0,1</actionValueSizes>
-			<stateValueSizes>0,1</stateValueSizes>
+			<actionValueSizes>8</actionValueSizes>
+			<stateValueSizes>8</stateValueSizes>
 			<tracesDecay>.9</tracesDecay>
 		</params>
+		<tasks></tasks>
 	</group>
-	
 	
 	<beforeExperimentTasks>
 		<task>
@@ -161,15 +141,13 @@
 		<!-- Groups to apply the trial -->
 		<groups>
 			<group>Size 0</group>
-			<group>Size 1</group>
 			<group>Size 2</group>
-			<group>Size 3</group>
-			<group>Combined Sizes</group>
+			<group>Size 4</group>
+			<group>Size 8</group>
 			<group>Size 0 - Traces</group>
-			<group>Size 1 - Traces</group>
 			<group>Size 2 - Traces</group>
-			<group>Size 3 - Traces</group>
-			<group>Combined Sizes - Traces</group>
+			<group>Size 4 - Traces</group>
+			<group>Size 8 - Traces</group>
 			
 		</groups>
 		<!-- Tasks to perform beforehand -->
@@ -179,7 +157,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>100</number>
+			<number>500</number>
 			<!-- Sleep between cycles for visualization -->
 			<sleep>00</sleep>
 			<!-- Tasks to perform before each episode -->
