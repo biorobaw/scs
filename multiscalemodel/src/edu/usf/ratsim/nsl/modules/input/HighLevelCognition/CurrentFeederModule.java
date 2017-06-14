@@ -32,15 +32,20 @@ public class CurrentFeederModule extends Module {
 		
 		//check if tried to eat (otherwise don't count as if visited)
 		
+		
 		if(sub.hasTriedToEat()){
 		
 			FeederVisibilityInterface fvi = (FeederVisibilityInterface)sub.getRobot();
 			Feeder closest = fvi.getClosestFeeder();
 			//System.out.println("id closest" + closest.getId());
-			if (closest == null || !VirtUniverse.getInstance().isRobotCloseToFeeder(closest.getId()))
+			if (closest == null || !VirtUniverse.getInstance().isRobotCloseToFeeder(closest.getId())){
 				outPort.set(-1);
-			else
+//				System.out.println("TRIED TO EAT BUT NOT CLOSE TO FEEDER");
+			}
+			else{
 				outPort.set(closest.getId());
+//				System.out.println("VISITING: " + closest.getId());
+			}
 		} else outPort.set(-1);
 		//System.out.println("Done current feeders");
 	}

@@ -164,9 +164,7 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 		
 		if(universe.isRobotCloseToFeeder(feederId) ){
 			
-			if(Subject.instance instanceof SubjectOld) {
-				((SubjectOld)Subject.instance).setTriedToEat();
-			}
+			Subject.instance.setTriedToEat();
 			Boolean ate = universe.robotEat();
 			if(ate) Subject.instance.setHasEaten(ate); //set only if ate==true just in case this function is called more than once
 			System.out.println("Try to eat from: "+feederId +" "+ate);

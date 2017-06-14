@@ -96,8 +96,7 @@ public class UniverseFrame extends java.awt.Frame {
 			private static final long serialVersionUID = 2278728176596780651L;
 			
 			@Override
-			public void preRender(){
-				
+			public void preRender(){			
 				//view has not been set yet, do what ever
 				try {
 					renderLock.acquire();
@@ -106,11 +105,13 @@ public class UniverseFrame extends java.awt.Frame {
 					e.printStackTrace();
 				}
 				
+//				super.preRender();
 				
 			}
 			
 			@Override
 			public void renderField(int arg0) {
+//				super.renderField(arg0);
 				// TODO Auto-generated method stub
 				
 				//view has been set, and opaque scene graph objects drawn
@@ -124,6 +125,7 @@ public class UniverseFrame extends java.awt.Frame {
 			@Override
 			public void postRender()
 	        {
+//				super.postRender();
 				//transparent
 				
 				
@@ -134,7 +136,7 @@ public class UniverseFrame extends java.awt.Frame {
 			public void postSwap() {
 				// TODO Auto-generated method stub
 				//for sychronization
-				
+//				super.postSwap();
 				doneRenderLock.release();
 				
 			}

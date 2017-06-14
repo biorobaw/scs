@@ -37,7 +37,7 @@ public class ActionFromPathModule extends Module {
 		for (String[] s : strPoints){
 			Float x = Float.parseFloat(s[0]);
 			Float y = Float.parseFloat(s[1]);
-			System.out.println("coord: "+x+ " "+y);
+//			System.out.println("coord: "+x+ " "+y);
 			positions.add(new MoveToAction(x,y,0f,0f));
 		}
 		

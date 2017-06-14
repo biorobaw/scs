@@ -15,8 +15,8 @@ public class DoneCondition implements Condition {
 	@Override
 	public boolean holds(Episode e) {
 		// TODO Auto-generated method stub
-		boolean retVal = g.get("done")!=null;
-		if (retVal) System.out.println("Exit because done condition");
+		boolean retVal = (boolean)g.get("done");
+		if (retVal) System.out.println("Exit because done condition: " + retVal);
 		return retVal;
 	}
 

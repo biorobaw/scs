@@ -1,4 +1,4 @@
-package edu.usf.ratsim.experiment.subject.TSPFrance;
+package edu.usf.ratsim.experiment.subject.pablo.morris_replay;
 
 import java.io.IOException;
 
@@ -30,10 +30,8 @@ import edu.usf.ratsim.nsl.modules.input.HighLevelCognition.CurrentFeederModule;
 import edu.usf.ratsim.nsl.modules.input.Vision.VisibleFeedersModule;
 import platform.simulatorVirtual.robots.PuckRobot;
 
-public class TSPModelFranceLocal extends Model {
+public class MorrisReplayModel extends Model {
 
-	public LinkedList<Boolean> ateHistory = new LinkedList<Boolean>();
-	public LinkedList<float[]> pcActivationHistory = new LinkedList<float[]>();
 	
 	private TesselatedPlaceCellLayer placeCells;
 	
@@ -50,17 +48,15 @@ public class TSPModelFranceLocal extends Model {
 	//CELL MODULES
 	
 	//ACTION SELECTION MODULES
-	ActionFromPathModule actionFromPathModule;
 	NonVisitedFeederSetModule nonVisitedFeederSetMoudle;
 	RandomOrClosestFeederTaxicActionModule randomOrClosestFeederTaxicActionModule;
-//	ReservoirActionSelectionModule reservoirActionSelectionModule = null;
 	
 	
 	Bool0dPort chooseNewFeeder = new Bool0dPort(initialModule);
 	
 	
 	//REFERENCES for ease of access
-	TSPSubjectFranceLocal subject;
+	MorrisReplaySubject subject;
 	VirtUniverse universe = VirtUniverse.getInstance();
 	
 	
@@ -68,28 +64,27 @@ public class TSPModelFranceLocal extends Model {
 	
 	
 
-	public TSPModelFranceLocal() {
+	public MorrisReplayModel() {
 	}
 
-	public TSPModelFranceLocal(ElementWrapper params, TSPSubjectFranceLocal subject,PuckRobot robot) {
+	public MorrisReplayModel(ElementWrapper params, MorrisReplaySubject subject,PuckRobot robot) {
 		
 //		 ////////////////////      MODULES DIAGRAM           //////////////////////////////////////////////// 
 //		
 //		
 //		
 //		
-//		subAte----------
 //			
 //		currentFeeder------------------------------------------------
 //		                             |								| 
 //									\/								\/
 //		visibleFeedersModule -->NonVisitedFeederSetModule---> RandomOrClosestTaxicFeederAction			
 //																		|					
-//		                            ActionFromPath--------------------->*--------------->FinalTask (choose action)--Action execution
-//																		/\
-//		Pos--->placeCells---------> ReservoirActionSelectionModule------|
-//											/\	
-//									   prediction
+//		                                                                *--------------->FinalTask (choose action)--Action execution
+//																		
+//		Pos--->placeCells-------
+//												
+//									   
 //		hd--------
 //		
 //		
@@ -114,7 +109,6 @@ public class TSPModelFranceLocal extends Model {
 		List<Integer> order = params.getChildIntList("feederOrder");
 		
 		
-		String pathFile = params.getChild("pathFile").getText();
 		
 		
 		//BASIC NAVIGATION PARAMS:
@@ -185,34 +179,6 @@ public class TSPModelFranceLocal extends Model {
 		randomOrClosestFeederTaxicActionModule.addInPort("newSelection", chooseNewFeeder);
 		
 		
-		//MOVE USING A PATH:
-		actionFromPathModule = new ActionFromPathModule("actionFromPath", pathFile);
-		//addModule(actionFromPathModule);	
-		
-		//Reservoir Action:
-		/*  COMMENT OUT WHILE RESERVOIR IS NOT READY
-		//                                   id, stim_size,reservoir_size, leak_rate, initial_State_scale, lr, epochs
-		reservoir = new Reservoir( 0,  numPCs,	numPCs, 	1f, 	1f,	 0.5f,	 100);
-		
-		
-		reservoirActionSelectionModule = new ReservoirActionSelectionModule("reservoirAction", reservoir);
-		reservoirActionSelectionModule.addInPort("placeCells", placeCells.getOutPort("activation"));
-		addModule(reservoirActionSelectionModule);
-		*/
-		
-		// Schme selection module:
-//		Module schemeSelector = new SchemeSelector("schemeSelector");
-//		addModule(schemeSelector);
-		
-		
-		//TRN4Java INITIALIZATION
-//		TRN4JAVA.initialize_local(0, 0);
-//		try {
-//			TRN4JAVA.allocate(3);
-//		} catch (Exception e) {
-//			// TODO: handle exception
-//			e.printStackTrace();
-//		}
 		
 		
 		universe.addDrawingFunction(new DrawCycleInformation(375, 50, 15));	
@@ -243,12 +209,6 @@ public class TSPModelFranceLocal extends Model {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		
-		// TODO Auto-generated method stub		
-		//send reset signal to all modules that use memory:
-		/* COMMENT OUT RESERVOIR
-		reservoirActionSelectionModule.newEpisode();
-		*/
 
 		
 	}
@@ -256,10 +216,7 @@ public class TSPModelFranceLocal extends Model {
 
 	
 	public void endEpisode(){
-		/*
-		reservoir.train(pcActivationHistory, ateHistory);
-		*/
-//		reservoir.newEpisode();
+
 		
 	}
 
@@ -275,48 +232,16 @@ public class TSPModelFranceLocal extends Model {
 		//System.out.println("Initial Task");
 		chooseNewFeeder.set(robot.actionMessageBoard.get(FeederTaxicAction.actionID) != null);
 		
-		
-		
 	}
 	
 	
 	
+	
 	public void finalTask(){
-		
-		//append history:
-		//number of pace cells : numPCs;
-		Boolean ate = ((Bool0dPort)subAte.getOutPort("subAte")).get();
-		float[] pcVals = ((Float1dSparsePortMap)placeCells.getOutPort("activation")).getData();
-		
-		ateHistory.add(ate);
-		pcActivationHistory.add(pcVals);
-		
-		if(ate) System.out.println("subject ate? "+ ate);
-		
-		
-		
-		
-		
-		
-		//System.out.println("Final Task");
-		
-		
-		//perform action chosen with action from path module
-		//MoveToAction action = (MoveToAction)actionFromPathModule.outport.data;
-		//System.out.println(action);
-		//VirtUniverse.getInstance().setRobotPosition(new Point2D.Float(action.x(), action.y()), action.w());
-		
-		
-		//PERFORM ACTION OF TAXIC MODULE
-		//randomFeederTaxicActionModule.outport.data
-		
+				
 		subject.robot.pendingActions.add(randomOrClosestFeederTaxicActionModule.action);
 		
-		
-			
-		
-		
-		
+
 	}
 
 }

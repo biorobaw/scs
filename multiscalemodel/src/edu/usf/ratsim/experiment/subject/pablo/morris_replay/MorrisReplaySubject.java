@@ -1,4 +1,4 @@
-package edu.usf.ratsim.experiment.subject.TSPFrance;
+package edu.usf.ratsim.experiment.subject.pablo.morris_replay;
 
 import java.util.List;
 import java.util.Map;
@@ -13,24 +13,24 @@ import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import platform.simulatorVirtual.robots.PuckRobot;
 
 
-public class TSPSubjectFranceLocal extends Subject {
+public class MorrisReplaySubject extends Subject {
 
 	public float step;
 	public float leftAngle;
 	public float rightAngle;
 	
-	private TSPModelFranceLocal model;
+	private MorrisReplayModel model;
 	
 	public PuckRobot robot;
 
-	public TSPSubjectFranceLocal(String name, String group,
+	public MorrisReplaySubject(String name, String group,
 			ElementWrapper params, Robot robot) {
 		super(name, group, params, robot);
 
 		this.robot = (PuckRobot)robot;
 		
 		
-		model = new TSPModelFranceLocal(params, this, this.robot);
+		model = new MorrisReplayModel(params, this, this.robot);
 	}
 	
 	@Override

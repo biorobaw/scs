@@ -1,4 +1,4 @@
-package edu.usf.ratsim.experiment.subject.TSPFrance;
+package edu.usf.ratsim.experiment.subject.pablo.mymodules;
 
 import java.io.IOException;
 
@@ -14,7 +14,7 @@ import edu.usf.ratsim.nsl.modules.port.ModelActionPort;
 
 public class RandomOrClosestFeederTaxicActionModule extends Module {
 
-	FeederTaxicAction action = new FeederTaxicAction(-1);
+	public FeederTaxicAction action = new FeederTaxicAction(-1);
 	ModelActionPort outport = new ModelActionPort(this, action);
 	Runnable runFunction;
 	Runnable runFirst = new RunFirstTime();

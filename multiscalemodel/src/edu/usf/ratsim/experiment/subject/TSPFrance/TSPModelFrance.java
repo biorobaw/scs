@@ -13,6 +13,8 @@ import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
+import edu.usf.ratsim.experiment.subject.pablo.mymodules.NonVisitedFeederSetModule;
+import edu.usf.ratsim.experiment.subject.pablo.mymodules.RandomOrClosestFeederTaxicActionModule;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromPathModule;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
