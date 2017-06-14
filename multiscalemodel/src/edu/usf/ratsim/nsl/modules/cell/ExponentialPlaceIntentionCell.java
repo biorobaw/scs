@@ -2,7 +2,6 @@ package edu.usf.ratsim.nsl.modules.cell;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.ratsim.experiment.subject.NotImplementedException;
 
 /**

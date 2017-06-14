@@ -5,9 +5,8 @@ import java.util.LinkedList;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
-import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -30,8 +29,9 @@ public class FeedingLogger extends Logger {
 
 	private void log(SubjectOld subject, Universe universe) {
 		if (subject.hasTriedToEat()) {
-			PropertyHolder props = PropertyHolder.getInstance();
-			String cycle = props.getProperty("cycle");
+			//PropertyHolder props = PropertyHolder.getInstance();
+			//String cycle = props.getProperty("cycle");
+			String cycle = Globals.getInstance().get("cycle").toString();
 	//		int feeder = universe.getFoundFeeder();
 			if(subject.getRobot().isFeederClose()){
 	            int feeder = subject.getRobot().getClosestFeeder().getId();
@@ -55,11 +55,17 @@ public class FeedingLogger extends Logger {
 
 	@Override
 	public void finalizeLog() {
-		PropertyHolder props = PropertyHolder.getInstance();
-		String trialName = props.getProperty("trial");
-		String groupName = props.getProperty("group");
-		String subName = props.getProperty("subject");
-		String episode = props.getProperty("episode");
+//		PropertyHolder props = PropertyHolder.getInstance();
+//		String trialName = props.getProperty("trial");
+//		String groupName = props.getProperty("group");
+//		String subName = props.getProperty("subject");
+//		String episode = props.getProperty("episode");
+		
+		Globals g = Globals.getInstance();
+		String trialName = g.get("trial").toString();
+		String groupName = g.get("group").toString();
+		String subName = g.get("subName").toString();
+		String episode = g.get("episode").toString();
 
 
 		synchronized (PositionLogger.class) {

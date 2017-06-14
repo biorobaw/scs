@@ -4,17 +4,13 @@ import java.io.PrintWriter;
 import java.util.Map;
 
 
-import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
-
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.ratsim.experiment.subject.TSPSubject;
 import edu.usf.ratsim.experiment.subject.TSPFrance.TSPSubjectFrance;
 import edu.usf.ratsim.experiment.subject.TSPFrance.TSPSubjectFranceLocal;
 
@@ -31,12 +27,19 @@ public class PCActivityLogger extends Logger {
 			writer = getWriter();
 
 		Map<Integer, Float> activation = sub.getPCActivity();
-		PropertyHolder props = PropertyHolder.getInstance();
-		String trialName = props.getProperty("trial");
-		String groupName = props.getProperty("group");
-		String subName = props.getProperty("subject");
-		String episode = props.getProperty("episode");
-		String cycle = props.getProperty("cycle");
+//		PropertyHolder props = PropertyHolder.getInstance();
+//		String trialName = props.getProperty("trial");
+//		String groupName = props.getProperty("group");
+//		String subName = props.getProperty("subject");
+//		String episode = props.getProperty("episode");
+//		String cycle = props.getProperty("cycle");
+		
+		Globals g = Globals.getInstance();
+		String trialName = g.get("trial").toString();
+		String groupName = g.get("group").toString();
+		String subName = g.get("subName").toString();
+		String episode = g.get("episode").toString();
+		String cycle = g.get("cycle").toString();
 
 		for (Integer cell : activation.keySet())
 			writer.println(trialName + '\t' + groupName + '\t' + subName + '\t'
@@ -49,12 +52,13 @@ public class PCActivityLogger extends Logger {
 			writer = getWriter();
 
 		Map<Integer, Float> activation = sub.getPCActivity();
-		PropertyHolder props = PropertyHolder.getInstance();
-		String trialName = props.getProperty("trial");
-		String groupName = props.getProperty("group");
-		String subName = props.getProperty("subject");
-		String episode = props.getProperty("episode");
-		String cycle = props.getProperty("cycle");
+		
+		Globals g = Globals.getInstance();
+		String trialName = g.get("trial").toString();
+		String groupName = g.get("group").toString();
+		String subName = g.get("subName").toString();
+		String episode = g.get("episode").toString();
+		String cycle = g.get("cycle").toString();
 
 		for (Integer cell : activation.keySet())
 			writer.println(trialName + '\t' + groupName + '\t' + subName + '\t'

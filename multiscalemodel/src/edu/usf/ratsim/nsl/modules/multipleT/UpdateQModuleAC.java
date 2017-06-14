@@ -31,6 +31,10 @@ public class UpdateQModuleAC extends Module {
 		this.nu = nu;
 		dotProducts = new float[numActions][numActions];
 
+		
+		// precalculate table:  if action i was taken,
+		// all actions are rewarded according to their "distance" to action i.
+		// right now r = 1 if d(ai,aj)==0,  0 otherwise
 		double deltaAngle = 2 * Math.PI / numActions;
 		float anglei = 0;
 		for (int i = 0; i < numActions; i++) {
@@ -54,11 +58,20 @@ public class UpdateQModuleAC extends Module {
 		float nuDelta = nu * ((Float0dPort) getInPort("delta")).get();
 		int action = ((Int0dPort) getInPort("action")).get();
 		Float2dPort Q = (Float2dPort) getInPort("Q");
-
-		if (nuDelta == 0)
+		Float1dSparsePort PCs = (Float1dSparsePort) getInPort("placeCells");
+				
+		if (nuDelta == 0){
+			oldPCs = new HashMap<Integer, Float>(PCs.getNonZero());
 			return;
+		}
+		
+		
+		
+		
 
 		if (oldPCs != null) {
+			
+			
 			for (int i : oldPCs.keySet()) {
 				for (int j = 0; j < numActions; j++) {
 					Q.set(i, j, Q.get(i, j) + nuDelta * oldPCs.get(i) * dotProducts[j][action]);
@@ -68,8 +81,10 @@ public class UpdateQModuleAC extends Module {
 			}
 		}
 
-		Float1dSparsePort PCs = (Float1dSparsePort) getInPort("placeCells");
+		
+		
 		oldPCs = new HashMap<Integer, Float>(PCs.getNonZero());
+		
 	}
 
 	@Override

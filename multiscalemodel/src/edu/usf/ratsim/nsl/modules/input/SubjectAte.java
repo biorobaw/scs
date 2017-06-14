@@ -1,7 +1,6 @@
 package edu.usf.ratsim.nsl.modules.input;
 
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 
@@ -26,13 +25,24 @@ public class SubjectAte extends Module {
 
 	@Override
 	public void run() {
-		outPort.set(sub.hasEaten());
+		outPort.set(sub.hasEaten);
 	}
 
 	@Override
 	public boolean usesRandom() {
 		return false;
 	}
+	
+	public boolean subAte(){
+		return outPort.get();
+	}
+	
+	@Override
+	public void newEpisode(){
+		outPort.set(false);
+	
+	}
+	
 
 	
 }

@@ -3,7 +3,6 @@ package edu.usf.micronsl.port.twodimensional.sparse;
 import java.util.Map;
 
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.twodimensional.Float2dPort;
 
 /**

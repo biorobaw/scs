@@ -35,7 +35,7 @@ public class ActorCriticDeltaError extends Module {
 		float[] Q = ((Float1dPortArray)getInPort("Q")).getData();
 		
 		if (oldQ != null){
-			delta.set(r + gamma*Q[valueIndex] - oldQ[valueIndex]);
+			delta.set(r + gamma*Q[valueIndex] - oldQ[valueIndex]); //Q is actually the union of tables  [Q , V], value index indicates where V is stored
 		} else {
 			delta.set(0);
 			oldQ = new float[Q.length];

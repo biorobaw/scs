@@ -15,6 +15,7 @@ import edu.usf.experiment.robot.specificActions.DifferentialNavigationPolarActio
 import edu.usf.experiment.robot.specificActions.FeederTaxicAction;
 import edu.usf.experiment.robot.specificActions.MoveToAction;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -50,8 +51,8 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 	public void executeTimeStep(float deltaT) {
 		
 		//clear last state variables
-		Subject.instance.clearTriedToEAt();
-		Subject.instance.setHasEaten(false);
+		Subject.instance.clearCycleState();
+		
 		
 		
 		//execute new actions
@@ -163,7 +164,9 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 		
 		if(universe.isRobotCloseToFeeder(feederId) ){
 			
-			Subject.instance.setTriedToEat();
+			if(Subject.instance instanceof SubjectOld) {
+				((SubjectOld)Subject.instance).setTriedToEat();
+			}
 			Boolean ate = universe.robotEat();
 			if(ate) Subject.instance.setHasEaten(ate); //set only if ate==true just in case this function is called more than once
 			System.out.println("Try to eat from: "+feederId +" "+ate);

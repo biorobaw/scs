@@ -15,8 +15,6 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 public abstract class SubjectOld extends Subject{
 
 	private RobotOld robot;
-	private boolean rewarded;
-	
 	
 	public SubjectOld(String name, String group, ElementWrapper modelParams, RobotOld robot) {
 		this.name = name;
@@ -26,7 +24,7 @@ public abstract class SubjectOld extends Subject{
 		robot.startRobot();
 		
 		hasEaten = false;
-
+		triedToEat = false;
 	}
 
 	
@@ -41,7 +39,6 @@ public abstract class SubjectOld extends Subject{
 	 * @return
 	 */
 
-	
 	public RobotOld getRobot() {
 		return robot;
 	}
@@ -91,5 +88,6 @@ public abstract class SubjectOld extends Subject{
 	public Map<Integer, Float>  getPCActivity(){
 		return new HashMap<>();
 	}
+	
 
 }

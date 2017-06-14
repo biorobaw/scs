@@ -1,14 +1,7 @@
 package edu.usf.ratsim.nsl.modules.actionselection;
 
-import java.util.List;
 import java.util.Random;
 
-import edu.usf.experiment.robot.RobotOld;
-import edu.usf.experiment.subject.SubjectOld;
-import edu.usf.experiment.subject.affordance.Affordance;
-import edu.usf.experiment.subject.affordance.EatAffordance;
-import edu.usf.experiment.subject.affordance.ForwardAffordance;
-import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;

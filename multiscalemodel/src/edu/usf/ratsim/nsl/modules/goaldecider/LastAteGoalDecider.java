@@ -1,7 +1,6 @@
 package edu.usf.ratsim.nsl.modules.goaldecider;
 
 import edu.usf.experiment.utils.Debug;
-import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Int1dPortArray;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;

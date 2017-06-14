@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-<!--	<seed>-59875563504154406</seed>-->
+	<!-- <seed>-59875563504154406</seed> -->
 	
 	 <!-- load will load the subject (indicated by the input to the program) as saved after the specified episode  of the specified  trial-->
 	<!-- <load>
@@ -72,7 +72,7 @@
 			<cantReplay>200</cantReplay>
 			<!-- threshold to propagate PC activation during 
 			     sleep state. Should be numPC/50           -->
-			<replayThres>.001</replayThres>
+			<replayThres>1.0</replayThres>
 			
 			<!-- number of directions the rat con move towards -->
 			<numActions>8</numActions>
@@ -126,6 +126,23 @@
 		</tasks>
 	</group>
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- BEFORE EXPERIMENT LOGGER / PLOTTERS / TASK -->
+	
 	<!-- Task to be performed before the eperiment -->
 	<beforeExperimentTasks>
 	</beforeExperimentTasks>
@@ -146,7 +163,22 @@
 	</beforeExperimentPlotters>
 	
 	
-	<!-- Training trial - Non-delayed cue phase -->
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!--  TRIALS -->
+	
+	
+	<!-- HABITUATION EPISODES (TRIAL) - only CONTROL -->
 	<trial>
 		<name>Habituation</name>
 		<!-- Groups to apply the trial -->
@@ -187,32 +219,15 @@
 			<afterCycleTasks>
 			</afterCycleTasks>
 			<!-- Loggers to execute after each cycle -->
-			<afterCycleLoggers>
+			<beforeCycleLoggers>
 				<!-- Log the subject position -->
 				<logger>
 					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
 					<params>
 					</params>
 				</logger>
-			</afterCycleLoggers>
-			<!-- Loggers to execute after each episode -->
-			<afterEpisodeLoggers>
-				<!-- Log each wall position -->
-				<logger>
-					<name>edu.usf.experiment.log.WallLogger</name>
-					<params>
-					</params>
-				</logger>
-				<logger>
-					<name>edu.usf.experiment.log.FeederLogger</name>
-				</logger>
-			</afterEpisodeLoggers>
-			<!-- Tasks to execute after each episode -->
-			<afterEpisodeTasks>
-				<task>
-					<name>edu.usf.experiment.task.SaveSubject</name>
-				</task>
-			</afterEpisodeTasks>
+			</beforeCycleLoggers>
+			
 			<!-- Conditions upon which the episode ends -->
 			<stopConditions>
 				<!-- Timeout cycles -->
@@ -231,6 +246,25 @@
 					</params>
 				</condition>
 			</stopConditions>
+			
+			<!-- Tasks to execute after each episode -->
+			<!-- <afterEpisodeTasks>
+				<task>
+					<name>edu.usf.experiment.task.SaveSubject</name>
+				</task>
+			</afterEpisodeTasks> -->
+			
+			<!-- Loggers to execute after each episode -->
+			<afterEpisodeLoggers>
+				<!-- Log each wall position -->
+				<logger>
+					<name>edu.usf.experiment.log.WallLogger</name>
+					<params>
+					</params>
+				</logger>
+
+			</afterEpisodeLoggers>
+			
 			<!-- Plotters to execute after each episode -->
 			<afterEpisodePlotters>
 				<!-- Copy the maze file to the episode folder -->
@@ -249,6 +283,18 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
+				
+				<plotter>
+					<name>edu.usf.ratsim.experiment.subject.multipleT.QWPlotter</name>
+					<params>
+						<skip>false</skip>
+						<Wfile>WTable.bin</Wfile>
+						<Qfiles> </Qfiles>
+					</params>
+					
+				</plotter>
+				
+				
 			</afterEpisodePlotters>
 		</episodes>
 		<!-- Tasks to perform after the trial has ended -->
@@ -267,7 +313,10 @@
 	</trial>
 	
 	
-	<!-- Training trial - Non-delayed cue phase -->
+	
+	
+	
+	<!-- LEARNING EPISODES - ALL GROUPS -->
 	<trial>
 		<name>Learning</name>
 		<!-- Groups to apply the trial -->
@@ -294,9 +343,9 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>40</number><!-- 24 session * (80 + 80 laps * 8 replays) =   -->
+			<number>40</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>00</sleep>
+			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- <task>
@@ -323,7 +372,7 @@
 
 			</afterCycleTasks>
 			<!-- Loggers to execute after each cycle -->
-			<afterCycleLoggers>
+			<beforeCycleLoggers>
 				<!-- Log the subject position -->
 				<logger>
 					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
@@ -333,7 +382,7 @@
 				<!--  <logger>
 					<name>edu.usf.ratsim.experiment.log.PCActivityLogger</name>
 				</logger>-->
-			</afterCycleLoggers>
+			</beforeCycleLoggers>
 			<!-- Loggers to execute after each episode -->
 			<afterEpisodeLoggers>
 				<!-- Log each wall position -->
@@ -350,11 +399,11 @@
 				</logger> -->
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
-			<afterEpisodeTasks>
+			<!-- <afterEpisodeTasks>
 				<task>
 					<name>edu.usf.experiment.task.SaveSubject</name>
 				</task>
-			</afterEpisodeTasks>
+			</afterEpisodeTasks> -->
 			<!-- Conditions upon which the episode ends -->
 			<stopConditions>
 				<!-- Timeout cycles -->
@@ -394,6 +443,15 @@
 				<!-- <plotter>
 					<name>edu.usf.ratsim.experiment.plot.PCPlotter</name>
 				</plotter>-->
+				<plotter>
+					<name>edu.usf.ratsim.experiment.subject.multipleT.QWPlotter</name>
+					<params>
+						<skip>false</skip>
+						<Wfile>WTable.bin</Wfile>
+						<Qfiles> QTableBeforeReplay.bin , QTableAfterReplay.bin </Qfiles>
+					</params>
+					
+				</plotter>
 				
 			</afterEpisodePlotters>
 		</episodes>
@@ -411,6 +469,24 @@
 			</plotter> 
 		</afterTrialPlotters>
 	</trial>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- AFTER TASK PLOTTING/LOGGING/TASKS -->
 	
 	<!-- Tasks to perform after the experiment is over -->
 	<afterExperimentTasks>

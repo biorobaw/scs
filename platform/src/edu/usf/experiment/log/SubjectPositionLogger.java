@@ -5,7 +5,6 @@ import javax.vecmath.Point3f;
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Trial;
-import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.componentInterfaces.LocalizationInterface;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.SubjectOld;

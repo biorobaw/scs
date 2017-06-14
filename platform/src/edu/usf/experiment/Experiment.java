@@ -8,10 +8,8 @@ import java.util.List;
 import java.util.Random;
 
 import edu.usf.experiment.plot.Plotter;
-import edu.usf.experiment.robot.RobotOld;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.RobotLoader;
-import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.SubjectLoader;
 import edu.usf.experiment.task.Task;
@@ -63,6 +61,8 @@ public class Experiment implements Runnable {
 		file.mkdirs();
 		
 		IOUtils.copyFile(experimentFile, logPath + "/experiment.xml");
+		
+		//System.out.println("Loading experiment file root element...");
 		ElementWrapper root = XMLExperimentParser.loadRoot(experimentFile);
 		
 		ElementWrapper load = root.getChild("load");
@@ -77,6 +77,7 @@ public class Experiment implements Runnable {
 				.getChildText("maze");
 		IOUtils.copyFile(mazeFile, logPath + "/maze.xml");
 
+		//System.out.println("starting setup:");
 		setup(root, logPath, groupName, subjectName);
 	}
 	
@@ -116,15 +117,24 @@ public class Experiment implements Runnable {
 		// + subjectName + File.separator;
 		logPath = logPath + "/";
 
-		PropertyHolder props = PropertyHolder.getInstance();
-		props.setProperty("log.directory", logPath);
-		props.setProperty("group", groupName);
-		props.setProperty("subject", subjectName);
+//		PropertyHolder props = PropertyHolder.getInstance();
+//		props.setProperty("log.directory", logPath);
+//		props.setProperty("group", groupName);
+//		props.setProperty("subject", subjectName);
+//		props.setProperty("maze.file", logPath + "maze.xml");
+//		g.put("group", groupName);
+//		g.put("subject", subjectName);
+		g.put("maze.file",logPath + "maze.xml");
+		g.put("group",groupName);
+		g.put("subName", subjectName);
+		//g.put("log.directory", logPath);
 		
-		props.setProperty("maze.file", logPath + "maze.xml");
+		
+		System.out.println("Loading universe...");
 
 		universe = UniverseLoader.getInstance().load(root, logPath);
 
+		System.out.println("Loading robot...");
 		robot = RobotLoader.getInstance().load(root, universe);
 		//System.out.println("robot: "+robot);
 		//robot.startRobot();
@@ -259,7 +269,7 @@ public class Experiment implements Runnable {
 		if (args[1].endsWith("/"))
 			args[1] = args[1].substring(0, args[1].length()-1);			
 		g.put("logPath",args[1]);
-		g.put("groupName", args[2]);
+		g.put("group", args[2]);
 		g.put("subName", args[3]);
 		
 		int nextVar = 4;
@@ -285,7 +295,10 @@ public class Experiment implements Runnable {
 		}
 			
 		
-		Experiment e = new Experiment(args[0],(String)g.get("logPath") , args[2], args[3]);
+		String s0 = args[0], s2=args[2],s3=args[3];
+		args = null;
+		System.out.println("Loading experimnet...");
+		Experiment e = new Experiment(s0,(String)g.get("logPath") , s2, s3);
 		e.run();
 
 		System.out.println("[+] Finished running");

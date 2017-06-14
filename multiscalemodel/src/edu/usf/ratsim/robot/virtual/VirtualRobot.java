@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 
 import javax.media.j3d.Transform3D;
-import javax.media.j3d.VirtualUniverse;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
@@ -345,11 +344,11 @@ public class VirtualRobot extends LocalizableRobot {
 			// Updates food in universe
 			sub.setTriedToEat();
 
-			System.out.println("has food: "+getClosestFeeder().hasFood());
+//			System.out.println("has food: "+getClosestFeeder().hasFood());
 			if (getClosestFeeder().hasFood()) {
 				eat();
 				sub.setHasEaten(true);
-				System.out.println("ATE from feeder: " + getClosestFeeder().getId());
+//				System.out.println("ATE from feeder: " + getClosestFeeder().getId());
 				lastAteFeeder = getClosestFeeder().getId();
 				if (Debug.printTryingToEat)
 					System.out.println("Ate from a feeder with food");

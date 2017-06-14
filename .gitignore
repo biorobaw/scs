@@ -31,3 +31,5 @@ rat_sim.*
 *.Rhistory
 *bin/
 *.swp
+./im
+im/*

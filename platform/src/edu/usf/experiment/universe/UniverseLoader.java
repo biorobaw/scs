@@ -2,8 +2,6 @@ package edu.usf.experiment.universe;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-
 import edu.usf.experiment.utils.ElementWrapper;
 
 /**
@@ -37,14 +35,17 @@ public class UniverseLoader {
 		ElementWrapper universeNode = root.getChild("universe");
 		try {
 			Constructor constructor;
+			//System.out.println("universe.load()");
 //			constructor = classBySimpleName.get(
 //					universeNode.getChildText("name")).getConstructor(
 //					ElementWrapper.class);
 			constructor = Class.forName(
 					universeNode.getChildText("name")).getConstructor(
 					ElementWrapper.class, String.class);
+			System.out.println("Constructor: " + constructor.toString());
 			Universe universe = (Universe) constructor.newInstance(universeNode
 					.getChild("params"), logPath);
+			System.out.println("Universe loaded: "+ universe);
 			return universe;
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();

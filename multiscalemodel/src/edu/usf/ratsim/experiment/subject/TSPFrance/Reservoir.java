@@ -104,8 +104,8 @@ public class Reservoir {
 			reward[i] = ateHistory.get(i+1) ? 1f : 0f;
 		}
 			
-		TRN4JAVA.Api.declare_sequence(id, "target", incoming, expected, reward, observations);
-		TRN4JAVA.Api.train(id, "target");
+//		TRN4JAVA.Api.declare_sequence(id, "target", incoming, expected, reward, observations);
+//		TRN4JAVA.Api.train(id, "target");
 
 		target_declared = true;
 	}
@@ -119,7 +119,7 @@ public class Reservoir {
 		if (target_declared)
 		{
 			testing = true;
-			TRN4JAVA.Api.test(id, "target", 10); // at beginning of new episode - this provides predictions
+//			TRN4JAVA.Api.test(id, "target", 10); // at beginning of new episode - this provides predictions
 			testing = false;
 		}
 

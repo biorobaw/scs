@@ -7,8 +7,9 @@ public abstract class Subject {
 	protected String name;
 	protected String group;
 	protected Robot robot;
-	protected boolean hasEaten;
-	private boolean triedToEat;
+
+	public boolean hasEaten;
+	public boolean triedToEat;
 	
 	public Subject(){};
 	
@@ -20,7 +21,7 @@ public abstract class Subject {
 		this.robot = robot;
 		System.out.println("group: " + group);
 		hasEaten = false;
-		triedToEat = false;
+		triedToEat =false;
 		instance = this;
 
 	}
@@ -47,6 +48,21 @@ public abstract class Subject {
 	public boolean hasEaten(){
 		return hasEaten;
 	}
+	
+	public boolean hasTriedToEat(){
+		return triedToEat;
+	}
+	
+	public void setTriedToEat(){
+		triedToEat = true;
+	}
+
+	public void clearTriedToEAt(){
+		triedToEat = false;
+	}
+	
+	
+	
 
 	public void setGroup(String group) {
 		this.group = group;
@@ -72,24 +88,20 @@ public abstract class Subject {
 	 */
 	public abstract void stepCycle();
 	
-	public abstract void newEpisode();
+	public void newEpisode(){
+		hasEaten = false;
+		
+	}
 	
 	public abstract void newTrial();
 	
 	public void endEpisode(){}
 	
 	
-	
-	public boolean hasTriedToEat(){
-		return triedToEat;
-	}
-	
-	public void setTriedToEat(){
-		triedToEat = true;
-	}
-
-	public void clearTriedToEAt(){
-		triedToEat = false;
+	public void clearCycleState(){
+		setHasEaten(false);
+		clearTriedToEAt();
+		
 	}
 	
 	

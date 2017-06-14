@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.universe.Universe;
@@ -18,9 +18,12 @@ public class FeederLogger extends Logger {
 
 	public void log(Universe univ) {
 		synchronized (FeederLogger.class) {
-			PropertyHolder props = PropertyHolder.getInstance();
-			String groupName = props.getProperty("group");
-			String subName = props.getProperty("subject");
+			Globals g = Globals.getInstance();
+			//PropertyHolder props = PropertyHolder.getInstance();
+//			String groupName = props.getProperty("group");
+//			String subName = props.getProperty("subject");
+			String groupName = g.get("group").toString();
+			String subName = g.get("subName").toString();
 
 			PrintWriter writer = getWriter();
 			for (Feeder f : univ.getFeeders())

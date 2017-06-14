@@ -7,7 +7,6 @@ import org.w3c.dom.Document;
 
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Universe;
 
 public class XMLExperimentParser {

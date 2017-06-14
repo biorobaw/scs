@@ -1,7 +1,5 @@
 package edu.usf.ratsim.nsl.modules.multipleT;
 
-import javax.vecmath.Vector3f;
-
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.RobotOld;
 import edu.usf.experiment.subject.SubjectOld;
@@ -11,7 +9,6 @@ import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
-import edu.usf.ratsim.robot.virtual.VirtualRobot;
 
 /**
  * Module that sets the probability of an action to 0 if the action can not be performed
@@ -52,13 +49,18 @@ public class MultipleTActionPerformer extends Module {
 	
 	public void run() {
 		
+		subject.setHasEaten(false);
+		subject.clearTriedToEAt();
+		
 		int action = ((Int0dPort)getInPort("action")).get();
 		//System.out.println("performing: "+action);
 		float deltaAngle = GeomUtils.relativeAngle(angles[action], ((LocalizableRobot)robot).getOrientationAngle());
+		
 		robot.executeAffordance(new TurnAffordance(deltaAngle, stepSize), subject);
 		robot.executeAffordance(new ForwardAffordance(stepSize), subject);
 		
 		EatAffordance eat = new EatAffordance();
+		
 		if(robot.checkAffordance(eat)) robot.executeAffordance(eat, subject);
 		
 		//System.out.println("iteration: " + i);

@@ -45,14 +45,27 @@ public class SubjectLoader {
 //					String.class, String.class, ElementWrapper.class,
 //					Robot.class);
 			System.out.println(name);
-			constructor = Class.forName(name).getConstructor(
-					String.class, String.class, ElementWrapper.class,
-					Robot.class);
+			constructor = null;
 			
-			System.out.println("ROBOT: " +robot);
+			Class<?> mclass = Robot.class;
+			
+			try{
+				constructor = Class.forName(name).getConstructor(
+						String.class, String.class, ElementWrapper.class,
+						mclass);
+			} catch (Exception e) {
+				mclass = RobotOld.class;
+				constructor = Class.forName(name).getConstructor(
+						String.class, String.class, ElementWrapper.class,
+						mclass);
+				
+			}
+			System.out.println("Robot/class: "+robot + " "+ mclass);
 			
 			Subject sub = (Subject)constructor.newInstance(subjectName,
-					groupName, modelNode.getChild("params"), robot);
+					groupName, modelNode.getChild("params"),  robot);
+			
+						
 			return sub;
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();

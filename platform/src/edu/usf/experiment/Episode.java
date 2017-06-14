@@ -11,7 +11,6 @@ import edu.usf.experiment.log.LoggerLoader;
 import edu.usf.experiment.plot.Plotter;
 import edu.usf.experiment.plot.PlotterLoader;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.task.TaskLoader;
 import edu.usf.experiment.universe.Universe;
@@ -56,11 +55,21 @@ public class Episode {
 		this.episodeNumber = episodeNumber;
 		this.sleep = episodeNode.getChildInt("sleep");
 		this.makePlots = makePlots;
-		this.timeStep = episodeNode.getChildFloat("timeStep");
+		String timeStepString = episodeNode.getChildText("timeStep");
+		if(timeStepString!=null) this.timeStep = Float.parseFloat(timeStepString);
+		else this.timeStep = 1;
 		
+		//put given sleep time in correct position in array:
 		
-		this.sleepValues[sleepValues.length-1] = episodeNode.getChildInt("sleep");
-
+		int xmlSleep = episodeNode.getChildInt("sleep");
+		int insertPos = sleepValues.length-1;
+		while(insertPos > 0 && sleepValues[insertPos-1]>xmlSleep){
+			sleepValues[insertPos] = sleepValues[insertPos-1];
+			insertPos--;	
+		}
+		this.sleepValues[insertPos] = xmlSleep; 		
+		Globals.getInstance().put("simulationSpeed",insertPos);
+		Globals.getInstance().put("sleepValues", sleepValues);
 
 		logPath = parentLogPath
 				+ episodeNumber + "/"
@@ -105,28 +114,40 @@ public class Episode {
 		
 		Globals g = Globals.getInstance();
 		g.put("episodeLogPath", logPath);
-		PropertyHolder props = PropertyHolder.getInstance();
-		props.setProperty("episode", new Integer(episodeNumber).toString());
-		props.setProperty("log.directory", logPath);
+		g.put("episode",episodeNumber);
+		//g.put("log.directory",logPath);
+		
+		//PropertyHolder props = PropertyHolder.getInstance();
+		//props.setProperty("episode", new Integer(episodeNumber).toString());
+		//props.setProperty("log.directory", logPath);
+		
+		
+		
 
 		System.out.println("[+] Episode " + trial.getName() + " "
 				+ trial.getGroup() + " " + trial.getSubjectName() + " "
 				+ episodeNumber + " started.");
 
-		getSubject().newEpisode();
+		
 		
 		// Do all before trial tasks
-		for (Logger logger : beforeEpisodeLoggers)
-			logger.log(this);
 		for (Task task : beforeEpisodeTasks)
 			task.perform(this);
+		for (Logger logger : beforeEpisodeLoggers)
+			logger.log(this);
+		
+		getSubject().newEpisode();
+	
 		Plotter.plot(beforeEpisodePlotters);
 
 		// Execute cycles until stop condition holds
 		boolean finished = false;
 		int cycle = 0;
 		while (!finished) {
-			props.setProperty("cycle", new Integer(cycle).toString());
+			
+			
+			//props.setProperty("cycle", new Integer(cycle).toString());
+			g.put("cycle",cycle);
 			for (Logger l : beforeCycleLoggers)
 				l.log(this);
 			for (Task t : beforeCycleTasks)
@@ -136,7 +157,9 @@ public class Episode {
 //			System.out.println("cycle");
 			// TODO: universe step cycle
 			
+			
 			while((boolean)g.get("pause")); //the pause is here so that the model state can be observed before performing the actions
+			
 			
 			getSubject().getRobot().processPendingActions();
 			getSubject().getRobot().executeTimeStep(timeStep);

@@ -9,7 +9,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.usf.experiment.Globals;
@@ -124,6 +123,14 @@ public class ElementWrapper {
 		StringTokenizer tok = new StringTokenizer(listString, ",");
 		while (tok.hasMoreTokens())
 			list.add(Integer.parseInt(tok.nextToken()));
+		return list;
+	}
+	
+	public List<String> getChildStringList(String name) {
+		String listString = getChildText(name);
+		List<String> list = new LinkedList<String>();
+		StringTokenizer tok = new StringTokenizer(listString, ",");
+		while (tok.hasMoreTokens()) list.add(tok.nextToken().trim());
 		return list;
 	}
 

@@ -18,7 +18,7 @@ if __name__=='__main__':
   
   obligatoryColumns = {'SOURCE_FOLDERS':-1,'MAIN_CLASS':-1,'EXPERIMENT_XML':-1,'LOG_FOLDER':-1,'GROUP':-1,'RAT_NUMBER':-1}
   
-  optionalArguments = ['feederFile','nFoodStopCondition','feederOrder','startPosition']
+  optionalArguments = ['feederFile','nFoodStopCondition','feederOrder','startPosition','ratpath','enabledFeeders']
   possibleColumns = obligatoryColumns.keys() + optionalArguments
   
   readingColumn = None 
@@ -217,5 +217,4 @@ if __name__=='__main__':
     
           
   
-  
-
+ 
