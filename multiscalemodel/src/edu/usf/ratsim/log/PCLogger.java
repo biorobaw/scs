@@ -7,13 +7,13 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
-import edu.usf.experiment.log.Logger;
+import edu.usf.experiment.log.DistributedLogger;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.model.PlaceCellModel;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 
-public class PCLogger extends Logger {
+public class PCLogger extends DistributedLogger {
 
 	private List<PlaceCell> cells;
 

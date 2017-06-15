@@ -6,13 +6,13 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
-import edu.usf.experiment.log.Logger;
+import edu.usf.experiment.log.DistributedLogger;
 import edu.usf.experiment.model.ValueModel;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class ValueEntropyLogger extends Logger {
+public class ValueEntropyLogger extends DistributedLogger {
 
 	private PrintWriter writer;
 

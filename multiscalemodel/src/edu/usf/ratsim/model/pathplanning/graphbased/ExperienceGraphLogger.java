@@ -8,14 +8,14 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
-import edu.usf.experiment.log.Logger;
+import edu.usf.experiment.log.DistributedLogger;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.model.GraphModel;
 import edu.usf.ratsim.nsl.modules.pathplanning.Edge;
 import edu.usf.ratsim.nsl.modules.pathplanning.PointNode;
 
-public class ExperienceGraphLogger extends Logger {
+public class ExperienceGraphLogger extends DistributedLogger {
 
 	private UndirectedGraph<PointNode, Edge> g;
 
