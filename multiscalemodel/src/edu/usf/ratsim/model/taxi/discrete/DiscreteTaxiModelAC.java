@@ -167,7 +167,7 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		addModulePost(r);
 
 		// Create deltaSignal module
-		deltaError = new ActorCriticDeltaError("error", discountFactor);
+		deltaError = new ActorCriticDeltaError("error", discountFactor, foodReward);
 		deltaError.addInPort("reward", r.getOutPort("reward"));
 		deltaError.addInPort("value", currentValue.getOutPort("value"));
 		addModulePost(deltaError);

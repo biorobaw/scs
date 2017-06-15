@@ -18,10 +18,14 @@ public class ActorCriticDeltaError extends Module {
 	float oldValue;
 	boolean validOldValue;
 
-	public ActorCriticDeltaError(String name,float discountFactor) {
+	private float foodReward;
+
+	public ActorCriticDeltaError(String name,float discountFactor, float foodReward) {
 		super(name);
 		gamma = discountFactor;
 		this.addOutPort("delta", delta);
+		
+		this.foodReward = foodReward;
 		
 		oldValue = 0;
 		validOldValue = false;
@@ -33,7 +37,9 @@ public class ActorCriticDeltaError extends Module {
 		float value = ((Float0dPort)getInPort("value")).get();
 		
 		if (validOldValue){
-			delta.set(r + gamma*value - oldValue);
+			// Maximum obtained is capped by food reward
+			float obtained = Math.min(r + gamma*value, foodReward);
+			delta.set(obtained - oldValue);
 		} else {
 			delta.set(0);
 		}
