@@ -3,6 +3,8 @@
 
 <experiment>
 	
+<!--	<seed>-4629498818184128673</seed-->
+	
 	<universe>
 		<name>edu.usf.vlwsim.discrete.DiscreteVirtualUniverse</name>
 		<params>
@@ -31,6 +33,7 @@
 			<gridSize>20</gridSize>
 			<actionValueSizes>1</actionValueSizes>
 			<stateValueSizes>1</stateValueSizes>
+			<wallInteraction>true</wallInteraction>
 		</params>
 	</model>
 <!--
@@ -129,6 +132,17 @@
 		<tasks></tasks>
 	</group>
 	
+	<group>
+		<name>Size 4 NW</name>
+		<numMembers>64</numMembers>
+		<params>
+			<actionValueSizes>4</actionValueSizes>
+			<stateValueSizes>4</stateValueSizes>
+			<wallInteraction>false</wallInteraction>
+		</params>
+		<tasks></tasks>
+	</group>
+	
 	<beforeExperimentTasks>
 		<task>
 			<name>edu.usf.experiment.task.maze.SetUpTaxi</name>
@@ -148,7 +162,7 @@
 			<group>Size 2 - Traces</group>
 			<group>Size 4 - Traces</group>
 			<group>Size 8 - Traces</group>
-			
+			<group>Size 4 NW</group>
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>

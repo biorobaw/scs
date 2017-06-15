@@ -11,7 +11,22 @@ public class SizeNDiscretePlaceCell implements DiscretePlaceCell {
 	private int x;
 	private int y;
 	private int size;
+	private boolean wallInteraction;
 
+	/**
+	 * Create a custom size discrete place cell
+	 * @param x the preferred x location
+	 * @param y the preferred y location
+	 * @param size the radius of the place field. 0 means a 1 square field, 1 means a on square field (4 neighbors - 5 cells)
+	 * @param wallInteraction whether the place field is cut by the presence of a wall or not
+	 */
+	public SizeNDiscretePlaceCell(int x, int y, int size, boolean wallInteraction) {
+		this.x = x;
+		this.y = y;
+		this.size = size;
+		this.wallInteraction = wallInteraction;
+	}
+	
 	/**
 	 * Create a custom size discrete place cell
 	 * @param x the preferred x location
@@ -22,11 +37,12 @@ public class SizeNDiscretePlaceCell implements DiscretePlaceCell {
 		this.x = x;
 		this.y = y;
 		this.size = size;
+		this.wallInteraction = true;
 	}
 
 	public float getActivation(int x, int y, GlobalWallRobot gwr) {
 		LineSegment path = new LineSegment(new Coordinate(this.x + .5, this.y + .5), new Coordinate(x + .5, y + .5));
-		if (WallUniverseUtilities.segmentIntersectsWalls(gwr.getWalls(), path))
+		if (wallInteraction && WallUniverseUtilities.segmentIntersectsWalls(gwr.getWalls(), path))
 			return 0;
 		
 		

@@ -37,7 +37,7 @@ import edu.usf.ratsim.nsl.modules.rl.ActorCriticDeltaError;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
 import edu.usf.ratsim.nsl.modules.rl.UpdateQModuleACTraces;
 
-public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyModel{
+public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyModel {
 
 	public DiscretePlaceCellLayer actionPlaceCells, valuePlaceCells;
 
@@ -65,7 +65,6 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 
 	private float foodReward;
 
-
 	public DiscreteTaxiModelAC() {
 	}
 
@@ -80,68 +79,74 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		float nonFoodReward = params.getChildFloat("nonFoodReward");
 		List<Integer> actionValueSizes = params.getChildIntList("actionValueSizes");
 		List<Integer> stateValueSizes = params.getChildIntList("stateValueSizes");
-		
+		boolean wallInteraction = params.getChildBoolean("wallInteraction");
+
 		// Universe parameters
 		gridSize = params.getChildInt("gridSize");
 
 		LocalizableRobot lRobot = (LocalizableRobot) robot;
 		AffordanceRobot affRobot = (AffordanceRobot) robot;
 
-		numActions = affRobot.getPossibleAffordances().size();	
-		
+		numActions = affRobot.getPossibleAffordances().size();
+
 		// Create pos module
 		pos = new Position("position", lRobot);
 		addModulePost(pos);
 
 		List<DiscretePlaceCellLayer> pcLayers = new LinkedList<DiscretePlaceCellLayer>();
-		
+
 		// Create Place Cells module
-		actionPlaceCells = new DiscretePlaceCellLayer("PCLayer Small", gridSize, gridSize, actionValueSizes, (GlobalWallRobot) robot);
+		actionPlaceCells = new DiscretePlaceCellLayer("PCLayer Small", gridSize, gridSize, actionValueSizes,
+				(GlobalWallRobot) robot, wallInteraction);
 		actionPlaceCells.addInPort("position", pos.getOutPort("position"));
 		addModulePost(actionPlaceCells);
 		pcLayers.add(actionPlaceCells);
 
-		valuePlaceCells = new DiscretePlaceCellLayer("PCLayer Large", gridSize, gridSize, stateValueSizes, (GlobalWallRobot) robot);
+		valuePlaceCells = new DiscretePlaceCellLayer("PCLayer Large", gridSize, gridSize, stateValueSizes,
+				(GlobalWallRobot) robot, wallInteraction);
 		valuePlaceCells.addInPort("position", pos.getOutPort("position"));
 		addModulePost(valuePlaceCells);
 		pcLayers.add(valuePlaceCells);
 
 		numActionCells = actionPlaceCells.getActivationPort().getSize();
 		numValueCells = valuePlaceCells.getActivationPort().getSize();
-		
+
 		float[][] qvals = new float[numActionCells][numActions];
 		this.QTable = new FloatMatrixPort(null, qvals);
 		float[][] vVals = new float[numValueCells][1];
 		this.VTable = new FloatMatrixPort(null, vVals);
-		
+
 		// Traces
-		
 
 		// Create currentStateQ Q module
 		currentStateQ = new ProportionalVotes("currentStateQ", numActions, foodReward);
 		currentStateQ.addInPort("states", actionPlaceCells.getActivationPort());
 		currentStateQ.addInPort("qValues", QTable);
 		addModulePost(currentStateQ);
-		DisplaySingleton.getDisplay().addComponent(new Float1dDiscPlot((Float1dPort)currentStateQ.getOutPort("votes")), 0, 0, 1, 1);
-		
+		DisplaySingleton.getDisplay().addComponent(new Float1dDiscPlot((Float1dPort) currentStateQ.getOutPort("votes")),
+				0, 0, 1, 1);
+
 		currentValue = new ProportionalValue("currentValueQ", foodReward);
 		currentValue.addInPort("states", valuePlaceCells.getActivationPort());
 		currentValue.addInPort("value", VTable);
 		addModulePost(currentValue);
-		DisplaySingleton.getDisplay().addComponent(new Float0dSeriesPlot((Float0dPort)currentValue.getOutPort("value")), 0, 1, 1, 1);
-		
+		DisplaySingleton.getDisplay()
+				.addComponent(new Float0dSeriesPlot((Float0dPort) currentValue.getOutPort("value")), 0, 1, 1, 1);
+
 		// Create SoftMax module
 		Softmax softmax = new Softmax("softmax", numActions);
-		softmax.addInPort("input", currentStateQ.getOutPort("votes")); 
+		softmax.addInPort("input", currentStateQ.getOutPort("votes"));
 		addModulePre(softmax);
-		DisplaySingleton.getDisplay().addComponent(new Float1dFillPlot((Float1dPort)softmax.getOutPort("probabilities")), 0, 2, 1, 1);
-		
+		DisplaySingleton.getDisplay()
+				.addComponent(new Float1dFillPlot((Float1dPort) softmax.getOutPort("probabilities")), 0, 2, 1, 1);
+
 		// Create ActionGatingModule -- sets the probabilities of impossible
 		// actions to 0 and then normalizes them
 		ActionGatingModule actionGating = new ActionGatingModule("actionGating", robot);
 		actionGating.addInPort("input", softmax.getOutPort("probabilities"));
 		addModulePre(actionGating);
-		DisplaySingleton.getDisplay().addComponent(new Float1dBarPlot((Float1dPort)actionGating.getOutPort("probabilities")), 0, 3, 1, 1);
+		DisplaySingleton.getDisplay()
+				.addComponent(new Float1dBarPlot((Float1dPort) actionGating.getOutPort("probabilities")), 0, 3, 1, 1);
 
 		// Create action selection module -- choose action according to
 		// probability distribution
@@ -153,9 +158,9 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		MaxAffordanceActionPerformer actionPerformer = new MaxAffordanceActionPerformer("actionPerformer", robot);
 		actionPerformer.addInPort("action", actionSelection.getOutPort("action"));
 		addModulePre(actionPerformer);
-		
-//		// Cells are only computed after performing an action
-//		placeCells.addPreReq(actionPerformer);
+
+		// // Cells are only computed after performing an action
+		// placeCells.addPreReq(actionPerformer);
 
 		// create subAte module
 		SubFoundPlatform subFoundPlat = new SubFoundPlatform("Subject Found Plat", robot);
@@ -163,7 +168,7 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 
 		// Create reward module
 		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
-		r.addInPort("rewardingEvent", subFoundPlat.getOutPort("foundPlatform")); 
+		r.addInPort("rewardingEvent", subFoundPlat.getOutPort("foundPlatform"));
 		addModulePost(r);
 
 		// Create deltaSignal module
@@ -181,20 +186,20 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		updateQ.addInPort("actionPlaceCells", actionPlaceCells.getActivationPort());
 		updateQ.addInPort("valuePlaceCells", valuePlaceCells.getActivationPort());
 		addModulePost(updateQ);
-		
+
 		DisplaySingleton.getDisplay().addUniverseDrawer(new QValueDrawer(this), 0);
 		DisplaySingleton.getDisplay().addUniverseDrawer(new QPolicyDrawer(this, (AffordanceRobot) robot));
 	}
 
 	public void newEpisode() {
 		super.newEpisode();
-//		 Compute place cell output before making the first decision
+		// Compute place cell output before making the first decision
 		pos.run();
 		actionPlaceCells.run();
 		valuePlaceCells.run();
 		currentStateQ.run();
 		currentValue.run();
-		
+
 		deltaError.saveValue();
 		updateQ.savePCs();
 	}
@@ -202,18 +207,18 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 	@Override
 	public Map<Point3f, Float> getValuePoints() {
 		Map<Point3f, Float> valuePoints = new HashMap<Point3f, Float>();
-		
+
 		ProportionalValue votes = new ProportionalValue("Logging Value", foodReward);
-		
+
 		for (int x = 0; x < gridSize; x++)
-			for (int y = 0; y < gridSize; y++){
-				Point3f pos = new Point3f(x,y,0);
+			for (int y = 0; y < gridSize; y++) {
+				Point3f pos = new Point3f(x, y, 0);
 				Map<Integer, Float> activeMap = valuePlaceCells.getActive(pos);
 				votes.run(activeMap, VTable);
-				
+
 				valuePoints.put(pos, votes.valuePort.get());
 			}
-			
+
 		return valuePoints;
 	}
 
@@ -224,28 +229,28 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 
 	public Map<Point3f, Integer> getPolicyPoints() {
 		Map<Point3f, Integer> policyPoints = new HashMap<Point3f, Integer>();
-		
+
 		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions, foodReward);
-		
+
 		for (int x = 0; x < gridSize; x++)
-			for (int y = 0; y < gridSize; y++){
-				Point3f pos = new Point3f(x,y,0);
+			for (int y = 0; y < gridSize; y++) {
+				Point3f pos = new Point3f(x, y, 0);
 				Map<Integer, Float> activeMap = actionPlaceCells.getActive(pos);
 				votes.run(activeMap, QTable);
-				
+
 				float maxVal = -Float.MAX_VALUE;
 				int maxAction = 0;
 				int i = 0;
-				for (int action = 0; action < numActions; action++){
+				for (int action = 0; action < numActions; action++) {
 					float v = votes.actionVote[action];
-					maxAction =  v > maxVal ? i : maxAction;
+					maxAction = v > maxVal ? i : maxAction;
 					maxVal = v > maxVal ? v : maxVal;
 					i++;
 				}
-				
+
 				policyPoints.put(pos, maxAction);
 			}
-			
+
 		return policyPoints;
 	}
 

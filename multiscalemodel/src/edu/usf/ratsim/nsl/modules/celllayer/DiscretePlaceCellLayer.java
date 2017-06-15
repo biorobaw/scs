@@ -38,7 +38,8 @@ public class DiscretePlaceCellLayer extends Module implements PlaceCellLayer {
 	private Object robot;
 	private float maxActivation;
 
-	public DiscretePlaceCellLayer(String name, int width, int height, List<Integer> cellSizes, GlobalWallRobot gwr) {
+	public DiscretePlaceCellLayer(String name, int width, int height, List<Integer> cellSizes, GlobalWallRobot gwr,
+			boolean wallInteraction) {
 		super(name);
 
 		cells = new ArrayList<DiscretePlaceCell>();
@@ -50,38 +51,42 @@ public class DiscretePlaceCellLayer extends Module implements PlaceCellLayer {
 				stateActivationPerGridCell.put(new DiscreteCoord(x, y), new HashMap<Integer, Float>());
 			}
 
-		// Add cells 
+		// Add cells
 		for (int x = 0; x < width; x++)
 			for (int y = 0; y < height; y++) {
-				for (Integer cellSize : cellSizes )
-					cells.add(new SizeNDiscretePlaceCell(x, y, cellSize));
-				
+				for (Integer cellSize : cellSizes)
+					cells.add(new SizeNDiscretePlaceCell(x, y, cellSize, wallInteraction));
+
 			}
-		
+
 		// Compute maximum number of concurrently active
 		int maxActive = 0;
-		for (Integer cellSize : cellSizes )
+		for (Integer cellSize : cellSizes)
 			// Active cells are the sum from i=0..Size of 4^i
-			maxActive += Math.pow(4, cellSize) -1 / (4 -1);
+			maxActive += Math.pow(4, cellSize) - 1 / (4 - 1);
 		maxActivation = 0;
-		for (Integer cellSize : cellSizes )
+		for (Integer cellSize : cellSizes)
 			maxActivation += getMaxActivationSize(cellSize);
 		System.out.println("Max activation " + maxActivation);
-		
+
 		// Initialize the port
 		activationPort = new Float1dSparsePortMap(this, cells.size(), maxActive / cells.size());
 		addOutPort("output", activationPort);
-		
+
 		this.width = width;
 		this.height = height;
 		this.robot = gwr;
-		
+
+	}
+
+	public DiscretePlaceCellLayer(String name, int width, int height, List<Integer> cellSizes, GlobalWallRobot gwr) {
+		this(name, width, height, cellSizes, gwr, true);
 	}
 
 	private float getMaxActivationSize(Integer size) {
 		float maxActivation = 1;
 		for (int i = 1; i <= size; i++)
-			maxActivation += (4 * i) * (1 - ((float)i)/(2*size));
+			maxActivation += (4 * i) * (1 - ((float) i) / (2 * size));
 		return maxActivation;
 	}
 
