@@ -53,7 +53,7 @@ public class SizeNDiscretePlaceCell implements DiscretePlaceCell {
 		else if (blockDist > size)
 			return 0;
 		else
-			return 1 - blockDist / (2*size);
+			return 1 - blockDist / (2f*size);
 		
 	}
 
