@@ -17,6 +17,10 @@ import edu.usf.experiment.utils.ElementWrapper;
 public class DiscreteRobot implements LocalizableRobot, PlatformRobot, TeleportRobot, GlobalWallRobot {
 
 	private DiscreteVirtualUniverse u;
+	
+	public DiscreteRobot(Universe u) {
+		this.u = (DiscreteVirtualUniverse) u;
+	}
 
 	public DiscreteRobot(ElementWrapper params, Universe u) {
 		this.u = (DiscreteVirtualUniverse) u;

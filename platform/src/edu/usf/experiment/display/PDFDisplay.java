@@ -25,18 +25,19 @@ public class PDFDisplay implements Display {
 	private static final String FRAMES_FOLDER = "frames";
 	private int image;
 	private List<Drawer> drawers;
-	private String logPath;
 	private Scaler s;
 	private File frameDir;
 
 	public PDFDisplay() {
+		this(PropertyHolder.getInstance().getProperty("log.directory") + File.separator + FRAMES_FOLDER);
+	}
+	
+	public PDFDisplay(String logPath) {
 		image = 0;
 		drawers = new LinkedList<Drawer>();
-		logPath = PropertyHolder.getInstance().getProperty("log.directory");
-
-		frameDir = new File(logPath + File.separator + FRAMES_FOLDER);
-		frameDir.mkdir();
-
+		
+		frameDir = new File(logPath);
+		frameDir.mkdirs();
 	}
 
 	@Override

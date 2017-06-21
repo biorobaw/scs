@@ -13,9 +13,17 @@ import edu.usf.experiment.universe.wall.WallUniverse;
 public class WallDrawer implements Drawer {
 	
 	private WallUniverse u;
+	
+	final static int DEFAULT_WALL_THICKNESS = 2;
+	int wallThickness;
 
 	public WallDrawer(WallUniverse wu){
-		u = wu;
+		this(wu, DEFAULT_WALL_THICKNESS);
+	}
+
+	public WallDrawer(WallUniverse u, int wallThickness) {
+		this.u = u;
+		this.wallThickness = wallThickness;
 	}
 
 	@Override
@@ -23,7 +31,7 @@ public class WallDrawer implements Drawer {
 		g.setColor(Color.BLACK);
 		Graphics2D g2d = (Graphics2D)g;
 		Stroke oldStroke = g2d.getStroke();
-		g2d.setStroke(new BasicStroke(2));
+		g2d.setStroke(new BasicStroke(wallThickness));
 		for (Wall w : u.getWalls()){
 			Point p0 = s.scale(w.s.p0);
 			Point p1 = s.scale(w.s.p1);

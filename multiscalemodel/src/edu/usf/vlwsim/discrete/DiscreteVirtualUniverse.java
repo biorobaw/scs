@@ -43,14 +43,14 @@ public class DiscreteVirtualUniverse
 	private List<Platform> platforms;
 	private int robotDx;
 	private int robotDy;
-
-	public DiscreteVirtualUniverse(ElementWrapper params, String logPath) {
+	
+	public DiscreteVirtualUniverse(int gridWidth, int gridHeight, String logPath){
+		this.gridWidth = gridWidth;
+		this.gridHeight = gridHeight;
+		
 		robotPos = new Float();
 		robotAngle = 0;
-
-		gridWidth = params.getChildInt("width");
-		gridHeight = params.getChildInt("height");
-
+		
 		walls = new LinkedList<Wall>();
 		wallsToRevert = new LinkedList<Wall>();
 
@@ -67,6 +67,10 @@ public class DiscreteVirtualUniverse
 		DisplaySingleton.getDisplay().addUniverseDrawer(new DiscreteRobotDrawer(this));
 	}
 
+	public DiscreteVirtualUniverse(ElementWrapper params, String logPath) {
+		this(params.getChildInt("width"), params.getChildInt("height"), logPath);
+	}
+
 	@Override
 	public void setRobot(Robot robot) {
 		this.robot = robot;
@@ -79,7 +83,7 @@ public class DiscreteVirtualUniverse
 
 	@Override
 	public void setRobotOrientation(float degrees) {
-		robotAngle = (float) ((robotAngle + degrees + Math.PI * 2) % (2 * Math.PI));
+		robotAngle = (float) ((degrees + Math.PI * 2) % (2 * Math.PI));
 	}
 
 	@Override

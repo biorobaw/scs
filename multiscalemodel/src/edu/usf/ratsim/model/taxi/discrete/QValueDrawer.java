@@ -40,7 +40,9 @@ public class QValueDrawer implements Drawer {
 			Point lr = s.scale(new Coordinate(p.x +1, p.y));
 			float val = vps.get(p);
 			val = val < 0 ? val / maxNeg : val / maxPos;
-			Color b = new Color(val < 0 ? 1 : 0,0,val > 0 ? 1 : 0,Math.min(1, Math.abs(val)));
+			Color b = new Color(val < 0 ? 1 : 0,
+					0,
+					val > 0 ? 1 : 0,Math.min(1, Math.abs(val)));
 			g.setColor(b);
 			
 			g.fillRect(ul.x, ul.y, Math.abs(lr.x - ul.x),  Math.abs(ul.y - lr.y));

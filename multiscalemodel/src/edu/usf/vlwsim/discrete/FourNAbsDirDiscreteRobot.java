@@ -12,6 +12,12 @@ import edu.usf.experiment.utils.ElementWrapper;
 public class FourNAbsDirDiscreteRobot extends DiscreteRobot implements AffordanceRobot {
 
 	private DiscreteVirtualUniverse u;
+	
+	public FourNAbsDirDiscreteRobot(Universe u) {
+		super(u);
+		
+		this.u = (DiscreteVirtualUniverse) u;
+	}
 
 	public FourNAbsDirDiscreteRobot(ElementWrapper params, Universe u) {
 		super(params, u);
