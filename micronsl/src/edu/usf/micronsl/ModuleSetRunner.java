@@ -62,13 +62,16 @@ public class ModuleSetRunner {
 			modulesChanged = false;
 		}
 
-		pool.execute((List<DependencyRunnable>) (List<?>) moduleList);
-		try {
-			pool.awaitTermination(1000, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (!moduleList.isEmpty()){
+			pool.execute((List<DependencyRunnable>) (List<?>) moduleList);
+			try {
+				pool.awaitTermination(1000, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		
 	}
 
 	/**

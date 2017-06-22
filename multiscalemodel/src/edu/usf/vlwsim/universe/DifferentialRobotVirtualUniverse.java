@@ -20,9 +20,9 @@ public class DifferentialRobotVirtualUniverse extends VirtUniverse {
 
 	@Override
 	public void stepMotion() {
-		setRobotOrientation(robotW / 2 * getDeltaT());
+		rotateRobot(robotW / 2 * getDeltaT());
 		moveRobot(new Vector3f(robotV * getDeltaT(), 0, 0));
-		setRobotOrientation(robotW / 2 * getDeltaT());
+		rotateRobot(robotW / 2 * getDeltaT());
 	}
 	
 	/**
