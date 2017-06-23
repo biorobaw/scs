@@ -283,8 +283,9 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 		float[] readings = new float[sonarAngles.size()];
 
 		int i = 0;
-		for (float angle : sonarAngles)
+		for (float angle : sonarAngles){
 			readings[i++] = universe.getRobotSonarReading(angle, sonarAperture, sonarMaxDist, sonarNumRays);
+		}
 
 		return readings;
 	}

@@ -64,6 +64,8 @@ public class ExperienceRoadMap extends Module {
 
 	private Robot robot;
 
+	private PointNode nextNode;
+
 	public ExperienceRoadMap(String name, String algorithm, Robot robot) {
 		super(name);
 
@@ -173,7 +175,7 @@ public class ExperienceRoadMap extends Module {
 			// }0
 			// Get the node further into the path that is not active
 			int i = 0;
-			PointNode nextNode = mostActive;
+			nextNode = mostActive;
 			while (i < l.size() && active.contains(nextNode)) {
 				Pair<PointNode> edge = g.getEndpoints(l.get(i));
 				if (edge.getFirst() == nextNode)
@@ -308,6 +310,10 @@ public class ExperienceRoadMap extends Module {
 
 	public UndirectedGraph<PointNode, Edge> getGraph() {
 		return g;
+	}
+	
+	public PointNode getNextNode(){
+		return nextNode;
 	}
 
 }
