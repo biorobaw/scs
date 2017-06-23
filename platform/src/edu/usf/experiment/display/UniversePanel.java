@@ -3,9 +3,12 @@ package edu.usf.experiment.display;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D.Float;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 import edu.usf.experiment.display.drawer.Drawer;
@@ -33,9 +36,16 @@ public class UniversePanel extends JPanel {
 	private static final float YMARGIN = 10;
 	private List<Drawer> drawers;
 	private BoundedUniverse bu;
+	private JPanel cbPanel;
+	private HashMap<Drawer,JCheckBox> cBoxes;
 
 	public UniversePanel(BoundedUniverse bu) {
 		this.drawers = new LinkedList<Drawer>();
+		
+		cBoxes = new HashMap<Drawer, JCheckBox>();
+		cbPanel = new JPanel();
+		cbPanel.setLayout(new BoxLayout(cbPanel, BoxLayout.X_AXIS));
+		add(cbPanel);
 		
 		this.bu = bu;
 	}
@@ -60,17 +70,16 @@ public class UniversePanel extends JPanel {
 		float yoffset = -(univRect.height + univRect.y + YMARGIN / defScale);
 		Scaler s = new Scaler(defScale, defScale, xoffset, yoffset);
 
-		for (Drawer d : drawers)
-			d.draw(g, s);
+		for (Drawer d : drawers){
+			if (cBoxes.get(d).isSelected())
+				d.draw(g, s);
+		}
+			
 
 	}
 
 	public Dimension getPreferredSize() {
-		return new Dimension(400, 400);
-	}
-	
-	public void addDrawer(Drawer d){
-		drawers.add(d);
+		return new Dimension(800, 800);
 	}
 	
 	public void removeDrawer(Drawer d){
@@ -78,6 +87,15 @@ public class UniversePanel extends JPanel {
 	}
 
 	public void addDrawer(Drawer d, int pos) {
+		JCheckBox cb = new JCheckBox(d.getClass().getSimpleName(), true);
+		add(cb);
+		
+		cBoxes.put(d, cb);
+		
 		drawers.add(pos, d);
+	}
+	
+	public void addDrawer(Drawer d){
+		addDrawer(d, drawers.size());
 	}
 }

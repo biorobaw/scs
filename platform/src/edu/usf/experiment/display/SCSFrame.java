@@ -34,7 +34,6 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		setTitle("Spatial Cognition Simulator");
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		
 		// Add slider for simulation velocity
 		Globals g = Globals.getInstance();
@@ -51,6 +50,7 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		
 		addComponent(simVel, 1, 1, 1, 1);
 		
+		pack();
 		setVisible(true);
 	}
 	
@@ -92,6 +92,7 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 	@Override
 	public void addUniverseDrawer(Drawer d) {
 		uPanel.addDrawer(d);
+		pack();
 	}
 
 	@Override
@@ -103,7 +104,7 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 	@Override
 	public void addUniverseDrawer(Drawer d, int pos) {
 		uPanel.addDrawer(d, pos);
-		
+		pack();
 	}
 	
 }

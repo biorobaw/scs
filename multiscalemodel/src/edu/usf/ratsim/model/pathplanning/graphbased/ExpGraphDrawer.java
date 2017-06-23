@@ -3,6 +3,7 @@ package edu.usf.ratsim.model.pathplanning.graphbased;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.LinkedList;
 
 import javax.vecmath.Point3f;
 
@@ -29,7 +30,8 @@ public class ExpGraphDrawer implements Drawer {
 		UndirectedGraph<PointNode, Edge> graph = erm.getGraph();
 		
 		if (graph != null){
-			for (Edge e : graph.getEdges()){
+			LinkedList<Edge> edges = new LinkedList<Edge>(graph.getEdges());
+			for (Edge e : edges){
 				g.setColor(Color.GRAY);
 				Point dst = s.scale(graph.getEndpoints(e).getFirst().prefLoc);
 				Point src = s.scale(graph.getEndpoints(e).getSecond().prefLoc);
