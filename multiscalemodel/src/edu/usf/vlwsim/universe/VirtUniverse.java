@@ -32,6 +32,10 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
 import edu.usf.experiment.display.DisplaySingleton;
+import edu.usf.experiment.display.drawer.FeederDrawer;
+import edu.usf.experiment.display.drawer.PlatformDrawer;
+import edu.usf.experiment.display.drawer.RobotDrawer;
+import edu.usf.experiment.display.drawer.WallDrawer;
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.universe.BoundedUniverse;
@@ -86,7 +90,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	/**
 	 * Minimum distance the agent must be away from walls
 	 */
-	private final double MIN_DISTANCE_TO_WALLS = 0.025;
+	private final double MIN_DISTANCE_TO_WALLS = 0.05;
 
 	/**
 	 * The robot object for accounting reasons - e.g. position tracking
@@ -323,7 +327,12 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 			topViewPanel.add(topViewCanvas);
 			DisplaySingleton.getDisplay().addComponent(topViewPanel, 0, 0, 1, 1);
 		} else {
-			DisplaySingleton.getDisplay().addComponent(new VirtualUniversePanel(this), 1, 0, 1, 1);
+			DisplaySingleton.getDisplay().setupUniversePanel(this);
+			DisplaySingleton.getDisplay().addUniverseDrawer(new PlatformDrawer(this));
+			DisplaySingleton.getDisplay().addUniverseDrawer(new FeederDrawer(this));
+			DisplaySingleton.getDisplay().addUniverseDrawer(new WallDrawer(this));
+			DisplaySingleton.getDisplay().addUniverseDrawer(new RobotDrawer(this));
+			
 		}
 
 	}
@@ -571,7 +580,10 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 		Quat4f rot = new Quat4f();
 		t.get(rot);
-		return (float) (2 * Math.acos(rot.w) * Math.signum(rot.z));
+		if (Float.isNaN(rot.w))
+			return (float) -Math.PI;
+		else
+			return (float) (2 * Math.acos(rot.w) * Math.signum(rot.z));
 	}
 
 	/*********************************
@@ -971,23 +983,19 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		Point3f rPos = getRobotPosition();
 		Coordinate rCoor = new Coordinate(rPos.x, rPos.y);
 
-		Transform3D rT = robotPos;
-
 		float closestDist = maxDist;
+		float robotAngle = getRobotOrientationAngle();
 
 		// For each ray
 		for (int i = 0; i < numRays; i++) {
 			// Get the angle of the ray in the robot's frame of reference
 			// It goes in the segment [angle - aperture/2, angle + aperture/2]
 			float rayAngle = angle - sonarAperture / 2 + ((float) i) / (numRays - 1) * sonarAperture;
+			float absRayAngle = rayAngle + robotAngle;
 			// Create each point in the robot frame of reference
-			Point3f rayEnd = new Point3f((float) (Math.cos(rayAngle) * maxDist), (float) (Math.sin(rayAngle) * maxDist),
-					0);
-			// Rotate and translate it to reflect the robot frame of ref
-			rT.transform(rayEnd);
-			Coordinate rayEndCoor = new Coordinate(rayEnd.x, rayEnd.y);
+			Coordinate rayEnd = new Coordinate(rPos.x + Math.cos(absRayAngle) * maxDist, rPos.y + Math.sin(absRayAngle) * maxDist);
 			// Create a segment from the robot to the point
-			LineSegment s = new LineSegment(rCoor, rayEndCoor);
+			LineSegment s = new LineSegment(rCoor, rayEnd);
 			// Intersect the segment to all walls to find closest point to the
 			// robot
 			for (Wall w : getWalls()) {
