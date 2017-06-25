@@ -17,7 +17,6 @@ import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import edu.uci.ics.jung.graph.util.Pair;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.subject.Subject;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
@@ -65,6 +64,8 @@ public class ExperienceRoadMap extends Module {
 	private Robot robot;
 
 	private PointNode nextNode;
+
+	private List<PointNode> prevActive;
 
 	public ExperienceRoadMap(String name, String algorithm, Robot robot) {
 		super(name);
@@ -118,13 +119,24 @@ public class ExperienceRoadMap extends Module {
 		}
 
 		// Connectivity of all active nodes
-		for (int i = 0; i < active.size() - 1; i++)
+		for (int i = 0; i < active.size(); i++){
+			PointNode n1 = active.get(i);
+			// Link to existing ones
 			for (int j = i + 1; j < active.size(); j++) {
-				PointNode n1 = active.get(i);
 				PointNode n2 = active.get(j);
 				if (!g.isNeighbor(n1, n2))
 					g.addEdge(new Edge(n1.prefLoc.distance(n2.prefLoc)), n1, n2);
 			}
+			// Link to previously active
+			if (prevActive != null){
+				for (PointNode n2 : prevActive) {
+					if (!g.isNeighbor(n1, n2))
+						g.addEdge(new Edge(n1.prefLoc.distance(n2.prefLoc)), n1, n2);
+				}
+			}
+		}
+		
+		prevActive = active;
 
 		// Compute dijsktra
 		// Get the current node
@@ -306,6 +318,8 @@ public class ExperienceRoadMap extends Module {
 
 		bug.newEpisode();
 		bug0.newEpisode();
+		
+		prevActive = null;
 	}
 
 	public UndirectedGraph<PointNode, Edge> getGraph() {
