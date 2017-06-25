@@ -167,7 +167,7 @@
 			<!-- Number of episodes -->
 			<number>10</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>100</sleep>
+			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Place the animat in a given place -->
@@ -302,7 +302,7 @@
 			<!-- Number of episodes -->
 			<number>40</number><!-- 24 session * (80 + 80 laps * 8 replays) =   -->
 			<!-- Sleep between cycles for visualization -->
-			<sleep>100</sleep>
+			<sleep>00</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- <task>
