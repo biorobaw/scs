@@ -11,10 +11,9 @@ import java.util.LinkedList;
 /**
 * @author Eduardo Zuloaga
 */
-public class SpikeEventMgr {
-    List<SpikeEvent> eventList;
-    List<LeakyIntegratorSpikingNeuron> spikeLedger;
-	private LinkedList<NetPlot> plots;
+public class SpikeEventMgr implements SpikeListener {
+   
+	List<SpikeEvent> events;
     private static SpikeEventMgr instance = null;
     
     public static SpikeEventMgr getInstance() {
@@ -22,19 +21,17 @@ public class SpikeEventMgr {
         return instance;
     }
     
+    // TODO: this list should be sorted by size
     public void process(long time) {
         SpikeEvent cur;
         //iterate through eventList
         int i = 0;
-        while (i < eventList.size()) {
-            cur = eventList.get(i);
+        while (i < events.size()) {
+            cur = events.get(i);
             if (cur.timeStamp == time) {
                 //send voltage to neuron and remove from list
                 cur.target.input(time, cur.source);
-                eventList.remove(i);
-                
-                for (NetPlot plot : plots)
-                	plot.addSpike(cur.source, time);
+                events.remove(i);
             }
             else {
                 //check next index in list
@@ -44,41 +41,16 @@ public class SpikeEventMgr {
     }
     public void queueSpike(SpikingNeuron src, SpikingNeuron dst, long time) {
         SpikeEvent e0 = new SpikeEvent(src, dst, time);
-        eventList.add(e0);
+        events.add(e0);
     }
     
-    public void addToLedger(SpikingNeuron n) {
-        if (n instanceof LeakyIntegratorSpikingNeuron) {
-            LeakyIntegratorSpikingNeuron neuron = (LeakyIntegratorSpikingNeuron)n;
-            spikeLedger.add(neuron);
-        }
-    }
-    
-    public List<LeakyIntegratorSpikingNeuron> getLedger() {
-        List<LeakyIntegratorSpikingNeuron> l = new ArrayList();
-        for (int i = 0; i < this.spikeLedger.size(); i++) {
-            l.add(this.spikeLedger.get(i));
-        }
-        this.spikeLedger.clear();
-        return l;
-    }
     private SpikeEventMgr() {
-        eventList = new ArrayList();
-        spikeLedger = new ArrayList();
-        plots = new LinkedList<NetPlot>();
+        events = new ArrayList<SpikeEvent>();
     }
 
-	public void registerPlot(NetPlot plot) {
-		plots.add(plot);
+	@Override
+	public void spikeEvent(SpikeEvent e) {
+		for (SpikingNeuron sn : e.source.getOuputNeurons())
+			events.add(new SpikeEvent(e.source, sn, e.timeStamp));
 	}
 }
-
-/*
-current issue:
-    spike event list handling:
-        how to perform while maintaining good performance
-        list implementation requires O(n) per time interval
-            issue here: unknown how fast n grows
-            possible solution: keep list sorted
-                considerably more cost effective with a linked list
-*/

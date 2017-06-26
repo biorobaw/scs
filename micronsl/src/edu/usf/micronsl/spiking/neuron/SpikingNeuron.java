@@ -48,10 +48,6 @@ public abstract class SpikingNeuron {
 	 */
 	public int id;
 	/**
-	 * A pointer to the Spike Event Manager
-	 */
-	private SpikeEventMgr sEM;
-	/**
 	 * A list of spike listeners 
 	 */
 	private LinkedList<SpikeListener> spikeListeners;
@@ -74,10 +70,10 @@ public abstract class SpikingNeuron {
 //		place[0] = layer_num;
 //		place[1] = neu_num;
 
-		this.sEM = SpikeEventMgr.getInstance();
 		this.id = id;
 		
 		this.spikeListeners = new LinkedList<SpikeListener>();
+		addSpikeListener(SpikeEventMgr.getInstance());
 	}
 
 	/**
@@ -134,15 +130,11 @@ public abstract class SpikingNeuron {
 	 */
 	public void spike(long time) {
 		last_spike = time;
-		sEM.addToLedger(this);
 		voltage = 0.0;
-		// queue voltage signals to all outputs
-		for (int i = 0; i < outputNeurons.size(); i++) {
-			sEM.queueSpike(this, outputNeurons.get(i), time + outputNeurons.get(i).delay);
-		}
-		
+
+		SpikeEvent evt = new SpikeEvent(this, time);
 		for (SpikeListener sl : spikeListeners)
-			sl.spikeEvent(new SpikeEvent(this, time));
+			sl.spikeEvent(evt);
 	}
 	
 	/**
@@ -165,6 +157,10 @@ public abstract class SpikingNeuron {
 
 	public void addSpikeListener(SpikeListener listener) {
 		spikeListeners.add(listener);
+	}
+
+	public List<SpikingNeuron> getOuputNeurons() {
+		return outputNeurons;
 	}
 
 }

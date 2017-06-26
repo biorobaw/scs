@@ -39,6 +39,7 @@ public class OscillatorNeuron extends SpikingNeuron {
 			param = 1.0;
 		toyval = 0.0;
 		rand = new Random();
+		
 	}
 
 	public boolean readyToFire() {

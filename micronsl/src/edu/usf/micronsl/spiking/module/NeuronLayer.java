@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.usf.micronsl.spiking.SpikeEvent;
+import edu.usf.micronsl.spiking.SpikeEventMgr;
 import edu.usf.micronsl.spiking.SpikeListener;
 import edu.usf.micronsl.spiking.neuron.SpikingNeuron;
 
