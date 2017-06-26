@@ -211,6 +211,8 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 			
 		} else if (action instanceof FeederTaxicAction){
 			currentAction = action;
+		} else if (action instanceof MoveToAction){
+			currentAction = action;
 		}
 		
 	}
