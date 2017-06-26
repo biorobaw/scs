@@ -88,7 +88,7 @@ public class NetPlot implements SpikeListener {
 		// Only add a spike if pertinent to this plot
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				spikes.add(e.timeStamp, e.source.id);
+				spikes.add(e.time, e.source.id);
 			}
 		});
 

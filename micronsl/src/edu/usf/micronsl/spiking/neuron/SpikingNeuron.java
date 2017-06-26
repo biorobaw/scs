@@ -38,7 +38,7 @@ public abstract class SpikingNeuron {
 	/**
 	 * The delay applied to spikes before they reach their destination in the following neurons
 	 */
-	long delay;
+	public long delay;
 	/**
 	 * The timestamp of the last spike
 	 */
