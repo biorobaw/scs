@@ -2,6 +2,9 @@ package edu.usf.micronsl.spiking;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+* @author Eduardo Zuloaga
+*/
 class runSim extends TimerTask {
     NeuronNet network;
     public runSim(NeuronNet nn) {
@@ -28,8 +31,8 @@ public class NeuronSpike {
     //network properties
     //first layer is fed voltage by oscillator
     //last layer is read as output
-    static int[] layers = {10,100,100,5};
-    static double[] connectivity = {1.0, 0.1, 0.1, 0.1};
+    static int[] layers = {10,100,100,20};
+    static double[] connectivity = {0.1, 0.1, 0.1};
     
     //neuron properties
     public static double global_spike_threshold = 0.6;
@@ -54,6 +57,9 @@ public class NeuronSpike {
             global_weight_range,
             oscillator_wavelength
         );
+        
+        for (int i = 0; i < 10; i++)
+        	network.addOscillator(0, i, 1.0f, 1, .2f);
         
         TimerTask task = new runSim(network);
         Timer timer = new Timer();

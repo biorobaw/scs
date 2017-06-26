@@ -7,10 +7,11 @@ import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 
+import edu.usf.micronsl.spiking.neuron.Neuron;
+
 /**
- *
- * @author ezuloaga
- */
+* @author Eduardo Zuloaga
+*/
 public class ControlPanel implements ActionListener {
     Neuron selected;
     NeuronNet subjectNet;
@@ -18,7 +19,7 @@ public class ControlPanel implements ActionListener {
     JFrame controlPanel;
     int layerCursor;
     int neuronCursor;
-    double selectedV;
+    float selectedV;
     JTextField layerField;
     JTextField neuronField;
     JTextField paramField;
@@ -91,7 +92,7 @@ public class ControlPanel implements ActionListener {
         subjectMeta = subjectNet.getLayerMetadata();
         layerCursor = 0;
         neuronCursor = 0;
-        selectedV = 1.0;
+        selectedV = 1.0f;
         controlPanel = new JFrame();
         controlPanel.setLayout(layout);
         controlPanel.setSize(200, 500);
