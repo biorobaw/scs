@@ -161,7 +161,7 @@ public class TSPModelFrance extends Model {
 		
 		// palce cells
 		placeCells = new TesselatedPlaceCellLayer(
-				"PCLayer", PCRadius, numPCellsPerSide, placeCellType,
+				"PCLayer", PCRadius, numPCellsPerSide, "ExponentialNoThresholding",
 				xmin, ymin, xmax, ymax);
 		numPCs = placeCells.getCells().size();
 		placeCells.addInPort("position", posModule.getOutPort("position"));
