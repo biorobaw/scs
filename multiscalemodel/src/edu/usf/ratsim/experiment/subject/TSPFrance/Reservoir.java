@@ -147,10 +147,10 @@ public class Reservoir {
 					System.out.println("Weights callback : label = " + label + ", rows = " + rows + ", cols = " + cols);
 				 }
 		});*/
-		TRN4JAVA.Api.configure_scheduler_snippets(id, snippets_size, snippets_size * snippets_per_burst * burst_per_trial, REW_TAG);
-		//TRN4JAVA.Api.configure_scheduler_tiled(id, 100);
+		//TRN4JAVA.Api.configure_scheduler_snippets(id, snippets_size, snippets_size * snippets_per_burst * burst_per_trial, REW_TAG);
+		TRN4JAVA.Api.configure_scheduler_tiled(id, 100);
 		TRN4JAVA.Api.configure_feedforward_uniform(id, -1.0f, 1.0f, 0.0f);
-		TRN4JAVA.Api.configure_recurrent_gaussian(id, 0.0f, 0.5f/(float)Math.sqrt(reservoir_size));
+		TRN4JAVA.Api.configure_recurrent_gaussian(id, 0.0f, 1f/(float)Math.sqrt(reservoir_size));
 		TRN4JAVA.Api.configure_feedback_uniform(id, -1.0f, 1.0f, 0.0f);
 		TRN4JAVA.Api.configure_readout_uniform(id, -1e-2f, 1e-2f, 0.0f);		
 		

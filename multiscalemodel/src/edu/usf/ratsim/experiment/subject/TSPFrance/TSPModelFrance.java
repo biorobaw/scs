@@ -324,8 +324,8 @@ public class TSPModelFrance extends Model {
 		
 		Boolean finishedAction = finishReservoirAction.get();
 		
-		/*if (finishedAction)
-		{*/
+		if (finishedAction)
+		{
 			//((Float1dSparsePortMap)getInPort("placeCells")).getData()
 			Point3f pos = ((Point3fPort)posModule.getOutPort("position")).get();
 			float activation_pattern[] = ((Float1dSparsePortMap)placeCells.getOutPort("activation")).getData();
@@ -334,7 +334,7 @@ public class TSPModelFrance extends Model {
 			ateHistory.add(ate);
 			pcActivationHistory.add(activation_pattern);
 			posHistory.add(estimated_position);
-		/*}*/
+		}
 		
 		//System.out.println("Final Task");
 		

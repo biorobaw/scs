@@ -50,7 +50,7 @@
 			<!-- Type of learning -->
 			<rlType>actorCritic</rlType>
 			<!-- Minimum conjuntive layer cell radius -->
-			<PCRadius>.12</PCRadius>
+			<PCRadius>0.12</PCRadius>
 			<!-- Cells per side of the square -->
 			<numPCCellsPerSide>16</numPCCellsPerSide>
 			<!-- Type of conjunctive cell -->
@@ -63,9 +63,9 @@
 			
 			
 			<reservoirSize>1024</reservoirSize>
-			<leakRate>0.35</leakRate>
-			<learningRate>0.0001</learningRate>
-			<initialStateScale>0.01</initialStateScale>
+			<leakRate>0.95</leakRate>
+			<learningRate>0.001</learningRate>
+			<initialStateScale>0.0</initialStateScale>
 			<snippetsSize>10</snippetsSize>
 			<snippetsPerBurst>10</snippetsPerBurst>
 			<burstPerTrial>10</burstPerTrial>

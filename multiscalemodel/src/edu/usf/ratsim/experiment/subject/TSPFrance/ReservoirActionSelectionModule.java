@@ -38,15 +38,15 @@ public class ReservoirActionSelectionModule extends Module {
 	{
 		Bool0dPort finishedAction = (Bool0dPort)getInPort("finishedAction");
 		
-		/*if (finishedAction.get())
-		{*/
+		if (finishedAction.get())
+		{
 		
 			Point3f pos = ((Point3fPort)getInPort("position")).get();
 			float activation_pattern[] = ((Float1dSparsePortMap)getInPort("placeCells")).getData();
 			float estimated_position[] =  {pos.x, pos.y};
 		
 			reservoir.reinject(estimated_position, activation_pattern);
-		/*}*/
+		}
 		
 		
 	}
