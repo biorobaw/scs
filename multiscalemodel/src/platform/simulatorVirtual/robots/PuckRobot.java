@@ -99,6 +99,7 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 		} else if (currentAction instanceof MoveToAction ) {
 			MoveToAction a = (MoveToAction)currentAction;
 			
+			System.out.println("RESERVOIR TARGET COORDINATES (" + a.x() +", "+ a.y() +", " + a.z() + ")");
 			if(navigateToCoordinate(new Point3f(a.x(),a.y(),a.z()), deltaT, closeEnoughToTargetPosition)){
 				
 				actionMessageBoard.put(currentAction.actionId,"done");

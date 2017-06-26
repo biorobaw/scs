@@ -10,6 +10,7 @@ import edu.usf.experiment.robot.specificActions.MoveToAction;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
+import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromProbabilities;
 import edu.usf.ratsim.nsl.modules.port.ModelActionPort;
 
@@ -35,11 +36,18 @@ public class ReservoirActionSelectionModule extends Module {
 	@Override
 	public void run()
 	{
-		Float1dSparsePortMap pcs = (Float1dSparsePortMap)getInPort("placeCells");
-		Point3fPort pos = (Point3fPort)getInPort("position");
+		Bool0dPort finishedAction = (Bool0dPort)getInPort("finishedAction");
 		
+		/*if (finishedAction.get())
+		{*/
 		
-		//reservoir.reinject(estimated_position, activation_pattern);
+			Point3f pos = ((Point3fPort)getInPort("position")).get();
+			float activation_pattern[] = ((Float1dSparsePortMap)getInPort("placeCells")).getData();
+			float estimated_position[] =  {pos.x, pos.y};
+		
+			reservoir.reinject(estimated_position, activation_pattern);
+		/*}*/
+		
 		
 	}
 	
@@ -64,6 +72,8 @@ public class ReservoirActionSelectionModule extends Module {
 		{
 			action.setX(predicted_position[0]);
 			action.setY(predicted_position[1]);
+			
+			System.out.println("RESERVOIR PREDICTED COORDINATES (" + action.x() +", "+ action.y() +", " + action.z() + ")");
 		
 		}	
 	}

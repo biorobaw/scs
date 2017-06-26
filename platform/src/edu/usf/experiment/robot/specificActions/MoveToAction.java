@@ -4,7 +4,7 @@ import edu.usf.experiment.robot.RobotAction;
 
 public class MoveToAction extends RobotAction{
 	
-	static String actionID = "moveTo";
+	public static String actionID = "moveTo";
 	
 	public MoveToAction(Float x, Float y, Float z, Float w) {
 		super("moveTo",x,y,z,w);

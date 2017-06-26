@@ -8,8 +8,9 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.robot.specificActions.FeederTaxicAction;
-
+import edu.usf.experiment.robot.specificActions.MoveToAction;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
@@ -58,7 +59,7 @@ public class TSPModelFrance extends Model {
 	
 	Bool0dPort chooseNewFeeder = new Bool0dPort(initialModule);
 
-	
+	Bool0dPort finishReservoirAction = new Bool0dPort(initialModule);
 	
 	//REFERENCES for ease of access
 	TSPSubjectFrance subject;
@@ -231,6 +232,7 @@ public class TSPModelFrance extends Model {
 		reservoirActionSelectionModule = new ReservoirActionSelectionModule("reservoirAction", reservoir);
 		reservoirActionSelectionModule.addInPort("placeCells", placeCells.getOutPort("activation"));
 		reservoirActionSelectionModule.addInPort("position", posModule.getOutPort("position"));
+		reservoirActionSelectionModule.addInPort("finishedAction", finishReservoirAction);
 		addModule(reservoirActionSelectionModule);
 		
 		// Schme selection module:
@@ -279,10 +281,13 @@ public class TSPModelFrance extends Model {
 	
 	public void endEpisode(){
 		
-		reservoir.train(pcActivationHistory, posHistory, ateHistory);
-		pcActivationHistory.clear();
-		posHistory.clear();
-		ateHistory.clear();
+		if (!pcActivationHistory.isEmpty() && !posHistory.isEmpty() && !ateHistory.isEmpty())
+		{
+			reservoir.train(pcActivationHistory, posHistory, ateHistory);
+			pcActivationHistory.clear();
+			posHistory.clear();
+			ateHistory.clear();
+		}
 		
 //		reservoir.newEpisode();
 		
@@ -300,34 +305,7 @@ public class TSPModelFrance extends Model {
 		//System.out.println("Initial Task");
 		chooseNewFeeder.set(robot.actionMessageBoard.get(FeederTaxicAction.actionID) != null);
 		
-		
-		Boolean ate = ((Bool0dPort)subAte.getOutPort("subAte")).get();
-		Point3fPort port = ((Point3fPort)posModule.getOutPort("position"));
-		Point3f pos =  port.get();
-		
-		float estimated_position[] = new float[2];
-		
-		if (pos != null)
-		{
-			estimated_position[0] =  pos.x;
-			estimated_position[1] =  pos.y;
-		}
-		else
-		{
-			estimated_position[0] = 0.0f;
-			estimated_position[1] = 0.0f;
-		}
-	
-
-		
-			float activation_pattern[] = ((Float1dSparsePortMap)placeCells.getOutPort("activation")).getData();
-		
-			
-			ateHistory.add(ate);
-			pcActivationHistory.add(activation_pattern);
-			posHistory.add(estimated_position);
-			
-			reservoir.reinject(estimated_position, activation_pattern);
+		finishReservoirAction.set(robot.actionMessageBoard.get(MoveToAction.actionID) != null || robot.actionMessageBoard.get(FeederTaxicAction.actionID) != null);
 	
 		
 		// here, or in a new module, i should check weather a new calculation of a taxic action should be forced.
@@ -340,18 +318,23 @@ public class TSPModelFrance extends Model {
 		
 		//append history:
 		//number of pace cells : numPCs;
+	
 		Boolean ate = ((Bool0dPort)subAte.getOutPort("subAte")).get();
-//		float[] pcVals = ((Float1dSparsePortMap)placeCells.getOutPort("activation")).getData();
-//		
-//		ateHistory.add(ate);
-//		pcActivationHistory.add(pcVals);
-		
 		if(ate) System.out.println("subject ate? "+ ate);
 		
+		Boolean finishedAction = finishReservoirAction.get();
 		
+		/*if (finishedAction)
+		{*/
+			//((Float1dSparsePortMap)getInPort("placeCells")).getData()
+			Point3f pos = ((Point3fPort)posModule.getOutPort("position")).get();
+			float activation_pattern[] = ((Float1dSparsePortMap)placeCells.getOutPort("activation")).getData();
+			float estimated_position[] = {pos.x, pos.y};
 		
-		
-		
+			ateHistory.add(ate);
+			pcActivationHistory.add(activation_pattern);
+			posHistory.add(estimated_position);
+		/*}*/
 		
 		//System.out.println("Final Task");
 		
@@ -365,13 +348,19 @@ public class TSPModelFrance extends Model {
 		//PERFORM ACTION OF TAXIC MODULE
 		//randomFeederTaxicActionModule.outport.data
 		
-		subject.robot.pendingActions.add(randomOrClosestFeederTaxicActionModule.action);
-		
-		
-			
-		
-		
-		
+
+		if ((Integer)Globals.getInstance().get("episode") > 0)
+		{
+			System.out.println("RESERVOIR ACTION SELECTED");
+	
+			subject.robot.pendingActions.add(reservoirActionSelectionModule.action);
+		}
+		else
+		{
+			System.out.println("RANDOM FEEDER ACTION SELECTED");
+			subject.robot.pendingActions.add(randomOrClosestFeederTaxicActionModule.action);
+		}
+				
 	}
 
 }

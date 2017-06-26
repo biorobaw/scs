@@ -16,7 +16,7 @@ public class Reservoir {
 	static final String POS_TAG = "Position";
 	static final String TARGET_SEQUENCE = "Target";
 	static final String TRAINING_BATCH []= {TARGET_SEQUENCE};
-	static final int INDEX = 2; // 0 = CPU, > 0 = GPU
+	static final int INDEX = 0; // 0 = CPU, > 0 = GPU
 	static final int SEED = 12345;
 
 	int preamble;
