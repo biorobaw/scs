@@ -1,6 +1,8 @@
-package edu.usf.micronsl.spiking;
+package edu.usf.micronsl.spiking.test;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import edu.usf.micronsl.spiking.SpikeEventMgr;
 
 /**
 * @author Eduardo Zuloaga
@@ -32,7 +34,7 @@ public class NeuronSpike {
     //first layer is fed voltage by oscillator
     //last layer is read as output
     static int[] layers = {10,100,100,20};
-    static double[] connectivity = {0.1, 0.1, 0.1};
+    static double[] connectivity = {0.1, 1, 0.1};
     
     //neuron properties
     public static double global_spike_threshold = 0.6;
@@ -40,13 +42,6 @@ public class NeuronSpike {
     public static double[] global_weight_range = {0, 0.2};
     
     public static void main(String[] args) {
-        
-        long global_time = 0;
-        
-        //each network is composed of different neuron layers:
-        //an input layer that receives an impulse every timestep
-        //n inner layers to propogate the voltage
-        //an output layer whose output is read
         
         NeuronNet network = new NeuronNet(
             layers.length, 
@@ -63,7 +58,8 @@ public class NeuronSpike {
         
         TimerTask task = new runSim(network);
         Timer timer = new Timer();
-        timer.schedule(task, 1000, 100);
+        
+        timer.schedule(task, 1000, 5);
 
     }
     

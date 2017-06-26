@@ -1,6 +1,4 @@
-package edu.usf.micronsl.spiking;
-
-import java.util.Set;
+package edu.usf.micronsl.spiking.plot;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -14,7 +12,9 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import edu.usf.micronsl.spiking.neuron.Neuron;
+import edu.usf.micronsl.spiking.SpikeEvent;
+import edu.usf.micronsl.spiking.SpikeListener;
+import edu.usf.micronsl.spiking.neuron.SpikingNeuron;
 
 /**
  * @author Eduardo Zuloaga
@@ -37,7 +37,7 @@ public class NetPlot implements SpikeListener {
 		return chart;
 	}
 
-	public void addSpike(Neuron neuron, long time) {
+	public void addSpike(SpikingNeuron neuron, long time) {
 		// Only add a spike if pertinent to this plot
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {

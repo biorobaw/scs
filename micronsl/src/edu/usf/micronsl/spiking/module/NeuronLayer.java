@@ -6,29 +6,29 @@ import java.util.List;
 
 import edu.usf.micronsl.spiking.SpikeEvent;
 import edu.usf.micronsl.spiking.SpikeListener;
-import edu.usf.micronsl.spiking.neuron.Neuron;
+import edu.usf.micronsl.spiking.neuron.SpikingNeuron;
 
 public class NeuronLayer implements SpikeListener {
 	
-	private ArrayList<Neuron> neurons;
+	private ArrayList<SpikingNeuron> neurons;
 	private LinkedList<SpikeListener> listeners;
 
 	public NeuronLayer(int numNeurons){
-		neurons = new ArrayList<Neuron>(numNeurons);
+		neurons = new ArrayList<SpikingNeuron>(numNeurons);
 		listeners = new LinkedList<SpikeListener>();
 	}
 
-	public void addNeuron(Neuron n){
+	public void addNeuron(SpikingNeuron n){
 		neurons.add(n);
 		
 		n.addSpikeListener(this);
 	}
 	
-	public List<Neuron> getNeurons(){
+	public List<SpikingNeuron> getNeurons(){
 		return neurons;
 	}
 	
-	public Neuron getNeuron(int i){
+	public SpikingNeuron getNeuron(int i){
 		return neurons.get(i);
 	}
 	

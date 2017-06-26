@@ -1,17 +1,15 @@
 package edu.usf.micronsl.spiking.neuron;
 
-import edu.usf.micronsl.spiking.SpikeEventMgr;
-
 /**
  *
  * @author Eduardo Zuloaga
  */
-public class SimpleSpikingNeuron extends Neuron {
+public class LeakyIntegratorSpikingNeuron extends SpikingNeuron {
 	
 	private double lambda;
 	
 
-	public SimpleSpikingNeuron(long time, double s_t, long d, double lambda, int id) {
+	public LeakyIntegratorSpikingNeuron(long time, double s_t, long d, double lambda, int id) {
 		super(time, s_t, d, id);
 
 		this.lambda = lambda;
@@ -27,8 +25,8 @@ public class SimpleSpikingNeuron extends Neuron {
 		// return;
 		// }
 		double deltaT = time - lastUpdated;
-		double v1 = volts * Math.pow(lambda, deltaT);
-		volts = v1;
+		double v1 = voltage * Math.pow(lambda, deltaT);
+		voltage = v1;
 		lastUpdated = time;
 	}
 

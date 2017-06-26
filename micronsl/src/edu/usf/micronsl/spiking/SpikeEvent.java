@@ -1,20 +1,20 @@
 package edu.usf.micronsl.spiking;
 
-import edu.usf.micronsl.spiking.neuron.Neuron;
+import edu.usf.micronsl.spiking.neuron.SpikingNeuron;
 
 public class SpikeEvent {
 
-	public Neuron target;
+	public SpikingNeuron target;
 	public long timeStamp;
-	public Neuron source;
+	public SpikingNeuron source;
 
-	public SpikeEvent(Neuron src, Neuron t, long time) {
+	public SpikeEvent(SpikingNeuron src, SpikingNeuron t, long time) {
 		target = t;
 		source = src;
 		timeStamp = time;
 	}
 	
-	public SpikeEvent(Neuron src, long time) {
+	public SpikeEvent(SpikingNeuron src, long time) {
 		target = null;
 		source = src;
 		timeStamp = time;

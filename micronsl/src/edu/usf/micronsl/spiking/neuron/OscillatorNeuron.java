@@ -12,7 +12,7 @@ import edu.usf.micronsl.spiking.SpikeEventMgr;
 /**
  * @author Eduardo Zuloaga
  */
-public class OscillatorNeuron extends Neuron {
+public class OscillatorNeuron extends SpikingNeuron {
 
 	// classifications:
 	// 0: linear

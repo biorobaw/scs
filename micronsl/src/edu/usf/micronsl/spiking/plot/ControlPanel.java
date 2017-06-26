@@ -1,4 +1,4 @@
-package edu.usf.micronsl.spiking;
+package edu.usf.micronsl.spiking.plot;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,13 +7,14 @@ import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 
-import edu.usf.micronsl.spiking.neuron.Neuron;
+import edu.usf.micronsl.spiking.neuron.SpikingNeuron;
+import edu.usf.micronsl.spiking.test.NeuronNet;
 
 /**
 * @author Eduardo Zuloaga
 */
 public class ControlPanel implements ActionListener {
-    Neuron selected;
+    SpikingNeuron selected;
     NeuronNet subjectNet;
     int[] subjectMeta;
     JFrame controlPanel;

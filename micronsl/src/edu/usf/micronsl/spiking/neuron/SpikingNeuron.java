@@ -13,32 +13,59 @@ import edu.usf.micronsl.spiking.SpikeListener;
  *
  * @author Eduardo Zuloaga
  */
-public abstract class Neuron {
-	List<Neuron> outputNeurons;
-	HashMap<Neuron, Float> weights;
-	public double volts;
+public abstract class SpikingNeuron {
+	
+	/**
+	 * The list of neurons this one is connected to
+	 */
+	List<SpikingNeuron> outputNeurons;
+	/**
+	 * The synaptic input weights of the neurons connected to this one
+	 */
+	HashMap<SpikingNeuron, Float> inputWeights;
+	/**
+	 * The membrane voltage
+	 */
+	public double voltage;
+	/**
+	 * The threshold upon which the neuron fires
+	 */
 	double spike_threshold;
+	/**
+	 * Last timestamp of update - used to compute decay analytically
+	 */
 	long lastUpdated;
+	/**
+	 * The delay applied to spikes before they reach their destination in the following neurons
+	 */
 	long delay;
+	/**
+	 * The timestamp of the last spike
+	 */
 	long last_spike;
-	int[] place;
+	/**
+	 * An id to identify the neuron within its layer
+	 */
 	public int id;
-
-	public String metadata[] = new String[] {};
-
+	/**
+	 * A pointer to the Spike Event Manager
+	 */
 	private SpikeEventMgr sEM;
+	/**
+	 * A list of spike listeners 
+	 */
 	private LinkedList<SpikeListener> spikeListeners;
 
 	/**
-	 * 
-	 * @param time
-	 * @param s_t
-	 * @param d
+	 * Constructs this neuron
+	 * @param time the current time
+	 * @param s_t the spike threshold
+	 * @param d the delay
 	 */
-	public Neuron(long time, double s_t, long d, int id) {
-		outputNeurons = new ArrayList<Neuron>();
-		weights = new HashMap<Neuron, Float>();
-		volts = 0;
+	public SpikingNeuron(long time, double s_t, long d, int id) {
+		outputNeurons = new ArrayList<SpikingNeuron>();
+		inputWeights = new HashMap<SpikingNeuron, Float>();
+		voltage = 0;
 		spike_threshold = s_t;
 		delay = d;
 		lastUpdated = time;
@@ -57,7 +84,7 @@ public abstract class Neuron {
 	 * Connects this neuron to a postsynaptic neuron
 	 * @param n The postsynaptic neuron
 	 */
-	public void addOutputNeuron(Neuron n) {
+	public void addOutputNeuron(SpikingNeuron n) {
 		outputNeurons.add(n);
 	}
 	
@@ -66,8 +93,8 @@ public abstract class Neuron {
 	 * @param n The presynaptic neuron.
 	 * @param weight The connection weight between the neurons
 	 */
-	public void addInputNeuron(Neuron n, float weight){
-		weights.put(n, weight);
+	public void addInputNeuron(SpikingNeuron n, float weight){
+		inputWeights.put(n, weight);
 	}
 	
 	/**
@@ -78,22 +105,22 @@ public abstract class Neuron {
 	 * @param src
 	 *            the presynaptic spiking neuron
 	 */
-	public void input(long time, Neuron src) {
+	public void input(long time, SpikingNeuron src) {
 		// Update inner voltage
 		update(time);
 
 		lastUpdated = time;
 		// Just add the weight to the inner voltage
-		volts += getWeight(src);
+		voltage += getWeight(src);
 
 		// Check for spiking behavior
 		// If currently spiking, do nothing to it
 		if (last_spike < time) {
-			if (volts >= spike_threshold) {
+			if (voltage >= spike_threshold) {
 				spike(time);
 			}
 		} else {
-			volts = 0.0;
+			voltage = 0.0;
 		}
 		return;
 	}
@@ -108,7 +135,7 @@ public abstract class Neuron {
 	public void spike(long time) {
 		last_spike = time;
 		sEM.addToLedger(this);
-		volts = 0.0;
+		voltage = 0.0;
 		// queue voltage signals to all outputs
 		for (int i = 0; i < outputNeurons.size(); i++) {
 			sEM.queueSpike(this, outputNeurons.get(i), time + outputNeurons.get(i).delay);
@@ -123,8 +150,8 @@ public abstract class Neuron {
 	 * @param n The presynaptic neuron.
 	 * @return The connection weight.
 	 */
-	public float getWeight(Neuron n){
-		return weights.get(n);
+	public float getWeight(SpikingNeuron n){
+		return inputWeights.get(n);
 	}
 
 	/**
@@ -135,10 +162,6 @@ public abstract class Neuron {
 	 *            the time at which the update is called
 	 */
 	public abstract void update(long time);
-
-	public int[] getLocation() {
-		return this.place;
-	}
 
 	public void addSpikeListener(SpikeListener listener) {
 		spikeListeners.add(listener);

@@ -1,4 +1,4 @@
-package edu.usf.micronsl.spiking;
+package edu.usf.micronsl.spiking.test;
 
 import java.awt.Container;
 import java.util.ArrayList;
@@ -9,10 +9,13 @@ import java.util.Random;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 
+import edu.usf.micronsl.spiking.SpikeEventMgr;
 import edu.usf.micronsl.spiking.module.NeuronLayer;
-import edu.usf.micronsl.spiking.neuron.Neuron;
+import edu.usf.micronsl.spiking.neuron.SpikingNeuron;
+import edu.usf.micronsl.spiking.plot.ControlPanel;
+import edu.usf.micronsl.spiking.plot.NetPlot;
 import edu.usf.micronsl.spiking.neuron.OscillatorNeuron;
-import edu.usf.micronsl.spiking.neuron.SimpleSpikingNeuron;
+import edu.usf.micronsl.spiking.neuron.LeakyIntegratorSpikingNeuron;
 
 /**
  * @author Eduardo Zuloaga
@@ -51,7 +54,7 @@ public class NeuronNet {
 			NeuronLayer layer = new NeuronLayer(layerNeuronCount[i]);
 			// generate neurons
 			for (int j = 0; j < layerNeuronCount[i]; j++) {
-				layer.addNeuron(new SimpleSpikingNeuron(global_time, global_spike_threshold, global_delay, 0.8, j));
+				layer.addNeuron(new LeakyIntegratorSpikingNeuron(global_time, global_spike_threshold, global_delay, 0.8, j));
 			}
 			layerList.add(layer);
 			
@@ -61,9 +64,9 @@ public class NeuronNet {
 				// fetch previous layer
 				NeuronLayer prevLayer = layerList.get(i - 1);
 				// for every neuron in the previous layer...
-				for (Neuron prevN : prevLayer.getNeurons()) {
+				for (SpikingNeuron prevN : prevLayer.getNeurons()) {
 					// for every neuron in current layer...
-					for (Neuron nextN : layer.getNeurons()) {
+					for (SpikingNeuron nextN : layer.getNeurons()) {
 						// generate a random number from 0 to 1.0
 						double randFloat = rand.nextFloat();
 						// if number is > connectivity, calculate weight,
@@ -117,41 +120,19 @@ public class NeuronNet {
 	static void printState(long currentTime, NeuronLayer layer) {
 		int i = 0;
 		System.out.println("Time step: " + currentTime);
-		Neuron cur;
-		for (Neuron n : layer.getNeurons()) {
+		SpikingNeuron cur;
+		for (SpikingNeuron n : layer.getNeurons()) {
 			// feed 0 V to the neuron to update its voltage
 			n.update(currentTime);
-			System.out.println(i + " - V: " + n.volts);
+			System.out.println(i + " - V: " + n.voltage);
 		}
 		System.out.println("");
 	}
 
-	static void printLedger(long currentTime) {
-		List<SimpleSpikingNeuron> ledger = sEM.getLedger();
-		System.out.println("Spiked neurons for timestep " + currentTime + " : ");
-		System.out.println("[");
-		int[] place;
-		for (int i = 0; i < ledger.size(); i++) {
-			place = ledger.get(i).getLocation();
-			System.out.println("Layer " + place[0] + " Neuron " + place[1]);
-		}
-		System.out.println("]");
-		System.out.println("");
-	}
-
+	
 	static void plotLayers(long time) {
-		List<SimpleSpikingNeuron> ledger = sEM.getLedger();
-		List<SimpleSpikingNeuron> layerLedger;
-		NetPlot nplot;
 		for (int layerNum = 0; layerNum < layerList.size(); layerNum++) {
-			// layerLedger = new ArrayList();
-			// for (int i = 0; i < ledger.size(); i++) {
-			// SimpleSpikingNeuron n = ledger.get(i);
-			// if (n.getLocation()[0] == layerNum) {
-			// layerLedger.add(n);
-			// }
-			// }
-			nplot = nplots.get(layerNum);
+			NetPlot nplot = nplots.get(layerNum);
 			nplot.plotSpikes(time);
 		}
 	}
@@ -167,7 +148,7 @@ public class NeuronNet {
 
 	public void addOscillator(int l, int n, float v, int type, double param) {
 		OscillatorNeuron neuron = new OscillatorNeuron(global_time, 0.99, 1, type, param, oscillators.size());
-		Neuron post = getNeuron(l, n);
+		SpikingNeuron post = getNeuron(l, n);
 		neuron.addOutputNeuron(post);
 		post.addInputNeuron(neuron, v);
 
@@ -178,7 +159,7 @@ public class NeuronNet {
 		oscillators.clear();
 	}
 
-	private Neuron getNeuron(int l, int n) {
+	private SpikingNeuron getNeuron(int l, int n) {
 		// returns: nth neuron at layer l
 		return layerList.get(l).getNeuron(n);
 	}
