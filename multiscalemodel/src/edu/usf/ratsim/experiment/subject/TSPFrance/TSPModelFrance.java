@@ -6,12 +6,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.vecmath.Point3f;
+
 import edu.usf.experiment.robot.specificActions.FeederTaxicAction;
 
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
+import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 import edu.usf.ratsim.experiment.subject.pablo.mymodules.NonVisitedFeederSetModule;
 import edu.usf.ratsim.experiment.subject.pablo.mymodules.RandomOrClosestFeederTaxicActionModule;
@@ -30,9 +33,8 @@ public class TSPModelFrance extends Model {
 
 	public LinkedList<Boolean> ateHistory = new LinkedList<Boolean>();
 	public LinkedList<float[]> pcActivationHistory = new LinkedList<float[]>();
-	
-	private TesselatedPlaceCellLayer placeCells;
-	
+	public LinkedList<float[]> posHistory = new LinkedList<float[]>();
+	private TesselatedPlaceCellLayer placeCells;	
 	private int numPCs;
 	
 	//INPUT MODULES
@@ -42,6 +44,7 @@ public class TSPModelFrance extends Model {
 	CurrentFeederModule currentFeeder;
 	VisibleFeedersModule visibleFeeders;
 	Reservoir reservoir = null;
+	static final int ID = 0;
 	
 	//CELL MODULES
 	
@@ -186,11 +189,48 @@ public class TSPModelFrance extends Model {
 		//addModule(actionFromPathModule);	
 		
 		//Reservoir Action:
-		reservoir = new Reservoir( 0,  numPCs,	1024, 	0.8f, 	0.01f,	 0.001f,	 100);
+		float initial_state_scale = params.getChildFloat("initialStateScale");
+		int reservoir_size = params.getChildInt("reservoirSize");
+		float leak_rate = params.getChildFloat("leakRate");
 		
+		float learning_rate = params.getChildFloat("learningRate");
+		int snippets_size = params.getChildInt("snippetsSize");
+		int snippets_per_burst = params.getChildInt("snippetsPerBurst");
+		int burst_per_trial = params.getChildInt("burstPerTrial");
+		int rows = params.getChildInt("rows");
+		int cols = params.getChildInt("cols");
+		float sigma = params.getChildFloat("sigma");
+		int preamble = params.getChildInt("preamble");
+		int stimulus_size = numPCellsPerSide * numPCellsPerSide;
+		
+		float response[] = new float[stimulus_size * rows * cols];
+		
+		for (int row = 0; row < rows; row++)
+		{
+			float y = (row / (float)(rows-1))*(ymax - ymin) + ymin;
+			for (int col = 0; col < cols; col++)
+			{
+				float x = (col/ (float)(cols-1))*(xmax - xmin) + xmin;
+					
+				float activation[] = placeCells.getActivationValues(new Point3f(x, y, 0));
+				for (int pc = 0; pc < stimulus_size; pc++)
+				{
+					response[pc * rows * cols + row * cols + col] = activation[pc];
+				}
+					//
+			}
+		
+		}
+		
+		reservoir = new Reservoir(ID,
+				stimulus_size,reservoir_size, leak_rate, initial_state_scale, learning_rate,
+				snippets_size, snippets_per_burst, burst_per_trial,
+				rows, cols, xmin, xmax, ymin, ymax, response, sigma, PCRadius,
+				preamble);
 		
 		reservoirActionSelectionModule = new ReservoirActionSelectionModule("reservoirAction", reservoir);
 		reservoirActionSelectionModule.addInPort("placeCells", placeCells.getOutPort("activation"));
+		reservoirActionSelectionModule.addInPort("position", posModule.getOutPort("position"));
 		addModule(reservoirActionSelectionModule);
 		
 		// Schme selection module:
@@ -239,7 +279,10 @@ public class TSPModelFrance extends Model {
 	
 	public void endEpisode(){
 		
-		reservoir.train(pcActivationHistory, ateHistory);
+		reservoir.train(pcActivationHistory, posHistory, ateHistory);
+		pcActivationHistory.clear();
+		posHistory.clear();
+		ateHistory.clear();
 		
 //		reservoir.newEpisode();
 		
@@ -258,6 +301,38 @@ public class TSPModelFrance extends Model {
 		chooseNewFeeder.set(robot.actionMessageBoard.get(FeederTaxicAction.actionID) != null);
 		
 		
+		Boolean ate = ((Bool0dPort)subAte.getOutPort("subAte")).get();
+		Point3fPort port = ((Point3fPort)posModule.getOutPort("position"));
+		Point3f pos =  port.get();
+		
+		float estimated_position[] = new float[2];
+		
+		if (pos != null)
+		{
+			estimated_position[0] =  pos.x;
+			estimated_position[1] =  pos.y;
+		}
+		else
+		{
+			estimated_position[0] = 0.0f;
+			estimated_position[1] = 0.0f;
+		}
+	
+
+		
+			float activation_pattern[] = ((Float1dSparsePortMap)placeCells.getOutPort("activation")).getData();
+		
+			
+			ateHistory.add(ate);
+			pcActivationHistory.add(activation_pattern);
+			posHistory.add(estimated_position);
+			
+			reservoir.reinject(estimated_position, activation_pattern);
+	
+		
+		// here, or in a new module, i should check weather a new calculation of a taxic action should be forced.
+		
+		
 		
 	}
 	
@@ -266,10 +341,10 @@ public class TSPModelFrance extends Model {
 		//append history:
 		//number of pace cells : numPCs;
 		Boolean ate = ((Bool0dPort)subAte.getOutPort("subAte")).get();
-		float[] pcVals = ((Float1dSparsePortMap)placeCells.getOutPort("activation")).getData();
-		
-		ateHistory.add(ate);
-		pcActivationHistory.add(pcVals);
+//		float[] pcVals = ((Float1dSparsePortMap)placeCells.getOutPort("activation")).getData();
+//		
+//		ateHistory.add(ate);
+//		pcActivationHistory.add(pcVals);
 		
 		if(ate) System.out.println("subject ate? "+ ate);
 		

@@ -61,6 +61,20 @@
 			<xmax>1</xmax>
 			<ymax>1</ymax>
 			
+			
+			<reservoirSize>1024</reservoirSize>
+			<leakRate>0.35</leakRate>
+			<learningRate>0.0001</learningRate>
+			<initialStateScale>0.01</initialStateScale>
+			<snippetsSize>10</snippetsSize>
+			<snippetsPerBurst>10</snippetsPerBurst>
+			<burstPerTrial>10</burstPerTrial>
+			<rows>400</rows>
+			<cols>400</cols>
+			<sigma>1</sigma>
+		
+			<preamble>10</preamble>
+			
 			<!-- Order in which feeders are visited -->
 			<!--<feederOrder>$(feederOrder)</feederOrder>-->
 			<feederOrder></feederOrder> 
