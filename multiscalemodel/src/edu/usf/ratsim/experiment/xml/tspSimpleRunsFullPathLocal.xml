@@ -51,7 +51,7 @@
 			<!-- Type of learning -->
 			<rlType>actorCritic</rlType>
 			<!-- Minimum conjuntive layer cell radius -->
-			<PCRadius>.12</PCRadius>
+			<PCRadius>4</PCRadius>
 			<!-- Cells per side of the square -->
 			<numPCCellsPerSide>16</numPCCellsPerSide>
 			<!-- Type of conjunctive cell -->
