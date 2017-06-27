@@ -2,11 +2,10 @@ package edu.usf.micronsl.spiking;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
-import edu.usf.micronsl.spiking.neuron.SpikingNeuron;
+import edu.usf.micronsl.spiking.neuron.InputSpikingNeuron;
 
 /**
  * @author Eduardo Zuloaga
@@ -45,7 +44,7 @@ public class SpikeEventMgr implements SpikeListener {
 		if (!events.containsKey(arrivalTime))
 			events.put(arrivalTime, new HashSet<SpikeEvent>());
 
-		for (SpikingNeuron dest : e.source.getOuputNeurons())
+		for (InputSpikingNeuron dest : e.source.getOuputNeurons())
 			events.get(arrivalTime).add(new SpikeEvent(e.source, dest, arrivalTime));
 	}
 }

@@ -1,7 +1,6 @@
 package edu.usf.micronsl.spiking.neuron;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,23 +17,8 @@ public abstract class SpikingNeuron {
 	/**
 	 * The list of neurons this one is connected to
 	 */
-	List<SpikingNeuron> outputNeurons;
-	/**
-	 * The synaptic input weights of the neurons connected to this one
-	 */
-	HashMap<SpikingNeuron, Float> inputWeights;
-	/**
-	 * The membrane voltage
-	 */
-	public double voltage;
-	/**
-	 * The threshold upon which the neuron fires
-	 */
-	double spike_threshold;
-	/**
-	 * Last timestamp of update - used to compute decay analytically
-	 */
-	long lastUpdated;
+	List<InputSpikingNeuron> outputNeurons;
+
 	/**
 	 * The delay applied to spikes before they reach their destination in the
 	 * following neurons
@@ -43,7 +27,7 @@ public abstract class SpikingNeuron {
 	/**
 	 * The timestamp of the last spike
 	 */
-	long last_spike;
+	long lastSpike;
 	/**
 	 * An id to identify the neuron within its layer
 	 */
@@ -63,20 +47,11 @@ public abstract class SpikingNeuron {
 	 * @param d
 	 *            the delay
 	 */
-	public SpikingNeuron(long time, double s_t, long d, int id) {
-		outputNeurons = new ArrayList<SpikingNeuron>();
-		inputWeights = new HashMap<SpikingNeuron, Float>();
-		voltage = 0;
-		spike_threshold = s_t;
+	public SpikingNeuron(int id, long d) {
+		outputNeurons = new ArrayList<InputSpikingNeuron>();
 		delay = d;
-		lastUpdated = time;
-
-		// place = new int[2];
-		// place[0] = layer_num;
-		// place[1] = neu_num;
 
 		this.id = id;
-
 		this.spikeListeners = new LinkedList<SpikeListener>();
 		addSpikeListener(SpikeEventMgr.getInstance());
 	}
@@ -87,49 +62,8 @@ public abstract class SpikingNeuron {
 	 * @param n
 	 *            The postsynaptic neuron
 	 */
-	public void addOutputNeuron(SpikingNeuron n) {
+	public void addOutputNeuron(InputSpikingNeuron n) {
 		outputNeurons.add(n);
-	}
-
-	/**
-	 * Connects a presynaptic neuron to this neuron with a specified connection
-	 * weight.
-	 * 
-	 * @param n
-	 *            The presynaptic neuron.
-	 * @param weight
-	 *            The connection weight between the neurons
-	 */
-	public void addInputNeuron(SpikingNeuron n, float weight) {
-		inputWeights.put(n, weight);
-	}
-
-	/**
-	 * Inputs voltage into the neuron synapses
-	 * 
-	 * @param time
-	 *            the time of the event
-	 * @param src
-	 *            the presynaptic spiking neuron
-	 */
-	public void input(long time, SpikingNeuron src) {
-		// Update inner voltage
-		update(time);
-
-		lastUpdated = time;
-		// Just add the weight to the inner voltage
-		voltage += getWeight(src);
-
-		// Check for spiking behavior
-		// If currently spiking, do nothing to it
-		if (last_spike < time) {
-			if (voltage >= spike_threshold) {
-				spike(time);
-			}
-		} else {
-			voltage = 0.0;
-		}
-		return;
 	}
 
 	/**
@@ -140,40 +74,39 @@ public abstract class SpikingNeuron {
 	 *            the time of the spike event
 	 */
 	public void spike(long time) {
-		last_spike = time;
-		voltage = 0.0;
-
-		SpikeEvent evt = new SpikeEvent(this, time);
-		for (SpikeListener sl : spikeListeners)
-			sl.spikeEvent(evt);
+		// Avoid spiking more than once per simulation step
+		if (lastSpike != time){
+			SpikeEvent evt = new SpikeEvent(this, time);
+			for (SpikeListener sl : spikeListeners)
+				sl.spikeEvent(evt);
+		}
+		// Reset is enforce even if it didn't actually spike to avoid carrying input from a spike step
+		updateAfterSpike(time);
+		// Record the last spike time
+		lastSpike = time;
 	}
 
 	/**
-	 * Get the connection weight for the presynaptic neuron n.
-	 * 
-	 * @param n
-	 *            The presynaptic neuron.
-	 * @return The connection weight.
-	 */
-	public float getWeight(SpikingNeuron n) {
-		return inputWeights.get(n);
-	}
-
-	/**
-	 * Updates the neuron inner state. Should be called when pertinent. e.g.,
-	 * neuron receiving voltage in passive spiking neurons, or on every cycle in
-	 * driver neurons.
+	 * Updates the neuron inner state due to the pass of time (simulation step).
 	 * 
 	 * @param time
 	 *            the time at which the update is called
 	 */
-	public abstract void update(long time);
+	public abstract void updateStep(long time);
+
+	/**
+	 * Updates the neuron's inner state after a spike event.
+	 * 
+	 * @param time
+	 *            the time at which the update is called
+	 */
+	public abstract void updateAfterSpike(long time);
 
 	public void addSpikeListener(SpikeListener listener) {
 		spikeListeners.add(listener);
 	}
 
-	public List<SpikingNeuron> getOuputNeurons() {
+	public List<InputSpikingNeuron> getOuputNeurons() {
 		return outputNeurons;
 	}
 

@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 
 import edu.usf.micronsl.spiking.SpikeEventMgr;
 import edu.usf.micronsl.spiking.module.NeuronLayer;
+import edu.usf.micronsl.spiking.neuron.InputSpikingNeuron;
 import edu.usf.micronsl.spiking.neuron.LeakyIntegratorSpikingNeuron;
 import edu.usf.micronsl.spiking.neuron.SpikingNeuron;
 import edu.usf.micronsl.spiking.neuron.driver.ContinuousDriverNeuron;
@@ -32,17 +33,17 @@ public class FourLayerNet {
 	static List<NetPlot> nplots;
 	static SpikeEventMgr sEM;
 	static long global_time;
-	static double global_spike_threshold;
+	static float global_spike_threshold;
 	static long global_delay;
-	static double[] global_weight_range;
+	static float[] global_weight_range;
 	static long oscillator_wavelength;
 
 	public enum OscillatorType {
 		CONSTANT, POISSON, PROBABILISTIC
 	}
 
-	public FourLayerNet(int numLayers, int[] layerNeuronCount, double[] connectivity, double spikeThreshold, long delay,
-			double[] weightRange) {
+	public FourLayerNet(int numLayers, int[] layerNeuronCount, float[] connectivity, float spikeThreshold, long delay,
+			float[] weightRange) {
 		// netplot stuff
 		layerList = new ArrayList<NeuronLayer>();
 		drivers = new ArrayList<DriverNeuron>();
@@ -57,7 +58,7 @@ public class FourLayerNet {
 			// generate neurons
 			for (int j = 0; j < layerNeuronCount[i]; j++) {
 				layer.addNeuron(
-						new LeakyIntegratorSpikingNeuron(global_time, global_spike_threshold, global_delay, 0.8, j));
+						new LeakyIntegratorSpikingNeuron(j, global_delay,0.8f, global_spike_threshold, global_time));
 			}
 			layerList.add(layer);
 
@@ -70,6 +71,7 @@ public class FourLayerNet {
 				for (SpikingNeuron prevN : prevLayer.getNeurons()) {
 					// for every neuron in current layer...
 					for (SpikingNeuron nextN : layer.getNeurons()) {
+						InputSpikingNeuron inputNextN = (InputSpikingNeuron) nextN;
 						// generate a random number from 0 to 1.0
 						double randFloat = rand.nextFloat();
 						// if number is > connectivity, calculate weight,
@@ -77,8 +79,8 @@ public class FourLayerNet {
 						if (randFloat < connectivity[i - 1]) {
 							float total_weight = (float) (global_weight_range[0]
 									+ ((Math.abs(randFloat - 1)) * (global_weight_range[1] - global_weight_range[0])));
-							prevN.addOutputNeuron(nextN);
-							nextN.addInputNeuron(prevN, total_weight);
+							prevN.addOutputNeuron(inputNextN);
+							inputNextN.addInputNeuron(prevN, total_weight);
 						}
 					}
 				}
@@ -124,8 +126,8 @@ public class FourLayerNet {
 		System.out.println("Time step: " + currentTime);
 		for (SpikingNeuron n : layer.getNeurons()) {
 			// feed 0 V to the neuron to update its voltage
-			n.update(currentTime);
-			System.out.println(i + " - V: " + n.voltage);
+			n.updateStep(currentTime);
+			System.out.println(i + " - V: " + ((LeakyIntegratorSpikingNeuron)n).voltage);
 		}
 		System.out.println("");
 	}
@@ -147,8 +149,8 @@ public class FourLayerNet {
 	}
 
 	public void addProbabilisticDriver(int l, int n, float v, float prob) {
-		DriverNeuron neuron = new ProbabilisticDriverNeuron(global_time, 0.99, 1, prob, drivers.size(), new Random());
-		SpikingNeuron post = getNeuron(l, n);
+		DriverNeuron neuron = new ProbabilisticDriverNeuron(drivers.size(), 1, prob, new Random());
+		InputSpikingNeuron post = (InputSpikingNeuron) getNeuron(l, n);
 		neuron.addOutputNeuron(post);
 		post.addInputNeuron(neuron, v);
 
@@ -156,8 +158,8 @@ public class FourLayerNet {
 	}
 
 	public void addContinuousDriver(int l, int n, float v, float step) {
-		DriverNeuron neuron = new ContinuousDriverNeuron(global_time, 0.99, 1, step, drivers.size());
-		SpikingNeuron post = getNeuron(l, n);
+		DriverNeuron neuron = new ContinuousDriverNeuron(drivers.size(), 1, step);
+		InputSpikingNeuron post = (InputSpikingNeuron) getNeuron(l, n);
 		neuron.addOutputNeuron(post);
 		post.addInputNeuron(neuron, v);
 
@@ -177,7 +179,7 @@ public class FourLayerNet {
 		// factor out auto-spiking
 		// keep neuron exciting outside of the
 		for (DriverNeuron dn : drivers)
-			dn.update(global_time);
+			dn.updateStep(global_time);
 		sEM.process(global_time);
 		printState(global_time, outputLayer);
 		plotLayers(global_time);
@@ -187,10 +189,10 @@ public class FourLayerNet {
 	public static void main(String[] args) {
 		
 	    int[] layers = {10,100,100,20};
-	    double[] connectivity = {0.1, 1, 0.1};
-	    double global_spike_threshold = 0.6;
+	    float[] connectivity = {0.1f, .1f, 0.1f};
+	    float global_spike_threshold = 0.6f;
 	    long global_delay = 1;
-	    double[] global_weight_range = {0, 0.2};
+	    float[] global_weight_range = {0f, 0.2f};
 
 		FourLayerNet network = new FourLayerNet(layers.length, layers, connectivity, global_spike_threshold,
 				global_delay, global_weight_range);
@@ -206,7 +208,7 @@ public class FourLayerNet {
 		};
 		Timer timer = new Timer();
 
-		timer.schedule(task, 1000, 5);
+		timer.schedule(task, 1000, 50);
 
 	}
 
