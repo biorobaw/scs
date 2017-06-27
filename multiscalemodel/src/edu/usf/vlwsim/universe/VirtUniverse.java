@@ -1,5 +1,6 @@
 package edu.usf.vlwsim.universe;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.geom.Point2D;
@@ -20,7 +21,6 @@ import javax.swing.JPanel;
 import javax.vecmath.AxisAngle4f;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
-import javax.vecmath.Quat4d;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
@@ -62,7 +62,6 @@ import edu.usf.vlwsim.display.j3d.RobotNode;
 import edu.usf.vlwsim.display.j3d.UniverseFrame;
 import edu.usf.vlwsim.display.j3d.ViewNode;
 import edu.usf.vlwsim.display.j3d.WallNode;
-import edu.usf.vlwsim.display.swing.VirtualUniversePanel;
 
 /**
  * This universe class creates a universe from an XML file and exposes
@@ -299,7 +298,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		for (ElementWrapper platform : list) {
 			Platform p = new Platform(
 					new Point3f(platform.getChildFloat("x"), platform.getChildFloat("y"), platform.getChildFloat("z")),
-					platform.getChildFloat("r"));
+					platform.getChildFloat("r"), Color.YELLOW);
 			platforms.add(p);
 			if (display) {
 				PlatformNode pn = new PlatformNode(platform);
@@ -548,8 +547,12 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		}
 	}
 
-	public void addPlatform(Point3f pos, float radius) {
-		platforms.add(new Platform(pos, radius));
+	public void addPlatform(Point3f pos, float radius){
+		addPlatform(pos, radius, Color.YELLOW);
+	}
+	
+	public void addPlatform(Point3f pos, float radius, Color color) {
+		platforms.add(new Platform(pos, radius, color));
 
 		if (display) {
 			PlatformNode p = new PlatformNode(pos.x, pos.y, radius);

@@ -10,7 +10,7 @@ import java.util.Random;
 import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.NoDisplay;
-import edu.usf.experiment.display.SCSFrame;
+import edu.usf.experiment.display.PDFDisplay;
 import edu.usf.experiment.plot.Plotter;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.RobotLoader;
@@ -134,8 +134,8 @@ public class Experiment implements Runnable {
 		
 		Display displayer;
 		if (display){
-//			displayer = new PDFDisplay();
-			displayer = new SCSFrame();
+			displayer = new PDFDisplay();
+//			displayer = new SCSFrame();
 		} else {
 			displayer = new NoDisplay();
 		}

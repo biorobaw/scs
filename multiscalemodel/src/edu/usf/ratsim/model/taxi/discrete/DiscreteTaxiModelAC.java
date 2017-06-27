@@ -187,8 +187,8 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		updateQ.addInPort("valuePlaceCells", valuePlaceCells.getActivationPort());
 		addModulePost(updateQ);
 
-		DisplaySingleton.getDisplay().addUniverseDrawer(new QValueDrawer(this), 0);
-		DisplaySingleton.getDisplay().addUniverseDrawer(new QPolicyDrawer(this, (AffordanceRobot) robot));
+//		DisplaySingleton.getDisplay().addUniverseDrawer(new QValueDrawer(this), 0);
+//		DisplaySingleton.getDisplay().addUniverseDrawer(new QPolicyDrawer(this, (AffordanceRobot) robot));
 	}
 
 	public void newEpisode() {

@@ -1,5 +1,7 @@
 package edu.usf.experiment.task.maze;
 
+import java.awt.Color;
+
 import javax.vecmath.Point3f;
 
 import edu.usf.experiment.subject.Subject;
@@ -39,19 +41,24 @@ public class SetUpTaxi extends Task {
 		int which = RandomSingleton.getInstance().nextInt(4);
 		switch (which){
 		case 0:
-			pu.addPlatform(new Point3f(SIZE/20 * 12, 0, 0), 1); 
+			pu.addPlatform(new Point3f(SIZE/20 * 12, 0, 0), 1, Color.BLUE); 
 			break;
 		case 1:
-			pu.addPlatform(new Point3f(0, 0, 0), 1);
+			pu.addPlatform(new Point3f(0, 0, 0), 1, Color.YELLOW);
 			break;
 		case 2:
-			pu.addPlatform(new Point3f(0, SIZE -1, 0), 1);
+			pu.addPlatform(new Point3f(0, SIZE -1, 0), 1, Color.RED);
 			break;
 		case 3:
-			pu.addPlatform(new Point3f(SIZE - 1, SIZE -1, 0), 1);
+			pu.addPlatform(new Point3f(SIZE - 1, SIZE -1, 0), 1, Color.GREEN);
 			break;
 		}
-		}
+		
+		
+		
+		
+		
+	}
 		
 
 }

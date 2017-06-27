@@ -2,30 +2,33 @@ package edu.usf.micronsl.spiking.test;
 
 import java.awt.Container;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 
 import edu.usf.micronsl.spiking.SpikeEventMgr;
 import edu.usf.micronsl.spiking.module.NeuronLayer;
+import edu.usf.micronsl.spiking.neuron.LeakyIntegratorSpikingNeuron;
 import edu.usf.micronsl.spiking.neuron.SpikingNeuron;
+import edu.usf.micronsl.spiking.neuron.driver.ContinuousDriverNeuron;
+import edu.usf.micronsl.spiking.neuron.driver.DriverNeuron;
+import edu.usf.micronsl.spiking.neuron.driver.ProbabilisticDriverNeuron;
 import edu.usf.micronsl.spiking.plot.ControlPanel;
 import edu.usf.micronsl.spiking.plot.NetPlot;
-import edu.usf.micronsl.spiking.neuron.OscillatorNeuron;
-import edu.usf.micronsl.spiking.neuron.LeakyIntegratorSpikingNeuron;
 
 /**
  * @author Eduardo Zuloaga
  */
-public class NeuronNet {
+public class FourLayerNet {
 
 	static List<NeuronLayer> layerList;
 	static NeuronLayer inputLayer;
 	static NeuronLayer outputLayer;
-	static List<OscillatorNeuron> oscillators;
+	static List<DriverNeuron> drivers;
 	static List<NetPlot> nplots;
 	static SpikeEventMgr sEM;
 	static long global_time;
@@ -38,26 +41,26 @@ public class NeuronNet {
 		CONSTANT, POISSON, PROBABILISTIC
 	}
 
-	public NeuronNet(int numLayers, int[] layerNeuronCount, double[] connectivity, double spikeThreshold, long delay,
-			double[] weightRange, int wavelength) {
+	public FourLayerNet(int numLayers, int[] layerNeuronCount, double[] connectivity, double spikeThreshold, long delay,
+			double[] weightRange) {
 		// netplot stuff
 		layerList = new ArrayList<NeuronLayer>();
-		oscillators = new ArrayList();
+		drivers = new ArrayList<DriverNeuron>();
 		global_time = 0;
 		global_spike_threshold = spikeThreshold;
 		global_delay = delay;
 		global_weight_range = weightRange;
-		oscillator_wavelength = wavelength;
 
 		// generate all layers, pop onto layer list
 		for (int i = 0; i < numLayers; i++) {
 			NeuronLayer layer = new NeuronLayer(layerNeuronCount[i]);
 			// generate neurons
 			for (int j = 0; j < layerNeuronCount[i]; j++) {
-				layer.addNeuron(new LeakyIntegratorSpikingNeuron(global_time, global_spike_threshold, global_delay, 0.8, j));
+				layer.addNeuron(
+						new LeakyIntegratorSpikingNeuron(global_time, global_spike_threshold, global_delay, 0.8, j));
 			}
 			layerList.add(layer);
-			
+
 			// make connections to previous layer
 			if (i != 0) {
 				Random rand = new Random();
@@ -88,7 +91,7 @@ public class NeuronNet {
 		JFrame plots = new JFrame("Spike Plot");
 		Container panel = plots.getContentPane();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-		nplots = new ArrayList();
+		nplots = new ArrayList<NetPlot>();
 		NetPlot nplot;
 		int x_size, y_size;
 		x_size = 50;
@@ -112,15 +115,13 @@ public class NeuronNet {
 
 	}
 
-	static void launchConsole(NeuronNet self) {
-		ControlPanel panel;
-		panel = new ControlPanel(self);
+	static void launchConsole(FourLayerNet self) {
+		new ControlPanel(self);
 	}
 
 	static void printState(long currentTime, NeuronLayer layer) {
 		int i = 0;
 		System.out.println("Time step: " + currentTime);
-		SpikingNeuron cur;
 		for (SpikingNeuron n : layer.getNeurons()) {
 			// feed 0 V to the neuron to update its voltage
 			n.update(currentTime);
@@ -129,7 +130,6 @@ public class NeuronNet {
 		System.out.println("");
 	}
 
-	
 	static void plotLayers(long time) {
 		for (int layerNum = 0; layerNum < layerList.size(); layerNum++) {
 			NetPlot nplot = nplots.get(layerNum);
@@ -146,17 +146,26 @@ public class NeuronNet {
 		return d;
 	}
 
-	public void addOscillator(int l, int n, float v, int type, double param) {
-		OscillatorNeuron neuron = new OscillatorNeuron(global_time, 0.99, 1, type, param, oscillators.size());
+	public void addProbabilisticDriver(int l, int n, float v, float prob) {
+		DriverNeuron neuron = new ProbabilisticDriverNeuron(global_time, 0.99, 1, prob, drivers.size(), new Random());
 		SpikingNeuron post = getNeuron(l, n);
 		neuron.addOutputNeuron(post);
 		post.addInputNeuron(neuron, v);
 
-		oscillators.add(neuron);
+		drivers.add(neuron);
+	}
+
+	public void addContinuousDriver(int l, int n, float v, float step) {
+		DriverNeuron neuron = new ContinuousDriverNeuron(global_time, 0.99, 1, step, drivers.size());
+		SpikingNeuron post = getNeuron(l, n);
+		neuron.addOutputNeuron(post);
+		post.addInputNeuron(neuron, v);
+
+		drivers.add(neuron);
 	}
 
 	public void clearOscillators() {
-		oscillators.clear();
+		drivers.clear();
 	}
 
 	private SpikingNeuron getNeuron(int l, int n) {
@@ -164,25 +173,41 @@ public class NeuronNet {
 		return layerList.get(l).getNeuron(n);
 	}
 
-	private void runOscillators() {
-		for (int i = 0; i < oscillators.size(); i++) {
-			OscillatorNeuron osc = oscillators.get(i);
-			if (osc.readyToFire()) {
-				// sEM.queueSpike(osc, global_time, 1.0); // TODO: change the
-				// dynamics to run oscillators
-				osc.spike(global_time);
-			}
-		}
-	}
-
 	public void incrementTime() {
 		// factor out auto-spiking
 		// keep neuron exciting outside of the
-		runOscillators();
+		for (DriverNeuron dn : drivers)
+			dn.update(global_time);
 		sEM.process(global_time);
 		printState(global_time, outputLayer);
 		plotLayers(global_time);
 		global_time += 1;
+	}
+
+	public static void main(String[] args) {
+		
+	    int[] layers = {10,100,100,20};
+	    double[] connectivity = {0.1, 1, 0.1};
+	    double global_spike_threshold = 0.6;
+	    long global_delay = 1;
+	    double[] global_weight_range = {0, 0.2};
+
+		FourLayerNet network = new FourLayerNet(layers.length, layers, connectivity, global_spike_threshold,
+				global_delay, global_weight_range);
+
+		for (int i = 0; i < 10; i++)
+			// network.addContinuousDriver(0, i, 1.0f, .2f);
+			network.addProbabilisticDriver(0, i, 1.0f, .2f);
+
+		TimerTask task = new TimerTask() {
+			public void run() {
+				network.incrementTime();
+			}
+		};
+		Timer timer = new Timer();
+
+		timer.schedule(task, 1000, 5);
+
 	}
 
 }

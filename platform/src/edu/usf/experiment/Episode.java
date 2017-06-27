@@ -135,7 +135,7 @@ public class Episode {
 
 			getSubject().getModel().runPre();
 			
-//			display.repaint();
+			display.repaint();
 			
 			getUniverse().step();
 			

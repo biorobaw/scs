@@ -1,5 +1,6 @@
 package edu.usf.vlwsim.discrete;
 
+import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Float;
 import java.awt.geom.Rectangle2D;
@@ -150,8 +151,13 @@ public class DiscreteVirtualUniverse
 	}
 
 	@Override
+	public void addPlatform(Point3f pos, float radius, Color color) {
+		platforms.add(new Platform(pos, radius, color));
+	}
+
+	@Override
 	public void addPlatform(Point3f pos, float radius) {
-		platforms.add(new Platform(pos, radius));
+		addPlatform(pos, radius, Color.YELLOW);
 	}
 
 	@Override
@@ -203,5 +209,6 @@ public class DiscreteVirtualUniverse
 	public void setBoundingRect(java.awt.geom.Rectangle2D.Float boundingRect) {
 		
 	}
+
 
 }

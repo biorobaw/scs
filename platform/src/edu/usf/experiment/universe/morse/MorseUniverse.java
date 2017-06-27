@@ -1,5 +1,6 @@
 package edu.usf.experiment.universe.morse;
 
+import java.awt.Color;
 import java.awt.geom.Point2D.Float;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -113,6 +114,12 @@ public class MorseUniverse implements GlobalCameraUniverse, PlatformUniverse, Mo
 
 	@Override
 	public void setRobot(Robot robot) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addPlatform(Point3f point3f, float radius, Color blue) {
 		// TODO Auto-generated method stub
 		
 	}

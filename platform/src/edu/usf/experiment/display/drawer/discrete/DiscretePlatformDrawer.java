@@ -25,7 +25,7 @@ public class DiscretePlatformDrawer implements Drawer {
 	public void draw(Graphics g, Scaler s) {
 		for (Platform p : u.getPlatforms()){
 			Point3f pos = p.getPosition();
-			g.setColor(Color.ORANGE);
+			g.setColor(p.getColor());
 			Point ul = s.scale(new Coordinate(pos.x, pos.y + 1));
 			Point lr = s.scale(new Coordinate(pos.x +1, pos.y));
 			

@@ -8,14 +8,14 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 
 import edu.usf.micronsl.spiking.neuron.SpikingNeuron;
-import edu.usf.micronsl.spiking.test.NeuronNet;
+import edu.usf.micronsl.spiking.test.FourLayerNet;
 
 /**
 * @author Eduardo Zuloaga
 */
 public class ControlPanel implements ActionListener {
     SpikingNeuron selected;
-    NeuronNet subjectNet;
+    FourLayerNet subjectNet;
     int[] subjectMeta;
     JFrame controlPanel;
     int layerCursor;
@@ -54,11 +54,11 @@ public class ControlPanel implements ActionListener {
             setDefault();
             return;
         }
-        double param;
+        float param;
         try {
             layerCursor = (int)Integer.parseInt(layerField.getText());
             neuronCursor = (int)Integer.parseInt(neuronField.getText());
-            param = (double)Float.parseFloat(paramField.getText());
+            param = Float.parseFloat(paramField.getText());
         }
         catch (Exception exc) {
             setDefault();
@@ -66,29 +66,27 @@ public class ControlPanel implements ActionListener {
         }
         if ("Add Cont".equals(e.getActionCommand())) {
             if (boundCheck()) {
-                subjectNet.addOscillator(
+                subjectNet.addContinuousDriver(
                     layerCursor, 
                     neuronCursor, 
                     selectedV,
-                    0,
                     param
                 );
             }
         }
         else if ("Add Prob".equals(e.getActionCommand())) {
             if (boundCheck()) {
-                subjectNet.addOscillator(
+                subjectNet.addProbabilisticDriver(
                     layerCursor, 
                     neuronCursor, 
                     selectedV,
-                    1,
                     param
                 );
             }
         }
     }
     
-    public ControlPanel(NeuronNet net) {
+    public ControlPanel(FourLayerNet net) {
         subjectNet = net;
         subjectMeta = subjectNet.getLayerMetadata();
         layerCursor = 0;

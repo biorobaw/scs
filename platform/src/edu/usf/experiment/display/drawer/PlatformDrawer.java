@@ -22,7 +22,7 @@ public class PlatformDrawer implements Drawer {
 			float radius = p.getRadius();
 //			g.drawOval(pos.x - (int) (radius * s.xscale), pos.y - (int) (radius * s.yscale),
 //					(int) (radius * s.xscale * 2), (int) (radius * s.yscale * 2));
-			g.setColor(Color.ORANGE);
+			g.setColor(p.getColor());
 			g.fillOval(pos.x - (int) (radius * s.xscale), pos.y - (int) (radius * s.yscale),
 					(int) (radius * s.xscale * 2), (int) (radius * s.yscale * 2));
 		}

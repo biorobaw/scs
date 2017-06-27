@@ -14,7 +14,7 @@ import edu.usf.micronsl.spiking.SpikeListener;
  * @author Eduardo Zuloaga
  */
 public abstract class SpikingNeuron {
-	
+
 	/**
 	 * The list of neurons this one is connected to
 	 */
@@ -36,7 +36,8 @@ public abstract class SpikingNeuron {
 	 */
 	long lastUpdated;
 	/**
-	 * The delay applied to spikes before they reach their destination in the following neurons
+	 * The delay applied to spikes before they reach their destination in the
+	 * following neurons
 	 */
 	public long delay;
 	/**
@@ -48,15 +49,19 @@ public abstract class SpikingNeuron {
 	 */
 	public int id;
 	/**
-	 * A list of spike listeners 
+	 * A list of spike listeners
 	 */
 	private LinkedList<SpikeListener> spikeListeners;
 
 	/**
 	 * Constructs this neuron
-	 * @param time the current time
-	 * @param s_t the spike threshold
-	 * @param d the delay
+	 * 
+	 * @param time
+	 *            the current time
+	 * @param s_t
+	 *            the spike threshold
+	 * @param d
+	 *            the delay
 	 */
 	public SpikingNeuron(long time, double s_t, long d, int id) {
 		outputNeurons = new ArrayList<SpikingNeuron>();
@@ -66,33 +71,39 @@ public abstract class SpikingNeuron {
 		delay = d;
 		lastUpdated = time;
 
-//		place = new int[2];
-//		place[0] = layer_num;
-//		place[1] = neu_num;
+		// place = new int[2];
+		// place[0] = layer_num;
+		// place[1] = neu_num;
 
 		this.id = id;
-		
+
 		this.spikeListeners = new LinkedList<SpikeListener>();
 		addSpikeListener(SpikeEventMgr.getInstance());
 	}
 
 	/**
 	 * Connects this neuron to a postsynaptic neuron
-	 * @param n The postsynaptic neuron
+	 * 
+	 * @param n
+	 *            The postsynaptic neuron
 	 */
 	public void addOutputNeuron(SpikingNeuron n) {
 		outputNeurons.add(n);
 	}
-	
+
 	/**
-	 * Connects a presynaptic neuron to this neuron with a specified connection weight.
-	 * @param n The presynaptic neuron.
-	 * @param weight The connection weight between the neurons
+	 * Connects a presynaptic neuron to this neuron with a specified connection
+	 * weight.
+	 * 
+	 * @param n
+	 *            The presynaptic neuron.
+	 * @param weight
+	 *            The connection weight between the neurons
 	 */
-	public void addInputNeuron(SpikingNeuron n, float weight){
+	public void addInputNeuron(SpikingNeuron n, float weight) {
 		inputWeights.put(n, weight);
 	}
-	
+
 	/**
 	 * Inputs voltage into the neuron synapses
 	 * 
@@ -120,7 +131,7 @@ public abstract class SpikingNeuron {
 		}
 		return;
 	}
-	
+
 	/**
 	 * Produce a spiking event that will notify all following neurons. The spike
 	 * will only reach the postsynaptic neurons after a specified delay
@@ -136,19 +147,22 @@ public abstract class SpikingNeuron {
 		for (SpikeListener sl : spikeListeners)
 			sl.spikeEvent(evt);
 	}
-	
+
 	/**
 	 * Get the connection weight for the presynaptic neuron n.
-	 * @param n The presynaptic neuron.
+	 * 
+	 * @param n
+	 *            The presynaptic neuron.
 	 * @return The connection weight.
 	 */
-	public float getWeight(SpikingNeuron n){
+	public float getWeight(SpikingNeuron n) {
 		return inputWeights.get(n);
 	}
 
 	/**
-	 * Updates the neuron inner state .Should be called when pertinent. e.g.,
-	 * neuron receiving voltage
+	 * Updates the neuron inner state. Should be called when pertinent. e.g.,
+	 * neuron receiving voltage in passive spiking neurons, or on every cycle in
+	 * driver neurons.
 	 * 
 	 * @param time
 	 *            the time at which the update is called
