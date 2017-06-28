@@ -1,5 +1,6 @@
 package edu.usf.experiment.display;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D.Float;
@@ -10,6 +11,7 @@ import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
@@ -49,17 +51,18 @@ public class UniversePanel extends JPanel {
 		this.bu = bu;
 	}
 
-	protected void paintComponent(Graphics g) {
+	@Override
+	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		
+			
 		// Define scaling factors
 		Float univRect = bu.getBoundingRect();
 		Dimension panelRect = getSize();
 
 		// The scaling factors are the relation between effective draw space and
 		// the universe bounding box (taken from the xml file for the maze)
-		float xscale = (float) ((panelRect.getWidth() - 2 * XMARGIN) / univRect.width);
-		float yscale = (float) ((panelRect.getHeight() - 2 * YMARGIN) / univRect.height);
+		float xscale = (float) ((panelRect.width - 2 * XMARGIN) / univRect.width);
+		float yscale = (float) ((panelRect.height - 2 * YMARGIN) / univRect.height);
 		// Take the minimum of both scales to keep aspect ratio
 		float defScale = Math.min(xscale, yscale);
 		// The x offset is just the lowest x coordinate of the universe
@@ -68,11 +71,18 @@ public class UniversePanel extends JPanel {
 		// the y component (it grows to the bottom in the screen)
 		float yoffset = -(univRect.height + univRect.y + YMARGIN / defScale);
 		Scaler s = new Scaler(defScale, defScale, xoffset, yoffset);
+		
+		// Erase previous paintings
+		System.out.println(getBackground());
+		g.setColor(new Color(239, 239, 239, 255));
+		g.fillRect(0, 0, panelRect.width, panelRect.height);
 
+		// Draw all layers
 		for (Drawer d : drawers){
 			if (cBoxes.get(d).isSelected())
 				d.draw(g, s);
 		}
+		
 			
 
 	}

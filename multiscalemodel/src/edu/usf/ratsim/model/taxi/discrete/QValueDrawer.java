@@ -34,18 +34,24 @@ public class QValueDrawer implements Drawer {
 				maxPos = val > maxPos ? val : maxPos;
 		maxNeg = -maxNeg;
 		
+		maxNeg = maxNeg == 0 ? 1 : maxNeg;
+		maxPos = maxPos == 0 ? 1 : maxPos;
+		
 		for (Point3f p : vps.keySet())
 		{
 			Point ul = s.scale(new Coordinate(p.x, p.y + 1));
-			Point lr = s.scale(new Coordinate(p.x +1, p.y));
+			Point lr = s.scale(new Coordinate(p.x + 1, p.y));
 			float val = vps.get(p);
+		
 			val = val < 0 ? val / maxNeg : val / maxPos;
-			Color b = new Color(val < 0 ? 1 : 0,
-					0,
-					val > 0 ? 1 : 0,Math.min(1, Math.abs(val)));
+			float red = val <= 0f ? 1f : 0f;
+			float green = 0f;
+			float blue = val > 0f ? 1f : 0f;
+			float alpha = Math.abs(val);
+			Color b = new Color(red, green, blue, alpha);
 			g.setColor(b);
-			
 			g.fillRect(ul.x, ul.y, Math.abs(lr.x - ul.x),  Math.abs(ul.y - lr.y));
+//			System.out.println(p.x + " " + p.y);
 		}
 	}
 
