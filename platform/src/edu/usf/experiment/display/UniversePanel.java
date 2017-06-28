@@ -73,7 +73,6 @@ public class UniversePanel extends JPanel {
 		Scaler s = new Scaler(defScale, defScale, xoffset, yoffset);
 		
 		// Erase previous paintings
-		System.out.println(getBackground());
 		g.setColor(new Color(239, 239, 239, 255));
 		g.fillRect(0, 0, panelRect.width, panelRect.height);
 
