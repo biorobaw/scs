@@ -11,8 +11,8 @@ public class Float1dFillPlot extends Float1dChart2dPlot {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Float1dFillPlot(Float1dPort port){
-		super(port);
+	public Float1dFillPlot(Float1dPort port, String name){
+		super(port, name);
 	}
 	
 	@Override

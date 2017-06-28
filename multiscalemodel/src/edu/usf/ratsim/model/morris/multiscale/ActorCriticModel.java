@@ -38,7 +38,7 @@ import edu.usf.ratsim.nsl.modules.rl.MultiStateACNoTraces;
 import edu.usf.ratsim.nsl.modules.rl.QLAlgorithm;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
 
-public class ActorCriticModel extends Model implements ValueModel{
+public class ActorCriticModel extends Model implements ValueModel {
 
 	// private ProportionalExplorer actionPerformerVote;
 	// private List<WTAVotes> qLActionSel;
@@ -112,7 +112,7 @@ public class ActorCriticModel extends Model implements ValueModel{
 		float ymin = params.getChildFloat("ymin");
 		float xmax = params.getChildFloat("xmax");
 		float ymax = params.getChildFloat("ymax");
-		
+
 		AffordanceRobot aRobot = (AffordanceRobot) robot;
 		FeederRobot fRobot = (FeederRobot) robot;
 		LocalizableRobot lRobot = (LocalizableRobot) robot;
@@ -129,8 +129,7 @@ public class ActorCriticModel extends Model implements ValueModel{
 		// For each layer
 		for (int i = 0; i < numCCLayers; i++) {
 			RndHDPCellLayer ccl = new RndHDPCellLayer("CCL " + i, robot, radius, minHDRadius, maxHDRadius,
-					numCCCellsPerLayer.get(i), "ExponentialHDPC", xmin, ymin, xmax, ymax,
-					layerLengths.get(i));
+					numCCCellsPerLayer.get(i), "ExponentialHDPC", xmin, ymin, xmax, ymax, layerLengths.get(i));
 			conjCellLayers.add(ccl);
 			conjCellLayersPorts.add(ccl.getOutPort("activation"));
 			addModule(ccl);
@@ -165,8 +164,8 @@ public class ActorCriticModel extends Model implements ValueModel{
 		votesPorts.add((Float1dPort) rlVotes.getOutPort("votes"));
 
 		// Exploration module
-		DecayingExplorationSchema decayExpl = new DecayingExplorationSchema("Decay Explorer", robot,
-				explorationReward, explorationHalfLifeVal);
+		DecayingExplorationSchema decayExpl = new DecayingExplorationSchema("Decay Explorer", robot, explorationReward,
+				explorationHalfLifeVal);
 		exploration.add(decayExpl);
 		addModule(decayExpl);
 		votesPorts.add((Float1dPort) decayExpl.getOutPort("votes"));
@@ -178,7 +177,8 @@ public class ActorCriticModel extends Model implements ValueModel{
 
 		// Get votes from QL and other behaviors and perform an action
 		// One vote per layer (one now) + taxic + wf
-//		ProportionalExplorer actionPerformer = new ProportionalExplorer("Action Performer", subject);
+		// ProportionalExplorer actionPerformer = new
+		// ProportionalExplorer("Action Performer", subject);
 		NoExploration actionPerformer = new NoExploration("Action Performer", robot);
 		actionPerformer.addInPort("votes", jointVotes.getOutPort("jointState"));
 		addModule(actionPerformer);
@@ -198,7 +198,7 @@ public class ActorCriticModel extends Model implements ValueModel{
 		valueConnProbs = params.getChildFloatList("valueConnProbs");
 		float valueNormalizer = params.getChildFloat("valueNormalizer");
 		rlValue = new GradientValue("RL value estimation", numActions, valueConnProbs, numCCCellsPerLayer,
-				valueNormalizer,foodReward);
+				valueNormalizer, foodReward);
 		// } else
 		// throw new RuntimeException("Vote mechanism not implemented");
 		rlValue.addInPort("states", jointPCHDIntentionState.getOutPort("jointState"));
@@ -232,10 +232,10 @@ public class ActorCriticModel extends Model implements ValueModel{
 		msac.addInPort("rlValueEstimationBefore", getModule("RL Value Estimation Before").getOutPort("copy"));
 		addModule(msac);
 		rlAlg = msac;
-		
-		
+
 		// Displays
-		DisplaySingleton.getDisplay().addPlot(new Float1dDiscPlot((Float1dPort)jointVotes.getOutPort("jointState")), 0, 0, 1, 1);
+		DisplaySingleton.getDisplay().addPlot(
+				new Float1dDiscPlot((Float1dPort) jointVotes.getOutPort("jointState"), "Action Values"), 0, 0, 1, 1);
 	}
 
 	public List<RndHDPCellLayer> getPCLLayers() {

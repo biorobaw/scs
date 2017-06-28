@@ -28,13 +28,15 @@ public abstract class Float1dChart2dPlot extends JPanel {
 	private double minSoFar;
 	private Chart2D chart;
 
-	public Float1dChart2dPlot(Float1dPort port){
+	public Float1dChart2dPlot(Float1dPort port, String name){
 		chart = new Chart2D();
         trace = new Trace2DLtd(port.getSize());
         trace.setTracePainter(getPainter());
         trace.setColor(Color.BLACK);
+        trace.setName(name);
         chart.addTrace(trace);
         chart.setSize(100, 100);
+        chart.setBackground(new Color(238,238,238));
         
         this.port = port;
         

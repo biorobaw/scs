@@ -37,13 +37,15 @@ public class Float1dSeriesPlot extends JPanel {
 	private Chart2D chart;
 	private int index;
 
-	public Float1dSeriesPlot(Float1dPort port, int index){
+	public Float1dSeriesPlot(Float1dPort port, int index, String name){
 		chart = new Chart2D();
         trace = new Trace2DLtd(20);
         
         TracePainterLine discPainter = new TracePainterLine();
         trace.setTracePainter(discPainter);
         trace.setColor(Color.BLACK);
+        trace.setName(name);
+        chart.setBackground(new Color(238,238,238));
         chart.addTrace(trace);
         // TODO: fix to autosize
         chart.setSize(100, 100);
