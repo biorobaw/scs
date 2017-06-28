@@ -54,7 +54,7 @@ public class FourLayerNet {
 
 		// generate all layers, pop onto layer list
 		for (int i = 0; i < numLayers; i++) {
-			NeuronLayer layer = new NeuronLayer(layerNeuronCount[i]);
+			NeuronLayer layer = new NeuronLayer();
 			// generate neurons
 			for (int j = 0; j < layerNeuronCount[i]; j++) {
 				layer.addNeuron(
