@@ -18,6 +18,7 @@ import edu.usf.experiment.task.TaskLoader;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.micronsl.NSLSimulation;
 
 /**
  * This class represents an actual run. For learning experiments, for example,
@@ -50,6 +51,7 @@ public class Episode {
 	private boolean makePlots;
 	
 	private int[] sleepValues = new int[] {0,1,10,50,100,500,1000,2000,3000,5000};
+	private NSLSimulation nslSim;
 
 	public Episode(ElementWrapper episodeNode, String parentLogPath, Trial trial, int episodeNumber, boolean makePlots) {
 		this.trial = trial;
@@ -96,6 +98,8 @@ public class Episode {
 				episodeNode.getChild("afterCycleLoggers"), logPath);
 		afterEpisodeLoggers = LoggerLoader.getInstance().load(
 				episodeNode.getChild("afterEpisodeLoggers"), logPath);
+		
+		nslSim = NSLSimulation.getInstance();
 	}
 
 	public void run() {
@@ -144,6 +148,8 @@ public class Episode {
 			display.repaint();
 //			System.out.println("cycle");
 			// TODO: universe step cycle
+			
+			nslSim.incSimTime();
 
 			for (Logger l : afterCycleLoggers)
 				l.log(this);
