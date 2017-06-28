@@ -25,9 +25,9 @@
 		<name>edu.usf.ratsim.model.test.spiking.FFSpikingModel</name>
 		<params>
 			<numLayers>4</numLayers>
-			<cellsPerLayer>10</cellsPerLayer>
-			<connProb>.1</connProb>
-			<weight>1</weight>
+			<cellsPerLayer>100</cellsPerLayer>
+			<connProb>.05</connProb>
+			<weight>.2</weight>
 			<spikeDelay>1</spikeDelay>
 			<vDecay>0.8</vDecay>
 			<spikeThreshold>0.6</spikeThreshold>
@@ -58,7 +58,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>500</number>
+			<number>1</number>
 			<!-- Sleep between cycles for visualization -->
 			<sleep>00</sleep>
 			<!-- Tasks to perform before each episode -->

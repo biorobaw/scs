@@ -100,12 +100,11 @@ public class FourLayerNet {
 		for (int i = 0; i < layerList.size(); i++) {
 			NeuronLayer layer = layerList.get(i);
 			y_size = layer.getNumNeurons();
-			nplot = new NetPlot("Layer " + i, "Time", "Neuron", x_size, y_size + 1);
-			layer.addSpikeListener(nplot);
+			nplot = new NetPlot("Layer " + i, "Time", "Neuron", x_size, layer.getNeurons());
 			// sEM.registerPlot(nplot);
 
 			nplots.add(nplot);
-			panel.add(nplot.getPanel());
+			panel.add(nplot);
 		}
 		plots.pack();
 		plots.setVisible(true);
@@ -135,7 +134,7 @@ public class FourLayerNet {
 	static void plotLayers(long time) {
 		for (int layerNum = 0; layerNum < layerList.size(); layerNum++) {
 			NetPlot nplot = nplots.get(layerNum);
-			nplot.plotSpikes(time);
+			nplot.repaint();
 		}
 	}
 

@@ -38,7 +38,7 @@ public class SpikeEventMgr implements SpikeListener {
 	}
 
 	@Override
-	public void spikeEvent(SpikeEvent e) {
+	public synchronized void spikeEvent(SpikeEvent e) {
 		long arrivalTime = e.time + e.source.delay;
 
 		if (!events.containsKey(arrivalTime))

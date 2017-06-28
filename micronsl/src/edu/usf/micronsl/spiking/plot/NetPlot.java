@@ -1,5 +1,10 @@
 package edu.usf.micronsl.spiking.plot;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.util.Set;
+
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -12,6 +17,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import edu.usf.micronsl.NSLSimulation;
 import edu.usf.micronsl.spiking.SpikeEvent;
 import edu.usf.micronsl.spiking.SpikeListener;
 import edu.usf.micronsl.spiking.neuron.SpikingNeuron;
@@ -19,23 +25,25 @@ import edu.usf.micronsl.spiking.neuron.SpikingNeuron;
 /**
  * @author Eduardo Zuloaga
  */
-public class NetPlot implements SpikeListener {
+public class NetPlot extends JPanel implements SpikeListener {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private static final int MIN_WIDTH = 300;
+	private static final int MIN_HEIGHT = 100;
 
 	JFreeChart chart;
 	XYSeries spikes;
 	int cutoffInterval;
-	int limit_y;
+	private int limit_y;
 	int size_x;
 	String label;
-	String x_label;
-	String y_label;
+	String xLabel;
+	String yLabel;
 	XYSeriesCollection series;
-
-	private JFreeChart createChart() {
-		JFreeChart chart = ChartFactory.createScatterPlot(label, x_label, y_label, series, PlotOrientation.VERTICAL,
-				true, true, false);
-		return chart;
-	}
 
 	public void addSpike(SpikingNeuron neuron, long time) {
 		// Only add a spike if pertinent to this plot
@@ -47,24 +55,42 @@ public class NetPlot implements SpikeListener {
 
 	}
 
-	public NetPlot(String l, String x, String y, int cutoff, int ybound) {
-		label = l;
-		x_label = x;
-		y_label = y;
-		limit_y = ybound;
+	public NetPlot(String label, String xLabel, String yLabel, int cutoff, Set<SpikingNeuron> neurons) {
+		super();
+		
+		this.label = label;
+		this.xLabel = xLabel;
+		this.yLabel = yLabel;
+		
 		spikes = new XYSeries("Spike");
 		series = new XYSeriesCollection();
 		series.addSeries(spikes);
-		chart = createChart();
 		cutoffInterval = cutoff;
+		
+		limit_y = 0;
+		for (SpikingNeuron sn : neurons){
+			sn.addSpikeListener(this);
+			limit_y = Math.max(limit_y, sn.id);
+		}
+		limit_y++;
+		
+		chart = ChartFactory.createScatterPlot(label, xLabel, xLabel, series, PlotOrientation.VERTICAL,
+				true, true, false);
+		
+		ChartPanel cP = new ChartPanel(chart);
+		setLayout(new BorderLayout());
+		add(cP);
 	}
 
-	public void plotSpikes(long time) {
+	@Override
+	public void paint(Graphics g) {
+		long time = NSLSimulation.getInstance().getSimTime();
 		XYPlot xyPlot = chart.getXYPlot();
 		ValueAxis domain = xyPlot.getDomainAxis();
 		domain.setRange(Math.max(time - cutoffInterval, 0), Math.max(time, cutoffInterval));
 		domain = xyPlot.getRangeAxis();
 		domain.setRange(-1, limit_y);
+		
 
 		// for (int i = 0; i < spikeList.size(); i++) {
 		// addPoint(cursor, spikeList.get(i).getLocation()[1]);
@@ -77,10 +103,7 @@ public class NetPlot implements SpikeListener {
 			}
 		});
 
-	}
-
-	public JPanel getPanel() {
-		return new ChartPanel(chart);
+		super.paint(g);
 	}
 
 	@Override
@@ -94,4 +117,10 @@ public class NetPlot implements SpikeListener {
 
 	}
 
+	@Override
+	public Dimension getMinimumSize() {
+		return new Dimension(MIN_WIDTH, MIN_HEIGHT);
+	}
+
+	
 }

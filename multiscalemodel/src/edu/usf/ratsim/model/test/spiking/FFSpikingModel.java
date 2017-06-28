@@ -1,5 +1,6 @@
 package edu.usf.ratsim.model.test.spiking;
 
+import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -11,6 +12,7 @@ import edu.usf.micronsl.spiking.module.NeuronSet;
 import edu.usf.micronsl.spiking.module.ProbSpikingModule;
 import edu.usf.micronsl.spiking.module.SpikeEventMgrModule;
 import edu.usf.micronsl.spiking.neuron.LeakyIntegratorSpikingNeuron;
+import edu.usf.micronsl.spiking.plot.NetPlot;
 
 public class FFSpikingModel extends Model {
 
@@ -37,12 +39,17 @@ public class FFSpikingModel extends Model {
 				nl.addNeuron(new LeakyIntegratorSpikingNeuron(n, spikeDelay, vDecay, spikeThreshold, time));
 			}
 			addModule(nl);
+			
+			DisplaySingleton.getDisplay().addComponent(new NetPlot("Last Plot", "", "", 50, nl.getNeurons()),
+					0, l, 1, 1);
 
 			SpikingUtils.connect(prevLayer.getNeurons(), nl.getNeurons(), connProb, weight,
 					RandomSingleton.getInstance());
 
 			prevLayer = nl;
 		}
+		
+		
 
 	}
 }
