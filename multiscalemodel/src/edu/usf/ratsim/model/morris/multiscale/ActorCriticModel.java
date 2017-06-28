@@ -143,11 +143,11 @@ public class ActorCriticModel extends Model implements ValueModel {
 
 		// Copy last state and votes before recomputing to use in RL algorithm
 		Float1dSparseCopyModule stateCopy = new Float1dSparseCopyModule("States Before");
-		stateCopy.addInPort("toCopy", jointPCHDIntentionState.getOutPort("jointState"), true);
+		stateCopy.addInPort("toCopy", jointPCHDIntentionState.getOutPort("output"), true);
 		addModule(stateCopy);
 
 		// Create value matrix
-		int numStates = ((Float1dPort) jointPCHDIntentionState.getOutPort("jointState")).getSize();
+		int numStates = ((Float1dPort) jointPCHDIntentionState.getOutPort("output")).getSize();
 		value = new float[numStates][numActions + 1];
 		FloatMatrixPort valuePort = new FloatMatrixPort((Module) null, value);
 
@@ -201,7 +201,7 @@ public class ActorCriticModel extends Model implements ValueModel {
 				valueNormalizer, foodReward);
 		// } else
 		// throw new RuntimeException("Vote mechanism not implemented");
-		rlValue.addInPort("states", jointPCHDIntentionState.getOutPort("jointState"));
+		rlValue.addInPort("states", jointPCHDIntentionState.getOutPort("output"));
 		rlValue.addInPort("value", valuePort);
 		rlValue.addInPort("takenAction", takenActionPort); // just for
 															// dependency
@@ -226,7 +226,7 @@ public class ActorCriticModel extends Model implements ValueModel {
 		msac.addInPort("reward", reward.getOutPort("reward"));
 		msac.addInPort("takenAction", takenActionPort);
 		msac.addInPort("statesBefore", getModule("States Before").getOutPort("copy"));
-		msac.addInPort("statesAfter", jointPCHDIntentionState.getOutPort("jointState"));
+		msac.addInPort("statesAfter", jointPCHDIntentionState.getOutPort("output"));
 		msac.addInPort("value", valuePort);
 		msac.addInPort("rlValueEstimationAfter", rlValue.getOutPort("valueEst"));
 		msac.addInPort("rlValueEstimationBefore", getModule("RL Value Estimation Before").getOutPort("copy"));
