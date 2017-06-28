@@ -2,6 +2,7 @@ package edu.usf.micronsl.plot.float0d;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
@@ -61,4 +62,13 @@ public class Float0dSeriesPlot extends JPanel {
 		super.paint(g);
 	}
 
+	@Override
+	public Dimension getMinimumSize(){
+		return new Dimension(500,200);
+	}
+	
+	@Override
+	public Dimension getPreferredSize(){
+		return new Dimension(500,200);
+	}
 }

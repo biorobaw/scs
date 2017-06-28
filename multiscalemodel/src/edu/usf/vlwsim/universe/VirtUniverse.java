@@ -329,7 +329,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 			topViewCanvas.setPreferredSize(new Dimension(600, 600));
 			JPanel topViewPanel = new JPanel();
 			topViewPanel.add(topViewCanvas);
-			DisplaySingleton.getDisplay().addComponent(topViewPanel, 0, 0, 1, 1);
+			DisplaySingleton.getDisplay().addPlot(topViewPanel, 0, 0, 1, 1);
 		} else {
 			DisplaySingleton.getDisplay().setupUniversePanel(this);
 			DisplaySingleton.getDisplay().addUniverseDrawer(new PlatformDrawer(this));

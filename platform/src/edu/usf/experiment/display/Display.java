@@ -20,7 +20,7 @@ public interface Display {
 	 * @param gridwidth The grid width, see GridBagConstraints
 	 * @param gridheight The grid height, see GridBagConstraints
 	 */
-	public void addComponent(JComponent component, int gridx, int gridy, int gridwidth, int gridheight);
+	public void addPlot(JComponent component, int gridx, int gridy, int gridwidth, int gridheight);
 	
 	/**
 	 * Log a certain string using the display specific method (e.g. textbox or system.out)

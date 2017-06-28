@@ -64,10 +64,16 @@ public abstract class Float1dChart2dPlot extends JPanel {
 		super.paint(g);
 	}
 
+	@Override
 	public Dimension getMinimumSize(){
-		return new Dimension(600,600);
+		return new Dimension(500,200);
 	}
-
+	
+	@Override
+	public Dimension getPreferredSize(){
+		return new Dimension(500,200);
+	}
+	
 	public Chart2D getChart() {
 		return chart;
 	}

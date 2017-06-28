@@ -1,5 +1,6 @@
 package edu.usf.experiment.display.drawer.discrete;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 
@@ -34,7 +35,7 @@ public class DiscreteRobotDrawer implements Drawer {
 		Point lineEnd = s.scale(new Coordinate(centerx + Math.cos(angle) * RADIUS, centery + Math.sin(angle) * RADIUS));
 		
 		
-
+		g.setColor(Color.BLACK);
 		g.drawOval(ul.x, ul.y, Math.abs(lr.x - ul.x), Math.abs(lr.y - ul.y));
 		g.drawLine(center.x, center.y, lineEnd.x, lineEnd.y);
 	}

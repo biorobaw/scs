@@ -22,7 +22,7 @@ public class NoDisplay implements Display {
 	}
 
 	@Override
-	public void addComponent(JComponent component, int gridx, int gridy, int gridwidth, int gridheight) {
+	public void addPlot(JComponent component, int gridx, int gridy, int gridwidth, int gridheight) {
 	}
 
 	@Override

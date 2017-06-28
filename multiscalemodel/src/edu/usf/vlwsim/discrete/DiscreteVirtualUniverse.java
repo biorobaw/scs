@@ -60,7 +60,6 @@ public class DiscreteVirtualUniverse
 		robotDx = 0;
 		robotDy = 0;
 
-//		DisplaySingleton.getDisplay().addComponent(new DiscreteVirtualUniversePanel(this), 1, 0, 1, 1);
 		DisplaySingleton.getDisplay().setupUniversePanel(this);
 		DisplaySingleton.getDisplay().addUniverseDrawer(new DiscretePlatformDrawer(this));
 		DisplaySingleton.getDisplay().addUniverseDrawer(new GridDrawer(this));

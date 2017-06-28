@@ -235,7 +235,7 @@ public class ActorCriticModel extends Model implements ValueModel{
 		
 		
 		// Displays
-		DisplaySingleton.getDisplay().addComponent(new Float1dDiscPlot((Float1dPort)jointVotes.getOutPort("jointState")), 0, 0, 1, 1);
+		DisplaySingleton.getDisplay().addPlot(new Float1dDiscPlot((Float1dPort)jointVotes.getOutPort("jointState")), 0, 0, 1, 1);
 	}
 
 	public List<RndHDPCellLayer> getPCLLayers() {

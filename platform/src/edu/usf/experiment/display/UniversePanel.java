@@ -45,7 +45,6 @@ public class UniversePanel extends JPanel {
 		cBoxes = new HashMap<Drawer, JCheckBox>();
 		cbPanel = new JPanel();
 		cbPanel.setLayout(new BoxLayout(cbPanel, BoxLayout.X_AXIS));
-		add(cbPanel);
 		
 		this.bu = bu;
 	}
@@ -78,8 +77,14 @@ public class UniversePanel extends JPanel {
 
 	}
 
+	@Override
+	public Dimension getMinimumSize() {
+		return new Dimension(600, 600);
+	}
+	
+	@Override
 	public Dimension getPreferredSize() {
-		return new Dimension(800, 800);
+		return new Dimension(600, 600);
 	}
 	
 	public void removeDrawer(Drawer d){
@@ -88,7 +93,7 @@ public class UniversePanel extends JPanel {
 
 	public void addDrawer(Drawer d, int pos) {
 		JCheckBox cb = new JCheckBox(d.getClass().getSimpleName(), true);
-		add(cb);
+		cbPanel.add(cb);
 		
 		cBoxes.put(d, cb);
 		
@@ -97,5 +102,9 @@ public class UniversePanel extends JPanel {
 	
 	public void addDrawer(Drawer d){
 		addDrawer(d, drawers.size());
+	}
+	
+	public JPanel getCheckBoxPanel(){
+		return cbPanel;
 	}
 }

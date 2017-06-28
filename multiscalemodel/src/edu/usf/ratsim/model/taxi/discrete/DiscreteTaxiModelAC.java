@@ -123,7 +123,7 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		currentStateQ.addInPort("states", actionPlaceCells.getActivationPort());
 		currentStateQ.addInPort("qValues", QTable);
 		addModulePost(currentStateQ);
-		DisplaySingleton.getDisplay().addComponent(new Float1dDiscPlot((Float1dPort) currentStateQ.getOutPort("votes")),
+		DisplaySingleton.getDisplay().addPlot(new Float1dDiscPlot((Float1dPort) currentStateQ.getOutPort("votes")),
 				0, 0, 1, 1);
 
 		currentValue = new ProportionalValue("currentValueQ", foodReward);
@@ -131,14 +131,14 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		currentValue.addInPort("value", VTable);
 		addModulePost(currentValue);
 		DisplaySingleton.getDisplay()
-				.addComponent(new Float0dSeriesPlot((Float0dPort) currentValue.getOutPort("value")), 0, 1, 1, 1);
+				.addPlot(new Float0dSeriesPlot((Float0dPort) currentValue.getOutPort("value")), 0, 1, 1, 1);
 
 		// Create SoftMax module
 		Softmax softmax = new Softmax("softmax", numActions);
 		softmax.addInPort("input", currentStateQ.getOutPort("votes"));
 		addModulePre(softmax);
 		DisplaySingleton.getDisplay()
-				.addComponent(new Float1dFillPlot((Float1dPort) softmax.getOutPort("probabilities")), 0, 2, 1, 1);
+				.addPlot(new Float1dFillPlot((Float1dPort) softmax.getOutPort("probabilities")), 0, 2, 1, 1);
 
 		// Create ActionGatingModule -- sets the probabilities of impossible
 		// actions to 0 and then normalizes them
@@ -146,7 +146,7 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		actionGating.addInPort("input", softmax.getOutPort("probabilities"));
 		addModulePre(actionGating);
 		DisplaySingleton.getDisplay()
-				.addComponent(new Float1dBarPlot((Float1dPort) actionGating.getOutPort("probabilities")), 0, 3, 1, 1);
+				.addPlot(new Float1dBarPlot((Float1dPort) actionGating.getOutPort("probabilities")), 0, 3, 1, 1);
 
 		// Create action selection module -- choose action according to
 		// probability distribution
@@ -187,8 +187,8 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		updateQ.addInPort("valuePlaceCells", valuePlaceCells.getActivationPort());
 		addModulePost(updateQ);
 
-//		DisplaySingleton.getDisplay().addUniverseDrawer(new QValueDrawer(this), 0);
-//		DisplaySingleton.getDisplay().addUniverseDrawer(new QPolicyDrawer(this, (AffordanceRobot) robot));
+		DisplaySingleton.getDisplay().addUniverseDrawer(new QValueDrawer(this), 0);
+		DisplaySingleton.getDisplay().addUniverseDrawer(new QPolicyDrawer(this, (AffordanceRobot) robot));
 	}
 
 	public void newEpisode() {
