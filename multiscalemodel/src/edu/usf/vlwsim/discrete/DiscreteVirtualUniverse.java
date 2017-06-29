@@ -15,6 +15,7 @@ import com.vividsolutions.jts.geom.LineSegment;
 
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.drawer.WallDrawer;
+import edu.usf.experiment.display.drawer.discrete.DiscretePathDrawer;
 import edu.usf.experiment.display.drawer.discrete.DiscretePlatformDrawer;
 import edu.usf.experiment.display.drawer.discrete.DiscreteRobotDrawer;
 import edu.usf.experiment.display.drawer.discrete.GridDrawer;
@@ -64,6 +65,7 @@ public class DiscreteVirtualUniverse
 		DisplaySingleton.getDisplay().addUniverseDrawer(new DiscretePlatformDrawer(this));
 		DisplaySingleton.getDisplay().addUniverseDrawer(new GridDrawer(this));
 		DisplaySingleton.getDisplay().addUniverseDrawer(new WallDrawer(this));
+		DisplaySingleton.getDisplay().addUniverseDrawer(new DiscretePathDrawer(this));
 		DisplaySingleton.getDisplay().addUniverseDrawer(new DiscreteRobotDrawer(this));
 	}
 
