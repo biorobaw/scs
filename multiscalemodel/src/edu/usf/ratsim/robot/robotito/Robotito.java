@@ -1,6 +1,6 @@
 package edu.usf.ratsim.robot.robotito;
 
-import java.util.List;
+import javax.vecmath.Point3f;
 
 import com.digi.xbee.api.RemoteXBeeDevice;
 import com.digi.xbee.api.XBeeDevice;
@@ -10,10 +10,12 @@ import com.digi.xbee.api.models.XBee64BitAddress;
 import com.digi.xbee.api.models.XBeeMessage;
 
 import edu.usf.experiment.robot.DifferentialRobot;
+import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.SonarRobot;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class Robotito implements DifferentialRobot, SonarRobot, Runnable {
+public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot, Runnable {
 
     private static final String PORT = "/dev/ttyUSB0";
     private static final int BAUD_RATE = 57600;
@@ -21,8 +23,8 @@ public class Robotito implements DifferentialRobot, SonarRobot, Runnable {
     private static final int MAX_XVEL = 127;
     private static final int MAX_TVEL = 127;
 	private static final int ZERO_VEL = 128;
-    private static final float XVEL_CONV = MAX_XVEL / 3f;
-    private static final float TVEL_CONV = (float) (MAX_TVEL / (Math.PI * 2 * 2));
+    private static final float XVEL_CONV = MAX_XVEL / .5f;
+    private static final float TVEL_CONV = (float) (MAX_TVEL / (Math.PI * 2 * 1));
     
 	private static final long CONTROL_PERIOD = 100;
 	private static final int NUM_SONARS = 12;
@@ -36,11 +38,12 @@ public class Robotito implements DifferentialRobot, SonarRobot, Runnable {
 	private float[] sonarReading;
 	private float[] sonarAngles;
     
-	public Robotito(ElementWrapper params) {
+	public Robotito(ElementWrapper params, Universe u) {
 		sonarAngles = new float[NUM_SONARS];
 		sonarReading = new float[NUM_SONARS];
 		for (int i = 0; i < NUM_SONARS; i++){
 			sonarAngles[i] = (float) (2 * Math.PI / NUM_SONARS * i);
+			System.out.print(sonarAngles[i] + ",");
 			sonarReading[i] = 0f;
 		}
 		
@@ -59,9 +62,9 @@ public class Robotito implements DifferentialRobot, SonarRobot, Runnable {
 						byte lo = data[i+1];
 						int val =  (hi & 0xff) << 8 | (lo & 0xff);
 						sonarReading[i / 2] = convert(val);
-						System.out.print(sonarReading[i / 2] + " ");
+//						System.out.print(sonarReading[i / 2] + " ");
 					}
-					System.out.println();
+//					System.out.println();
 				}
 
 				private float convert(int val) {
@@ -117,12 +120,14 @@ public class Robotito implements DifferentialRobot, SonarRobot, Runnable {
 	@Override
 	public void run() {
 		while (true){
+			System.out.println(xVel + " " + tVel);
 			short xVelShort = (short) (xVel * XVEL_CONV + ZERO_VEL);
 			xVelShort = (short) Math.max(0, Math.min(xVelShort, 255));
 			short tVelShort = (short) (tVel * TVEL_CONV + ZERO_VEL);
 			tVelShort = (short) Math.max(0, Math.min(tVelShort, 255));
 			byte[] dataToSend = {(byte) xVelShort, (byte) 128, (byte) tVelShort};
 			
+//			System.out.println(xVelShort + " " + tVelShort);
 			try {
 				myDevice.sendData(remoteDevice, dataToSend);
 			} catch (XBeeException e) {
@@ -139,14 +144,14 @@ public class Robotito implements DifferentialRobot, SonarRobot, Runnable {
 	}
 	
 	public static void main(String[] args){
-		Robotito r = new Robotito(null);
-//		r.setLinearVel(1f);
-//		r.setAngularVel(2f);
-//		try {
-//			Thread.sleep(1000);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
+		Robotito r = new Robotito(null, null);
+		r.setLinearVel(0f);
+		r.setAngularVel(0f);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		r.setLinearVel(0);
 		r.setAngularVel(0f);
 		try {
@@ -154,7 +159,7 @@ public class Robotito implements DifferentialRobot, SonarRobot, Runnable {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-//		System.exit(0);
+		System.exit(0);
 		
 	}
 
@@ -171,6 +176,16 @@ public class Robotito implements DifferentialRobot, SonarRobot, Runnable {
 	@Override
 	public float getSonarAperture() {
 		return 0;
+	}
+
+	@Override
+	public Point3f getPosition() {
+		return new Point3f();
+	}
+
+	@Override
+	public float getOrientationAngle() {
+		return 0f;
 	}
 
 }
