@@ -28,9 +28,9 @@ import edu.usf.ratsim.support.NotImplementedException;
 
 public class ExperienceRoadMap extends Module {
 
-	private static final float MIN_ACTIVATION = 4f;
+	private static final float MIN_ACTIVATION = 10f;
 
-	private static final float MAX_SINGLE_ACTIVATION = .9f;
+	private static final float MAX_SINGLE_ACTIVATION = .95f;
 
 	private static final float DIST_TO_GOAL_THRS = .15f;
 
