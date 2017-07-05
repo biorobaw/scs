@@ -32,8 +32,8 @@ public class DifferentialVirtualRobot extends VirtualRobot implements Differenti
 
 	@Override
 	public void moveContinous(float lVel, float angVel) {
-		// TODO Auto-generated method stub
-		
+		universe.setRobotV(lVel);	
+		universe.setRobotW(angVel);
 	}
 
 }
