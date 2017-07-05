@@ -88,7 +88,7 @@ public class Bug2Module extends Module {
 			break;
 		case WF_AWAY_FROM_ML:
 		case WF_RETURN_TO_ML:
-			v = BugUtilities.wallFollow(left, leftFront, front);
+			v = BugUtilities.wallFollowRight(readings, angles);
 			break;
 		}
 
