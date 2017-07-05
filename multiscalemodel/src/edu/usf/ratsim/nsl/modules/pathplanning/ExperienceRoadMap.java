@@ -28,9 +28,9 @@ import edu.usf.ratsim.support.NotImplementedException;
 
 public class ExperienceRoadMap extends Module {
 
-	private static final float MIN_ACTIVATION = 10f;
+	private static final float MIN_ACTIVATION = 2f;
 
-	private static final float MAX_SINGLE_ACTIVATION = .95f;
+	private static final float MAX_SINGLE_ACTIVATION = .9f;
 
 	private static final float DIST_TO_GOAL_THRS = .15f;
 
@@ -40,7 +40,7 @@ public class ExperienceRoadMap extends Module {
 
 	private static final boolean PLOT = false;
 
-	private static final float ACTIVATION_THRS = .2f;
+	private static final float ACTIVATION_THRS = .05f;
 
 	private UndirectedGraph<PointNode, Edge> g;
 
@@ -66,6 +66,8 @@ public class ExperienceRoadMap extends Module {
 	private PointNode nextNode;
 
 	private List<PointNode> prevActive;
+	
+	private PointNode prevMaxActive;
 
 	public ExperienceRoadMap(String name, String algorithm, Robot robot) {
 		super(name);
@@ -78,6 +80,8 @@ public class ExperienceRoadMap extends Module {
 
 		this.algorithm = algorithm;
 		this.robot = robot;
+		
+		prevMaxActive = null;
 	}
 
 	@Override
@@ -93,6 +97,7 @@ public class ExperienceRoadMap extends Module {
 		List<PointNode> active = new LinkedList<PointNode>();
 		float totalActivation = 0;
 		float maxActivation = Float.NEGATIVE_INFINITY;
+		PointNode maxActive = null;
 		for (PointNode n : g.getVertices()) {
 			n.updateActivation(rPos.get(), rOrient.get(), sonarReadings, sonarAngles);
 
@@ -103,6 +108,7 @@ public class ExperienceRoadMap extends Module {
 
 			if (activation > maxActivation) {
 				maxActivation = activation;
+				maxActive = n;
 			}
 		}
 
@@ -116,27 +122,21 @@ public class ExperienceRoadMap extends Module {
 			// Add to the active set
 			nv.updateActivation(rPos.get(), rOrient.get(), sonarReadings, sonarAngles);
 			active.add(nv);
+			maxActive = nv;
 		}
 
 		// Connectivity of all active nodes
 		for (int i = 0; i < active.size(); i++){
 			PointNode n1 = active.get(i);
 			// Link to existing ones
-			for (int j = i + 1; j < active.size(); j++) {
-				PointNode n2 = active.get(j);
-				if (!g.isNeighbor(n1, n2))
-					g.addEdge(new Edge(n1.prefLoc.distance(n2.prefLoc)), n1, n2);
-			}
-			// Link to previously active
-			if (prevActive != null){
-				for (PointNode n2 : prevActive) {
-					if (!g.isNeighbor(n1, n2))
-						g.addEdge(new Edge(n1.prefLoc.distance(n2.prefLoc)), n1, n2);
-				}
-			}
+			g.addEdge(new Edge(n1.prefLoc.distance(maxActive.prefLoc)), n1, maxActive);
 		}
 		
+		if (prevMaxActive != null)
+			g.addEdge(new Edge(maxActive.prefLoc.distance(prevMaxActive.prefLoc)), maxActive, prevMaxActive);
+		
 		prevActive = active;
+		prevMaxActive = maxActive;
 
 		// Compute dijsktra
 		// Get the current node
@@ -320,6 +320,7 @@ public class ExperienceRoadMap extends Module {
 		bug0.newEpisode();
 		
 		prevActive = null;
+		prevMaxActive = null;
 	}
 
 	public UndirectedGraph<PointNode, Edge> getGraph() {

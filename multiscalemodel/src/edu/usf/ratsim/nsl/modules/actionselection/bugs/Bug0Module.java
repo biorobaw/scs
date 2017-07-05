@@ -50,12 +50,12 @@ public class Bug0Module extends Module {
 		case GOAL_SEEKING:
 			// Check the middle sensor for obstacles
 			
-			System.out.println(minToGoal);
 			if (minToGoal < FREE_PASSAGE_THRS) {
-//				if (angleToGoal > 0)
+				System.out.println(angleToGoal);
+				if (angleToGoal > 0)
 					state = State.WALL_FOLLOWING_RIGHT;
-//				else
-//					state = State.WALL_FOLLOWING_LEFT;
+				else
+					state = State.WALL_FOLLOWING_LEFT;
 			}
 			break;
 		case WALL_FOLLOWING_LEFT:
