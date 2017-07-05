@@ -116,6 +116,15 @@ public class ElementWrapper {
 			list.add(Float.parseFloat(tok.nextToken()));
 		return list;
 	}
+	
+	public float[] getChildFloatArray(String name) {
+		List<Float> list = getChildFloatList(name);
+		float[] array = new float[list.size()];
+		int i = 0;
+		for (Float f : list)
+			array[i++] = f;
+		return array;
+	}
 
 	public List<Integer> getChildIntList(String name) {
 		String listString = getChildText(name);
@@ -155,4 +164,6 @@ public class ElementWrapper {
 		}
 
 	}
+
+
 }

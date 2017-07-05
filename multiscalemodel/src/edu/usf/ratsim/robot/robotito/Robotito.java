@@ -1,5 +1,7 @@
 package edu.usf.ratsim.robot.robotito;
 
+import java.util.List;
+
 import com.digi.xbee.api.RemoteXBeeDevice;
 import com.digi.xbee.api.XBeeDevice;
 import com.digi.xbee.api.exceptions.XBeeException;
@@ -8,9 +10,10 @@ import com.digi.xbee.api.models.XBee64BitAddress;
 import com.digi.xbee.api.models.XBeeMessage;
 
 import edu.usf.experiment.robot.DifferentialRobot;
+import edu.usf.experiment.robot.SonarRobot;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class Robotito implements DifferentialRobot, Runnable {
+public class Robotito implements DifferentialRobot, SonarRobot, Runnable {
 
     private static final String PORT = "/dev/ttyUSB0";
     private static final int BAUD_RATE = 57600;
@@ -22,6 +25,7 @@ public class Robotito implements DifferentialRobot, Runnable {
     private static final float TVEL_CONV = (float) (MAX_TVEL / (Math.PI * 2 * 2));
     
 	private static final long CONTROL_PERIOD = 100;
+	private static final int NUM_SONARS = 12;
 
     
 	private XBeeDevice myDevice;
@@ -29,16 +33,51 @@ public class Robotito implements DifferentialRobot, Runnable {
 	private float xVel;
 	private float tVel;
 
+	private float[] sonarReading;
+	private float[] sonarAngles;
     
 	public Robotito(ElementWrapper params) {
+		sonarAngles = new float[NUM_SONARS];
+		sonarReading = new float[NUM_SONARS];
+		for (int i = 0; i < NUM_SONARS; i++){
+			sonarAngles[i] = (float) (2 * Math.PI / NUM_SONARS * i);
+			sonarReading[i] = 0f;
+		}
+		
 		myDevice = new XBeeDevice(PORT, BAUD_RATE);
 		
 		try {
 			myDevice.open();
 			
 			myDevice.addDataListener(new IDataReceiveListener() {
+				
+
 				public void dataReceived(XBeeMessage msg) {
-//					System.out.println(msg.getDataString());
+					byte[] data = msg.getData();
+					for (int i = 0; i < data.length; i+=2){
+						byte hi = data[i];
+						byte lo = data[i+1];
+						int val =  (hi & 0xff) << 8 | (lo & 0xff);
+						sonarReading[i / 2] = convert(val);
+						System.out.print(sonarReading[i / 2] + " ");
+					}
+					System.out.println();
+				}
+
+				private float convert(int val) {
+					float volt = (val/1024.0f) * 5;
+					if (volt < .3)
+						return .3f; //FLT_MAX;
+					else if (volt < 1.8){
+						// Inverse of distance using eq
+						float distinv = 0.0758f * volt - 0.00265f;
+						float dist = 1 / distinv - 0.42f;
+						return dist / 100f;
+					} else {
+						float distinv = 0.1111f * volt - 0.07831f;
+						float dist = 1 / distinv - 0.42f;
+						return dist / 100f;
+					}
 				}
 			});
 			
@@ -101,13 +140,13 @@ public class Robotito implements DifferentialRobot, Runnable {
 	
 	public static void main(String[] args){
 		Robotito r = new Robotito(null);
-		r.setLinearVel(1f);
-		r.setAngularVel(2f);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+//		r.setLinearVel(1f);
+//		r.setAngularVel(2f);
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 		r.setLinearVel(0);
 		r.setAngularVel(0f);
 		try {
@@ -115,8 +154,23 @@ public class Robotito implements DifferentialRobot, Runnable {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.exit(0);
+//		System.exit(0);
 		
+	}
+
+	@Override
+	public float[] getSonarReadings() {
+		return sonarReading;
+	}
+
+	@Override
+	public float[] getSonarAngles() {
+		return sonarAngles;
+	}
+
+	@Override
+	public float getSonarAperture() {
+		return 0;
 	}
 
 }
