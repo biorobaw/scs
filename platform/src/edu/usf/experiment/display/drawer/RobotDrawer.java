@@ -1,5 +1,6 @@
 package edu.usf.experiment.display.drawer;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 
@@ -22,6 +23,7 @@ public class RobotDrawer implements Drawer {
 		Point p = s.scale(pos);
 		float angle = u.getRobotOrientationAngle();
 
+		g.setColor(Color.BLACK);
 		g.drawOval(p.x - (int) (RADIUS * s.xscale), p.y - (int) (RADIUS * s.yscale),
 				(int) (RADIUS * s.xscale * 2), (int) (RADIUS * s.yscale * 2));
 		g.drawLine(p.x, p.y, p.x + (int) (RADIUS * Math.cos(angle) * s.xscale),
