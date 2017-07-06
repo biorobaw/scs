@@ -67,7 +67,6 @@ public class Bug0Module extends Module {
 
 			break;
 		}
-		System.out.println(state);
 		
 		// Cmd depending on state
 		Velocities v = new Velocities();

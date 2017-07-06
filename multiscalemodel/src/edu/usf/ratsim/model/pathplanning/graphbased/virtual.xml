@@ -2,7 +2,6 @@
 	
 <experiment>
 	
-	<seed>-1529525813939370422</seed>
 	<universe>
 		<name>edu.usf.vlwsim.universe.DifferentialRobotVirtualUniverse</name>
 		<params>

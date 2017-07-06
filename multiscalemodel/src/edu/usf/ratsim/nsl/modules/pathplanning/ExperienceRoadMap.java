@@ -21,6 +21,7 @@ import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
+import edu.usf.ratsim.nsl.modules.actionselection.apf.APFModule;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Bug0Module;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Bug1Module;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Bug2Module;
@@ -42,6 +43,8 @@ public class ExperienceRoadMap extends Module {
 
 	private static final float ACTIVATION_THRS = .05f;
 
+	private static final float MIN_DISTANCE_TO_NEXT_NODE = 0.2f;
+
 	private UndirectedGraph<PointNode, Edge> g;
 
 	private BasicVisualizationServer<PointNode, Edge> vv;
@@ -56,18 +59,18 @@ public class ExperienceRoadMap extends Module {
 
 	private Module bug;
 
-	 private Bug0Module bug0;
-//	private APFModule bug0;
+//	 private Bug0Module bug0;
+	private APFModule bug0;
 
 	private String algorithm;
 
 	private Robot robot;
 
-	private PointNode nextNode;
-
 	private List<PointNode> prevActive;
 	
 	private PointNode prevMaxActive;
+
+	private PointNode following;
 
 	public ExperienceRoadMap(String name, String algorithm, Robot robot) {
 		super(name);
@@ -187,8 +190,11 @@ public class ExperienceRoadMap extends Module {
 			// }0
 			// Get the node further into the path that is not active
 			int i = 0;
-			nextNode = mostActive;
-			while (i < l.size() && active.contains(nextNode)) {
+			PointNode nextNode = mostActive;
+			PointNode prevNode = null;
+			while (i < l.size() && (active.contains(nextNode) || nextNode.prefLoc.distance(rPos.get()) < MIN_DISTANCE_TO_NEXT_NODE)) {
+				prevNode = nextNode;
+				
 				Pair<PointNode> edge = g.getEndpoints(l.get(i));
 				if (edge.getFirst() == nextNode)
 					nextNode = edge.getSecond();
@@ -196,15 +202,20 @@ public class ExperienceRoadMap extends Module {
 					nextNode = edge.getFirst();
 				i++;
 			}
-
+			
+			if (prevNode.prefLoc.distance(rPos.get()) > MIN_DISTANCE_TO_NEXT_NODE)
+				following = prevNode;
+			else
+				following = nextNode;
+			
 			for (PointNode n : g.getVertices())
 				n.following = false;
 
-			if (i >= l.size() || nextNode == null)
+			if (i >= l.size() || following == null)
 				intermediateGoal.set(platPos.get());
 			else {
-				intermediateGoal.set(nextNode.prefLoc);
-				nextNode.following = true; 
+				intermediateGoal.set(following.prefLoc);
+				following.following = true; 
 			}
 
 			bug0.run();
@@ -300,8 +311,8 @@ public class ExperienceRoadMap extends Module {
 		bug.addInPort("orientation", rOrient);
 		bug.addInPort("platformPosition", intermediateGoal);
 
-		bug0 = new Bug0Module("ERMBug0", robot);
-//		bug0 = new APFModule("ERMBug0", subject);
+//		bug0 = new Bug0Module("ERMBug0", robot);
+		bug0 = new APFModule("ERMBug0", robot);
 		bug0.addInPort("sonarReadings", sonarReadings);
 		bug0.addInPort("sonarAngles", sonarAngles);
 		bug0.addInPort("position", rPos);
@@ -327,8 +338,8 @@ public class ExperienceRoadMap extends Module {
 		return g;
 	}
 	
-	public PointNode getNextNode(){
-		return nextNode;
+	public PointNode getFollowingNode(){
+		return following;
 	}
 
 }

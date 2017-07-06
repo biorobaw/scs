@@ -38,10 +38,10 @@ public class ExpGraphDrawer implements Drawer {
 				
 				g.drawLine(src.x, src.y, dst.x, dst.y);
 			}
-			PointNode nextNode = erm.getNextNode();
+			PointNode followingNode = erm.getFollowingNode();
 			for (PointNode pn : graph.getVertices()){
 				Point pos = s.scale(new Coordinate(pn.prefLoc.x, pn.prefLoc.y));
-				if (pn == nextNode)
+				if (pn == followingNode)
 					g.setColor(Color.GREEN);
 				else if (pn.getActivation() == 0)
 					g.setColor(Color.BLUE);

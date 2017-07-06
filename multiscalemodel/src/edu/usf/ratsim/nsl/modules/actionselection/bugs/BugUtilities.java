@@ -39,10 +39,9 @@ public class BugUtilities {
 		float front = SonarUtils.getReading(0f, readings, angles);
 		float left = SonarUtils.getReading((float) (Math.PI/2), readings, angles);
 		float leftFront = SonarUtils.getReading((float) (Math.PI/4), readings, angles);
-		if (minFront < OBSTACLE_FOUND_THRS || minLeft >= 1.5*OBSTACLE_FOUND_THRS){
+		if (minFront < OBSTACLE_FOUND_THRS){
 			angular = -WF_ROT_VEL_OBS_FRONT;
 			linear = 0;
-			System.out.println("just rotating");
 		} else {
 			// Get the current relation and the target relation (wall parallel
 			// to robot)
@@ -54,7 +53,6 @@ public class BugUtilities {
 			angular = PROP_ANG_PARALLEL * (targetquot - quot) + PROP_ANG_WALL_CLOSE * close_prop;
 
 			linear = Math.max(PROP_LINEAR_WF * (front - WL_FW_TARGET), WF_MIN_FW_VEL);
-			System.out.println("following wall");
 		}
 		
 		return new Velocities(linear, angular);
@@ -71,7 +69,6 @@ public class BugUtilities {
 		if (minFront < OBSTACLE_FOUND_THRS || minRight >= 1.5*OBSTACLE_FOUND_THRS){
 			angular = WF_ROT_VEL_OBS_FRONT;
 			linear = 0;
-			System.out.println("just rotating");
 		} else {
 			// Get the current relation and the target relation (wall parallel
 			// to robot)
@@ -83,7 +80,6 @@ public class BugUtilities {
 			angular = -PROP_ANG_PARALLEL * (targetquot - quot) - PROP_ANG_WALL_CLOSE * close_prop;
 
 			linear = Math.max(PROP_LINEAR_WF * (front - WL_FW_TARGET), WF_MIN_FW_VEL);
-			System.out.println("following wall");
 		}
 		
 		return new Velocities(linear, angular);
