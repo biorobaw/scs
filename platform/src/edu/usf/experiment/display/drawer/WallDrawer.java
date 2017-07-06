@@ -39,5 +39,10 @@ public class WallDrawer implements Drawer {
 		}
 		g2d.setStroke(oldStroke);
 	}
+	
+	@Override
+	public void clearState() {
+		
+	}
 
 }

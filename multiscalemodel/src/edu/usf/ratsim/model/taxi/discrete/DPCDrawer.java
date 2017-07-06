@@ -46,5 +46,10 @@ public class DPCDrawer implements Drawer {
 				g.fillRect(ul.x, ul.y, Math.abs(lr.x - ul.x),  Math.abs(ul.y - lr.y));
 			}
 	}
+	
+	@Override
+	public void clearState() {
+		
+	}
 
 }

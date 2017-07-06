@@ -42,5 +42,10 @@ public class SonarReadingsDrawer implements Drawer {
 			g.drawLine(readingStart.x, readingStart.y, readingEnd.x, readingEnd.y);
 		}
 	}
+	
+	@Override
+	public void clearState() {
+		
+	}
 
 }

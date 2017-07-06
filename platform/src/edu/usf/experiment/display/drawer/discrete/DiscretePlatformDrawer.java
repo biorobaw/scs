@@ -33,5 +33,10 @@ public class DiscretePlatformDrawer implements Drawer {
 
 		
 	}
+	
+	@Override
+	public void clearState() {
+		
+	}
 
 }

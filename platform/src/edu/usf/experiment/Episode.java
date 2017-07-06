@@ -127,6 +127,7 @@ public class Episode {
 
 		// Execute cycles until stop condition holds
 		Display display = DisplaySingleton.getDisplay();
+		display.newEpisode();
 		boolean finished = false;
 		int cycle = 0;
 		while (!finished) {

@@ -68,4 +68,8 @@ public class QPolicyDrawer implements Drawer {
 		return new Coordinate(Math.cos(a) * c.x - Math.sin(a) * c.y + x, Math.sin(a) * c.x + Math.cos(a) * c.y + y);
 	}
 
+	@Override
+	public void clearState() {
+		
+	}
 }

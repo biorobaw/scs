@@ -38,4 +38,8 @@ public class NoDisplay implements Display {
 		
 	}
 
+	@Override
+	public void newEpisode() {
+	}
+
 }

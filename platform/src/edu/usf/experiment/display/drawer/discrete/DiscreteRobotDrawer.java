@@ -39,5 +39,10 @@ public class DiscreteRobotDrawer implements Drawer {
 		g.drawOval(ul.x, ul.y, Math.abs(lr.x - ul.x), Math.abs(lr.y - ul.y));
 		g.drawLine(center.x, center.y, lineEnd.x, lineEnd.y);
 	}
+	
+	@Override
+	public void clearState() {
+		
+	}
 
 }

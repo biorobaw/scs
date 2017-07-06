@@ -99,4 +99,10 @@ public class PDFDisplay implements Display {
 		drawers.add(pos, d);
 	}
 
+	@Override
+	public void newEpisode() {
+		for (Drawer d : drawers)
+			d.clearState();
+	}
+
 }

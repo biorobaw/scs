@@ -30,4 +30,8 @@ public class PlatformDrawer implements Drawer {
 		
 	}
 
+	@Override
+	public void clearState() {
+		
+	}
 }

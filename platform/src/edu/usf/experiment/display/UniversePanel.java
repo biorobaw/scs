@@ -116,4 +116,9 @@ public class UniversePanel extends JPanel {
 	public JPanel getCheckBoxPanel(){
 		return cbPanel;
 	}
+
+	public void clearState() {
+		for (Drawer d : drawers)
+			d.clearState();
+	}
 }

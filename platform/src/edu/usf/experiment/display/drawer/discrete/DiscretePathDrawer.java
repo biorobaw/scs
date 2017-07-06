@@ -43,5 +43,10 @@ public class DiscretePathDrawer implements Drawer {
 		}
 			
 	}
+	
+	@Override
+	public void clearState() {
+		poses.clear();
+	}
 
 }

@@ -32,4 +32,9 @@ public class GridDrawer implements Drawer {
 			g.drawLine(p0.x, p0.y, p1.x, p1.y);
 		}	
 	}
+	
+	@Override
+	public void clearState() {
+		
+	}
 }

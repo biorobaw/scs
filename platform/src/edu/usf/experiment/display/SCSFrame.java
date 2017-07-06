@@ -90,8 +90,11 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 	
 	@Override
 	public void repaint(){
-		super.repaint();
+		paintAll(getGraphics());
+//		super.repaint();
 	}
+	
+	
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
@@ -135,6 +138,11 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 	@Override
 	public void addUniverseDrawer(Drawer d, int pos) {
 		uPanel.addDrawer(d, pos);
+	}
+
+	@Override
+	public void newEpisode() {
+		uPanel.clearState();
 	}
 	
 }

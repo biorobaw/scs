@@ -28,4 +28,9 @@ public class FeederDrawer implements Drawer {
 		
 	}
 
+	@Override
+	public void clearState() {
+		
+	}
+
 }

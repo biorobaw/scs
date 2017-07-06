@@ -28,4 +28,8 @@ public class RobotDrawer implements Drawer {
 				p.y - (int) (RADIUS * Math.sin(angle) * s.yscale));
 	}
 
+	@Override
+	public void clearState() {
+		
+	}
 }

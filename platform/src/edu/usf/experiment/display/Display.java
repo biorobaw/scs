@@ -45,6 +45,15 @@ public interface Display {
 	 */
 	public void addUniverseDrawer(Drawer d);
 
+	/**
+	 * Adds a drawer layer at the specified position. Lower positions are painted first.
+	 * @param d
+	 * @param pos
+	 */
 	public void addUniverseDrawer(Drawer d, int pos);
 	
+	/**
+	 * Tells the display that a new episode began. Some drawers might have to clear stateful information due to this.
+	 */
+	public void newEpisode();
 }

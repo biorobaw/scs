@@ -16,4 +16,9 @@ public interface Drawer {
 	 */
 	void draw(Graphics g, Scaler s);
 
+	/**
+	 * Tells the drawer to clear potential stateful information, such as the path of the robot so far.
+	 */
+	void clearState();
+
 }

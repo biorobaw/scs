@@ -55,4 +55,8 @@ public class QValueDrawer implements Drawer {
 		}
 	}
 
+	@Override
+	public void clearState() {
+		
+	}
 }

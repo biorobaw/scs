@@ -1,17 +1,14 @@
 package edu.usf.micronsl.spiking.module;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.collections15.map.HashedMap;
-
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.spiking.SpikeEvent;
 import edu.usf.micronsl.spiking.SpikeListener;
-import edu.usf.micronsl.spiking.neuron.LeakyIntegratorSpikingNeuron;
 import edu.usf.micronsl.spiking.neuron.SpikingNeuron;
 
 public class NeuronLayer extends Module implements SpikeListener, NeuronSet {
@@ -27,7 +24,7 @@ public class NeuronLayer extends Module implements SpikeListener, NeuronSet {
 	public NeuronLayer(String name){
 		super(name);
 		neurons = new LinkedHashSet<SpikingNeuron>();
-		neuronsById = new HashedMap<Integer, SpikingNeuron>();
+		neuronsById = new HashMap<Integer, SpikingNeuron>();
 		listeners = new LinkedList<SpikeListener>();
 	}
 

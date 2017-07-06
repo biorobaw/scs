@@ -53,5 +53,10 @@ public class ExpGraphDrawer implements Drawer {
 		}
 			
 	}
+	
+	@Override
+	public void clearState() {
+		
+	}
 
 }
