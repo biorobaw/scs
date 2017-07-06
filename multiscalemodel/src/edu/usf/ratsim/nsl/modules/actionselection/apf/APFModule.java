@@ -1,6 +1,10 @@
 
 package edu.usf.ratsim.nsl.modules.actionselection.apf;
 
+import java.awt.geom.Point2D;
+
+import javax.vecmath.Point3f;
+
 import edu.usf.experiment.robot.DifferentialRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.GeomUtils;
@@ -9,7 +13,6 @@ import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Velocities;
-import edu.usf.ratsim.support.SonarUtils;
 
 public class APFModule extends Module {
 
@@ -19,13 +22,17 @@ public class APFModule extends Module {
 
 	private static final float REP_ANGULAR_P = 1f;
 
-	private static final float ANGULAR_P = .1f;
+	private static final float ANGULAR_P = .4f;
 
 	private static final float LINEAR_P = .1f;
 
 	private static final float REP_LINEAR_P = .3f;
 
-	private static final float CLOSE_THRS = .1f;
+	private static final float CLOSE_THRS = .15f;
+
+	private static final float MAX_READ = .3f;
+
+	private static final float REP_MULTIPLIER = 5f;
 
 	private DifferentialRobot r;
 
@@ -44,22 +51,33 @@ public class APFModule extends Module {
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
 		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
 		
-		float front = SonarUtils.getReading(0f, readings, angles);
-		float leftFront = SonarUtils.getReading((float) (Math.PI / 4), readings, angles);
-		float rightFront = SonarUtils.getReading((float) (-Math.PI / 4), readings, angles);
+		// Start with the attractive field
+		Point3f relPlatPos = GeomUtils.getRelativePos(platPos.get(), rPos.get(), GeomUtils.angleToRot(rOrient.get()));
+		Point2D.Float attractive = new Point2D.Float(relPlatPos.x, relPlatPos.y);
+		Point2D.Float pGradient = attractive;
+		// Add all repulsive fields, one per sensor
+		for (int a = 0; a < angles.getSize(); a++){
+			float angle = angles.get(a);
+			float reading = readings.get(a);
+			float opposite = (float) (angle - Math.PI );
+			float magnitude = (float) Math.exp(REP_MULTIPLIER * Math.pow(MAX_READ - reading, 2)) - 1;
+			Point2D.Float rep = new Point2D.Float((float)Math.cos(opposite)*magnitude, (float) (Math.sin(opposite)*magnitude));
+			pGradient = new Point2D.Float((float) (pGradient.getX() + rep.getX()), (float) (pGradient.getY() + rep.getY()));
+		}
+		
+		System.out.println(pGradient);
+		float angle = (float) Math.atan2(pGradient.getY(), pGradient.getX());
+		float magnitude = (float) pGradient.distance(0, 0);
 
-		float angleDiff = GeomUtils.angleToPointWithOrientation(rOrient.get(), rPos.get(), platPos.get());
-		float minDist = Math.min(Math.min(front, leftFront), rightFront);
-
-		// Cmd depending on state
 		Velocities v = new Velocities();
-		v.angular = -angleDiff * ANGULAR_P - Math.max(0, MIN_DIST_TO_OBS_ROT - leftFront) * REP_ANGULAR_P
-				+ Math.max(0, MIN_DIST_TO_OBS_ROT - rightFront) * REP_ANGULAR_P;
-		if (minDist > CLOSE_THRS)
-			v.linear = rPos.get().distance(platPos.get()) * LINEAR_P
-					- Math.max(0, MIN_DIST_TO_OBS - minDist) * REP_LINEAR_P;
-		else
-			v.linear = 0;
+		// Angular is proportional to angle difference
+		v.angular = angle * ANGULAR_P;
+		// If to close in the front of the robot, just rotate
+//		float minDistFront = SonarUtils.getMinReading(readings, angles, 0f, (float) (Math.PI/12));
+//		if (minDistFront > CLOSE_THRS)
+			v.linear = magnitude * LINEAR_P;
+//		else
+//			v.linear = 0;
 		// Enforce maximum velocities
 		v.trim();
 

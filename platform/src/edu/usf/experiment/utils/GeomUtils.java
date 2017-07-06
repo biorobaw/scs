@@ -210,6 +210,17 @@ public class GeomUtils {
 	public static float distanceToPoint(Point3f p) {
 		return (float) Math.sqrt(Math.pow(p.x, 2) + Math.pow(p.y, 2) + Math.pow(p.z, 2));
 	}
+	
+	public static Point3f getRelativePos(Point3f fPos, Point3f framePos, Quat4f frameRot) {
+		Point3f relFPos = new Point3f(GeomUtils.pointsToVector(framePos, fPos));
+		// Rotate to robots framework
+		Quat4f rRot = new Quat4f(frameRot);
+		rRot.inverse();
+		Transform3D t = new Transform3D();
+		t.setRotation(rRot);
+		t.transform(relFPos);
+		return relFPos;
+	}
 
 //	public static float getFeederReward(Point3f position, float rotationAngle, float maxReward,
 //			Subject subject, LocalizableRobot robot) {
