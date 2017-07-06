@@ -203,9 +203,9 @@ public class ExperienceRoadMap extends Module {
 				i++;
 			}
 			
-			if (prevNode.prefLoc.distance(rPos.get()) > MIN_DISTANCE_TO_NEXT_NODE)
-				following = prevNode;
-			else
+//			if (prevNode.prefLoc.distance(rPos.get()) > MIN_DISTANCE_TO_NEXT_NODE)
+//				following = prevNode;
+//			else
 				following = nextNode;
 			
 			for (PointNode n : g.getVertices())
