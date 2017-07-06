@@ -3,9 +3,9 @@ package edu.usf.ratsim.model.pathplanning.graphbased;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
-
-import javax.vecmath.Point3f;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -39,7 +39,8 @@ public class ExpGraphDrawer implements Drawer {
 				g.drawLine(src.x, src.y, dst.x, dst.y);
 			}
 			PointNode followingNode = erm.getFollowingNode();
-			for (PointNode pn : graph.getVertices()){
+			Collection<PointNode> vertices = new LinkedList<PointNode>(graph.getVertices());
+			for (PointNode pn : vertices){
 				Point pos = s.scale(new Coordinate(pn.prefLoc.x, pn.prefLoc.y));
 				if (pn == followingNode)
 					g.setColor(Color.GREEN);
