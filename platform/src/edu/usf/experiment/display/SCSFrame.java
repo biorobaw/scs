@@ -42,7 +42,7 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		
 		// Add slider for simulation velocity
 		Globals g = Globals.getInstance();
-		g.put("simulationSpeed", 9);
+		g.put("simulationSpeed", 0);
 		JSlider simVel = new JSlider(JSlider.HORIZONTAL,
                 0, 9, 9);
 		simVel.setPreferredSize(new Dimension(300, 50));
@@ -90,8 +90,8 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 	
 	@Override
 	public void repaint(){
-		paintAll(getGraphics());
-//		super.repaint();
+//		paintAll(getGraphics());
+		super.repaint();
 	}
 	
 	
