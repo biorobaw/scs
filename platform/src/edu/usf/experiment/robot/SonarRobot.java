@@ -19,6 +19,6 @@ public interface SonarRobot {
 	 * Get the aperture angle of sonar sensors
 	 * @return The aperture angle of every sonar sensor in radians
 	 */
-	public float getSonarAperture();
+	public float getSonarAperture();	// TODO: remove this from interface?
 	
 }

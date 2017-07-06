@@ -6,9 +6,9 @@
 		<name>edu.usf.vlwsim.universe.DifferentialRobotVirtualUniverse</name>
 		<params>
 			<!-- Distance from which the food is accessible according to the universe -->
-			<closeToFoodThrs>0.1</closeToFoodThrs>
+			<closeToFoodThrs>1</closeToFoodThrs>
 			<!-- Delta T step for simulation -->
-			<deltaT>.1</deltaT>
+			<deltaT>1</deltaT>
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/model/pathplanning/Empty.xml</maze>
 			<!-- Display de window or run without GUI -->
@@ -18,27 +18,8 @@
 	
 	<robot>
 		<!-- Robot to use. Use full name of the class -->
-		<name>edu.usf.vlwsim.robot.DifferentialVirtualRobot</name>
+		<name>edu.usf.ratsim.robot.robotito.Robotito</name>
 		<params>
-			<!-- Percentual translational noise -->
-			<noise>.05</noise>
-			<!-- Rotation noise added after translation -->
-			<translationRotationNoise>.02</translationRotationNoise>
-			<!-- How many steps are projected for obstacle avoidance purpose -->
-			<lookaheadSteps>1</lookaheadSteps>
-			<!-- Half the field of view of the rat -->
-			<halfFieldOfView>1.83</halfFieldOfView>
-			<!-- How long can the rat see in meters -->
-			<visionDist>10</visionDist>
-			<!-- How far away can the robot eat food. This should be shorter than the universe
-				threshold -->
-			<closeThrs>.1</closeThrs>
-			
-			<sonarAngles>0.0,0.5235988,1.0471976,1.5707964,2.0943952,2.6179938,3.1415927,3.6651914,4.1887903,4.712389,5.2359877,5.7595863</sonarAngles>
-			<sonarAperture>0.52</sonarAperture>
-			<sonarMaxDist>.3</sonarMaxDist>
-			<sonarNumRays>9</sonarNumRays>
-			
 		</params>
 	</robot>
 	
@@ -166,7 +147,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>30000</max>
+						<max>5000</max>
 					</params>
 				</condition>
 				<condition>

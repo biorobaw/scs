@@ -17,7 +17,7 @@ public class Bug0Module extends Module {
 	private DifferentialRobot r;
 
 	private enum State {
-		GOAL_SEEKING, WALL_FOLLOWING
+		GOAL_SEEKING, WALL_FOLLOWING_LEFT, WALL_FOLLOWING_RIGHT
 	};
 
 	private State state;
@@ -38,10 +38,6 @@ public class Bug0Module extends Module {
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
 		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
 
-		float front = SonarUtils.getReading(0f, readings, angles);
-		float left = SonarUtils.getReading((float) (Math.PI / 2), readings, angles);
-		float leftFront = SonarUtils.getReading((float) (Math.PI / 4), readings, angles);
-
 		// State switching criteria
 
 		// Get the relative angle to the goal
@@ -49,33 +45,41 @@ public class Bug0Module extends Module {
 		// angles (to the left angles should be positive)
 		float angleToGoal = -GeomUtils.angleToPointWithOrientation(GeomUtils.angleToRot(rOrient.get()), rPos.get(),
 				platPos.get());
+		float minToGoal = SonarUtils.getMinReading(readings, angles, angleToGoal, (float) (Math.PI/6));
 		switch (state) {
 		case GOAL_SEEKING:
 			// Check the middle sensor for obstacles
-			if (SonarUtils.validSonar(angleToGoal, readings, angles)
-					&& SonarUtils.getReading(angleToGoal, readings, angles) < FREE_PASSAGE_THRS) {
-				state = State.WALL_FOLLOWING;
+			
+			if (minToGoal < FREE_PASSAGE_THRS) {
+				System.out.println(angleToGoal);
+				if (angleToGoal > 0)
+					state = State.WALL_FOLLOWING_RIGHT;
+				else
+					state = State.WALL_FOLLOWING_LEFT;
 			}
 			break;
-		case WALL_FOLLOWING:
+		case WALL_FOLLOWING_LEFT:
+		case WALL_FOLLOWING_RIGHT:
 			// If a sonar is close enough and the reading shows free passage,
 			// switch
-			if (SonarUtils.validSonar(angleToGoal, readings, angles)
-					&& SonarUtils.getReading(angleToGoal, readings, angles) > FREE_PASSAGE_THRS)
+			if (minToGoal >= FREE_PASSAGE_THRS)
 				state = State.GOAL_SEEKING;
 
 			break;
 		}
-
+		System.out.println(state);
+		
 		// Cmd depending on state
 		Velocities v = new Velocities();
 		switch (state) {
 		case GOAL_SEEKING:
 			v = BugUtilities.goalSeek(rPos.get(), rOrient.get(), platPos.get());
 			break;
-		case WALL_FOLLOWING:
-			v = BugUtilities.wallFollow(left, leftFront, front);
+		case WALL_FOLLOWING_LEFT:
+			v = BugUtilities.wallFollowLeft(readings,angles);
 			break;
+		case WALL_FOLLOWING_RIGHT:
+			v = BugUtilities.wallFollowRight(readings, angles);
 		}
 
 		// Enforce maximum velocities

@@ -1,5 +1,6 @@
 package edu.usf.ratsim.model.pathplanning.graphbased;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 
@@ -31,6 +32,7 @@ public class SonarReadingsDrawer implements Drawer {
 		Point3f rPos = lRobot.getPosition();
 		float robotOrient = lRobot.getOrientationAngle();
 		
+		g.setColor(Color.RED);
 		Point readingStart = s.scale(rPos);
 		for (int i = 0; i < readings.length; i++){
 			float reading = readings[i];
