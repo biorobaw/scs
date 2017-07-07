@@ -61,11 +61,12 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		simVel.setMinorTickSpacing(1);
 		simVel.setPaintTicks(true);
 		simVel.setPaintLabels(true);
-		
 		uViewPanel.add(simVel, getConstraints(0, 2));
 		
 		pack();
 		setVisible(true);
+		
+		simVel.requestFocus();
 	}
 	
 	public void addPlot(JComponent comp, int gridx, int gridy, int gridwidth, int gridheight){
