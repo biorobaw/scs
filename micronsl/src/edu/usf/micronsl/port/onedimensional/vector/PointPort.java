@@ -1,6 +1,7 @@
 package edu.usf.micronsl.port.onedimensional.vector;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Point;
 
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.Port;
@@ -11,19 +12,19 @@ import edu.usf.micronsl.port.Port;
  * @author Pablo Scleidoroich
  *
  */
-public class Point3fPort extends Port {
+public class PointPort extends Port {
 
-	private Point3f data;
+	private Coordinate data;
 	
-	public Point3fPort(Module owner) {
+	public PointPort(Module owner) {
 		super(owner);
 	}
 
-	public  Point3f get(){
+	public  Coordinate get(){
 		return data;
 	}
 
-	public void set(Point3f data){
+	public void set(Coordinate data){
 		this.data = data;
 	}
 
@@ -35,7 +36,7 @@ public class Point3fPort extends Port {
 
 	@Override
 	public void clear() {
-		data.set(0, 0, 0);
+		data = new Coordinate();
 	}
 
 

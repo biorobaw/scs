@@ -54,8 +54,8 @@ public class FeederTraveler extends Module {
 			ar.executeAffordance(new EatAffordance());
 			feedersToVisit.remove(0);
 		} else {
-			float angleToPoint = GeomUtils.rotToAngle(GeomUtils.angleToPoint(next
-					.getPosition()));
+			float angleToPoint = GeomUtils.angleToPoint(next
+					.getPosition());
 			if (Math.abs(angleToPoint) > ar.getMinAngle()) {
 				ar.executeAffordance(new TurnAffordance(ar.getMinAngle()
 						* Math.signum(angleToPoint), 0));

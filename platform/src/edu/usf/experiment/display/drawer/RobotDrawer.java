@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.universe.GlobalCameraUniverse;
 
@@ -19,7 +19,7 @@ public class RobotDrawer implements Drawer {
 
 	@Override
 	public void draw(Graphics g, Scaler s) {
-		Point3f pos = u.getRobotPosition();
+		Coordinate pos = u.getRobotPosition();
 		Point p = s.scale(pos);
 		float angle = u.getRobotOrientationAngle();
 

@@ -3,7 +3,7 @@ package edu.usf.experiment.log;
 import java.io.PrintWriter;
 import java.util.Map;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
@@ -38,9 +38,9 @@ public class ValueLogger extends DistributedLogger {
 
 		ValueModel vm = (ValueModel) sub.getModel();
 		
-		Map<Point3f, Float> valPoints = vm.getValuePoints();
+		Map<Coordinate, Float> valPoints = vm.getValuePoints();
 	
-		for (Point3f p : valPoints.keySet())
+		for (Coordinate p : valPoints.keySet())
 			writer.println(trialName + '\t' + groupName + '\t'
 					+ subName + '\t' + episodeName + '\t' + cycle+ "\t" + p.x
 					+ "\t" + p.y + "\t" +  valPoints.get(p));

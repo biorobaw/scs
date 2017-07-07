@@ -1,7 +1,6 @@
 package edu.usf.experiment.universe;
 
-import javax.vecmath.Point3f;
-import javax.vecmath.Quat4f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 public interface GlobalCameraUniverse extends Universe {
 
@@ -10,9 +9,7 @@ public interface GlobalCameraUniverse extends Universe {
 	 * 
 	 * @return
 	 */
-	public abstract Point3f getRobotPosition();
-
-	public abstract Quat4f getRobotOrientation();
+	public abstract Coordinate getRobotPosition();
 
 	public abstract float getRobotOrientationAngle();
 }

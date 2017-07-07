@@ -2,8 +2,6 @@ package edu.usf.experiment.universe.feeder;
 
 import java.util.List;
 
-import javax.vecmath.Point3f;
-
 import edu.usf.experiment.universe.Universe;
 
 public interface FeederUniverse extends Universe {
@@ -62,7 +60,7 @@ public interface FeederUniverse extends Universe {
 	 * @param wanted
 	 *            whether is being pursued or not
 	 */
-	public void setWantedFeeder(int feeder, boolean wanted);
+//	public void setWantedFeeder(int feeder, boolean wanted);
 
 	
 }

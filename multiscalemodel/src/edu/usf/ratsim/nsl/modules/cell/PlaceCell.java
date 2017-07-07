@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules.cell;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * The PlaceCell interface represents a firing unit that has a preferred firing place and can also be modulated by the presence of a wall.
@@ -15,13 +15,13 @@ public interface PlaceCell {
 	 * @param distToWall The distance to the closest wall
 	 * @return The activation value corresponding to the firing rate of the cell
 	 */
-	public float getActivation(Point3f currLocation, float distToWall);
+	public float getActivation(Coordinate currLocation, float distToWall);
 
 	/**
 	 * Get the preferred location of firing
 	 * @return The preferred point where the fire is at its peak
 	 */
-	public Point3f getPreferredLocation();
+	public Coordinate getPreferredLocation();
 
 	/**
 	 * The radius of the firing field. Outside this radius, the firing is 0.

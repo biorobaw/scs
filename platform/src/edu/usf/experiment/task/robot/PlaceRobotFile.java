@@ -1,9 +1,6 @@
 package edu.usf.experiment.task.robot;
 
-import java.awt.geom.Point2D;
 import java.util.LinkedList;
-
-import javax.vecmath.Point4f;
 
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.subject.Subject;
@@ -12,10 +9,11 @@ import edu.usf.experiment.universe.MovableRobotUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.CSVReader;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.experiment.utils.RigidTransformation;
 
 public class PlaceRobotFile extends Task {
 	
-	private LinkedList<Point4f> positions = new LinkedList<Point4f>();
+	private LinkedList<RigidTransformation> positions = new LinkedList<RigidTransformation>();
 	int nextPos = 0;
 	static private int deltaId = 40;
 
@@ -26,24 +24,26 @@ public class PlaceRobotFile extends Task {
 		String file = params.getChild("filename").getText();
 		String[][] strPoints = CSVReader.loadCSV(file, ",", "Place robot file not found");
 		for (String[] s : strPoints){
-			positions.add(new Point4f(Float.parseFloat(s[0]),Float.parseFloat(s[1]),0,0));
+			positions.add(new RigidTransformation(Float.parseFloat(s[0]),Float.parseFloat(s[1]),0f));
 		}
 		
-		for(int i=0;i<positions.size();i++)
-		{
-			if (i+deltaId < positions.size())
-			{
-				Point4f p1 = positions.get(i);
-				Point4f p2 = positions.get(i+deltaId);
-				p1.w = (float)Math.atan2(p2.y-p1.y, p2.x-p1.x);
-			}else{
-				int minPos = positions.size()-1-deltaId < 0 ? 0 : positions.size()-1-deltaId;
-				Point4f p1 = positions.get(minPos);
-				Point4f p2 = positions.get(positions.size()-1);
-				p2.w = (float)Math.atan2(p2.y-p1.y, p2.x-p1.x);
-			}
-		}
 		
+//		for(int i=0;i<positions.size();i++)
+//		{
+//			if (i+deltaId < positions.size())
+//			{
+//				RigidTransformation p1 = positions.get(i);
+//				RigidTransformation p2 = positions.get(i+deltaId);
+		// TODO: recover this code, what is the following line?
+//				p1.w = (float)Math.atan2(p2.y-p1.y, p2.x-p1.x);
+//			}else{
+//				int minPos = positions.size()-1-deltaId < 0 ? 0 : positions.size()-1-deltaId;
+//				Point4f p1 = positions.get(minPos);
+//				Point4f p2 = positions.get(positions.size()-1);
+//				p2.w = (float)Math.atan2(p2.y-p1.y, p2.x-p1.x);
+//			}
+//		}
+//		
 		//XMLUtils.parsePoint(p
 
 
@@ -57,9 +57,9 @@ public class PlaceRobotFile extends Task {
 		
 		MovableRobotUniverse mru = (MovableRobotUniverse) u;
 		
-		Point4f p = positions.get(nextPos);
-		mru.setRobotPosition(new Point2D.Float(p.x, p.y));
-		mru.setRobotOrientation(p.w);
+		RigidTransformation p = positions.get(nextPos);
+		mru.setRobotPosition(p.getTranslation());
+		mru.setRobotOrientation(p.getRotation());
 		if (nextPos+1 < positions.size()) nextPos++;
 		else Globals.getInstance().put("done", true);
 		

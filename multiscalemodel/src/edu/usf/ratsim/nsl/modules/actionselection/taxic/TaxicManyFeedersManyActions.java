@@ -2,8 +2,7 @@ package edu.usf.ratsim.nsl.modules.actionselection.taxic;
 
 import java.util.List;
 
-import javax.vecmath.Point3f;
-import javax.vecmath.Quat4f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
@@ -76,13 +75,12 @@ public class TaxicManyFeedersManyActions extends Module {
 						// TODO: used to use except, see if needed
 						for (Feeder f : fr.getVisibleFeeders()) {
 							if (f != null) {
-								Point3f newPos = GeomUtils.simulate(
+								Coordinate newPos = GeomUtils.simulate(
 										f.getPosition(), af);
-								Quat4f rotToNewPos = GeomUtils
+								float rotToNewPos = GeomUtils
 										.angleToPoint(newPos);
 
-								float angleDiff = Math.abs(GeomUtils
-										.rotToAngle(rotToNewPos));
+								float angleDiff = Math.abs(rotToNewPos);
 								float feederVal;
 								if (angleDiff < fr.getHalfFieldView())
 									feederVal = getFeederValue(newPos);
@@ -123,7 +121,7 @@ public class TaxicManyFeedersManyActions extends Module {
 
 	}
 
-	private float getFeederValue(Point3f feederPos) {
+	private float getFeederValue(Coordinate feederPos) {
 		float steps = GeomUtils.getStepsToFeeder(feederPos, ar.getMinAngle(), ar.getStepLength());
 		return (float) Math.max(0, (reward + negReward * steps));
 	}

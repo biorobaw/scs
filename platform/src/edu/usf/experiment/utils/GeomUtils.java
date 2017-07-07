@@ -1,18 +1,12 @@
 package edu.usf.experiment.utils;
 
 import java.awt.geom.Rectangle2D;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.media.j3d.Transform3D;
-import javax.vecmath.Point3f;
-import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
-
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.util.NoninvertibleTransformationException;
 
 import edu.usf.experiment.robot.affordance.Affordance;
 import edu.usf.experiment.robot.affordance.EatAffordance;
@@ -23,18 +17,15 @@ import edu.usf.experiment.universe.platform.Platform;
 import edu.usf.experiment.universe.wall.Wall;
 
 public class GeomUtils {
-
-	public static String getCurrentDirectoryAbsolute() {
-		return System.getProperty("user.dir");
-	}
-
-	public static void shuffleList(Object[] array) {
-		Collections.shuffle(Arrays.asList(array));
+	
+	public static float angleToPoint(Coordinate p) {
+		return (float) Math.atan2(p.y, p.x);
 	}
 	
-	
-	///////////////////////////////////////////PABLO MODIFICATIONS//////////////////////////////////////////////////////////////////
-	
+	public static float distanceToPoint(Coordinate p) {
+		return (float) Math.sqrt(Math.pow(p.x, 2) + Math.pow(p.y, 2));
+	}
+
 	/**
 	 * Returns relative angle to the base. Result is given in the range [-pi,pi)
 	 * 
@@ -42,7 +33,6 @@ public class GeomUtils {
 	 * @param base
 	 * @return
 	 */
-	
 	public static float relativeAngle(float angle, float base){
 		float deltaAngle =(float) ((angle - base) % (2*Math.PI));
 		if (deltaAngle >= Math.PI ) return (float)(deltaAngle - 2*Math.PI);
@@ -51,195 +41,21 @@ public class GeomUtils {
 	
 	}
 	
-	
-	
-	
-	
-	
-	//////////////////////////////////////////END OF PABLO MODIFICATIONS////////////////////////////////////////////////////////////
-
-	/**
-	 * Returns a Quaternion representing the 3d rotation that transforms vector
-	 * from into vector to
-	 * 
-	 * @param from
-	 *            vector representing heading direction
-	 * @param to
-	 *            vector of the position of the desired goal
-	 * @return
-	 */
-	public static Quat4f rotBetweenVectors(Vector3f from, Vector3f to) {
-		// Taken from
-		// http://lolengine.net/blog/2013/09/18/beautiful-maths-quaternion-from-vectors
-		// from.normalize();
-		// to.normalize();
-		// Quat4f res = new Quat4f();
-		// Vector3f cross = new Vector3f();
-		// cross.cross(from, to);
-		// cross.normalize();
-		// float dot = from.dot(to);
-		//
-		// res.x = cross.x;
-		// res.y = cross.y;
-		// res.z = cross.z;
-		// res.w = 1.f + dot;
-		//
-		// res.normalize();
-		//
-		// Taken
-		// fromhttp://lolengine.net/blog/2014/02/24/quaternion-from-two-vectors-final
-		from.normalize();
-		to.normalize();
-		float norm_u_norm_v = 1f;
-		float real_part = norm_u_norm_v + from.dot(to);
-		Vector3f w;
-		if (real_part < 1.e-6f * norm_u_norm_v) {
-			/*
-			 * If u and v are exactly opposite, rotate 180 degrees around an
-			 * arbitrary orthogonal axis. Axis normalisation can happen later,
-			 * when we normalise the quaternion.
-			 */
-			real_part = (float) 0;
-//			if (Math.abs(from.x) > Math.abs(from.z))
-//				w = new Vector3f(-from.y, from.x, 0.f);
-//			else
-//				w = new Vector3f(0.f, -from.z, from.y);
-			// We know rotations are always using Z axis
-			w = new Vector3f(0,0,1);
-		} else {
-			/* Otherwise, build quaternion the standard way. */
-			w = new Vector3f();
-			w.cross(from, to);
+	public static Coordinate relativeCoords(Coordinate p, Coordinate t, float theta) {
+		RigidTransformation rT = new RigidTransformation(t, theta);
+		Coordinate relP = new Coordinate();
+		try {
+			rT.getInverse().transform(p, relP);
+		} catch (NoninvertibleTransformationException e) {
+			e.printStackTrace();
 		}
-
-		Quat4f res = new Quat4f(w.x, w.y, w.z, real_part);
-		res.normalize();
-		return res;
-	}
-
-	// FIXME: should add one more inverse? result seems negated
-	public static float angleToPointWithOrientation(Quat4f orientation,
-			Point3f from, Point3f to) {
-		Vector3f toPoint = pointsToVector(from, to);
-		Quat4f rotTo = rotBetweenVectors(new Vector3f(1, 0, 0), toPoint);
-		rotTo.inverse();
-		rotTo.mul(orientation);
-		return rotToAngle(rotTo);
+		return relP;
 	}
 	
-	// FIXME: should add one more inverse? result seems negated
-	public static float angleToPointWithOrientation(float orientation, Point3f from, Point3f to) {
-		return angleToPointWithOrientation(GeomUtils.angleToRot(orientation), from, to);
+	public static float relativeAngleToPoint(Coordinate t, float theta, Coordinate p){
+		Coordinate relP = relativeCoords(p, t, theta);
+		return angleToPoint(relP);
 	}
-
-	public static float angleDistance(float from, float to) {
-		// Create complex numbers for both orientations
-		double r1 = Math.cos(from);
-		double i1 = Math.sin(from);
-		double r2 = Math.cos(to);
-		double i2 = Math.sin(to);
-		// Conjugate from
-		i1 = -i1;
-		// Multiply them
-		double r = r1 * r2 - i1 * i2;
-		double i = i1 * r2 + r1 * i2;
-		// Get the argument and complementary
-		double arg = Math.atan2(i, r);
-		double argComp;
-
-		if (arg > 0)
-			argComp = -(2 * Math.PI - arg);
-		else
-			argComp = 2 * Math.PI + arg;
-
-		// Return the minimum of the absolute values
-		return (float) Math.min(Math.abs(arg), Math.abs(argComp));
-	}
-	
-	public static Vector3f pointsToVector(Point3f from, Point3f to) {
-		Vector3f fVect = new Vector3f(to);
-		fVect.sub(from);
-
-		return fVect;
-	}
-
-	public static Quat4f angleToRot(float angle) {
-		Quat4f res = new Quat4f();
-		Transform3D t = new Transform3D();
-		t.rotZ(angle);
-		t.get(res);
-		return res;
-	}
-
-	public static float rotToAngle(Quat4f rot) {
-		rot.normalize();
-		float angle = (float) (2 * Math.acos(rot.w)) * Math.signum(rot.z);
-		// Get the shortest
-		if (angle > Math.PI)
-			angle -= Math.PI * 2;
-		else if (angle < -Math.PI)
-			angle -= -Math.PI * 2;
-
-		return (float) (angle);
-	}
-
-	public static Quat4f angleToPoint(Point3f location) {
-		Vector3f toPoint = new Vector3f(location);
-		Quat4f rotTo = rotBetweenVectors(new Vector3f(1, 0, 0), toPoint);
-		return rotTo;
-	}
-	
-	/**
-	 * Angle from rot1 to rot2
-	 * @param rot1
-	 * @param rot2
-	 * @return
-	 */
-	public static float angleDiff(Quat4f rot1, Quat4f rot2){
-		rot1.inverse();
-		rot2.mul(rot1);
-		return rotToAngle(rot2);
-	}
-
-	public static float angleDiff(float a1, float a2) {
-		Quat4f rot1 = angleToRot(a1);
-		Quat4f rot2 = angleToRot(a2);
-		return angleDiff(rot1, rot2);
-	}
-
-	public static float distanceToPoint(Point3f p) {
-		return (float) Math.sqrt(Math.pow(p.x, 2) + Math.pow(p.y, 2) + Math.pow(p.z, 2));
-	}
-	
-	public static Point3f getRelativePos(Point3f fPos, Point3f framePos, Quat4f frameRot) {
-		Point3f relFPos = new Point3f(GeomUtils.pointsToVector(framePos, fPos));
-		// Rotate to robots framework
-		Quat4f rRot = new Quat4f(frameRot);
-		rRot.inverse();
-		Transform3D t = new Transform3D();
-		t.setRotation(rRot);
-		t.transform(relFPos);
-		return relFPos;
-	}
-
-//	public static float getFeederReward(Point3f position, float rotationAngle, float maxReward,
-//			Subject subject, LocalizableRobot robot) {
-//		Quat4f rotToFood = GeomUtils.angleToPoint(position);
-//
-//		Quat4f actionAngle = GeomUtils.angleToRot(rotationAngle);
-//
-//		float angleDiff = Math.abs(GeomUtils.angleDiff(actionAngle,
-//				rotToFood));
-//
-//		float rotationSteps = angleDiff / subject.getMinAngle();
-//
-//		float dist = GeomUtils.distanceToPoint(position);
-//
-//		float forwardSteps = dist / subject.getStepLenght();
-//
-//		// TODO: improve this function
-//		return (float) (maxReward * Math.exp(-(forwardSteps + rotationSteps) / 10));
-//	}
 
 	/**
 	 * Returns the steps needed to get to a feeder
@@ -247,10 +63,10 @@ public class GeomUtils {
 	 * @param subject
 	 * @return
 	 */
-	public static float getStepsToFeeder(Point3f feederPos, float minAngle, float stepLength) {
-		Quat4f rotToFood = GeomUtils.angleToPoint(feederPos);
+	public static float getStepsToFeeder(Coordinate feederPos, float minAngle, float stepLength) {
+		float rotToFood = angleToPoint(feederPos);
 
-		float angleDiff = Math.abs(GeomUtils.rotToAngle(rotToFood)); 
+		float angleDiff = Math.abs(rotToFood); 
 
 		int rotationSteps = (int) Math.ceil(angleDiff / minAngle);
 
@@ -267,26 +83,26 @@ public class GeomUtils {
 	 * @param af
 	 * @return
 	 */
-	public static Point3f simulate(Point3f position, Affordance af) {
+	public static Coordinate simulate(Coordinate position, Affordance af) {
 		if (af instanceof ForwardAffordance) {
 			ForwardAffordance fw = (ForwardAffordance) af;
-			position.add(new Point3f(-fw.getDistance(), 0, 0));
-			return position;
+			RigidTransformation step = new RigidTransformation(new Coordinate(-fw.getDistance(), 0), 0);
+			Coordinate nextP = new Coordinate();
+			step.transform(position, nextP);
+			return nextP;
 		} else if (af instanceof TurnAffordance) {
 			TurnAffordance ta = (TurnAffordance) af;
-			// TODO: figure out this: it should be -angle
-			Quat4f rot = GeomUtils.angleToRot(ta.getAngle());
-			Transform3D t = new Transform3D();
-			t.set(rot);
-			t.transform(position);
-			return position;
+			RigidTransformation rot = new RigidTransformation(new Coordinate(),ta.getAngle());
+			Coordinate nextP = new Coordinate();
+			rot.transform(position, nextP);
+			return nextP;
 		} else if (af instanceof EatAffordance){
 			return position;
 		} else 
 			throw new RuntimeException("Simulation of unknown affordance");
 	}
 
-	public static java.awt.geom.Rectangle2D.Float computeBoundingRect(Collection<Feeder> feeders, Collection<Wall> walls, Collection<Platform> platforms) {
+	public static Rectangle2D.Float computeBoundingRect(Collection<Feeder> feeders, Collection<Wall> walls, Collection<Platform> platforms) {
 		float minx = Float.MAX_VALUE, miny = Float.MAX_VALUE;
 		float maxx = -Float.MAX_VALUE, maxy = -Float.MAX_VALUE;
 		
@@ -310,6 +126,12 @@ public class GeomUtils {
 		
 		return  new Rectangle2D.Float(minx, miny, maxx - minx, maxy - miny);
 		
+	}
+	
+	public static void main(String[] args){
+		
+		RigidTransformation r = new RigidTransformation(new Coordinate(-1,1), (float)Math.PI/2);
+		System.out.println(GeomUtils.relativeCoords(new Coordinate(-1,0), r.getTranslation(), r.getRotation()));
 	}
 
 }

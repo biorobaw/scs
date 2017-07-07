@@ -3,7 +3,7 @@ package edu.usf.ratsim.nsl.modules.actionselection;
 import java.util.List;
 import java.util.Random;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.WallRobot;
 import edu.usf.experiment.robot.affordance.Affordance;
@@ -36,7 +36,7 @@ public class AttentionalExplorer extends Module {
 	private LocalActionAffordanceRobot ar;
 	private WallRobot wr;
 	private Random r;
-	private Point3f currentInterest;
+	private Coordinate currentInterest;
 	private int attentionRemaining;
 	private int maxAttentionSpan;
 
@@ -74,11 +74,11 @@ public class AttentionalExplorer extends Module {
 
 		// Find all visible interest points
 		// List<Point3f> interestingPoints = robot.getInterestingPoints();
-		List<Point3f> interestingPoints = wr.getVisibleWallEnds();
+		List<Coordinate> interestingPoints = wr.getVisibleWallEnds();
 		// If no current interest or not found, create new interest
 		if (attentionRemaining <= 0 // Not interesting any more
 				|| currentInterest == null // no current interest
-				|| currentInterest.distance(new Point3f()) < CLOSE_THRS // arrived
+				|| currentInterest.distance(new Coordinate()) < CLOSE_THRS // arrived
 				|| findClosestPoint(currentInterest, interestingPoints,
 						TRACKIN_THRS) == null) { // Lost it
 			if (Debug.printAttentional)
@@ -135,15 +135,15 @@ public class AttentionalExplorer extends Module {
 		}
 	}
 
-	private Point3f findClosestPoint(Point3f p, List<Point3f> points,
+	private Coordinate findClosestPoint(Coordinate p, List<Coordinate> points,
 			float trackinThrs) {
 		float minDist = trackinThrs;
-		Point3f closest = null;
-		for (Point3f p2 : points) {
+		Coordinate closest = null;
+		for (Coordinate p2 : points) {
 			// if (Debug.printAttentional)
 			// System.out.println("Distance " + p2.distance(p));
 			if (p2.distance(p) < minDist) {
-				minDist = p2.distance(p);
+				minDist = (float) p2.distance(p);
 				closest = p2;
 			}
 		}
@@ -151,11 +151,11 @@ public class AttentionalExplorer extends Module {
 		return closest;
 	}
 
-	private Point3f applyLastMove(Point3f p, int i) {
+	private Coordinate applyLastMove(Coordinate p, int i) {
 		return GeomUtils.simulate(p, ar.getPossibleAffordances().get(i));
 	}
 
-	private float getFeederValue(Point3f feederPos, float reward) {
+	private float getFeederValue(Coordinate feederPos, float reward) {
 		float steps = GeomUtils.getStepsToFeeder(feederPos, ar.getMinAngle(), ar.getStepLength());
 		return (float) (reward * Math.pow(.9, steps));
 	}

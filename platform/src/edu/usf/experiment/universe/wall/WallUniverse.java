@@ -2,9 +2,6 @@ package edu.usf.experiment.universe.wall;
 
 import java.util.List;
 
-import javax.vecmath.Point2f;
-import javax.vecmath.Point3f;
-
 import com.vividsolutions.jts.geom.LineSegment;
 
 import edu.usf.experiment.universe.Universe;

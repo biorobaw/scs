@@ -1,6 +1,6 @@
 package edu.usf.experiment.universe;
 
-import java.awt.geom.Point2D;
+import com.vividsolutions.jts.geom.Coordinate;
 
 public interface MovableRobotUniverse extends Universe {
 
@@ -10,7 +10,7 @@ public interface MovableRobotUniverse extends Universe {
 	 * @param vector
 	 *            Robots position
 	 */
-	public abstract void setRobotPosition(Point2D.Float newPos);
+	public abstract void setRobotPosition(Coordinate snewPos);
 	
 	/**
 	 * Rotate the virtual world robot.

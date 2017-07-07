@@ -1,23 +1,17 @@
 package edu.usf.experiment.task.robot;
 
-import java.awt.geom.Point2D;
-
-import javax.vecmath.Point4f;
-
-import edu.usf.experiment.Episode;
-import edu.usf.experiment.Experiment;
-import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.universe.MovableRobotUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.CSVReader;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.experiment.utils.RigidTransformation;
 import edu.usf.experiment.utils.XMLUtils;
 
 public class PlaceRobotInitally extends Task{
 
-	private Point4f initPos;
+	private RigidTransformation initPos;
 	static private int deltaId = 40;
 
 	public PlaceRobotInitally(ElementWrapper params) {
@@ -32,7 +26,8 @@ public class PlaceRobotInitally extends Task{
 			float x = Float.parseFloat(coords[0]);
 			float y = Float.parseFloat(coords[1]);
 			float w = Float.parseFloat(coords[2]);
-			initPos = new Point4f(x,y,0,w);
+			// TODO: verify this
+			initPos = new RigidTransformation(x,y,w);
 		}
 		else if ((e=params.getChild("filename"))!=null)
 		{
@@ -48,7 +43,8 @@ public class PlaceRobotInitally extends Task{
 				float y2= Float.parseFloat(strPoints[otherPoint][1]);
 				w = (float)Math.atan2(y2-y, x2-x);
 			}
-			initPos = new Point4f(x,y,0,w);
+			// TODO: verify this
+			initPos = new RigidTransformation(x,y,w);
 			
 		}
 		else System.out.println("ERROR: Start position not specified");
@@ -61,8 +57,8 @@ public class PlaceRobotInitally extends Task{
 		
 		MovableRobotUniverse mru = (MovableRobotUniverse) u;
 		
-		mru.setRobotPosition(new Point2D.Float(initPos.x, initPos.y));
-		mru.setRobotOrientation(initPos.w);
+		mru.setRobotPosition(initPos.getTranslation());
+		mru.setRobotOrientation(initPos.getRotation());
 		
 		
 	}

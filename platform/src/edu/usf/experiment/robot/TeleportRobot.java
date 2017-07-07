@@ -1,8 +1,8 @@
 package edu.usf.experiment.robot;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 public interface TeleportRobot {
 
-	public void setPosition(Point3f pos);
+	public void setPosition(Coordinate pos);
 }

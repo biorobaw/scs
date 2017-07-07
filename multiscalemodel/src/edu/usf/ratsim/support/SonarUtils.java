@@ -12,7 +12,7 @@ public class SonarUtils {
 		float minAngleDiff = Float.MAX_VALUE;
 		int minSonar = 0;
 		for (int i = 0; i < angles.getSize(); i++) {
-			float angleDiff = Math.abs(GeomUtils.angleDiff(angles.get(i), angle));
+			float angleDiff = Math.abs(GeomUtils.relativeAngle(angles.get(i), angle));
 			if (angleDiff < minAngleDiff) {
 				minAngleDiff = angleDiff;
 				minSonar = i;
@@ -26,11 +26,14 @@ public class SonarUtils {
 		// Get the closest sonar
 		float minAngleDiff = Float.MAX_VALUE;
 		for (int i = 0; i < angles.getSize(); i++) {
-			float angleDiff = Math.abs(GeomUtils.angleDiff(angles.get(i), angle));
+			float angleDiff = Math.abs(GeomUtils.relativeAngle(angles.get(i), angle));
 			if (angleDiff < minAngleDiff) {
 				minAngleDiff = angleDiff;
 			}
 		}
+		
+		if (minAngleDiff > MIN_ANGLE_MAX_DIFF_THRS)
+			System.out.println("No valid sonar");
 		
 		return minAngleDiff < MIN_ANGLE_MAX_DIFF_THRS;
 	}
@@ -56,7 +59,7 @@ public class SonarUtils {
 		float minReading = Float.MAX_VALUE;
 		for (int a = 0; a < angles.getSize(); a++){
 			float sensorAngle = angles.get(a);
-			if (Math.abs(GeomUtils.angleDiff(angle, sensorAngle)) <= range + ANGLE_EPS)
+			if (Math.abs(GeomUtils.relativeAngle(angle, sensorAngle)) <= range + ANGLE_EPS)
 				if (readings.get(a) < minReading)
 					minReading = readings.get(a);
 		}

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
@@ -101,7 +101,7 @@ public class RndPlaceCellLayer extends Module {
 		Random random = RandomSingleton.getInstance();
 		int i = 0;
 		do {
-			Point3f prefLocation;
+			Coordinate prefLocation;
 			prefLocation = createrPreferredLocation(nearGoalProb, goals, xmin, xmax, ymin, ymax, random);
 
 			if (placeCellType.equals("ProportionalPlaceCell")) {
@@ -122,19 +122,19 @@ public class RndPlaceCellLayer extends Module {
 		this.wRobot = (WallRobot) robot;
 	}
 
-	private Point3f createrPreferredLocation(float nearGoalProb, List<Feeder> goals, float xmin, float xmax, float ymin,
+	private Coordinate createrPreferredLocation(float nearGoalProb, List<Feeder> goals, float xmin, float xmax, float ymin,
 			float ymax, Random random) {
 		float x, y;
 		if (random.nextFloat() < nearGoalProb) {
 			int fIndex = random.nextInt(goals.size());
-			Point3f p = goals.get(fIndex).getPosition();
+			Coordinate p = goals.get(fIndex).getPosition();
 			x = (float) (p.x + random.nextFloat() * .2 - .1);
 			y = (float) (p.y + random.nextFloat() * .2 - .1);
 		} else {
 			x = random.nextFloat() * (xmax - xmin) + xmin;
 			y = random.nextFloat() * (ymax - ymin) + ymin;
 		}
-		return new Point3f(x, y, 0);
+		return new Coordinate(x, y);
 	}
 
 	public void run() {

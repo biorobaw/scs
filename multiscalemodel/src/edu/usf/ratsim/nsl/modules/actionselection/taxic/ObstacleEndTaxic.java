@@ -2,8 +2,7 @@ package edu.usf.ratsim.nsl.modules.actionselection.taxic;
 
 import java.util.List;
 
-import javax.vecmath.Point3f;
-import javax.vecmath.Quat4f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.WallRobot;
@@ -52,10 +51,10 @@ public class ObstacleEndTaxic extends Module {
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;
 
-		List<Point3f> interestingPoints = wr.getVisibleWallEnds();
+		List<Coordinate> interestingPoints = wr.getVisibleWallEnds();
 
-		for (Point3f p : interestingPoints) {
-			if (p.distance(new Point3f()) > tooCloseDist) {
+		for (Coordinate p : interestingPoints) {
+			if (p.distance(new Coordinate()) > tooCloseDist) {
 				// For each affordance set a value based on current interest
 				// point
 				List<Affordance> affs = ar.checkAffordances(ar
@@ -66,11 +65,10 @@ public class ObstacleEndTaxic extends Module {
 					if (af.isRealizable()) {
 						if (af instanceof TurnAffordance
 								|| af instanceof ForwardAffordance) {
-							Point3f newPos = GeomUtils.simulate(p, af);
-							Quat4f rotToNewPos = GeomUtils.angleToPoint(newPos);
+							Coordinate newPos = GeomUtils.simulate(p, af);
+							float rotToNewPos = GeomUtils.angleToPoint(newPos);
 
-							float angleDiff = Math.abs(GeomUtils
-									.rotToAngle(rotToNewPos));
+							float angleDiff = Math.abs(rotToNewPos);
 							float feederVal;
 							if (angleDiff < wr.getHalfFieldView())
 								feederVal = getPointValue(newPos, taxicVal);
@@ -96,7 +94,7 @@ public class ObstacleEndTaxic extends Module {
 		}
 	}
 
-	private float getPointValue(Point3f feederPos, float reward) {
+	private float getPointValue(Coordinate feederPos, float reward) {
 		float steps = GeomUtils.getStepsToFeeder(feederPos, ar.getMinAngle(), ar.getStepLength());
 		return (float) Math.max(0, (reward + negReward * steps));
 	}

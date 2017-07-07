@@ -5,8 +5,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.util.Map;
 
-import javax.vecmath.Point3f;
-
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.display.drawer.Drawer;
@@ -23,7 +21,7 @@ public class QValueDrawer implements Drawer {
 
 	@Override
 	public void draw(Graphics g, Scaler s) {
-		Map<Point3f, Float> vps = model.getValuePoints();
+		Map<Coordinate, Float> vps = model.getValuePoints();
 		
 		float maxPos = -Float.MAX_VALUE;
 		float maxNeg = Float.MAX_VALUE;
@@ -37,7 +35,7 @@ public class QValueDrawer implements Drawer {
 		maxNeg = maxNeg == 0 ? 1 : maxNeg;
 		maxPos = maxPos == 0 ? 1 : maxPos;
 		
-		for (Point3f p : vps.keySet())
+		for (Coordinate p : vps.keySet())
 		{
 			Point ul = s.scale(new Coordinate(p.x, p.y + 1));
 			Point lr = s.scale(new Coordinate(p.x + 1, p.y));

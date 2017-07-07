@@ -1,6 +1,6 @@
 package edu.usf.vlwsim.universe;
 
-import javax.vecmath.Vector3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -23,7 +23,7 @@ public class StepRobotVirtualUniverse extends VirtUniverse {
 				setRobotOrientation(turnAngle);
 		}
 				
-		moveRobot(new Vector3f(forwardDistance, 0, 0));
+		moveRobot(new Coordinate(forwardDistance, 0));
 		
 		turnAngle = 0;
 		forwardDistance = 0;

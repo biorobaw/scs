@@ -1,6 +1,6 @@
 package edu.usf.experiment.log;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
@@ -24,8 +24,8 @@ public class SubjectPositionFeedingLogger extends PositionFeedingLogger {
 		FeederUniverse fu = (FeederUniverse) u;
 		
 		LocalizableRobot r = (LocalizableRobot) sub.getRobot();
-		Point3f pos = r.getPosition();
-		addPose(new Pose(pos.x, pos.y, false, fu.hasRobotTriedToEat(), fu.hasRobotEaten()));
+		Coordinate pos = r.getPosition();
+		addPose(new Pose((float)pos.x,(float) pos.y, false, fu.hasRobotTriedToEat(), fu.hasRobotEaten()));
 	}
 	
 	@Override

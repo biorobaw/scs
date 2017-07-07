@@ -3,7 +3,7 @@ package edu.usf.vlwsim.robot;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.AbsoluteDirectionRobot;
 import edu.usf.experiment.robot.affordance.AbsoluteAngleAffordance;
@@ -92,7 +92,7 @@ public class AbsoluteDirectionVirtualRobot extends VirtualRobot implements Absol
 			// realizable = hasRobotFoundFood();
 			if (FeederUtils.getClosestFeeder(getVisibleFeeders()) != null)
 				realizable = FeederUtils.getClosestFeeder(getVisibleFeeders()).getPosition()
-						.distance(new Point3f()) < getCloseThrs() ? 1 : 0;
+						.distance(new Coordinate()) < getCloseThrs() ? 1 : 0;
 			else
 				realizable = 0;
 		} else

@@ -1,8 +1,6 @@
 package edu.usf.experiment.task.maze;
 
-import java.awt.geom.Point2D;
-
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
@@ -34,7 +32,7 @@ public class SetUpSingleWall extends Task {
 		
 		wu.addWall(0, .5f, 0, -.5f);
 		
-		pu.addPlatform(new Point3f(-1f, 0, 0), .1f);
+		pu.addPlatform(new Coordinate(-1f, 0), .1f);
 	}
 
 }

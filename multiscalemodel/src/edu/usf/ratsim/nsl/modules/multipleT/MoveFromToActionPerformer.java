@@ -1,13 +1,12 @@
 package edu.usf.ratsim.nsl.modules.multipleT;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.TeleportRobot;
-import edu.usf.experiment.robot.affordance.EatAffordance;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
+import edu.usf.micronsl.port.onedimensional.vector.PointPort;
 
 /**
  * Module that sets the probability of an action to 0 if the action can not be performed
@@ -32,8 +31,8 @@ public class MoveFromToActionPerformer extends Module {
 	public void run() {
 		
 		
-		Point3f pos = ((Point3fPort)getInPort("position")).get();
-		Point3f nextPos = ((Point3fPort)getInPort("nextPosition")).get();
+		Coordinate pos = ((PointPort)getInPort("position")).get();
+		Coordinate nextPos = ((PointPort)getInPort("nextPosition")).get();
 		
 //		float dx = nextPos.x-pos.x;
 //		float dy = nextPos.y-pos.y;

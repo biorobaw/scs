@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.universe.morse.PosSensorProxy;
 import edu.usf.experiment.utils.GeomUtils;
@@ -40,7 +40,7 @@ public class MorseControllerProxy {
 	}
 
 	public void stepForward() {
-		Point3f fromPose = poseSensor.getPosition();
+		Coordinate fromPose = poseSensor.getPosition();
 		try {
 			String cmd = "id" + msgNum++ + " robot.vw set_speed [" + SPEED + ", 0]\n";
 			writer.write(cmd);
@@ -49,7 +49,7 @@ public class MorseControllerProxy {
 			float dist;
 			do {
 				Thread.sleep(SLEEP);
-				dist = poseSensor.getPosition().distance(fromPose);
+				dist = (float) poseSensor.getPosition().distance(fromPose);
 			} while (dist < STEP - TOLERANCE);
 
 			cmd = "id" + msgNum++ + " robot.vw set_speed [0, 0]\n";
@@ -75,7 +75,7 @@ public class MorseControllerProxy {
 			float dist;
 			do {
 				Thread.sleep(SLEEP);
-				dist = Math.abs(GeomUtils.angleDiff(poseSensor.getOrientation(), fromAngle));
+				dist = Math.abs(GeomUtils.relativeAngle(poseSensor.getOrientation(), fromAngle));
 			} while (dist < TURNSTEP - TOLERANCE);
 
 			cmd = "id" + msgNum++ + " robot.vw set_speed [0, 0]\n";

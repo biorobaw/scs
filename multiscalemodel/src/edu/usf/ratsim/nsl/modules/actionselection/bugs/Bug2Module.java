@@ -1,7 +1,5 @@
 package edu.usf.ratsim.nsl.modules.actionselection.bugs;
 
-import javax.vecmath.Point3f;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
@@ -9,7 +7,7 @@ import edu.usf.experiment.robot.DifferentialRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
-import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
+import edu.usf.micronsl.port.onedimensional.vector.PointPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.ratsim.support.SonarUtils;
 
@@ -23,7 +21,7 @@ public class Bug2Module extends Module {
 
 	private State state;
 	private LineSegment mLine;
-	private Point3f hitPoint;
+	private Coordinate hitPoint;
 
 	public Bug2Module(String name, Robot robot) {
 		super(name);
@@ -40,9 +38,9 @@ public class Bug2Module extends Module {
 	public void run() {
 		Float1dPort readings = (Float1dPort) getInPort("sonarReadings");
 		Float1dPort angles = (Float1dPort) getInPort("sonarAngles");
-		Point3fPort rPos = (Point3fPort) getInPort("position");
+		PointPort rPos = (PointPort) getInPort("position");
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
-		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
+		PointPort platPos = (PointPort) getInPort("platformPosition");
 
 		if (mLine == null) {
 			mLine = new LineSegment(new Coordinate(rPos.get().x, rPos.get().y),

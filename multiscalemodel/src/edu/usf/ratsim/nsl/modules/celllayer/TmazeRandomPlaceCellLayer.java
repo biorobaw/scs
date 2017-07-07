@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.universe.element.MultipleT;
@@ -12,7 +12,7 @@ import edu.usf.experiment.utils.CSVReader;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
-import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
+import edu.usf.micronsl.port.onedimensional.vector.PointPort;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceCell;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceCellForMultipleT;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
@@ -84,11 +84,11 @@ public class TmazeRandomPlaceCellLayer extends Module {
 			float[] xy = loadedValues !=null ? new float[] {Float.parseFloat(loadedValues[i][0]),Float.parseFloat(loadedValues[i][1])} : mT.getRandomPosition();			
 			// Find if it intersects any wall
 			if (placeCellType.equals("proportional"))
-				cells.add(new ProportionalPlaceCell(new Point3f(xy[0], xy[1], 0), radius));
+				cells.add(new ProportionalPlaceCell(new Coordinate(xy[0], xy[1]), radius));
 			else if (placeCellType.equals("exponential"))
-				cells.add(new ExponentialPlaceCell(new Point3f(xy[0], xy[1], 0), radius));
+				cells.add(new ExponentialPlaceCell(new Coordinate(xy[0], xy[1]), radius));
 			else if(placeCellType.equals("exponentialMultipleT"))
-				cells.add(new ExponentialPlaceCellForMultipleT(new Point3f(xy[0], xy[1],0),radius));
+				cells.add(new ExponentialPlaceCellForMultipleT(new Coordinate(xy[0], xy[1]),radius));
 			else
 				throw new RuntimeException("Place cell type not implemented");
 		}
@@ -123,7 +123,7 @@ public class TmazeRandomPlaceCellLayer extends Module {
 	 */
 	public void run() {
 		
-		run(((Point3fPort)getInPort("position")).get(), 0); //second parameter 'distanceToWall' is not used and therefore set to 0
+		run(((PointPort)getInPort("position")).get(), 0); //second parameter 'distanceToWall' is not used and therefore set to 0
 	}
 	
 	/**
@@ -135,7 +135,7 @@ public class TmazeRandomPlaceCellLayer extends Module {
 	 * @param distToWall
 	 *            The distance to the closest wall
 	 */
-	public void run(Point3f pos, float distanceToClosestWall) {
+	public void run(Coordinate pos, float distanceToClosestWall) {
 		Map<Integer, Float> nonZero = activationPort.getNonZero();
 		nonZero.clear();
 		if (active) {
@@ -171,7 +171,7 @@ public class TmazeRandomPlaceCellLayer extends Module {
 	 * @param pos The current position of the animat.
 	 * @return An array of the activation values
 	 */
-	public float[] getActivationValues(Point3f pos) {
+	public float[] getActivationValues(Coordinate pos) {
 		float distanceToClosestWall = 0; //value not used
 		float[] res = new float[cells.size()];
 

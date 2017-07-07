@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules.cell;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * Conjunctive cells are units that are modulated by more than one parameter. In
@@ -28,14 +28,14 @@ public interface ConjCell {
 	 *            The distance to the closest wall
 	 * @return The activation value corresponding to the firing rate of the cell
 	 */
-	public float getActivation(Point3f currLocation, float currAngle, int currIntention, float distanceToWall);
+	public float getActivation(Coordinate currLocation, float currAngle, int currIntention, float distanceToWall);
 
 	/**
 	 * Get the preferred location of firing
 	 * 
 	 * @return The preferred point where the fire is at its peak
 	 */
-	public Point3f getPreferredLocation();
+	public Coordinate getPreferredLocation();
 
 	/**
 	 * Set the preferred point of firing
@@ -43,7 +43,7 @@ public interface ConjCell {
 	 * @param prefLocation
 	 *            The preferred point of firing.
 	 */
-	public void setPreferredLocation(Point3f prefLocation);
+	public void setPreferredLocation(Coordinate prefLocation);
 
 	/**
 	 * The radius of the firing field. Outside this radius, the firing is 0.

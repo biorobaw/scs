@@ -1,8 +1,6 @@
 package edu.usf.vlwsim.universe;
 
-import java.awt.geom.Point2D.Float;
-
-import javax.vecmath.Vector3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -20,7 +18,7 @@ public class AbsoluteDirectionRobotVirtualUniverse extends VirtUniverse {
 	@Override
 	public void stepMotion() {
 		setRobotOrientation(direction);
-		moveRobot(new Vector3f(step, 0, 0));
+		moveRobot(new Coordinate(step, 0));
 	}
 
 	public void setRobotNavDirection(float absoluteAngle) {

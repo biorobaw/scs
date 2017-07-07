@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules.pathplanning;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
@@ -11,12 +11,12 @@ public class PointNode {
 	// TODO: make these parameters
 	private static final float MAX_RADIUS = .5f;
 
-	public Point3f prefLoc;
+	public Coordinate prefLoc;
 	public float activation;
 
 	public boolean following;
 
-	public PointNode(Point3f prefLoc) {
+	public PointNode(Coordinate prefLoc) {
 		this.prefLoc = prefLoc;
 		this.following = false;
 	}
@@ -33,16 +33,17 @@ public class PointNode {
 	 *            reference
 	 * @param orientation
 	 */
-	public void updateActivation(Point3f rPos, float orientation, Float1dPort sonarReadings, Float1dPort sonarAngles) {
-		float angle = -GeomUtils.angleToPointWithOrientation(orientation, rPos, prefLoc);
+	public void updateActivation(Coordinate rPos, float orientation, Float1dPort sonarReadings,
+			Float1dPort sonarAngles) {
+		float angle = GeomUtils.relativeAngleToPoint(rPos, orientation, prefLoc);
 
+		float dist = (float) prefLoc.distance(rPos);
 		// No good sensor for the angle, or obstacle closer than the unit's
 		// center
-		float dist = prefLoc.distance(rPos);
 		if (!SonarUtils.validSonar(angle, sonarReadings, sonarAngles)
-				|| SonarUtils.getReading(angle, sonarReadings, sonarAngles) < dist)
+				|| SonarUtils.getReading(angle, sonarReadings, sonarAngles) < dist) {
 			activation = 0;
-		else {
+		} else {
 			if (dist > MAX_RADIUS)
 				activation = 0;
 			else
@@ -51,7 +52,7 @@ public class PointNode {
 
 	}
 
-	public void updateActivation(Point3f loc, float distToObs) {
+	public void updateActivation(Coordinate loc, float distToObs) {
 
 	}
 

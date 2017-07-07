@@ -2,7 +2,7 @@ package edu.usf.experiment.universe.feeder;
 
 import java.util.List;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 public class FeederUtils {
 
@@ -15,7 +15,7 @@ public class FeederUtils {
 		float minDist = Float.MAX_VALUE;
 		Feeder closest = null;
 		for (Feeder f : feeders){
-			float dist = f.getPosition().distance(new Point3f());
+			float dist = (float) f.getPosition().distance(new Coordinate());
 			if (dist < minDist){
 				closest = f;
 				minDist = dist;

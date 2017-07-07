@@ -2,14 +2,11 @@ package edu.usf.ratsim.nsl.modules.input;
 
 import java.util.StringTokenizer;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.PropertyHolder;
-import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.universe.Universe;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
-import edu.usf.micronsl.port.singlevalue.Bool0dPort;
+import edu.usf.micronsl.port.onedimensional.vector.PointPort;
 
 /**
  * Provides an output port with the position of the platform
@@ -18,12 +15,12 @@ import edu.usf.micronsl.port.singlevalue.Bool0dPort;
  */
 public class PlatformPosition extends Module {
 
-	private Point3fPort outPort;
+	private PointPort outPort;
 
 	public PlatformPosition(String name) {
 		super(name);
 		
-		outPort = new Point3fPort(this);
+		outPort = new PointPort(this);
 		addOutPort("platformPosition", outPort);
 	}
 
@@ -34,7 +31,7 @@ public class PlatformPosition extends Module {
 			StringTokenizer tok = new StringTokenizer(pos, ",");
 			float x = Float.parseFloat(tok.nextToken());
 			float y = Float.parseFloat(tok.nextToken());
-			outPort.set(new Point3f(x,y,0));
+			outPort.set(new Coordinate(x,y,0));
 		}
 			
 	}

@@ -4,8 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import javax.vecmath.Point2f;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
@@ -136,8 +134,8 @@ public class AddLargeWallsTask extends Task {
 	private float minDistance(float angle, List<Float> angles) {
 		float minDistance = Float.MAX_VALUE;
 		for (Float angle2 : angles)
-			if (Math.abs(GeomUtils.angleDiff(angle, angle2)) < minDistance)
-				minDistance = Math.abs(GeomUtils.angleDiff(angle, angle2));
+			if (Math.abs(GeomUtils.relativeAngle(angle, angle2)) < minDistance)
+				minDistance = Math.abs(GeomUtils.relativeAngle(angle, angle2));
 
 		return minDistance;
 	}
@@ -182,12 +180,12 @@ public class AddLargeWallsTask extends Task {
 	private List<LineSegment> getOuterWall(double angle, boolean doubleWall) {
 		List<LineSegment> walls = new LinkedList<LineSegment>();
 
-		Point2f outerPoint = new Point2f();
+		Coordinate outerPoint = new Coordinate();
 		outerPoint.x = (float) (Math.cos(angle) * NEAR_WALL_RADIUS);
 		outerPoint.y = (float) (Math.sin(angle) * NEAR_WALL_RADIUS);
 
 		float length = LENGTH;
-		Point2f middlePoint = new Point2f();
+		Coordinate middlePoint = new Coordinate();
 		middlePoint.x = (float) (Math.cos(angle) * (NEAR_WALL_RADIUS - length));
 		middlePoint.y = (float) (Math.sin(angle) * (NEAR_WALL_RADIUS - length));
 
@@ -197,7 +195,7 @@ public class AddLargeWallsTask extends Task {
 
 		if (doubleWall) {
 			angle += BREAK_ANGLE * Math.signum(random.nextDouble());
-			Point2f innerPoint = new Point2f();
+			Coordinate innerPoint = new Coordinate();
 			innerPoint.x = (float) (middlePoint.x - Math.cos(angle) * length);
 			innerPoint.y = (float) (middlePoint.y - Math.sin(angle) * length);
 

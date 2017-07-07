@@ -4,12 +4,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.robot.StepRobot;
 import edu.usf.experiment.robot.affordance.Affordance;
-import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.experiment.robot.affordance.EatAffordance;
 import edu.usf.experiment.robot.affordance.ForwardAffordance;
 import edu.usf.experiment.robot.affordance.LocalActionAffordanceRobot;
@@ -114,7 +113,7 @@ public class StepVirtualRobot extends VirtualRobot implements StepRobot, LocalAc
 				// realizable = hasRobotFoundFood();
 				if (FeederUtils.getClosestFeeder(getVisibleFeeders()) != null)
 					realizable = FeederUtils.getClosestFeeder(getVisibleFeeders()).getPosition()
-							.distance(new Point3f()) < getCloseThrs()
+							.distance(new Coordinate()) < getCloseThrs()
 							&& FeederUtils.getClosestFeeder(getVisibleFeeders()).hasFood();
 				// TODO: this is not good for MultiFeeders, where the robot
 				// needs to eat on empty feeders to be disapointed- Fix
@@ -146,7 +145,7 @@ public class StepVirtualRobot extends VirtualRobot implements StepRobot, LocalAc
 			// realizable = hasRobotFoundFood();
 			if (FeederUtils.getClosestFeeder(getVisibleFeeders()) != null)
 				realizable = FeederUtils.getClosestFeeder(getVisibleFeeders()).getPosition()
-						.distance(new Point3f()) < getCloseThrs();
+						.distance(new Coordinate()) < getCloseThrs();
 			else
 				realizable = false;
 		} else

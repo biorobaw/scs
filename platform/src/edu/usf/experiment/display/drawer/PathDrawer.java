@@ -5,8 +5,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.util.LinkedList;
 
-import javax.vecmath.Point3f;
-
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.LocalizableRobot;
@@ -24,10 +22,10 @@ public class PathDrawer implements Drawer {
 
 	@Override
 	public void draw(Graphics g, Scaler s) {
-		Point3f pos = robot.getPosition();
+		Coordinate pos = robot.getPosition();
 		
-		float centerx = pos.x;
-		float centery = pos.y;
+		float centerx = (float)pos.x;
+		float centery = (float)pos.y;
 		Point scaledPos = s.scale(new Coordinate(centerx, centery));
 		poses.add(scaledPos);
 		

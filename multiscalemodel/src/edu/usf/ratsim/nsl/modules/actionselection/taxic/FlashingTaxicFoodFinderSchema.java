@@ -2,20 +2,16 @@ package edu.usf.ratsim.nsl.modules.actionselection.taxic;
 
 import java.util.List;
 
-import javax.vecmath.Point3f;
-import javax.vecmath.Quat4f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.affordance.Affordance;
-import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.experiment.robot.affordance.EatAffordance;
 import edu.usf.experiment.robot.affordance.ForwardAffordance;
 import edu.usf.experiment.robot.affordance.LocalActionAffordanceRobot;
 import edu.usf.experiment.robot.affordance.TurnAffordance;
-import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.feeder.Feeder;
-import edu.usf.experiment.universe.feeder.FeederUniverseUtilities;
 import edu.usf.experiment.universe.feeder.FeederUtils;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
@@ -80,12 +76,11 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 						|| af instanceof ForwardAffordance) {
 					if (fr.seesFlashingFeeder() && !feederToEat) {
 						Feeder f = fr.getFlashingFeeder();
-						Point3f newPos = GeomUtils
+						Coordinate newPos = GeomUtils
 								.simulate(f.getPosition(), af);
-						Quat4f rotToNewPos = GeomUtils.angleToPoint(newPos);
+						float rotToNewPos = GeomUtils.angleToPoint(newPos);
 
-						float angleDiff = Math.abs(GeomUtils
-								.rotToAngle(rotToNewPos));
+						float angleDiff = Math.abs(rotToNewPos);
 						if (angleDiff < fr.getHalfFieldView())
 							value += getFeederValue(newPos);
 						else
@@ -114,7 +109,7 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 			votes[index] = maxValue;
 	}
 
-	private float getFeederValue(Point3f feederPos) {
+	private float getFeederValue(Coordinate feederPos) {
 		float steps = GeomUtils.getStepsToFeeder(feederPos, ar.getMinAngle(), ar.getStepLength());
 		return (float) Math.max(0f, (reward + negReward * steps)); // *
 																	// Math.pow(lambda,

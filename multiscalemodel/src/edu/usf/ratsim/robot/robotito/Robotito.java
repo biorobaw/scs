@@ -1,13 +1,12 @@
 package edu.usf.ratsim.robot.robotito;
 
-import javax.vecmath.Point3f;
-
 import com.digi.xbee.api.RemoteXBeeDevice;
 import com.digi.xbee.api.XBeeDevice;
 import com.digi.xbee.api.exceptions.XBeeException;
 import com.digi.xbee.api.listeners.IDataReceiveListener;
 import com.digi.xbee.api.models.XBee64BitAddress;
 import com.digi.xbee.api.models.XBeeMessage;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.DifferentialRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
@@ -179,8 +178,8 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 	}
 
 	@Override
-	public Point3f getPosition() {
-		return new Point3f();
+	public Coordinate getPosition() {
+		return new Coordinate();
 	}
 
 	@Override

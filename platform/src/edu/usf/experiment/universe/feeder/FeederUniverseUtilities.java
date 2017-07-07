@@ -3,9 +3,6 @@ package edu.usf.experiment.universe.feeder;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.vecmath.Point2f;
-import javax.vecmath.Point3f;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
@@ -46,7 +43,7 @@ public class FeederUniverseUtilities {
 	}
 	
 	// Involving position and food
-	public static boolean hasRobotFoundFood(List<Feeder> feeders, Point3f robotPos, float close_thrs) {
+	public static boolean hasRobotFoundFood(List<Feeder> feeders, Coordinate robotPos, float close_thrs) {
 		for (Feeder f : feeders) {
 			if (f.isActive() && f.hasFood() && robotPos.distance(f.getPosition()) < close_thrs)
 				return true;
@@ -56,14 +53,14 @@ public class FeederUniverseUtilities {
 	}
 	
 
-	public static boolean isRobotCloseToAFeeder(List<Feeder> feeders, Point3f robotPos, float close_thrs) {
+	public static boolean isRobotCloseToAFeeder(List<Feeder> feeders, Coordinate robotPos, float close_thrs) {
 		for (Feeder f : feeders)
 			if (robotPos.distance(f.getPosition()) < close_thrs)
 				return true;
 		return false;
 	}
 
-	public static int getFeedingFeeder(List<Feeder> feeders, Point3f robotPos, float close_thrs) {
+	public static int getFeedingFeeder(List<Feeder> feeders, Coordinate robotPos, float close_thrs) {
 		for (Feeder f : feeders) {
 			if (f.isActive())
 				if (robotPos.distance(f.getPosition()) < close_thrs)
@@ -74,16 +71,16 @@ public class FeederUniverseUtilities {
 	}
 
 
-	public static boolean isRobotCloseToFeeder(Feeder f, Point3f robotPos, float close_thrs) {
+	public static boolean isRobotCloseToFeeder(Feeder f, Coordinate robotPos, float close_thrs) {
 		return robotPos.distance(f.getPosition()) < close_thrs;
 	}
 
 
-	public static float getDistanceToFeeder(Feeder f, Point3f robotPos) {
-		return robotPos.distance(f.getPosition());
+	public static float getDistanceToFeeder(Feeder f, Coordinate robotPos) {
+		return (float) robotPos.distance(f.getPosition());
 	}
 	
-	public static int getFoundFeeder(List<Feeder> feeders, Point3f robotPos, float close_thrs) {
+	public static int getFoundFeeder(List<Feeder> feeders, Coordinate robotPos, float close_thrs) {
 		for (Feeder f : feeders)
 			if (robotPos.distance(f.getPosition()) < close_thrs)
 				return f.getId();
@@ -95,7 +92,7 @@ public class FeederUniverseUtilities {
 	public static float wallDistanceToFeeders(List<Feeder> feeders, LineSegment wall) {
 		float minDist = Float.MAX_VALUE;
 		for (Feeder fn : feeders) {
-			Point3f pos = fn.getPosition();
+			Coordinate pos = fn.getPosition();
 			Coordinate c = new Coordinate(pos.x, pos.y);
 			if (wall.distance(c) < minDist)
 				minDist = (float) wall.distance(c);
@@ -103,11 +100,11 @@ public class FeederUniverseUtilities {
 		return minDist;
 	}
 
-	public static float shortestDistanceToFeeders(List<Feeder> feeders, Point2f x) {
+	public static float shortestDistanceToFeeders(List<Feeder> feeders, Coordinate x) {
 		float minDist = Float.MAX_VALUE;
 		Coordinate p = new Coordinate(x.x, x.y);
 		for (Feeder fn : feeders) {
-			Point3f pos = fn.getPosition();
+			Coordinate pos = fn.getPosition();
 			Coordinate c = new Coordinate(pos.x, pos.y);
 			if (p.distance(c) < minDist)
 				minDist = (float) p.distance(c);

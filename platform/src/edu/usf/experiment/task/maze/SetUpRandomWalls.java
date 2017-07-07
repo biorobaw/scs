@@ -4,8 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import javax.vecmath.Point3f;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
@@ -54,7 +52,7 @@ public class SetUpRandomWalls extends Task {
 		wu.revertWalls();
 		pu.clearPlatforms();
 		
-		pu.addPlatform(new Point3f(-2f, 0, 0), .1f);
+		pu.addPlatform(new Coordinate(-2f, 0), .1f);
 		
 		float len = 2.5f;
 		wu.addWall(len, len/2, -len, len/2);

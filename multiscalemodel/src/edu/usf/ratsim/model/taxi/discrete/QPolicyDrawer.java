@@ -6,8 +6,6 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Map;
 
-import javax.vecmath.Point3f;
-
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.display.drawer.Drawer;
@@ -38,18 +36,18 @@ public class QPolicyDrawer implements Drawer {
 
 	@Override
 	public void draw(Graphics g, Scaler s) {
-		Map<Point3f, Integer> vps = model.getPolicyPoints();
+		Map<Coordinate, Integer> vps = model.getPolicyPoints();
 
-		for (Point3f p : vps.keySet()) {
+		for (Coordinate p : vps.keySet()) {
 			// Get the angle for the max action
 			float angle = angles.get(vps.get(p));
 			// Set up the triangle
 			Point p1 = s.scale(
-					rotateTranslatate(new Coordinate(TRIANGLE_HEIGHT / 2, 0), angle, p.x + GRID_HALF, p.y + GRID_HALF));
+					rotateTranslatate(new Coordinate(TRIANGLE_HEIGHT / 2, 0), angle, (float)p.x + GRID_HALF, (float)p.y + GRID_HALF));
 			Point p2 = s.scale(rotateTranslatate(new Coordinate(-TRIANGLE_HEIGHT / 2, TRIANGLE_HEIGHT / 2), angle,
-					p.x + GRID_HALF, p.y + GRID_HALF));
+					(float) p.x + GRID_HALF, (float) p.y + GRID_HALF));
 			Point p3 = s.scale(rotateTranslatate(new Coordinate(-TRIANGLE_HEIGHT / 2, -TRIANGLE_HEIGHT / 2), angle,
-					p.x + GRID_HALF, p.y + GRID_HALF));
+					(float) p.x + GRID_HALF, (float) p.y + GRID_HALF));
 
 			int[] xPoints = new int[3];
 			int[] yPoints = new int[3];

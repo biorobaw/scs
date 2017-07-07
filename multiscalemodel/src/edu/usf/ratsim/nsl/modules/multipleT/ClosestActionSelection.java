@@ -1,9 +1,9 @@
 package edu.usf.ratsim.nsl.modules.multipleT;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
+import edu.usf.micronsl.port.onedimensional.vector.PointPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 /**
@@ -33,8 +33,8 @@ public class ClosestActionSelection extends Module {
 	
 	public void run() {
 		
-		Point3f pos = ((Point3fPort)getInPort("position")).get();
-		Point3f nextPos = ((Point3fPort)getInPort("nextPosition")).get();
+		Coordinate pos = ((PointPort)getInPort("position")).get();
+		Coordinate nextPos = ((PointPort)getInPort("nextPosition")).get();
 		
 		double theta = Math.atan2(nextPos.y-pos.y,nextPos.x-pos.x );
 		if (theta < 0) theta+=(2*Math.PI);

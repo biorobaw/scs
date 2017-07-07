@@ -34,7 +34,7 @@ public class ExponentialHDCell {
 	public float getActivation(float currOrientation) {
 		if (!agnostic)
 			return (float) Math.exp(-Math.pow(
-					GeomUtils.angleDistance(currOrientation, preferredOrientation), 2)
+					GeomUtils.relativeAngle(currOrientation, preferredOrientation), 2)
 					/ width);
 		else
 			return 1;
@@ -46,13 +46,13 @@ public class ExponentialHDCell {
 
 	public static void main(String[] args) {
 		ExponentialHDCell hdc = new ExponentialHDCell(1, 1);
-		System.out.println(GeomUtils.angleDistance((float) (Math.PI / 2), 0f));
-		System.out.println(GeomUtils.angleDistance(0, 0f));
-		System.out.println(GeomUtils.angleDistance((float) (Math.PI),
+		System.out.println(GeomUtils.relativeAngle((float) (Math.PI / 2), 0f));
+		System.out.println(GeomUtils.relativeAngle(0, 0f));
+		System.out.println(GeomUtils.relativeAngle((float) (Math.PI),
 				(float) (Math.PI / 2)));
-		System.out.println(GeomUtils.angleDistance(0.1f, -0.1f));
-		System.out.println(GeomUtils.angleDistance(-0.1f, 0.1f));
-		System.out.println(GeomUtils.angleDistance(-(float) (Math.PI),
+		System.out.println(GeomUtils.relativeAngle(0.1f, -0.1f));
+		System.out.println(GeomUtils.relativeAngle(-0.1f, 0.1f));
+		System.out.println(GeomUtils.relativeAngle(-(float) (Math.PI),
 				(float) (Math.PI)));
 	}
 

@@ -1,6 +1,6 @@
 package edu.usf.vlwsim.universe;
 
-import javax.vecmath.Vector3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -21,7 +21,7 @@ public class DifferentialRobotVirtualUniverse extends VirtUniverse {
 	@Override
 	public void stepMotion() {
 		rotateRobot(robotW / 2 * getDeltaT());
-		moveRobot(new Vector3f(robotV * getDeltaT(), 0, 0));
+		moveRobot(new Coordinate(robotV * getDeltaT(), 0));
 		rotateRobot(robotW / 2 * getDeltaT());
 	}
 	

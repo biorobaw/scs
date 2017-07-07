@@ -3,8 +3,6 @@ package edu.usf.experiment.task.maze;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.vecmath.Point3f;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
@@ -69,7 +67,7 @@ public class SetUpSpiralMaze extends Task {
 		} while (!coords.isEmpty());
 		
 		
-		pu.addPlatform(new Point3f(0f, 0f, 0), .05f);
+		pu.addPlatform(new Coordinate(0f, 0f), .05f);
 	}
 
 }

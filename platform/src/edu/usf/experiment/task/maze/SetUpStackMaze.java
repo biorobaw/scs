@@ -3,8 +3,6 @@ package edu.usf.experiment.task.maze;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.vecmath.Point3f;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
@@ -64,7 +62,7 @@ public class SetUpStackMaze extends Task {
 		for (LineSegment seg : segments)
 			wu.addWall(seg);
 
-		pu.addPlatform(new Point3f(0f, HALF_HEIGHT + INTER_WALL_SPACE /2, 0), .05f);
+		pu.addPlatform(new Coordinate(0f, HALF_HEIGHT + INTER_WALL_SPACE /2), .05f);
 	}
 
 }

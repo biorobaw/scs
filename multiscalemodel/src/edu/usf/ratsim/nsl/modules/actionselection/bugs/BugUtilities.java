@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules.actionselection.bugs;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
@@ -23,11 +23,10 @@ public class BugUtilities {
 	private static final float WF_MIN_FW_VEL = .05f;
 	private static final float WF_ROT_VEL_OBS_FRONT = 1f;
 
-	public static Velocities goalSeek(Point3f rPos, float rOrient, Point3f platPos) {
+	public static Velocities goalSeek(Coordinate rPos, float rOrient, Coordinate platPos) {
 		float linear, angular; 
-		linear = PROP_LINEAR_GS * platPos.distance(rPos);
-		angular = -PROP_ANGULAR_GS * GeomUtils.angleToPointWithOrientation(GeomUtils.angleToRot(rOrient),
-				rPos, platPos);
+		linear = (float) (PROP_LINEAR_GS * platPos.distance(rPos));
+		angular = PROP_ANGULAR_GS * GeomUtils.relativeAngleToPoint(rPos, rOrient, platPos);
 		return new Velocities(linear, angular);
 	}
 

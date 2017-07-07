@@ -1,7 +1,5 @@
 package edu.usf.experiment.task.wall;
 
-import javax.vecmath.Point2f;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
@@ -83,7 +81,7 @@ public class AddFixedSmallWallsTask extends Task {
 	}
 
 	private void addOuterWall(double d, boolean doubleWall, WallUniverse wu) {
-		Point2f outerPoint = new Point2f();
+		Coordinate outerPoint = new Coordinate();
 		outerPoint.x = (float) (Math.cos(d) * NEAR_WALL_RADIUS);
 		outerPoint.y = (float) (Math.sin(d) * NEAR_WALL_RADIUS);
 		
@@ -91,7 +89,7 @@ public class AddFixedSmallWallsTask extends Task {
 		if (doubleWall)
 			length *= 2;
 		
-		Point2f innerPoint = new Point2f();
+		Coordinate innerPoint = new Coordinate();
 		innerPoint.x = (float) (Math.cos(d) * (NEAR_WALL_RADIUS - length));
 		innerPoint.y = (float) (Math.sin(d) * (NEAR_WALL_RADIUS - length));
 		

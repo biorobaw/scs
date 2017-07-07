@@ -6,7 +6,7 @@ import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
-import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
+import edu.usf.micronsl.port.onedimensional.vector.PointPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.ratsim.support.SonarUtils;
 
@@ -34,16 +34,16 @@ public class Bug0Module extends Module {
 	public void run() {
 		Float1dPort readings = (Float1dPort) getInPort("sonarReadings");
 		Float1dPort angles = (Float1dPort) getInPort("sonarAngles");
-		Point3fPort rPos = (Point3fPort) getInPort("position");
+		PointPort rPos = (PointPort) getInPort("position");
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
-		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
+		PointPort platPos = (PointPort) getInPort("platformPosition");
 
 		// State switching criteria
 
 		// Get the relative angle to the goal
 		// TODO: angleToPointWithOrientation seems to be returning negated
 		// angles (to the left angles should be positive)
-		float angleToGoal = -GeomUtils.angleToPointWithOrientation(GeomUtils.angleToRot(rOrient.get()), rPos.get(),
+		float angleToGoal = GeomUtils.relativeAngleToPoint(rPos.get(), rOrient.get(),
 				platPos.get());
 		float minToGoal = SonarUtils.getMinReading(readings, angles, angleToGoal, (float) (Math.PI/6));
 		switch (state) {

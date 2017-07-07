@@ -1,6 +1,6 @@
 package edu.usf.experiment.robot;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 public interface LocalizableRobot {
 
@@ -8,7 +8,7 @@ public interface LocalizableRobot {
 	 * Returns the position of the animal as thought by the subject
 	 * @return
 	 */
-	public abstract Point3f getPosition();
+	public abstract Coordinate getPosition();
 	
 	/**
 	 * Returns the orientation of the animal as thought by the subject

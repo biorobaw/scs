@@ -1,6 +1,6 @@
 package edu.usf.experiment.task.platform;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.subject.Subject;
@@ -25,7 +25,7 @@ public class PublishPlatformPosition extends Task {
 		if (pu.getPlatforms().isEmpty())
 			return;
 		
-		Point3f pos = pu.getPlatforms().get(0).getPosition();
+		Coordinate pos = pu.getPlatforms().get(0).getPosition();
 		
 		PropertyHolder.getInstance().setProperty("platformPosition", pos.x + "," + pos.y);
 	}

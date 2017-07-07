@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.model.PolicyModel;
@@ -205,14 +205,14 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 	}
 
 	@Override
-	public Map<Point3f, Float> getValuePoints() {
-		Map<Point3f, Float> valuePoints = new HashMap<Point3f, Float>();
+	public Map<Coordinate, Float> getValuePoints() {
+		Map<Coordinate, Float> valuePoints = new HashMap<Coordinate, Float>();
 
 		ProportionalValue votes = new ProportionalValue("Logging Value", foodReward);
 
 		for (int x = 0; x < gridSize; x++)
 			for (int y = 0; y < gridSize; y++) {
-				Point3f pos = new Point3f(x, y, 0);
+				Coordinate pos = new Coordinate(x, y);
 				Map<Integer, Float> activeMap = valuePlaceCells.getActive(pos);
 				votes.run(activeMap, VTable);
 
@@ -227,14 +227,14 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		return 0;
 	}
 
-	public Map<Point3f, Integer> getPolicyPoints() {
-		Map<Point3f, Integer> policyPoints = new HashMap<Point3f, Integer>();
+	public Map<Coordinate, Integer> getPolicyPoints() {
+		Map<Coordinate, Integer> policyPoints = new HashMap<Coordinate, Integer>();
 
 		ProportionalVotes votes = new ProportionalVotes("currentStateQ", numActions, foodReward);
 
 		for (int x = 0; x < gridSize; x++)
 			for (int y = 0; y < gridSize; y++) {
-				Point3f pos = new Point3f(x, y, 0);
+				Coordinate pos = new Coordinate(x, y);
 				Map<Integer, Float> activeMap = actionPlaceCells.getActive(pos);
 				votes.run(activeMap, QTable);
 

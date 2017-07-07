@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
@@ -280,7 +280,7 @@ public class MorrisHLReplayModel extends Model {
 
 	}
 
-	public Map<Float, Float> getValue(Point3f point, int inte, float angleInterval, float distToWall) {
+	public Map<Float, Float> getValue(Coordinate point, int inte, float angleInterval, float distToWall) {
 
 		Map<Float, Float> angleValue = new HashMap<Float, Float>();
 		for (float angle = 0; angle <= 2 * Math.PI; angle += angleInterval) {
@@ -344,8 +344,8 @@ public class MorrisHLReplayModel extends Model {
 	public void clearPath() {
 	}
 
-	public Map<Point3f, Float> getValuePoints() {
-		Map<Point3f, Float> res = new HashMap<Point3f, Float>();
+	public Map<Coordinate, Float> getValuePoints() {
+		Map<Coordinate, Float> res = new HashMap<Coordinate, Float>();
 		boolean connected[] = rlValue.getConnectPattern();
 		System.out.println(connected.length + " conected booleans");
 		boolean anyTrue = false;

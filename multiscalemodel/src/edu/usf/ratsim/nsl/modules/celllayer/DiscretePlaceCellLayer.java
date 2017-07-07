@@ -5,18 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.GlobalWallRobot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
-import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
-import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
+import edu.usf.micronsl.port.onedimensional.vector.PointPort;
 import edu.usf.ratsim.nsl.modules.cell.DiscretePlaceCell;
-import edu.usf.ratsim.nsl.modules.cell.LargeDiscretePlaceCell;
 import edu.usf.ratsim.nsl.modules.cell.SizeNDiscretePlaceCell;
-import edu.usf.ratsim.nsl.modules.cell.SmallDiscretePlaceCell;
 
 public class DiscretePlaceCellLayer extends Module implements PlaceCellLayer {
 
@@ -92,7 +89,7 @@ public class DiscretePlaceCellLayer extends Module implements PlaceCellLayer {
 
 	@Override
 	public void run() {
-		Point3fPort position = (Point3fPort) getInPort("position");
+		PointPort position = (PointPort) getInPort("position");
 		activationPort.clear();
 
 		Map<Integer, Float> activeCells = getActive(position.get());
@@ -101,7 +98,7 @@ public class DiscretePlaceCellLayer extends Module implements PlaceCellLayer {
 		}
 	}
 
-	public Map<Integer, Float> getActive(Point3f position) {
+	public Map<Integer, Float> getActive(Coordinate position) {
 		DiscreteCoord coord = new DiscreteCoord((int) position.x, (int) position.y);
 		return stateActivationPerGridCell.get(coord);
 	}

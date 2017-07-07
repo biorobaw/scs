@@ -1,15 +1,11 @@
 package edu.usf.vlwsim.robot;
 
-import java.awt.geom.Point2D;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.media.j3d.Transform3D;
-import javax.vecmath.Point3f;
-import javax.vecmath.Quat4f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.FeederRobot;
-import edu.usf.experiment.robot.Landmark;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.PlatformRobot;
 import edu.usf.experiment.robot.SonarRobot;
@@ -116,38 +112,12 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 		universe.setRobotEat();
 	}
 
-	public List<Landmark> getLandmarks() {
-		return getLandmarks(-1);
-	}
-
-	public List<Landmark> getLandmarks(int except) {
-		List<Landmark> res = new LinkedList<Landmark>();
-		for (Integer i : FeederUniverseUtilities.getFeederNums(universe.getFeeders()))
-			if (i != except)
-				if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)) {
-					// Get relative position
-					Point3f fPos = universe.getFeeder(i).getPosition();
-					Point3f rPos = universe.getRobotPosition();
-					Point3f relFPos = new Point3f(GeomUtils.pointsToVector(rPos, fPos));
-					// Rotate to robots framework
-					Quat4f rRot = universe.getRobotOrientation();
-					rRot.inverse();
-					Transform3D t = new Transform3D();
-					t.setRotation(rRot);
-					t.transform(relFPos);
-					// Return the landmark
-					res.add(new Landmark(i, relFPos));
-				}
-
-		return res;
-	}
-
 	public List<Feeder> getVisibleFeeders() {
 		List<Feeder> res = new LinkedList<Feeder>();
 		for (Integer i : FeederUniverseUtilities.getFeederNums(universe.getFeeders()))
 			if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)) {
 				// Get relative position
-				Point3f relFPos = GeomUtils.getRelativePos(universe.getFeeder(i).getPosition(), universe.getRobotPosition(), universe.getRobotOrientation());
+				Coordinate relFPos = GeomUtils.relativeCoords(universe.getFeeder(i).getPosition(), universe.getRobotPosition(), universe.getRobotOrientationAngle());
 				// Return the landmark
 				Feeder relFeeder = new Feeder(universe.getFeeder(i));
 				relFeeder.setPosition(relFPos);
@@ -162,15 +132,11 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 		for (Integer i : FeederUniverseUtilities.getFeederNums(universe.getFeeders()))
 			if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist) && universe.getFeeder(i).isFlashing()) {
 				// Get relative position
-				Point3f fPos = universe.getFeeder(i).getPosition();
-				Point3f rPos = universe.getRobotPosition();
-				Point3f relFPos = new Point3f(GeomUtils.pointsToVector(rPos, fPos));
-				// Rotate to robots framework
-				Quat4f rRot = universe.getRobotOrientation();
-				rRot.inverse();
-				Transform3D t = new Transform3D();
-				t.setRotation(rRot);
-				t.transform(relFPos);
+				Coordinate fPos = universe.getFeeder(i).getPosition();
+				Coordinate rPos = universe.getRobotPosition();
+				float rOrient = universe.getRobotOrientationAngle();
+				
+				Coordinate relFPos = GeomUtils.relativeCoords(fPos, rPos, rOrient);
 				Feeder relFeeder = new Feeder(universe.getFeeder(i));
 				relFeeder.setPosition(relFPos);
 				return relFeeder;
@@ -188,11 +154,11 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 	@Override
 	public boolean isFeederClose() {
 		Feeder f = FeederUtils.getClosestFeeder(getVisibleFeeders());
-		return f != null && f.getPosition().distance(new Point3f()) < getCloseThrs();
+		return f != null && f.getPosition().distance(new Coordinate()) < getCloseThrs();
 	}
 
 	@Override
-	public Point3f getPosition() {
+	public Coordinate getPosition() {
 		return universe.getRobotPosition();
 	}
 
@@ -200,11 +166,6 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 	public float getOrientationAngle() {
 		return universe.getRobotOrientationAngle();
 	}
-
-	// @Override
-	// public Quat4f getOrientation() {
-	// return universe.getRobotOrientation();
-	// }
 
 	@Override
 	public List<Feeder> getAllFeeders() {
@@ -217,11 +178,11 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 	}
 
 	@Override
-	public List<Point3f> getVisibleWallEnds() {
-		List<Point3f> absoluteWEnds = universe.getVisibleWallEnds(halfFieldOfView, visionDist);
-		List<Point3f> relativeWEnds = new LinkedList<Point3f>();
-		for (Point3f p : absoluteWEnds) {
-			relativeWEnds.add(GeomUtils.getRelativePos(p, universe.getRobotPosition(), universe.getRobotOrientation()));
+	public List<Coordinate> getVisibleWallEnds() {
+		List<Coordinate> absoluteWEnds = universe.getVisibleWallEnds(halfFieldOfView, visionDist);
+		List<Coordinate> relativeWEnds = new LinkedList<Coordinate>();
+		for (Coordinate p : absoluteWEnds) {
+			relativeWEnds.add(GeomUtils.relativeCoords(p, universe.getRobotPosition(), universe.getRobotOrientationAngle()));
 		}
 		return relativeWEnds;
 	}
@@ -237,7 +198,7 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 		float angle = Float.MAX_VALUE;
 		Feeder feederInFront = null;
 		for (Feeder f : visFeeders) {
-			float angleToFeeder = GeomUtils.rotToAngle(GeomUtils.angleToPoint(f.getPosition()));
+			float angleToFeeder = GeomUtils.angleToPoint(f.getPosition());
 			if (Math.abs(angleToFeeder) < Math.abs(angle)) {
 				angle = angleToFeeder;
 				feederInFront = f;
@@ -331,8 +292,8 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 	}
 
 	@Override
-	public void setPosition(Point3f pos) {
-		universe.setRobotPosition(new Point2D.Float(pos.x, pos.y));
+	public void setPosition(Coordinate pos) {
+		universe.setRobotPosition(new Coordinate(pos.x, pos.y));
 	}
 
 }

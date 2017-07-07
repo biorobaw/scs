@@ -1,12 +1,12 @@
 package edu.usf.ratsim.nsl.modules.actionselection.bugs;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.DifferentialRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
-import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
+import edu.usf.micronsl.port.onedimensional.vector.PointPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.ratsim.support.SonarUtils;
 
@@ -20,8 +20,8 @@ public class Bug1Module extends Module {
 
 	private State state;
 	private float minDistToGoal;
-	private Point3f minDistPlace;
-	private Point3f hitPoint;
+	private Coordinate minDistPlace;
+	private Coordinate hitPoint;
 
 	public Bug1Module(String name, Robot robot) {
 		super(name);
@@ -36,9 +36,9 @@ public class Bug1Module extends Module {
 	public void run() {
 		Float1dPort readings = (Float1dPort) getInPort("sonarReadings");
 		Float1dPort angles = (Float1dPort) getInPort("sonarAngles");
-		Point3fPort rPos = (Point3fPort) getInPort("position");
+		PointPort rPos = (PointPort) getInPort("position");
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
-		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
+		PointPort platPos = (PointPort) getInPort("platformPosition");
 
 		float front = SonarUtils.getReading(0f, readings, angles);
 		float left = SonarUtils.getReading((float) (Math.PI / 2), readings, angles);
@@ -51,7 +51,7 @@ public class Bug1Module extends Module {
 			float minFront = SonarUtils.getMinReading(readings, angles, 0f, (float) (Math.PI/3));
 			if (minFront < BugUtilities.OBSTACLE_FOUND_THRS) {
 				state = State.WF_AWAY_FROM_HP;
-				minDistToGoal = rPos.get().distance(platPos.get());
+				minDistToGoal = (float) rPos.get().distance(platPos.get());
 				minDistPlace = rPos.get();
 				hitPoint = rPos.get();
 			}
@@ -59,13 +59,13 @@ public class Bug1Module extends Module {
 		// Wall following getting away from the hitpoint at first
 		case WF_AWAY_FROM_HP:
 			// Record min dist
-			float distToGoal = rPos.get().distance(platPos.get());
+			float distToGoal = (float) rPos.get().distance(platPos.get());
 			if (distToGoal < minDistToGoal) {
 				minDistToGoal = distToGoal;
 				minDistPlace = rPos.get();
 			}
 
-			float distToHP = rPos.get().distance(hitPoint);
+			float distToHP = (float) rPos.get().distance(hitPoint);
 			if (distToHP > BugUtilities.CLOSE_THRS) {
 				state = State.WF_RETURN_TO_HP;
 			}
@@ -73,20 +73,20 @@ public class Bug1Module extends Module {
 		// Wall following until the hitpoint is found again
 		case WF_RETURN_TO_HP:
 			// Record min dist
-			distToGoal = rPos.get().distance(platPos.get());
+			distToGoal = (float) rPos.get().distance(platPos.get());
 			if (distToGoal < minDistToGoal) {
 				minDistToGoal = distToGoal;
 				minDistPlace = rPos.get();
 			}
 
-			distToHP = rPos.get().distance(hitPoint);
+			distToHP = (float) rPos.get().distance(hitPoint);
 			if (distToHP < BugUtilities.CLOSE_THRS) {
 				state = State.WF_GO_TO_CP;
 			}
 			break;
 		// Wall following until the close point is found again
 		case WF_GO_TO_CP:
-			float distToCP = rPos.get().distance(minDistPlace);
+			float distToCP = (float) rPos.get().distance(minDistPlace);
 			if (distToCP < BugUtilities.CLOSE_THRS) {
 				state = State.GOAL_SEEKING;
 			}

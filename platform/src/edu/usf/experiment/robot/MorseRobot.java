@@ -4,15 +4,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.affordance.Affordance;
-import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.experiment.robot.affordance.ForwardAffordance;
 import edu.usf.experiment.robot.affordance.LocalActionAffordanceRobot;
 import edu.usf.experiment.robot.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Universe;
-import edu.usf.experiment.universe.feeder.Feeder;
 import edu.usf.experiment.universe.morse.IRSensorProxy;
 import edu.usf.experiment.universe.morse.MorseUtils;
 import edu.usf.experiment.universe.morse.PosSensorProxy;
@@ -77,7 +75,7 @@ public class MorseRobot
 	}
 
 	@Override
-	public Point3f getPosition() {
+	public Coordinate getPosition() {
 		return posSensor.getPosition();
 	}
 
@@ -145,7 +143,7 @@ public class MorseRobot
 	@Override
 	public boolean hasFoundPlatform() {
 		// TODO: make it generic
-		return posSensor.getPosition().distance(new Point3f(.3f, .3f, 0)) < .15f;
+		return posSensor.getPosition().distance(new Coordinate(.3f, .3f, 0)) < .15f;
 	}
 
 	@Override

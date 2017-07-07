@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.subject.Subject;
@@ -59,7 +59,7 @@ public class AddNFeedersFromFileTask extends Task{
 					id++;
 					Float x = Float.parseFloat(line[0]);
 					Float y = Float.parseFloat(line[1]);
-					allFeeders.add(new Feeder(id, new Point3f(x, y, 0)));
+					allFeeders.add(new Feeder(id, new Coordinate(x, y, 0)));
 				}
 			}
 		}
@@ -72,7 +72,7 @@ public class AddNFeedersFromFileTask extends Task{
 			Feeder f = allFeeders.remove(item);
 			// Set the id incremental to avoid gaps
 			f.setId(i);
-			fu.addFeeder(f.getId(), f.getPosition().x, f.getPosition().y);
+			fu.addFeeder(f.getId(), (float)f.getPosition().x, (float) f.getPosition().y);
 		}
 			
 		

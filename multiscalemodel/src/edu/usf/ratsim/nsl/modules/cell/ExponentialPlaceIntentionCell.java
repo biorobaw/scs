@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules.cell;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.ratsim.support.NotImplementedException;
 
@@ -21,7 +21,7 @@ public class ExponentialPlaceIntentionCell implements ConjCell {
 	/**
 	 * The cell's preferred location
 	 */
-	private Point3f preferredLocation;
+	private Coordinate preferredLocation;
 	/**
 	 * The dispersion parameter for the gaussian function that modulates the
 	 * firing rate according to the current place. This parameter is kept for
@@ -48,7 +48,7 @@ public class ExponentialPlaceIntentionCell implements ConjCell {
 	 */
 	private float placeRadiusSquared;
 
-	public ExponentialPlaceIntentionCell(Point3f preferredLocation,
+	public ExponentialPlaceIntentionCell(Coordinate preferredLocation,
 			float placeRadius, int preferredIntention) {
 		this.preferredLocation = preferredLocation;
 		this.placeRadius = placeRadius;
@@ -67,11 +67,11 @@ public class ExponentialPlaceIntentionCell implements ConjCell {
 	 * direction gaussian modulation The intention is not used, because it just
 	 * would multiply by 1. These cells make no use of the wall distance factor.
 	 */
-	public float getActivation(Point3f currLocation, float currAngle,
+	public float getActivation(Coordinate currLocation, float currAngle,
 			int currIntention, float distanceToWall) {
 		if (bupiModulation == 0
 				|| currIntention != preferredIntention
-				|| preferredLocation.distanceSquared(currLocation) > placeRadiusSquared)
+				|| Math.pow(preferredLocation.distance(currLocation), 2) > placeRadiusSquared)
 			return 0;
 		else
 			return (float) (bupiModulation
@@ -80,11 +80,11 @@ public class ExponentialPlaceIntentionCell implements ConjCell {
 							/ placeDispersion));
 	}
 
-	public Point3f getPreferredLocation() {
+	public Coordinate getPreferredLocation() {
 		return preferredLocation;
 	}
 
-	public void setPreferredLocation(Point3f preferredLocation) {
+	public void setPreferredLocation(Coordinate preferredLocation) {
 		this.preferredLocation = preferredLocation;
 	}
 

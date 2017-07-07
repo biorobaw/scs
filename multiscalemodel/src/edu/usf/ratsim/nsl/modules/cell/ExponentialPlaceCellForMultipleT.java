@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules.cell;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * Gaussian Place cells
@@ -12,7 +12,7 @@ public class ExponentialPlaceCellForMultipleT implements PlaceCell {
 	/**
 	 * The cell's preferred location
 	 */
-	private Point3f center;
+	private Coordinate center;
 	/**
 	 * standard deviation
 	 */
@@ -29,7 +29,7 @@ public class ExponentialPlaceCellForMultipleT implements PlaceCell {
 	private float activationRadius;
 
 
-	public ExponentialPlaceCellForMultipleT(Point3f center, float stdDev) {
+	public ExponentialPlaceCellForMultipleT(Coordinate center, float stdDev) {
 		this.center = center;
 		this.stdDev = stdDev;
 		// min_thrs = e^(-x_min_thrs^2/w) -> ...
@@ -46,14 +46,14 @@ public class ExponentialPlaceCellForMultipleT implements PlaceCell {
 	 * @param currLocation
 	 * @return
 	 */
-	public float getActivation(Point3f currLocation) {
+	public float getActivation(Coordinate currLocation) {
 		if (center.distance(currLocation) > activationRadius)
 			return 0;
 		else
 			return (float) Math.exp(-Math.pow(center.distance(currLocation), 2) / var2);
 	}
 
-	public Point3f getPreferredLocation() {
+	public Coordinate getPreferredLocation() {
 		return center;
 	}
 
@@ -62,7 +62,7 @@ public class ExponentialPlaceCellForMultipleT implements PlaceCell {
 	}
 
 	@Override
-	public float getActivation(Point3f currLocation, float distanceToWall) {
+	public float getActivation(Coordinate currLocation, float distanceToWall) {
 		return getActivation(currLocation);
 	}
 }

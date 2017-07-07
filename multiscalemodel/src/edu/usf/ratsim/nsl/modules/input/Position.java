@@ -2,7 +2,7 @@ package edu.usf.ratsim.nsl.modules.input;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
+import edu.usf.micronsl.port.onedimensional.vector.PointPort;
 
 /**
  * Provides an output port stating whether the subject just ate
@@ -11,14 +11,14 @@ import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
  */
 public class Position extends Module {
 
-	private Point3fPort pos;
+	private PointPort pos;
 	private LocalizableRobot robot;
 
 	public Position(String name, LocalizableRobot robot) {
 		super(name);
 		
 		this.robot = robot;
-		pos = new Point3fPort(this);
+		pos = new PointPort(this);
 		addOutPort("position", pos);
 	}
 

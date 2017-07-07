@@ -1,16 +1,13 @@
 package edu.usf.ratsim.model.taxi.discrete;
 
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.Port;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dPortSparseConcatenate;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
@@ -48,7 +45,7 @@ public class DiscretePlaceCellLayerCombination extends Module implements PlaceCe
 	}
 
 	@Override
-	public Map<Integer, Float> getActive(Point3f position) {
+	public Map<Integer, Float> getActive(Coordinate position) {
 		Map<Integer, Float> active = new HashMap<Integer, Float>();
 		int sizeOffset = 0;
 		for (DiscretePlaceCellLayer layer : layers) {

@@ -1,7 +1,6 @@
 package edu.usf.experiment.universe.morse;
 
 import java.awt.Color;
-import java.awt.geom.Point2D.Float;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -11,8 +10,7 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Map;
 
-import javax.vecmath.Point3f;
-import javax.vecmath.Quat4f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
@@ -20,7 +18,6 @@ import edu.usf.experiment.universe.MovableRobotUniverse;
 import edu.usf.experiment.universe.platform.Platform;
 import edu.usf.experiment.universe.platform.PlatformUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.experiment.utils.GeomUtils;
 
 public class MorseUniverse implements GlobalCameraUniverse, PlatformUniverse, MovableRobotUniverse {
 
@@ -50,13 +47,8 @@ public class MorseUniverse implements GlobalCameraUniverse, PlatformUniverse, Mo
 	}
 
 	@Override
-	public Point3f getRobotPosition() {
+	public Coordinate getRobotPosition() {
 		return posSensor.getPosition();
-	}
-
-	@Override
-	public Quat4f getRobotOrientation() {
-		return GeomUtils.angleToRot(posSensor.getOrientation());
 	}
 
 	@Override
@@ -65,10 +57,10 @@ public class MorseUniverse implements GlobalCameraUniverse, PlatformUniverse, Mo
 	}
 
 	@Override
-	public void setRobotPosition(Float p) {
+	public void setRobotPosition(Coordinate p) {
 		// Move the robot by teleporting it
 		try {
-			writer.write("id robot.tele teleport [" + p.getX() + ", " + p.getY() + ",0.2,0,0," + 0 + "]\n");
+			writer.write("id robot.tele teleport [" + p.x + ", " + p.y + ",0.2,0,0," + 0 + "]\n");
 			writer.flush();
 			if(!reader.readLine().contains("SUCCESS"))
 				System.err.println("Teleport of the robot failed");
@@ -101,7 +93,7 @@ public class MorseUniverse implements GlobalCameraUniverse, PlatformUniverse, Mo
 	}
 
 	@Override
-	public void addPlatform(Point3f pos, float radius) {
+	public void addPlatform(Coordinate pos, float radius) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -119,7 +111,7 @@ public class MorseUniverse implements GlobalCameraUniverse, PlatformUniverse, Mo
 	}
 
 	@Override
-	public void addPlatform(Point3f point3f, float radius, Color blue) {
+	public void addPlatform(Coordinate point3f, float radius, Color blue) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules.cell;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * Proportional place cells are a computational inexpensive model of place cell. It models the response curve as a cone function.
@@ -9,11 +9,11 @@ import javax.vecmath.Point3f;
  */
 public class ProportionalPlaceCell implements PlaceCell {
 
-	private Point3f center;
+	private Coordinate center;
 	private float radius;
 	private float slope;
 
-	public ProportionalPlaceCell(Point3f center, float radius) {
+	public ProportionalPlaceCell(Coordinate center, float radius) {
 		this.center = center;
 		this.radius = radius;
 		
@@ -25,15 +25,15 @@ public class ProportionalPlaceCell implements PlaceCell {
 	 * @param currLocation The animat current location
 	 * @return The current activation value
 	 */
-	public float getActivation(Point3f currLocation) {
-		float dist = center.distance(currLocation);
+	public float getActivation(Coordinate currLocation) {
+		float dist = (float) center.distance(currLocation);
 		if (dist >= radius)
 			return 0;
 		else
 			return 1 + dist * slope;
 	}
 
-	public Point3f getPreferredLocation() {
+	public Coordinate getPreferredLocation() {
 		return center;
 	}
 
@@ -43,7 +43,7 @@ public class ProportionalPlaceCell implements PlaceCell {
 	}
 
 	@Override
-	public float getActivation(Point3f currLocation, float distanceToWall) {
+	public float getActivation(Coordinate currLocation, float distanceToWall) {
 		return getActivation(currLocation);
 	}
 }

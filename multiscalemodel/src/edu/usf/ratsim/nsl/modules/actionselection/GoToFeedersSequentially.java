@@ -68,8 +68,8 @@ public class GoToFeedersSequentially extends Module {
 					if (f.getId() == desiredFeederId)
 						desiredFeeder = f;
 				// Todo: make it a step
-				sr.rotate(GeomUtils.rotToAngle(GeomUtils
-						.angleToPoint(desiredFeeder.getPosition())));
+				sr.rotate(GeomUtils
+						.angleToPoint(desiredFeeder.getPosition()));
 				// Parametrize
 				sr.forward(.1f);
 			}

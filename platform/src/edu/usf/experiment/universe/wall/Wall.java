@@ -1,8 +1,5 @@
 package edu.usf.experiment.universe.wall;
 
-import javax.vecmath.Point2f;
-import javax.vecmath.Point3f;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineSegment;
@@ -41,8 +38,8 @@ public class Wall {
 		return (float) s.distance(wall);
 	}
 
-	public float distanceTo(Point2f x1) {
-		return (float) s.distance(new Coordinate(x1.x, x1.y));
+	public float distanceTo(Coordinate c) {
+		return (float) s.distance(c);
 	}
 	
 	public boolean intersects(Polygon c) {
@@ -56,10 +53,6 @@ public class Wall {
 	
 	public boolean intersects(LineSegment wall) {
 		return s.intersection(wall) != null;
-	}
-
-	public float distanceTo(Point3f p) {
-		return distanceTo(new Point2f(p.x, p.y));
 	}
 
 }

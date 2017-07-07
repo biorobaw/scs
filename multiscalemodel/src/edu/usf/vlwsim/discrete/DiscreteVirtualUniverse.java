@@ -7,9 +7,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.vecmath.Point3f;
-import javax.vecmath.Quat4f;
-
+import com.sun.javafx.geom.Quat4f;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
@@ -36,7 +34,7 @@ public class DiscreteVirtualUniverse
 
 	private static final float HALF_CELL = .5f;
 	private Robot robot;
-	private Float robotPos;
+	private Coordinate robotPos;
 	private float robotAngle;
 	private int gridWidth;
 	private int gridHeight;
@@ -50,7 +48,7 @@ public class DiscreteVirtualUniverse
 		this.gridWidth = gridWidth;
 		this.gridHeight = gridHeight;
 		
-		robotPos = new Float();
+		robotPos = new Coordinate();
 		robotAngle = 0;
 		
 		walls = new LinkedList<Wall>();
@@ -79,8 +77,8 @@ public class DiscreteVirtualUniverse
 	}
 
 	@Override
-	public void setRobotPosition(Float newPos) {
-		robotPos = newPos;
+	public void setRobotPosition(Coordinate newPos) {
+		robotPos = new Coordinate(newPos);
 	}
 
 	@Override
@@ -89,13 +87,8 @@ public class DiscreteVirtualUniverse
 	}
 
 	@Override
-	public Point3f getRobotPosition() {
-		return new Point3f(robotPos.x, robotPos.y, 0);
-	}
-
-	@Override
-	public Quat4f getRobotOrientation() {
-		return GeomUtils.angleToRot(robotAngle);
+	public Coordinate getRobotPosition() {
+		return new Coordinate(robotPos.x, robotPos.y);
 	}
 
 	@Override
@@ -152,12 +145,12 @@ public class DiscreteVirtualUniverse
 	}
 
 	@Override
-	public void addPlatform(Point3f pos, float radius, Color color) {
+	public void addPlatform(Coordinate pos, float radius, Color color) {
 		platforms.add(new Platform(pos, radius, color));
 	}
 
 	@Override
-	public void addPlatform(Point3f pos, float radius) {
+	public void addPlatform(Coordinate pos, float radius) {
 		addPlatform(pos, radius, Color.YELLOW);
 	}
 
@@ -175,7 +168,7 @@ public class DiscreteVirtualUniverse
 	 * Simulation function
 	 **************************************/
 	public void moveRobot(int dx, int dy) {
-		robotPos = new Point2D.Float(Math.round(robotPos.x + dx), Math.round(robotPos.y + dy));
+		robotPos = new Coordinate(Math.round(robotPos.x + dx), Math.round(robotPos.y + dy));
 	}
 
 	@Override

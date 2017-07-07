@@ -2,11 +2,11 @@ package edu.usf.experiment.model;
 
 import java.util.Map;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 public interface ValueModel {
 
-	Map<Point3f, Float> getValuePoints();
+	Map<Coordinate, Float> getValuePoints();
 
 	float getValueEntropy();
 

@@ -2,8 +2,6 @@ package edu.usf.experiment.display.drawer;
 
 import java.awt.Point;
 
-import javax.vecmath.Point3f;
-
 import com.vividsolutions.jts.geom.Coordinate;
 
 /**
@@ -53,10 +51,6 @@ public class Scaler {
 		pScaled.x = (int) ((p.x + xoffset) * xscale);
 		pScaled.y = -(int) ((p.y + yoffset) * yscale);
 		return pScaled;
-	}
-
-	public Point scale(Point3f pos) {
-		return scale(new Coordinate(pos.x, pos.y));
 	}
 
 }

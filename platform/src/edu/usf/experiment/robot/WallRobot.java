@@ -2,11 +2,11 @@ package edu.usf.experiment.robot;
 
 import java.util.List;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 public interface WallRobot extends VisionRobot {
 	
-	public abstract List<Point3f> getVisibleWallEnds();
+	public abstract List<Coordinate> getVisibleWallEnds();
 
 	public float getDistanceToClosestWall();
 }

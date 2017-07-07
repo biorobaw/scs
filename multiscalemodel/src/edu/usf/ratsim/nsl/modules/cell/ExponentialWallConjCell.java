@@ -2,7 +2,7 @@ package edu.usf.ratsim.nsl.modules.cell;
 
 import java.util.Random;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * Exponential wall conjunctive cells add a factor of modulation to their
@@ -30,7 +30,7 @@ public class ExponentialWallConjCell extends ExponentialConjCell {
 	private float b;
 	private float a;
 
-	public ExponentialWallConjCell(Point3f preferredLocation, float preferredDirection, float placeRadius,
+	public ExponentialWallConjCell(Coordinate preferredLocation, float preferredDirection, float placeRadius,
 			float angleRadius, int preferredIntention, Random r, float a, float b) {
 		super(preferredLocation, preferredDirection, placeRadius, angleRadius, preferredIntention);
 		wallCell = r.nextBoolean();
@@ -39,11 +39,11 @@ public class ExponentialWallConjCell extends ExponentialConjCell {
 	}
 
 	@Override
-	public float getActivation(Point3f currLocation, float currAngle, int currIntention, float distanceToWall) {
+	public float getActivation(Coordinate currLocation, float currAngle, int currIntention, float distanceToWall) {
 		float activation = super.getActivation(currLocation, currAngle, currIntention, distanceToWall);
 		if (activation != 0) {
 			float d = distanceToWall / (getPlaceRadius());
-			float dAcross = Math.max(0, (d - getPreferredLocation().distance(currLocation) / getPlaceRadius()));
+			float dAcross = (float) Math.max(0, (d - getPreferredLocation().distance(currLocation) / getPlaceRadius()));
 			if (wallCell) {
 				// If it is a wall cell, it activates more near walls but no
 				// across also

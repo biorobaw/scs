@@ -1,9 +1,8 @@
 package edu.usf.vlwsim.discrete;
 
-import java.awt.geom.Point2D.Float;
 import java.util.List;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.GlobalWallRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
@@ -31,8 +30,8 @@ public class DiscreteRobot implements LocalizableRobot, PlatformRobot, TeleportR
 	}
 
 	@Override
-	public void setPosition(Point3f pos) {
-		u.setRobotPosition(new Float(pos.x, pos.y));
+	public void setPosition(Coordinate pos) {
+		u.setRobotPosition(pos);
 	}
 
 	@Override
@@ -41,7 +40,7 @@ public class DiscreteRobot implements LocalizableRobot, PlatformRobot, TeleportR
 	}
 
 	@Override
-	public Point3f getPosition() {
+	public Coordinate getPosition() {
 		return u.getRobotPosition();
 	}
 

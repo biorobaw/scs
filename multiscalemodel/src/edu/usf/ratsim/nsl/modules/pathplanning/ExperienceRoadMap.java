@@ -19,7 +19,7 @@ import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
-import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
+import edu.usf.micronsl.port.onedimensional.vector.PointPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.ratsim.nsl.modules.actionselection.apf.APFModule;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Bug0Module;
@@ -55,11 +55,11 @@ public class ExperienceRoadMap extends Module {
 
 	private boolean continueRepainting;
 
-	private Point3fPort intermediateGoal;
+	private PointPort intermediateGoal;
 
 	private Module bug;
 
-//	 private Bug0Module bug0;
+	// private Bug0Module bug0;
 	private APFModule bug0;
 
 	private String algorithm;
@@ -67,7 +67,7 @@ public class ExperienceRoadMap extends Module {
 	private Robot robot;
 
 	private List<PointNode> prevActive;
-	
+
 	private PointNode prevMaxActive;
 
 	private PointNode following;
@@ -78,12 +78,12 @@ public class ExperienceRoadMap extends Module {
 		frame = null;
 		repainter = null;
 
-		intermediateGoal = new Point3fPort(this);
+		intermediateGoal = new PointPort(this);
 		addOutPort("intermediateGoal", intermediateGoal);
 
 		this.algorithm = algorithm;
 		this.robot = robot;
-		
+
 		prevMaxActive = null;
 	}
 
@@ -92,9 +92,9 @@ public class ExperienceRoadMap extends Module {
 		// Get info
 		Float1dPort sonarReadings = (Float1dPort) getInPort("sonarReadings");
 		Float1dPort sonarAngles = (Float1dPort) getInPort("sonarAngles");
-		Point3fPort rPos = (Point3fPort) getInPort("position");
+		PointPort rPos = (PointPort) getInPort("position");
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
-		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
+		PointPort platPos = (PointPort) getInPort("platformPosition");
 
 		// Compute active nodes
 		List<PointNode> active = new LinkedList<PointNode>();
@@ -129,15 +129,15 @@ public class ExperienceRoadMap extends Module {
 		}
 
 		// Connectivity of all active nodes
-		for (int i = 0; i < active.size(); i++){
+		for (int i = 0; i < active.size(); i++) {
 			PointNode n1 = active.get(i);
 			// Link to existing ones
-			g.addEdge(new Edge(n1.prefLoc.distance(maxActive.prefLoc)), n1, maxActive);
+			g.addEdge(new Edge((float) n1.prefLoc.distance(maxActive.prefLoc)), n1, maxActive);
 		}
-		
+
 		if (prevMaxActive != null)
-			g.addEdge(new Edge(maxActive.prefLoc.distance(prevMaxActive.prefLoc)), maxActive, prevMaxActive);
-		
+			g.addEdge(new Edge((float) maxActive.prefLoc.distance(prevMaxActive.prefLoc)), maxActive, prevMaxActive);
+
 		prevActive = active;
 		prevMaxActive = maxActive;
 
@@ -192,9 +192,10 @@ public class ExperienceRoadMap extends Module {
 			int i = 0;
 			PointNode nextNode = mostActive;
 			PointNode prevNode = null;
-			while (i < l.size() && (active.contains(nextNode) || nextNode.prefLoc.distance(rPos.get()) < MIN_DISTANCE_TO_NEXT_NODE)) {
+			while (i < l.size() && (active.contains(nextNode)
+					|| nextNode.prefLoc.distance(rPos.get()) < MIN_DISTANCE_TO_NEXT_NODE)) {
 				prevNode = nextNode;
-				
+
 				Pair<PointNode> edge = g.getEndpoints(l.get(i));
 				if (edge.getFirst() == nextNode)
 					nextNode = edge.getSecond();
@@ -202,12 +203,13 @@ public class ExperienceRoadMap extends Module {
 					nextNode = edge.getFirst();
 				i++;
 			}
-			
-//			if (prevNode.prefLoc.distance(rPos.get()) > MIN_DISTANCE_TO_NEXT_NODE)
-//				following = prevNode;
-//			else
-				following = nextNode;
-			
+
+			// if (prevNode.prefLoc.distance(rPos.get()) >
+			// MIN_DISTANCE_TO_NEXT_NODE)
+			// following = prevNode;
+			// else
+			following = nextNode;
+
 			for (PointNode n : g.getVertices())
 				n.following = false;
 
@@ -215,16 +217,16 @@ public class ExperienceRoadMap extends Module {
 				intermediateGoal.set(platPos.get());
 			else {
 				intermediateGoal.set(following.prefLoc);
-				following.following = true; 
+				following.following = true;
 			}
 
 			bug0.run();
-//			try {
-//				Thread.sleep(10);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+			// try {
+			// Thread.sleep(10);
+			// } catch (InterruptedException e) {
+			// // TODO Auto-generated catch block
+			// e.printStackTrace();
+			// }
 		}
 
 	}
@@ -290,9 +292,9 @@ public class ExperienceRoadMap extends Module {
 		// Create the delegate bug algorithms
 		Float1dPort sonarReadings = (Float1dPort) getInPort("sonarReadings");
 		Float1dPort sonarAngles = (Float1dPort) getInPort("sonarAngles");
-		Point3fPort rPos = (Point3fPort) getInPort("position");
+		PointPort rPos = (PointPort) getInPort("position");
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
-		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
+		PointPort platPos = (PointPort) getInPort("platformPosition");
 
 		// algorithm comes from group parameters
 		bug = null;
@@ -311,7 +313,7 @@ public class ExperienceRoadMap extends Module {
 		bug.addInPort("orientation", rOrient);
 		bug.addInPort("platformPosition", intermediateGoal);
 
-//		bug0 = new Bug0Module("ERMBug0", robot);
+		// bug0 = new Bug0Module("ERMBug0", robot);
 		bug0 = new APFModule("ERMBug0", robot);
 		bug0.addInPort("sonarReadings", sonarReadings);
 		bug0.addInPort("sonarAngles", sonarAngles);
@@ -329,7 +331,7 @@ public class ExperienceRoadMap extends Module {
 
 		bug.newEpisode();
 		bug0.newEpisode();
-		
+
 		prevActive = null;
 		prevMaxActive = null;
 	}
@@ -337,8 +339,8 @@ public class ExperienceRoadMap extends Module {
 	public UndirectedGraph<PointNode, Edge> getGraph() {
 		return g;
 	}
-	
-	public PointNode getFollowingNode(){
+
+	public PointNode getFollowingNode() {
 		return following;
 	}
 

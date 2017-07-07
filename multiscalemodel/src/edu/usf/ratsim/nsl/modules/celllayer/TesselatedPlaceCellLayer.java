@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
@@ -89,9 +89,9 @@ public class TesselatedPlaceCellLayer extends Module {
 				float y = ymin + j * (ymax - ymin) / (numCellsPerSide - 1);
 				// Find if it intersects any wall
 				if (placeCellType.equals("proportional"))
-					cells.add(new ProportionalPlaceCell(new Point3f(x, y, 0), radius));
+					cells.add(new ProportionalPlaceCell(new Coordinate(x, y), radius));
 				else if (placeCellType.equals("exponential"))
-					cells.add(new ExponentialPlaceCell(new Point3f(x, y, 0), radius));
+					cells.add(new ExponentialPlaceCell(new Coordinate(x, y), radius));
 				else
 					throw new RuntimeException("Place cell type not implemented");
 			}
@@ -120,7 +120,7 @@ public class TesselatedPlaceCellLayer extends Module {
 	 * @param distToWall
 	 *            The distance to the closest wall
 	 */
-	public void run(Point3f pos, float distanceToClosestWall) {
+	public void run(Coordinate pos, float distanceToClosestWall) {
 		Map<Integer, Float> nonZero = activationPort.getNonZero();
 		nonZero.clear();
 		if (active) {
@@ -146,7 +146,7 @@ public class TesselatedPlaceCellLayer extends Module {
 	 * @param pos The current position of the animat.
 	 * @return An array of the activation values
 	 */
-	public float[] getActivationValues(Point3f pos) {
+	public float[] getActivationValues(Coordinate pos) {
 		float distanceToClosestWall = wRobot.getDistanceToClosestWall();
 		float[] res = new float[cells.size()];
 

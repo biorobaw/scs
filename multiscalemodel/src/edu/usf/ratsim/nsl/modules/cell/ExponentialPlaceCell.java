@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules.cell;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * Exponential place cells are a canonical model of place cells. The response
@@ -21,7 +21,7 @@ public class ExponentialPlaceCell implements PlaceCell, ConjCell {
 	/**
 	 * The cell's preferred location
 	 */
-	private Point3f center;
+	private Coordinate center;
 	/**
 	 * The dispersion parameter for the gaussian function that modulates the
 	 * firing rate according to the current place. This parameter is kept for
@@ -36,7 +36,7 @@ public class ExponentialPlaceCell implements PlaceCell, ConjCell {
 	 */
 	private float radius;
 
-	public ExponentialPlaceCell(Point3f center, float radius) {
+	public ExponentialPlaceCell(Coordinate center, float radius) {
 		this.center = center;
 		this.radius = radius;
 		// min_thrs = e^(-x_min_thrs^2/w) -> ...
@@ -51,14 +51,14 @@ public class ExponentialPlaceCell implements PlaceCell, ConjCell {
 	 * @param currLocation
 	 * @return
 	 */
-	public float getActivation(Point3f currLocation) {
+	public float getActivation(Coordinate currLocation) {
 		if (center.distance(currLocation) > radius)
 			return 0;
 		else
 			return (float) Math.exp(-Math.pow(center.distance(currLocation), 2) / width);
 	}
 
-	public Point3f getPreferredLocation() {
+	public Coordinate getPreferredLocation() {
 		return center;
 	}
 
@@ -67,17 +67,17 @@ public class ExponentialPlaceCell implements PlaceCell, ConjCell {
 	}
 
 	@Override
-	public float getActivation(Point3f currLocation, float distanceToWall) {
+	public float getActivation(Coordinate currLocation, float distanceToWall) {
 		return getActivation(currLocation);
 	}
 
 	@Override
-	public float getActivation(Point3f currLocation, float currAngle, int currIntention, float distanceToWall) {
+	public float getActivation(Coordinate currLocation, float currAngle, int currIntention, float distanceToWall) {
 		return getActivation(currLocation);
 	}
 
 	@Override
-	public void setPreferredLocation(Point3f prefLocation) {
+	public void setPreferredLocation(Coordinate prefLocation) {
 		// TODO Auto-generated method stub
 		
 	}

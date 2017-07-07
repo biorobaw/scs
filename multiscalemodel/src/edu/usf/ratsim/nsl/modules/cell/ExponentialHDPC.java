@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules.cell;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.utils.GeomUtils;
 
@@ -18,7 +18,7 @@ public class ExponentialHDPC implements ConjCell {
 	/**
 	 * The cell's preferred location
 	 */
-	private Point3f preferredLocation;
+	private Coordinate preferredLocation;
 	/**
 	 * The cell's preferred direction
 	 */
@@ -51,7 +51,7 @@ public class ExponentialHDPC implements ConjCell {
 	 */
 	private float placeRadiusSquared;
 
-	public ExponentialHDPC(Point3f preferredLocation,
+	public ExponentialHDPC(Coordinate preferredLocation,
 			float preferredDirection, float placeRadius, float angleRadius) {
 		this.preferredLocation = preferredLocation;
 		this.preferredDirection = preferredDirection;
@@ -74,25 +74,25 @@ public class ExponentialHDPC implements ConjCell {
 	 *  - The direction gaussian modulation
 	 * These cells make no use of the wall distance factor.
 	 */
-	public float getActivation(Point3f currLocation, float currAngle,
+	public float getActivation(Coordinate currLocation, float currAngle,
 			int currIntention, float distanceToWall) {
 		if (bupiModulation == 0
-				|| preferredLocation.distanceSquared(currLocation) > placeRadiusSquared
-				|| GeomUtils.angleDistance(currAngle, preferredDirection) > angleRadius)
+				|| Math.pow(preferredLocation.distance(currLocation),2) > placeRadiusSquared
+				|| GeomUtils.relativeAngle(currAngle, preferredDirection) > angleRadius)
 			return 0;
 		else
 			return (float) (bupiModulation * Math.exp(-Math.pow(
 					preferredLocation.distance(currLocation), 2)
 					/ placeDispersion) * Math.exp(-Math.pow(
-					GeomUtils.angleDistance(currAngle, preferredDirection), 2)
+					GeomUtils.relativeAngle(currAngle, preferredDirection), 2)
 					/ angleDispersion));
 	}
 
-	public Point3f getPreferredLocation() {
+	public Coordinate getPreferredLocation() {
 		return preferredLocation;
 	}
 
-	public void setPreferredLocation(Point3f preferredLocation) {
+	public void setPreferredLocation(Coordinate preferredLocation) {
 		this.preferredLocation = preferredLocation;
 	}
 

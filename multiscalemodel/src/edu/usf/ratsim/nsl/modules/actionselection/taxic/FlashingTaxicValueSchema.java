@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules.actionselection.taxic;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.Robot;
@@ -58,7 +58,7 @@ public class FlashingTaxicValueSchema extends Module {
 		}
 	}
 
-	private float getFeederValue(Point3f feederPos) {
+	private float getFeederValue(Coordinate feederPos) {
 		float steps = GeomUtils.getStepsToFeeder(feederPos, ar.getMinAngle(), ar.getStepLength());
 		return Math.max(0, (reward  + negReward * steps)) ; //* Math.pow(lambda, ));
 	}

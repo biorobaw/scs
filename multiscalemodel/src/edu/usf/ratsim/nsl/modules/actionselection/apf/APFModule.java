@@ -3,14 +3,16 @@ package edu.usf.ratsim.nsl.modules.actionselection.apf;
 
 import java.awt.geom.Point2D;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.util.NoninvertibleTransformationException;
 
 import edu.usf.experiment.robot.DifferentialRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.GeomUtils;
+import edu.usf.experiment.utils.RigidTransformation;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
-import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
+import edu.usf.micronsl.port.onedimensional.vector.PointPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Velocities;
 
@@ -49,12 +51,12 @@ public class APFModule extends Module {
 	public void run() {
 		Float1dPort readings = (Float1dPort) getInPort("sonarReadings");
 		Float1dPort angles = (Float1dPort) getInPort("sonarAngles");
-		Point3fPort rPos = (Point3fPort) getInPort("position");
+		PointPort rPos = (PointPort) getInPort("position");
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
-		Point3fPort platPos = (Point3fPort) getInPort("platformPosition");
+		PointPort platPos = (PointPort) getInPort("platformPosition");
 
 		// Start with the attractive field
-		float relAngleToPlat = -GeomUtils.angleToPointWithOrientation(rOrient.get(), rPos.get(), platPos.get());
+		float relAngleToPlat = GeomUtils.relativeAngleToPoint(rPos.get(), rOrient.get(), platPos.get());
 		Point2D.Float pGradient = new Point2D.Float((float) (Math.cos(relAngleToPlat) * ATTRACT_MAGNITUDE),
 				(float) (Math.sin(relAngleToPlat) * ATTRACT_MAGNITUDE));
 		// Add all repulsive fields, one per sensor

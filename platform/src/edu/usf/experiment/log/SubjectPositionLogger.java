@@ -1,7 +1,5 @@
 package edu.usf.experiment.log;
 
-import javax.vecmath.Point3f;
-
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.Episode;
@@ -23,7 +21,7 @@ public class SubjectPositionLogger extends PositionLogger {
 			throw new RuntimeException("SubjectPositionLogger needs a localizable robot to work");
 		
 		LocalizableRobot r = (LocalizableRobot) sub.getRobot();
-		Point3f pos = r.getPosition();
+		Coordinate pos = r.getPosition();
 		addPose(new Coordinate(pos.x, pos.y));
 	} 
 	

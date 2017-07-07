@@ -2,10 +2,6 @@ package edu.usf.experiment.universe.wall;
 
 import java.util.List;
 
-import javax.vecmath.Point2f;
-import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
-
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
@@ -30,7 +26,7 @@ public class WallUniverseUtilities {
 		return shortestDistance;
 	}
 
-	public static float shortestDistanceToWalls(List<Wall> walls, Point2f x1) {
+	public static float shortestDistanceToWalls(List<Wall> walls, Coordinate x1) {
 		float shortestDistance = Float.MAX_VALUE;
 		for (Wall w : walls)
 			if (w.distanceTo(x1) < shortestDistance)
@@ -39,8 +35,8 @@ public class WallUniverseUtilities {
 		return shortestDistance;
 	}
 
-	public static float getDistanceToClosestWall(List<Wall> walls, Point3f p) {
-		Point2f p2 = new Point2f(p.x, p.y);
+	public static float getDistanceToClosestWall(List<Wall> walls, Coordinate p) {
+		Coordinate p2 = new Coordinate(p.x, p.y);
 
 		float shortestDistance = Float.MAX_VALUE;
 		for (Wall w : walls)
@@ -50,7 +46,7 @@ public class WallUniverseUtilities {
 		return shortestDistance;
 	}
 
-	public static float shortestDistanceToRobot(LineSegment wall, Point3f robotPos) {
+	public static float shortestDistanceToRobot(LineSegment wall, Coordinate robotPos) {
 		return (float) wall.distance(new Coordinate(robotPos.x, robotPos.y));
 	}
 
@@ -62,11 +58,7 @@ public class WallUniverseUtilities {
 	 * @param dy
 	 * @return
 	 */
-	public static double distanceToNearestWall(List<Wall> walls, Point3f robotPos, float dx, float dy, float maxDistance) {
-		// The current position with rotation
-		Vector3f p = new Vector3f();
-		robotPos.get(p);
-
+	public static double distanceToNearestWall(List<Wall> walls, Coordinate p, float dx, float dy, float maxDistance) {
 		Coordinate initCoordinate = new Coordinate(p.x, p.y);
 		Coordinate finalCoordinate = new Coordinate(p.x + dx, p.y + dy);
 
@@ -84,7 +76,7 @@ public class WallUniverseUtilities {
 		return minDistance;
 	}
 
-	public static float distanceToNearestWall(List<Wall> walls, Point3f robotPos, float angle, float distance) {
+	public static float distanceToNearestWall(List<Wall> walls, Coordinate robotPos, float angle, float distance) {
 		return (float) distanceToNearestWall(walls, robotPos, (float)Math.cos(angle)*distance, (float)Math.sin(angle)*distance, distance);
 	}
 }

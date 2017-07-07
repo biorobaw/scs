@@ -2,7 +2,7 @@ package edu.usf.ratsim.nsl.modules.cell;
 
 import java.util.Random;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * Exponential wall cells add a factor of modulation to their
@@ -29,18 +29,18 @@ public class WallExponentialPlaceCell extends
 
 	private boolean wallCell;
 
-	public WallExponentialPlaceCell(Point3f center, float radius,
+	public WallExponentialPlaceCell(Coordinate center, float radius,
 			Random r) {
 		super(center, radius);
 
 		wallCell = r.nextBoolean();
 	}
 
-	public float getActivation(Point3f currLocation, float distanceToWall) {
+	public float getActivation(Coordinate currLocation, float distanceToWall) {
 		float activation = super.getActivation(currLocation);
 		if (activation != 0) {
 			float d = distanceToWall / (getPlaceRadius());
-			float dAcross = Math.max(0, (d - getPreferredLocation().distance(currLocation)
+			float dAcross = (float) Math.max(0, (d - getPreferredLocation().distance(currLocation)
 					/ getPlaceRadius()));
 			
 			// No cell firing across a wall

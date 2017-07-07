@@ -2,10 +2,10 @@ package edu.usf.ratsim.nsl.modules.multipleT;
 
 import java.util.LinkedList;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
+import edu.usf.micronsl.port.onedimensional.vector.PointPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 
 /**
@@ -16,11 +16,11 @@ import edu.usf.micronsl.port.singlevalue.Int0dPort;
  */
 public class NextPositionModule extends Module {	
 
-	LinkedList<Point3f> pcCenters;
+	LinkedList<Coordinate> pcCenters;
 	Int0dPort nextActive;
-	Point3fPort nextPosition = new Point3fPort(this);
+	PointPort nextPosition = new PointPort(this);
 	
-	public NextPositionModule(String name,LinkedList<Point3f> pcCenters) {
+	public NextPositionModule(String name,LinkedList<Coordinate> pcCenters) {
 		super(name);
 		this.pcCenters = pcCenters;
 		this.addOutPort("nextPosition", nextPosition);

@@ -2,15 +2,15 @@ package edu.usf.experiment.universe.platform;
 
 import java.awt.Color;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 public class Platform {
 
-	private Point3f position;
+	private Coordinate position;
 	private float radius;
 	private Color color;
 
-	public Platform(Point3f position, float radius, Color color) {
+	public Platform(Coordinate position, float radius, Color color) {
 		this.position = position;
 		this.radius = radius;
 		this.color = color;
@@ -21,12 +21,12 @@ public class Platform {
 		this.radius = platform.radius;
 	}
 
-	public Point3f getPosition() {
+	public Coordinate getPosition() {
 		return position;
 	}
 
-	public void setPosition(Point3f relFPos) {
-		this.position = new Point3f(relFPos);
+	public void setPosition(Coordinate relFPos) {
+		this.position = new Coordinate(relFPos);
 	}
 	
 	public float getRadius(){

@@ -1,6 +1,6 @@
 package edu.usf.experiment.task.maze;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
@@ -8,7 +8,6 @@ import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.platform.PlatformUniverse;
 import edu.usf.experiment.universe.wall.WallUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.experiment.utils.RandomSingleton;
 
 public class SetUpOneWallDiscrete extends Task {
 
@@ -34,7 +33,7 @@ public class SetUpOneWallDiscrete extends Task {
 		
 		wu.addWall(0,SIZE/2, SIZE-1, SIZE/2);
 	
-		pu.addPlatform(new Point3f(0, SIZE/2, 0), 1);
+		pu.addPlatform(new Coordinate(0, SIZE/2), 1);
 	}
 		
 

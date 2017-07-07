@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
@@ -138,7 +138,7 @@ public class RndConjCellLayer extends Module {
 		random = RandomSingleton.getInstance();
 		int i = 0;
 		do {
-			Point3f prefLocation;
+			Coordinate prefLocation;
 			float preferredDirection;
 			float directionRadius;
 			int preferredIntention;
@@ -202,11 +202,11 @@ public class RndConjCellLayer extends Module {
 	 *            located
 	 * @return The location of the new cell.
 	 */
-	private Point3f createrPreferredLocation(float xmin, float xmax, float ymin, float ymax) {
+	private Coordinate createrPreferredLocation(float xmin, float xmax, float ymin, float ymax) {
 		float x, y;
 		x = random.nextFloat() * (xmax - xmin) + xmin;
 		y = random.nextFloat() * (ymax - ymin) + ymin;
-		return new Point3f(x, y, 0);
+		return new Coordinate(x, y);
 	}
 
 	/**
@@ -239,7 +239,7 @@ public class RndConjCellLayer extends Module {
 	 * @param distToWall
 	 *            The distance to the closest wall
 	 */
-	public void run(Point3f point, float angle, int inte, float distToWall) {
+	public void run(Coordinate point, float angle, int inte, float distToWall) {
 		int i = 0;
 		float total = 0;
 		Map<Integer, Float> nonZero = activationPort.getNonZero();
@@ -321,7 +321,7 @@ public class RndConjCellLayer extends Module {
 	 */
 	public void remap() {
 		for (ConjCell cell : cells) {
-			Point3f prefLocation = createrPreferredLocation(xmin, xmax, ymin, ymax);
+			Coordinate prefLocation = createrPreferredLocation(xmin, xmax, ymin, ymax);
 			float preferredDirection = (float) (random.nextFloat() * Math.PI * 2);
 			cell.setPreferredLocation(prefLocation);
 			cell.setPreferredDirection(preferredDirection);

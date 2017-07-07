@@ -445,7 +445,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>10000</max>
+						<max>20000</max>
 					</params>
 				</condition>
 				<condition>

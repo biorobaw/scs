@@ -1,10 +1,10 @@
 package edu.usf.experiment.universe.feeder;
 
-import javax.vecmath.Point3f;
+import com.vividsolutions.jts.geom.Coordinate;
 
 public class Feeder {
 
-	private Point3f position;
+	private Coordinate position;
 	/**
 	 * Determines wheather the feeder can provide food
 	 */
@@ -17,7 +17,7 @@ public class Feeder {
 	private int id;
 	private boolean permanent;
 
-	public Feeder(int id, Point3f position) {
+	public Feeder(int id, Coordinate position) {
 		enabled = false;
 		active = false;
 		hasFood = false;
@@ -59,7 +59,7 @@ public class Feeder {
 		// flashing = active;
 	}
 
-	public Point3f getPosition() {
+	public Coordinate getPosition() {
 		return position;
 	}
 
@@ -83,8 +83,8 @@ public class Feeder {
 		this.enabled = enabled;
 	}
 
-	public void setPosition(Point3f relFPos) {
-		this.position = new Point3f(relFPos);
+	public void setPosition(Coordinate relFPos) {
+		this.position = new Coordinate(relFPos);
 	}
 
 	public void setId(int id) {

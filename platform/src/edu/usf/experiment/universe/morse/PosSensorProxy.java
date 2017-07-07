@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-import javax.vecmath.Point3f;
-
 import org.json.JSONObject;
+
+import com.vividsolutions.jts.geom.Coordinate;
 
 public class PosSensorProxy extends Thread {
 
@@ -15,7 +15,7 @@ public class PosSensorProxy extends Thread {
 	private Socket socket;
 	private BufferedReader reader;
 	private boolean terminate;
-	private Point3f point;
+	private Coordinate point;
 	private float theta;
 	private boolean posFresh;
 	private boolean rotFresh;
@@ -30,7 +30,7 @@ public class PosSensorProxy extends Thread {
 			e.printStackTrace();
 		}
 		
-		point = new Point3f();
+		point = new Coordinate();
 		theta = 0;
 		
 		terminate = false;
@@ -58,7 +58,7 @@ public class PosSensorProxy extends Thread {
 		float ya = (float) obj.getDouble("yaw");
 		float ro = (float) obj.getDouble("roll");
 		
-		point = new Point3f(x,y,0);
+		point = new Coordinate(x,y,0);
 		theta = ya;
 		
 		posFresh = true;
@@ -70,7 +70,7 @@ public class PosSensorProxy extends Thread {
 		new PosSensorProxy(60005).start();
 	}
 
-	public synchronized Point3f getPosition() {
+	public synchronized Coordinate getPosition() {
 		while (!posFresh)
 			try {
 				wait();
