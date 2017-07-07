@@ -7,8 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.media.j3d.Canvas3D;
-
 import org.w3c.dom.Document;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -37,7 +35,6 @@ import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.experiment.utils.RigidTransformation;
 import edu.usf.ratsim.support.XMLDocReader;
-import edu.usf.vlwsim.display.drawingUtilities.DrawingFunction;
 
 /**
  * This universe class creates a universe from an XML file and exposes
@@ -103,10 +100,6 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	private boolean robotWantsToEat;
 
 	private float deltaT;
-
-	private List<DrawingFunction> drawingFunctions;
-
-	private Canvas3D topViewCanvas;
 
 	/**
 	 * Main constructor for the simulator universe
