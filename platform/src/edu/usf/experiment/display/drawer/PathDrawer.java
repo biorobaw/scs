@@ -12,27 +12,23 @@ import edu.usf.experiment.robot.LocalizableRobot;
 public class PathDrawer implements Drawer {
 
 	private LocalizableRobot robot;
-	private LinkedList<Point> poses;
+	private LinkedList<Coordinate> poses;
 
 	public PathDrawer(LocalizableRobot robot){
 		this.robot = robot;
 		
-		poses = new LinkedList<Point>();
+		poses = new LinkedList<Coordinate>();
 	}
 
 	@Override
 	public void draw(Graphics g, Scaler s) {
 		Coordinate pos = robot.getPosition();
-		
-		float centerx = (float)pos.x;
-		float centery = (float)pos.y;
-		Point scaledPos = s.scale(new Coordinate(centerx, centery));
-		poses.add(scaledPos);
-		
+		poses.add(pos);
+
 		g.setColor(Color.DARK_GRAY);
-		Point start = poses.get(0);
+		Point start = s.scale(poses.get(0));
 		for (int i = 1; i < poses.size(); i++){
-			Point end = poses.get(i);
+			Point end = s.scale(poses.get(i));
 			g.drawLine(start.x, start.y, end.x, end.y);
 			start = end;
 		}
