@@ -10,13 +10,13 @@ public class BugUtilities {
 	
 	//TODO: change deltaT to be more realistic in seconds, and fix constants 
 	public static final float OBSTACLE_FOUND_THRS = .15f;
-	public static final float CLOSE_THRS = .2f;
+	public static final float CLOSE_THRS = .15f;
 	
 	private static final float PROP_ANG_PARALLEL = 1f;
 	private static final float PROP_ANG_WALL_CLOSE = 2f;
 	private static final float PROP_LINEAR_WF = 0.125f;
 	private static final float PROP_LINEAR_GS = 0.25f;
-	private static final float PROP_ANGULAR_GS = 10f;
+	private static final float PROP_ANGULAR_GS = 100f;
 
 	private static final float WL_FW_TARGET = .15f;   	
 	private static final float WL_RIGHT_TARGET = .1f; 
