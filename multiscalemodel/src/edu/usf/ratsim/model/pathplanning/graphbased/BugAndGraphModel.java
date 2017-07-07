@@ -2,6 +2,7 @@ package edu.usf.ratsim.model.pathplanning.graphbased;
 
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.usf.experiment.display.DisplaySingleton;
+import edu.usf.experiment.display.drawer.PathDrawer;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.SonarRobot;
@@ -57,6 +58,7 @@ public class BugAndGraphModel extends Model implements GraphModel {
 		
 		DisplaySingleton.getDisplay().addUniverseDrawer(new ExpGraphDrawer(erm), 0);
 		DisplaySingleton.getDisplay().addUniverseDrawer(new SonarReadingsDrawer((SonarRobot) robot, (LocalizableRobot) robot), 0);
+		DisplaySingleton.getDisplay().addUniverseDrawer(new PathDrawer((LocalizableRobot) robot));
 	}
 
 	public UndirectedGraph<PointNode, Edge> getGraph() {
