@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -30,7 +31,7 @@ public class ExpGraphDrawer implements Drawer {
 		UndirectedGraph<PointNode, Edge> graph = erm.getGraph();
 		
 		if (graph != null){
-			LinkedList<Edge> edges = new LinkedList<Edge>(graph.getEdges());
+			ConcurrentLinkedQueue<Edge> edges = new ConcurrentLinkedQueue<Edge>(graph.getEdges());
 			for (Edge e : edges){
 				g.setColor(Color.GRAY);
 				Point dst = s.scale(graph.getEndpoints(e).getFirst().prefLoc);
