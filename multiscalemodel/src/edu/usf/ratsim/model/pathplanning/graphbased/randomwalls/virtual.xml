@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-	<seed>1358455863076118418</seed>
 	<universe>
 		<name>edu.usf.vlwsim.universe.DifferentialRobotVirtualUniverse</name>
 		<params>
@@ -152,11 +151,13 @@
 					<params>
 					</params>
 				</logger>
+				<!-- 
 				<logger>
 					<name>edu.usf.ratsim.model.pathplanning.graphbased.ExperienceGraphLogger</name>
 					<params>
 					</params>
 				</logger>
+				-->	
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
