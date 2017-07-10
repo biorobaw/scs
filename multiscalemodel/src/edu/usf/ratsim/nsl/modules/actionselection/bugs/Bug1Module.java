@@ -48,7 +48,7 @@ public class Bug1Module extends Module {
 		switch (state) {
 		case GOAL_SEEKING:
 			// Check the middle sensor for obstacles
-			float minFront = SonarUtils.getMinReading(readings, angles, 0f, (float) (Math.PI/3));
+			float minFront = SonarUtils.getMinReading(readings, angles, 0f, (float) (Math.PI/6));
 			if (minFront < BugUtilities.OBSTACLE_FOUND_THRS) {
 				state = State.WF_AWAY_FROM_HP;
 				minDistToGoal = (float) rPos.get().distance(platPos.get());

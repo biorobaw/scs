@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
+	<seed>1358455863076118418</seed>
 	<universe>
 		<name>edu.usf.vlwsim.universe.DifferentialRobotVirtualUniverse</name>
 		<params>
