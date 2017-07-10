@@ -8,13 +8,9 @@ import edu.usf.ratsim.support.SonarUtils;
 
 public class PointNode {
 
-	// TODO: make these parameters
-	private static final float MAX_RADIUS = .5f;
-
 	public Coordinate prefLoc;
-	public float activation;
-
 	public boolean following;
+	public float distToRobot;
 
 	public PointNode(Coordinate prefLoc) {
 		this.prefLoc = prefLoc;
@@ -33,31 +29,21 @@ public class PointNode {
 	 *            reference
 	 * @param orientation
 	 */
-	public void updateActivation(Coordinate rPos, float orientation, Float1dPort sonarReadings,
+	public void updateDistance(Coordinate rPos, float orientation, Float1dPort sonarReadings,
 			Float1dPort sonarAngles) {
 		float angle = GeomUtils.relativeAngleToPoint(rPos, orientation, prefLoc);
 
-		float dist = (float) prefLoc.distance(rPos);
+		distToRobot = (float) prefLoc.distance(rPos);
 		// No good sensor for the angle, or obstacle closer than the unit's
-		// center
+		// center or too far
 		if (!SonarUtils.validSonar(angle, sonarReadings, sonarAngles)
-				|| SonarUtils.getReading(angle, sonarReadings, sonarAngles) < dist) {
-			activation = 0;
-		} else {
-			if (dist > MAX_RADIUS)
-				activation = 0;
-			else
-				activation = (float) Math.exp(-Math.pow(dist, 2));
-		}
+				|| SonarUtils.getReading(angle, sonarReadings, sonarAngles) < distToRobot) 
+			distToRobot = Float.MAX_VALUE;
 
 	}
 
 	public void updateActivation(Coordinate loc, float distToObs) {
 
-	}
-
-	public float getActivation() {
-		return activation;
 	}
 
 	public String toString() {

@@ -225,4 +225,9 @@ public class MorseRobot
 		return null;
 	}
 
+	@Override
+	public float getSonarMaxReading() {
+		return 10f;
+	}
+
 }

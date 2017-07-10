@@ -54,7 +54,11 @@ public class BugAndGraphModel extends Model implements GraphModel {
 		SubFoundPlatform foundPlat = new SubFoundPlatform("Found Plat", (PlatformRobot) robot);
 		addModule(foundPlat);
 		
-		erm = new ExperienceRoadMap("Experience road map", algorithm, robot);
+		float sonarMaxReading = ((SonarRobot)robot).getSonarMaxReading();
+		float connectThrs = sonarMaxReading / 3;
+		float createThrs = sonarMaxReading / 3;
+		float followThrs = sonarMaxReading;
+		erm = new ExperienceRoadMap("Experience road map", algorithm, robot,createThrs ,connectThrs, followThrs, .1f);
 		erm.addInPort("sonarReadings", sReadings.getOutPort("sonarReadings"));
 		erm.addInPort("sonarAngles", sReadings.getOutPort("sonarAngles"));
 		erm.addInPort("position", rPos.getOutPort("position"));
@@ -63,7 +67,7 @@ public class BugAndGraphModel extends Model implements GraphModel {
 		erm.addInPort("foundPlatform", foundPlat.getOutPort("foundPlatform"));
 		addModule(erm);		
 		
-		DisplaySingleton.getDisplay().addUniverseDrawer(new ExpGraphDrawer(erm), 0);
+		DisplaySingleton.getDisplay().addUniverseDrawer(new ExpGraphDrawer(erm, followThrs), 0);
 		DisplaySingleton.getDisplay().addUniverseDrawer(new SonarReadingsDrawer((SonarRobot) robot, (LocalizableRobot) robot), 0);
 		DisplaySingleton.getDisplay().addUniverseDrawer(new PathDrawer((LocalizableRobot) robot));
 	}

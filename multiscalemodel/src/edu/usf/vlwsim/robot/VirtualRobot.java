@@ -23,13 +23,12 @@ import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.ratsim.support.NotImplementedException;
 import edu.usf.vlwsim.universe.VirtUniverse;
 
-public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, PlatformRobot,
-		WallRobot, TeleportRobot {
+public class VirtualRobot
+		implements FeederRobot, LocalizableRobot, SonarRobot, PlatformRobot, WallRobot, TeleportRobot {
 
 	private final float ROBOT_LENGTH = .1f;
 
 	private VirtUniverse universe;
-
 
 	private float visionDist;
 
@@ -59,13 +58,10 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 	private float robotHeading;
 
 	public VirtualRobot(ElementWrapper params, Universe u) {
-		
-		
 
 		halfFieldOfView = params.getChildFloat("halfFieldOfView");
 		visionDist = params.getChildFloat("visionDist");
 		setCloseThrs(params.getChildFloat("closeThrs"));
-		
 
 		// Sonar configuration
 		if (params.getChild("sonarAngles") != null) {
@@ -81,26 +77,21 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 		if (universe == null)
 			throw new RuntimeException("A virtual universe must be created" + " before Virtual Robot is created");
 
-		
-
 		closestFeederValid = false;
 		lastAteFeeder = -1;
 		lastTriedToEat = -1;
 		lastAte = false;
 		lastSuccessfulEat = false;
-		
-	}
 
-	
+	}
 
 	public void startRobot() {
 	}
 
 	public boolean hasFoundFood() {
-		return FeederUniverseUtilities.hasRobotFoundFood(universe.getFeeders(), universe.getRobotPosition(), universe.getCloseThrs());
+		return FeederUniverseUtilities.hasRobotFoundFood(universe.getFeeders(), universe.getRobotPosition(),
+				universe.getCloseThrs());
 	}
-
-	
 
 	@Override
 	public void eat() {
@@ -117,7 +108,8 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 		for (Integer i : FeederUniverseUtilities.getFeederNums(universe.getFeeders()))
 			if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)) {
 				// Get relative position
-				Coordinate relFPos = GeomUtils.relativeCoords(universe.getFeeder(i).getPosition(), universe.getRobotPosition(), universe.getRobotOrientationAngle());
+				Coordinate relFPos = GeomUtils.relativeCoords(universe.getFeeder(i).getPosition(),
+						universe.getRobotPosition(), universe.getRobotOrientationAngle());
 				// Return the landmark
 				Feeder relFeeder = new Feeder(universe.getFeeder(i));
 				relFeeder.setPosition(relFPos);
@@ -135,7 +127,7 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 				Coordinate fPos = universe.getFeeder(i).getPosition();
 				Coordinate rPos = universe.getRobotPosition();
 				float rOrient = universe.getRobotOrientationAngle();
-				
+
 				Coordinate relFPos = GeomUtils.relativeCoords(fPos, rPos, rOrient);
 				Feeder relFeeder = new Feeder(universe.getFeeder(i));
 				relFeeder.setPosition(relFPos);
@@ -182,7 +174,8 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 		List<Coordinate> absoluteWEnds = universe.getVisibleWallEnds(halfFieldOfView, visionDist);
 		List<Coordinate> relativeWEnds = new LinkedList<Coordinate>();
 		for (Coordinate p : absoluteWEnds) {
-			relativeWEnds.add(GeomUtils.relativeCoords(p, universe.getRobotPosition(), universe.getRobotOrientationAngle()));
+			relativeWEnds
+					.add(GeomUtils.relativeCoords(p, universe.getRobotPosition(), universe.getRobotOrientationAngle()));
 		}
 		return relativeWEnds;
 	}
@@ -232,7 +225,7 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 		float[] readings = new float[sonarAngles.size()];
 
 		int i = 0;
-		for (float angle : sonarAngles){
+		for (float angle : sonarAngles) {
 			readings[i++] = universe.getRobotSonarReading(angle, sonarAperture, sonarMaxDist, sonarNumRays);
 		}
 
@@ -246,6 +239,11 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 		for (float angle : sonarAngles)
 			angles[i++] = angle;
 		return angles;
+	}
+
+	@Override
+	public float getSonarMaxReading() {
+		return sonarMaxDist;
 	}
 
 	@Override
@@ -276,7 +274,7 @@ public class VirtualRobot implements FeederRobot, LocalizableRobot, SonarRobot, 
 
 	public void moved() {
 		closestFeederValid = false;
-		lastAte = false;		
+		lastAte = false;
 	}
 
 	public float getCloseThrs() {

@@ -20,5 +20,11 @@ public interface SonarRobot {
 	 * @return The aperture angle of every sonar sensor in radians
 	 */
 	public float getSonarAperture();	// TODO: remove this from interface?
+
+	/**
+	 * Get the maximum possible reading value
+	 * @return The maximum possible reading value
+	 */
+	public float getSonarMaxReading();
 	
 }

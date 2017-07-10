@@ -171,6 +171,11 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 	public float[] getSonarAngles() {
 		return sonarAngles;
 	}
+	
+	@Override
+	public float getSonarMaxReading() {
+		return .3f;
+	}
 
 	@Override
 	public float getSonarAperture() {
@@ -186,5 +191,7 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 	public float getOrientationAngle() {
 		return 0f;
 	}
+
+
 
 }

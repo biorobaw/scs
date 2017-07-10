@@ -34,31 +34,7 @@ import edu.usf.ratsim.support.NotImplementedException;
 
 public class ExperienceRoadMap extends Module {
 
-	private static final float MIN_ACTIVATION = 4f;
-
-	private static final float MAX_SINGLE_ACTIVATION = .95f;
-
-	private static final float DIST_TO_GOAL_THRS = .1f;
-
-	private static final float NEXT_NODE_DIST_THRS = 0.15f;
-
-	private static final int WINDOW_SIZE = 800;
-
-	private static final boolean PLOT = false;
-
-	private static final float ACTIVATION_THRS = .0f;
-
-	private static final float MIN_DISTANCE_TO_NEXT_NODE = 0.2f;
-
 	private UndirectedGraph<PointNode, Edge> g;
-
-	private BasicVisualizationServer<PointNode, Edge> vv;
-
-	private JFrame frame;
-
-	private Thread repainter;
-
-	private boolean continueRepainting;
 
 	private PointPort intermediateGoal;
 
@@ -71,17 +47,25 @@ public class ExperienceRoadMap extends Module {
 
 	private Robot robot;
 
-	private List<PointNode> prevActive;
-
-	private PointNode prevMaxActive;
-
 	private PointNode following;
 
-	public ExperienceRoadMap(String name, String algorithm, Robot robot) {
-		super(name);
+	/**
+	 * The width of the goal location, or threshold to consider it close enough
+	 * to have arrived.
+	 */
+	private float platformWidth;
 
-		frame = null;
-		repainter = null;
+	private float maxNodeRadiusCreate;
+
+	private float maxNodeRadiusConnect;
+
+	private float maxNodeRadiusFollow;
+
+	private List<PointNode> prevToConnect;
+
+	public ExperienceRoadMap(String name, String algorithm, Robot robot, float maxNodeRadiusCreate,
+			float maxNodeRadiusConnect, float maxNodeRadiusFollow, float platformWidth) {
+		super(name);
 
 		intermediateGoal = new PointPort(this);
 		addOutPort("intermediateGoal", intermediateGoal);
@@ -89,7 +73,12 @@ public class ExperienceRoadMap extends Module {
 		this.algorithm = algorithm;
 		this.robot = robot;
 
-		prevMaxActive = null;
+		this.platformWidth = platformWidth;
+		this.maxNodeRadiusCreate = maxNodeRadiusCreate;
+		this.maxNodeRadiusConnect = maxNodeRadiusConnect;
+		this.maxNodeRadiusFollow = maxNodeRadiusFollow;
+		
+		prevToConnect = null;
 	}
 
 	@Override
@@ -104,73 +93,63 @@ public class ExperienceRoadMap extends Module {
 
 		List<Edge> bestPath = null;
 		PointNode start = null;
-		List<PointNode> active = new LinkedList<PointNode>();
+		List<PointNode> toFollow = new LinkedList<PointNode>();
+		List<PointNode> toConnect = new LinkedList<PointNode>();
 		synchronized (g) {
 			// Compute active nodes
-			float totalActivation = 0;
-			float maxActivation = Float.NEGATIVE_INFINITY;
-			PointNode maxActive = null;
+			float minDistToRobot = Float.MAX_VALUE;
 			for (PointNode n : g.getVertices()) {
-				n.updateActivation(rPos.get(), rOrient.get(), sonarReadings, sonarAngles);
-
-				float activation = n.getActivation();
-				totalActivation += activation;
-				if (activation > ACTIVATION_THRS)
-					active.add(n);
-
-				if (activation > maxActivation) {
-					maxActivation = activation;
-					maxActive = n;
-				}
+				n.updateDistance(rPos.get(), rOrient.get(), sonarReadings, sonarAngles);
+				minDistToRobot = Math.min(minDistToRobot, n.distToRobot);
+				
+				if (n.distToRobot < maxNodeRadiusFollow)
+					toFollow.add(n);
+				if (n.distToRobot < maxNodeRadiusConnect)
+					toConnect.add(n);
 			}
 
 			// Creation of new nodes
-			if ((totalActivation < MIN_ACTIVATION && maxActivation < MAX_SINGLE_ACTIVATION) || foundPlat.get()) {
+			if (minDistToRobot > maxNodeRadiusCreate || foundPlat.get()) {
 				// System.out.println("Creating a node");
 				// Create new node
 				PointNode nv = new PointNode(rPos.get());
 				g.addVertex(nv);
 				// Add to the active set
-				nv.updateActivation(rPos.get(), rOrient.get(), sonarReadings, sonarAngles);
-				active.add(nv);
-				maxActive = nv;
-				System.out.println(foundPlat.get() + " " + platPos.get().distance(rPos.get()));
+				nv.updateDistance(rPos.get(), rOrient.get(), sonarReadings, sonarAngles);
+				toConnect.add(nv);
+				toFollow.add(nv);
 			}
 
 			// Connectivity of all active nodes
-			if (active.size() == 1 && prevActive != null) { // Newly created node
-				PointNode node = active.get(0);
-				for (PointNode pn : prevActive) {
+			if (toConnect.size() == 1 && prevToConnect != null) { 
+				PointNode node = toConnect.get(0);
+				for (PointNode pn : prevToConnect) {
 					g.addEdge(new Edge((float) node.prefLoc.distance(pn.prefLoc)), node, pn);
 				}
 			} else {
-				for (int i = 0; i < active.size(); i++) {
-					PointNode n1 = active.get(i);
-					for (int j = i + 1; j < active.size(); j++) {
-						PointNode n2 = active.get(j);
-						if (!g.isNeighbor(n1, n2)) {
-//							if (shouldConnect(n1, n2, rPos.get(), rOrient.get(), sonarReadings, sonarAngles)) {
-								g.addEdge(new Edge((float) n1.prefLoc.distance(n2.prefLoc)), n1, n2);
-//							}
+				for (int i = 0; i < toConnect.size(); i++) {
+					PointNode n1 = toConnect.get(i);
+					for (int j = i + 1; j < toConnect.size(); j++) {
+						PointNode n2 = toConnect.get(j);
+						if (!g.isNeighbor(n1, n2) && n1.distToRobot < maxNodeRadiusConnect && n2.distToRobot < maxNodeRadiusConnect) {
+							// if (shouldConnect(n1, n2, rPos.get(),
+							// rOrient.get(), sonarReadings, sonarAngles)) {
+							g.addEdge(new Edge((float) n1.prefLoc.distance(n2.prefLoc)), n1, n2);
+							// }
 						}
 					}
 				}
 			}
 
-			prevActive = active;
+			prevToConnect = toConnect;
 
 			// Compute dijsktra
-			// Get the current node
-			PointNode mostActive = active.get(0);
-			for (PointNode pn : active)
-				if (pn.activation > mostActive.activation)
-					mostActive = pn;
 			// Get the goal node
 			PointNode goalNode = null;
 			float minDistToGoal = Float.MAX_VALUE;
 			for (PointNode pn : g.getVertices()) {
 				double dist = pn.prefLoc.distance(platPos.get());
-				if (dist <= DIST_TO_GOAL_THRS && dist < minDistToGoal) {
+				if (dist <= platformWidth && dist < minDistToGoal) {
 					goalNode = pn;
 					minDistToGoal = (float) dist;
 				}
@@ -179,7 +158,7 @@ public class ExperienceRoadMap extends Module {
 			start = null;
 			if (goalNode != null) {
 				float minDist = Float.MAX_VALUE;
-				for (PointNode n : active) {
+				for (PointNode n : toFollow) {
 					// Compute the shortest path
 					Transformer<Edge, Float> wtTransformer = new Transformer<Edge, Float>() {
 						public Float transform(Edge link) {
@@ -225,7 +204,7 @@ public class ExperienceRoadMap extends Module {
 			int i = 0;
 			PointNode nextNode = start;
 			PointNode prevNode = null;
-			while (i < bestPath.size() && (active.contains(nextNode))) {
+			while (i < bestPath.size() && (toFollow.contains(nextNode))) {
 				prevNode = nextNode;
 
 				Pair<PointNode> edge = g.getEndpoints(bestPath.get(i));
@@ -285,7 +264,8 @@ public class ExperienceRoadMap extends Module {
 	 */
 	private boolean shouldConnect(PointNode pn1, PointNode pn2, Coordinate rPos, float rOrient,
 			Float1dPort sonarReadings, Float1dPort sonarAngles) {
-		// If the robot is at one of the nodes, connect them (assuming the caller has both active)
+		// If the robot is at one of the nodes, connect them (assuming the
+		// caller has both active)
 		if (rPos.equals(pn1.prefLoc) || rPos.equals(pn2.prefLoc))
 			return true;
 		// Work in robot coordinates
@@ -326,20 +306,6 @@ public class ExperienceRoadMap extends Module {
 	public void newTrial() {
 
 		g = new UndirectedSparseGraph<PointNode, Edge>();
-
-		Layout<PointNode, Edge> layout = new VertextPosLayout<Edge>(g);
-		layout.setSize(new Dimension(WINDOW_SIZE, WINDOW_SIZE));
-		vv = new BasicVisualizationServer<PointNode, Edge>(layout);
-		vv.setPreferredSize(new Dimension(WINDOW_SIZE, WINDOW_SIZE));
-		vv.getRenderContext().setVertexFillPaintTransformer(new Transformer<PointNode, Paint>() {
-			public Paint transform(PointNode pn) {
-				if (pn.following)
-					return new Color(0f, 1f, 0f, 1f);
-				else
-					return new Color(pn.activation, 0f, 1 - pn.activation, 1f);
-			}
-
-		});
 
 		// Create the delegate bug algorithms
 		Float1dPort sonarReadings = (Float1dPort) getInPort("sonarReadings");
@@ -384,8 +350,7 @@ public class ExperienceRoadMap extends Module {
 		bug.newEpisode();
 		bug0.newEpisode();
 
-		prevActive = null;
-		prevMaxActive = null;
+		prevToConnect = null;
 	}
 
 	public UndirectedGraph<PointNode, Edge> getGraph() {

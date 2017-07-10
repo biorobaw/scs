@@ -21,9 +21,11 @@ public class ExpGraphDrawer implements Drawer {
 
 	private static final float NODE_R = .05f;
 	private ExperienceRoadMap erm;
+	private float maxDistToPaint;
 
-	public ExpGraphDrawer(ExperienceRoadMap erm) {
+	public ExpGraphDrawer(ExperienceRoadMap erm, float maxDistToPaint) {
 		this.erm = erm;
+		this.maxDistToPaint = maxDistToPaint;
 	}
 
 	@Override
@@ -45,10 +47,10 @@ public class ExpGraphDrawer implements Drawer {
 					Point pos = s.scale(new Coordinate(pn.prefLoc.x, pn.prefLoc.y));
 					if (pn == followingNode)
 						g.setColor(Color.GREEN);
-					else if (pn.getActivation() == 0)
+					else if (pn.distToRobot > maxDistToPaint)
 						g.setColor(Color.BLUE);
 					else
-						g.setColor(new Color(1, 1- pn.getActivation(), 1 - pn.getActivation()));
+						g.setColor(Color.RED);
 					g.fillOval(pos.x - (int) (NODE_R * s.xscale), pos.y - (int) (NODE_R * s.yscale),
 							(int) (NODE_R * s.xscale * 2), (int) (NODE_R * s.yscale * 2));
 				}
