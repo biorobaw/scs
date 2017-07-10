@@ -130,8 +130,21 @@ public class GeomUtils {
 	
 	public static void main(String[] args){
 		
-		RigidTransformation r = new RigidTransformation(new Coordinate(-1,1), (float)Math.PI/2);
-		System.out.println(GeomUtils.relativeCoords(new Coordinate(-1,0), r.getTranslation(), r.getRotation()));
+		System.out.println(angleBetweenAngles((float)(3*Math.PI/4),(float) (-3*Math.PI/4), (float)(Math.PI/8)));
+	}
+
+	/**
+	 * Decides whether an angle is inside the shortest interval defined by two angles 
+	 * @param angle
+	 * @param angleToP1
+	 * @param angleToP2
+	 * @return
+	 */
+	public static boolean angleBetweenAngles(float angle, float a1, float a2) {
+		float a1a2 = Math.abs(GeomUtils.relativeAngle(a1, a2));
+		float a1angle = Math.abs(GeomUtils.relativeAngle(a1, angle));
+		float a2angle = Math.abs(GeomUtils.relativeAngle(a2, angle));
+		return a1angle <= a1a2 && a2angle <= a1a2;
 	}
 
 }
