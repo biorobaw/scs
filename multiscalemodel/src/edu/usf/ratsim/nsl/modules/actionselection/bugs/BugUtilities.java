@@ -22,10 +22,11 @@ public class BugUtilities {
 	private static final float WL_RIGHT_TARGET = .1f; 
 	private static final float WF_MIN_FW_VEL = .05f;
 	private static final float WF_ROT_VEL_OBS_FRONT = 1f;
+	private static final float MAX_GS_PROP_DIST = 0.3f;
 
 	public static Velocities goalSeek(Coordinate rPos, float rOrient, Coordinate platPos) {
 		float linear, angular; 
-		linear = (float) (PROP_LINEAR_GS * platPos.distance(rPos));
+		linear = (float) (PROP_LINEAR_GS * Math.min(platPos.distance(rPos), MAX_GS_PROP_DIST));
 		angular = PROP_ANGULAR_GS * GeomUtils.relativeAngleToPoint(rPos, rOrient, platPos);
 		return new Velocities(linear, angular);
 	}
