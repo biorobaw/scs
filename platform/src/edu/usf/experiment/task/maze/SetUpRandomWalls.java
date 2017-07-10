@@ -7,6 +7,7 @@ import java.util.Random;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
+import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
@@ -91,6 +92,15 @@ public class SetUpRandomWalls extends Task {
 			}
 
 			wu.addWall(wall);
+			
+//			LineSegment w2 = new LineSegment(new Coordinate(wall.p0), new Coordinate(wall.p1));
+//			float offset = .02f;
+//			w2.p0.x += offset;
+//			w2.p1.x += offset;
+//			wu.addWall(w2);
+//			
+//			DisplaySingleton.getDisplay().repaint();
+			
 			j++;
 		}
 

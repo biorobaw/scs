@@ -595,11 +595,11 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 			// Create each point in the robot frame of reference
 			Coordinate rayEnd = new Coordinate(rPos.x + Math.cos(absRayAngle) * maxDist, rPos.y + Math.sin(absRayAngle) * maxDist);
 			// Create a segment from the robot to the point
-			LineSegment s = new LineSegment(rCoor, rayEnd);
+			LineSegment ray = new LineSegment(rCoor, rayEnd);
 			// Intersect the segment to all walls to find closest point to the
 			// robot
 			for (Wall w : getWalls()) {
-				Coordinate intersection = w.s.intersection(s);
+				Coordinate intersection = w.s.intersection(ray);
 				if (intersection != null) {
 					float dist = (float) intersection.distance(rCoor);
 					if (dist < closestDist)
