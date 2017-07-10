@@ -236,7 +236,7 @@
 				</condition>
 				<!-- Has eaten from 100 feeders -->
 				<condition>
-					<name>edu.usf.experiment.condition.FoundPlatform</name>
+					<name>edu.usf.experiment.condition.FoundPlatformDiscrete</name>
 					<params>
 					</params>
 				</condition>

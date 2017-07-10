@@ -92,7 +92,7 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 
 		// Create pos module
 		pos = new Position("position", lRobot);
-		addModulePost(pos);
+		addModule(pos);
 
 		List<DiscretePlaceCellLayer> pcLayers = new LinkedList<DiscretePlaceCellLayer>();
 
@@ -100,13 +100,13 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		actionPlaceCells = new DiscretePlaceCellLayer("PCLayer Small", gridSize, gridSize, actionValueSizes,
 				(GlobalWallRobot) robot, wallInteraction);
 		actionPlaceCells.addInPort("position", pos.getOutPort("position"));
-		addModulePost(actionPlaceCells);
+		addModule(actionPlaceCells);
 		pcLayers.add(actionPlaceCells);
 
 		valuePlaceCells = new DiscretePlaceCellLayer("PCLayer Large", gridSize, gridSize, stateValueSizes,
 				(GlobalWallRobot) robot, wallInteraction);
 		valuePlaceCells.addInPort("position", pos.getOutPort("position"));
-		addModulePost(valuePlaceCells);
+		addModule(valuePlaceCells);
 		pcLayers.add(valuePlaceCells);
 
 		numActionCells = actionPlaceCells.getActivationPort().getSize();
@@ -117,20 +117,18 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		float[][] vVals = new float[numValueCells][1];
 		this.VTable = new FloatMatrixPort(null, vVals);
 
-		// Traces
-
 		// Create currentStateQ Q module
 		currentStateQ = new ProportionalVotes("currentStateQ", numActions, foodReward);
 		currentStateQ.addInPort("states", actionPlaceCells.getActivationPort());
 		currentStateQ.addInPort("qValues", QTable);
-		addModulePost(currentStateQ);
+		addModule(currentStateQ);
 		DisplaySingleton.getDisplay().addPlot(new Float1dDiscPlot((Float1dPort) currentStateQ.getOutPort("votes"), "Action values"),
 				0, 0, 1, 1);
 
 		currentValue = new ProportionalValue("currentValueQ", foodReward);
 		currentValue.addInPort("states", valuePlaceCells.getActivationPort());
 		currentValue.addInPort("value", VTable);
-		addModulePost(currentValue);
+		addModule(currentValue);
 		DisplaySingleton.getDisplay()
 				.addPlot(new Float0dSeriesPlot((Float0dPort) currentValue.getOutPort("value"), "State Value"), 0, 1, 1, 1);
 
@@ -165,29 +163,31 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 
 		// create subAte module
 		SubFoundPlatform subFoundPlat = new SubFoundPlatform("Subject Found Plat", (PlatformRobot) robot);
-		addModulePost(subFoundPlat);
+		addModule(subFoundPlat);
 
 		// Create reward module
 		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
 		r.addInPort("rewardingEvent", subFoundPlat.getOutPort("foundPlatform"));
-		addModulePost(r);
+		addModule(r);
 
 		// Create deltaSignal module
 		deltaError = new ActorCriticDeltaError("error", discountFactor, foodReward);
 		deltaError.addInPort("reward", r.getOutPort("reward"));
 		deltaError.addInPort("value", currentValue.getOutPort("value"));
-		addModulePost(deltaError);
+		addModule(deltaError);
 
 		// Create update Q module
 		updateQ = new UpdateQModuleACTraces("updateQ", learningRate, tracesDecay, minTrace);
 		updateQ.addInPort("delta", deltaError.getOutPort("delta"));
-		updateQ.addInPort("action", actionSelection.getOutPort("action"));
+		// We must update Q before steping over the takenAction
+		updateQ.addInPort("action", actionSelection.getOutPort("action"), true);
 		updateQ.addInPort("Q", QTable);
 		updateQ.addInPort("V", VTable);
 		updateQ.addInPort("actionPlaceCells", actionPlaceCells.getActivationPort());
 		updateQ.addInPort("valuePlaceCells", valuePlaceCells.getActivationPort());
-		addModulePost(updateQ);
-
+		addModule(updateQ);
+		
+		
 		DisplaySingleton.getDisplay().addUniverseDrawer(new QValueDrawer(this), 0);
 		DisplaySingleton.getDisplay().addUniverseDrawer(new QPolicyDrawer(this, (AffordanceRobot) robot));
 	}
@@ -195,14 +195,14 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 	public void newEpisode() {
 		super.newEpisode();
 		// Compute place cell output before making the first decision
-		pos.run();
-		actionPlaceCells.run();
-		valuePlaceCells.run();
-		currentStateQ.run();
-		currentValue.run();
+//		pos.run();
+//		actionPlaceCells.run();
+//		valuePlaceCells.run();
+//		currentStateQ.run();
+//		currentValue.run();
 
-		deltaError.saveValue();
-		updateQ.savePCs();
+//		deltaError.saveValue();
+//		updateQ.savePCs();
 	}
 
 	@Override
