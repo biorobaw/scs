@@ -10,6 +10,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.PlatformRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -218,7 +219,7 @@ public class MorrisHLReplayModel extends Model {
 		rlValueCopy.addInPort("toCopy", (Float1dPort) rlValue.getOutPort("valueEst"), true);
 		addModule(rlValueCopy);
 
-		SubFoundPlatform foundPlat = new SubFoundPlatform("sub found platform", robot);
+		SubFoundPlatform foundPlat = new SubFoundPlatform("sub found platform", (PlatformRobot) robot);
 		foundPlat.addInPort("takenAction", takenActionPort); // dep
 		addModule(foundPlat);
 

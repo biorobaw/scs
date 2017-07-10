@@ -12,6 +12,7 @@ import edu.usf.experiment.model.PolicyModel;
 import edu.usf.experiment.model.ValueModel;
 import edu.usf.experiment.robot.GlobalWallRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.PlatformRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -163,7 +164,7 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		// placeCells.addPreReq(actionPerformer);
 
 		// create subAte module
-		SubFoundPlatform subFoundPlat = new SubFoundPlatform("Subject Found Plat", robot);
+		SubFoundPlatform subFoundPlat = new SubFoundPlatform("Subject Found Plat", (PlatformRobot) robot);
 		addModulePost(subFoundPlat);
 
 		// Create reward module

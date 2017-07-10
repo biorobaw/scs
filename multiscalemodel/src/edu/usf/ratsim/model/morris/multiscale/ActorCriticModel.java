@@ -12,6 +12,7 @@ import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.model.ValueModel;
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.PlatformRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -212,7 +213,7 @@ public class ActorCriticModel extends Model implements ValueModel {
 		rlValueCopy.addInPort("toCopy", (Float1dPort) rlValue.getOutPort("valueEst"), true);
 		addModule(rlValueCopy);
 
-		SubFoundPlatform foundPlat = new SubFoundPlatform("sub found platform", robot);
+		SubFoundPlatform foundPlat = new SubFoundPlatform("sub found platform", (PlatformRobot) robot);
 		foundPlat.addInPort("takenAction", takenActionPort); // dep
 		addModule(foundPlat);
 
