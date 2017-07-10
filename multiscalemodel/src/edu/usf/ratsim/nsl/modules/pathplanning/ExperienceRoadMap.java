@@ -34,9 +34,9 @@ import edu.usf.ratsim.support.NotImplementedException;
 
 public class ExperienceRoadMap extends Module {
 
-	private static final float MIN_ACTIVATION = 8f;
+	private static final float MIN_ACTIVATION = 4f;
 
-	private static final float MAX_SINGLE_ACTIVATION = .98f;
+	private static final float MAX_SINGLE_ACTIVATION = .95f;
 
 	private static final float DIST_TO_GOAL_THRS = .1f;
 
@@ -149,9 +149,9 @@ public class ExperienceRoadMap extends Module {
 					for (int j = i + 1; j < active.size(); j++) {
 						PointNode n2 = active.get(j);
 						if (!g.isNeighbor(n1, n2)) {
-							if (shouldConnect(n1, n2, rPos.get(), rOrient.get(), sonarReadings, sonarAngles)) {
+//							if (shouldConnect(n1, n2, rPos.get(), rOrient.get(), sonarReadings, sonarAngles)) {
 								g.addEdge(new Edge((float) n1.prefLoc.distance(n2.prefLoc)), n1, n2);
-							}
+//							}
 						}
 					}
 				}
