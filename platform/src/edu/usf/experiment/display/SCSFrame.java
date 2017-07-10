@@ -61,7 +61,9 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		simVel.setMinorTickSpacing(1);
 		simVel.setPaintTicks(true);
 		simVel.setPaintLabels(true);
-		uViewPanel.add(simVel, getConstraints(0, 2));
+		GridBagConstraints cs = getConstraints(0, 1);
+		cs.gridwidth = 2;
+		uViewPanel.add(simVel, cs);
 		
 		pack();
 		setVisible(true);
@@ -110,13 +112,14 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 	@Override
 	public void addUniverseDrawer(Drawer d) {
 		uPanel.addDrawer(d);
+		pack();
 	}
 
 	@Override
 	public void setupUniversePanel(BoundedUniverse bu) {
 		uPanel = new UniversePanel(bu);
 		uViewPanel.add(uPanel.getCheckBoxPanel(), getConstraints(0, 0));
-		GridBagConstraints uPanelCons = getConstraints(0, 1);
+		GridBagConstraints uPanelCons = getConstraints(1,0);
 		uPanelCons.weighty = 100;
 		uViewPanel.add(uPanel, uPanelCons);
 

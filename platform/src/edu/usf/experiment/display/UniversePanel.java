@@ -11,7 +11,6 @@ import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
 
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
@@ -46,8 +45,7 @@ public class UniversePanel extends JPanel {
 		
 		cBoxes = new HashMap<Drawer, JCheckBox>();
 		cbPanel = new JPanel();
-		cbPanel.setLayout(new BoxLayout(cbPanel, BoxLayout.X_AXIS));
-		
+		cbPanel.setLayout(new BoxLayout(cbPanel, BoxLayout.Y_AXIS));
 		this.bu = bu;
 	}
 
