@@ -37,8 +37,6 @@ public class WallAvoider extends Module {
 		this.currentValue = 0f;
 		active = false;
 
-		// number = (new Random()).nextInt();
-
 		votes = new float[numActions + 1];
 		addOutPort("votes", new Float1dPortArray(this, votes));
 
