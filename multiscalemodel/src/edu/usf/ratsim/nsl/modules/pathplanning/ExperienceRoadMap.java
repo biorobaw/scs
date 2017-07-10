@@ -24,6 +24,7 @@ import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.PointPort;
+import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.ratsim.nsl.modules.actionselection.apf.APFModule;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.Bug0Module;
@@ -37,7 +38,7 @@ public class ExperienceRoadMap extends Module {
 
 	private static final float MAX_SINGLE_ACTIVATION = .98f;
 
-	private static final float DIST_TO_GOAL_THRS = .2f;
+	private static final float DIST_TO_GOAL_THRS = .1f;
 
 	private static final float NEXT_NODE_DIST_THRS = 0.15f;
 
@@ -99,6 +100,7 @@ public class ExperienceRoadMap extends Module {
 		PointPort rPos = (PointPort) getInPort("position");
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
 		PointPort platPos = (PointPort) getInPort("platformPosition");
+		Bool0dPort foundPlat = (Bool0dPort) getInPort("foundPlatform");
 
 		List<Edge> bestPath = null;
 		PointNode start = null;
@@ -123,8 +125,7 @@ public class ExperienceRoadMap extends Module {
 			}
 
 			// Creation of new nodes
-			if ((totalActivation < MIN_ACTIVATION && maxActivation < MAX_SINGLE_ACTIVATION)
-					|| (platPos.get().distance(rPos.get()) < DIST_TO_GOAL_THRS && totalActivation < 3 * MIN_ACTIVATION)) {
+			if ((totalActivation < MIN_ACTIVATION && maxActivation < MAX_SINGLE_ACTIVATION) || foundPlat.get()) {
 				// System.out.println("Creating a node");
 				// Create new node
 				PointNode nv = new PointNode(rPos.get());
@@ -133,22 +134,29 @@ public class ExperienceRoadMap extends Module {
 				nv.updateActivation(rPos.get(), rOrient.get(), sonarReadings, sonarAngles);
 				active.add(nv);
 				maxActive = nv;
+				System.out.println(foundPlat.get() + " " + platPos.get().distance(rPos.get()));
 			}
 
 			// Connectivity of all active nodes
-			for (int i = 0; i < active.size(); i++) {
-				PointNode n1 = active.get(i);
-				for (int j = i + 1; j < active.size(); j++) {
-					PointNode n2 = active.get(j);
-					if (!g.isNeighbor(n1, n2)){
-						if (shouldConnect(n1, n2, rPos.get(), rOrient.get(), sonarReadings, sonarAngles)){
-							g.addEdge(new Edge((float) n1.prefLoc.distance(n2.prefLoc)), n1, n2);
+			if (active.size() == 1 && prevActive != null) { // Newly created node
+				PointNode node = active.get(0);
+				for (PointNode pn : prevActive) {
+					g.addEdge(new Edge((float) node.prefLoc.distance(pn.prefLoc)), node, pn);
+				}
+			} else {
+				for (int i = 0; i < active.size(); i++) {
+					PointNode n1 = active.get(i);
+					for (int j = i + 1; j < active.size(); j++) {
+						PointNode n2 = active.get(j);
+						if (!g.isNeighbor(n1, n2)) {
+							if (shouldConnect(n1, n2, rPos.get(), rOrient.get(), sonarReadings, sonarAngles)) {
+								g.addEdge(new Edge((float) n1.prefLoc.distance(n2.prefLoc)), n1, n2);
+							}
 						}
 					}
 				}
-
 			}
-			
+
 			prevActive = active;
 
 			// Compute dijsktra
@@ -160,18 +168,18 @@ public class ExperienceRoadMap extends Module {
 			// Get the goal node
 			PointNode goalNode = null;
 			float minDistToGoal = Float.MAX_VALUE;
-			for (PointNode pn : g.getVertices()){
-				float dist = (float) pn.prefLoc.distance(platPos.get());
-				if (dist < DIST_TO_GOAL_THRS && dist < minDistToGoal)
+			for (PointNode pn : g.getVertices()) {
+				double dist = pn.prefLoc.distance(platPos.get());
+				if (dist <= DIST_TO_GOAL_THRS && dist < minDistToGoal) {
 					goalNode = pn;
+					minDistToGoal = (float) dist;
+				}
 			}
-				
-
 
 			start = null;
 			if (goalNode != null) {
 				float minDist = Float.MAX_VALUE;
-				for (PointNode n : active){
+				for (PointNode n : active) {
 					// Compute the shortest path
 					Transformer<Edge, Float> wtTransformer = new Transformer<Edge, Float>() {
 						public Float transform(Edge link) {
@@ -181,22 +189,22 @@ public class ExperienceRoadMap extends Module {
 					DijkstraShortestPath<PointNode, Edge> alg = new DijkstraShortestPath(g, wtTransformer);
 					List<Edge> l = alg.getPath(n, goalNode);
 					Number dist = alg.getDistance(n, goalNode);
-					if (dist != null && dist.floatValue() < minDist){
+					if (dist != null && dist.floatValue() < minDist) {
 						minDist = dist.floatValue();
 						bestPath = l;
 						start = n;
 					}
 				}
-				
-				// System.out.println("The shortest path from" + mostActive + " to "
+
+				// System.out.println("The shortest path from" + mostActive + "
+				// to "
 				// + goalNode + " is:");
 				// System.out.println(l.toString());
 				// System.out.println("and the length of the path is: " + dist);
 			}
 		}
-		
 
-//		
+		//
 
 		// Publish a closer goal if there is a valid path
 		if (bestPath == null || bestPath.isEmpty()) {
@@ -258,17 +266,28 @@ public class ExperienceRoadMap extends Module {
 	/**
 	 * Returns whether two segments nodes should be connected.
 	 * 
-	 * They should be connected if the segment connecting them is clear according to the current readings.
-	 * @param pn1 The first node
-	 * @param pn2 The second node
-	 * @param rPos The robot position
-	 * @param rOrient The robot orientation
-	 * @param sonarReadings The set of sonar readings
-	 * @param sonarAngles The set of sonar angles
+	 * They should be connected if the segment connecting them is clear
+	 * according to the current readings.
+	 * 
+	 * @param pn1
+	 *            The first node
+	 * @param pn2
+	 *            The second node
+	 * @param rPos
+	 *            The robot position
+	 * @param rOrient
+	 *            The robot orientation
+	 * @param sonarReadings
+	 *            The set of sonar readings
+	 * @param sonarAngles
+	 *            The set of sonar angles
 	 * @return
 	 */
-	private boolean shouldConnect(PointNode pn1, PointNode pn2, Coordinate rPos, float rOrient, Float1dPort sonarReadings,
-			Float1dPort sonarAngles) {
+	private boolean shouldConnect(PointNode pn1, PointNode pn2, Coordinate rPos, float rOrient,
+			Float1dPort sonarReadings, Float1dPort sonarAngles) {
+		// If the robot is at one of the nodes, connect them (assuming the caller has both active)
+		if (rPos.equals(pn1.prefLoc) || rPos.equals(pn2.prefLoc))
+			return true;
 		// Work in robot coordinates
 		Coordinate p1 = GeomUtils.relativeCoords(pn1.prefLoc, rPos, rOrient);
 		Coordinate p2 = GeomUtils.relativeCoords(pn2.prefLoc, rPos, rOrient);
@@ -277,24 +296,25 @@ public class ExperienceRoadMap extends Module {
 		// The angles to both nodes
 		float angleToP1 = GeomUtils.angleToPoint(p1);
 		float angleToP2 = GeomUtils.angleToPoint(p2);
-		
+
 		// Iterate over readings
-		for (int a = 0; a < sonarAngles.getSize(); a++){
+		for (int a = 0; a < sonarAngles.getSize(); a++) {
 			float angle = sonarAngles.get(a);
 			// If the angle falls between the angles to both nodes
 			// TODO: minor fix, take angle +/- aperture
-			if (GeomUtils.angleBetweenAngles(angle, angleToP1, angleToP2)){
+			if (GeomUtils.angleBetweenAngles(angle, angleToP1, angleToP2)) {
 				float reading = sonarReadings.get(a);
 				// Get the segment representing the reading (loose estimate)
-				Coordinate rayP = new Coordinate(Math.cos(angle) * reading, Math.sin(angle)*reading);
+				Coordinate rayP = new Coordinate(Math.cos(angle) * reading, Math.sin(angle) * reading);
 				LineSegment ray = new LineSegment(new Coordinate(), rayP);
-				// If the segment doesnt intersect, it means the reading was shorter than needed -> don't connect
+				// If the segment doesnt intersect, it means the reading was
+				// shorter than needed -> don't connect
 				Coordinate intersection = ray.intersection(p1p2);
 				if (intersection == null)
 					return false;
 			}
 		}
-		
+
 		return true;
 	}
 

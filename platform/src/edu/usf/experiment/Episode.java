@@ -140,11 +140,16 @@ public class Episode {
 
 			getSubject().getModel().runPre();
 			
+			// Evaluate stop conditions
+			for (Condition sc : stopConds)
+				finished = finished || sc.holds(this);
+			if (finished)
+				break;
 //			display.repaint();
 			
 			getUniverse().step();
 			
-			getSubject().getModel().runPost();
+//			getSubject().getModel().runPost();
 			
 			display.repaint();
 //			System.out.println("cycle");
@@ -157,10 +162,7 @@ public class Episode {
 			for (Task t : afterCycleTasks)
 				t.perform(this);
 
-			// Evaluate stop conditions
-			for (Condition sc : stopConds)
-				finished = finished || sc.holds(this);
-
+			
 			if (Debug.printEndCycle)
 				System.out.println("End cycle");
 

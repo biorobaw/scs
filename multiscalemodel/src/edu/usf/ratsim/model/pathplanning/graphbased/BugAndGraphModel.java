@@ -1,9 +1,11 @@
 package edu.usf.ratsim.model.pathplanning.graphbased;
 
 import edu.uci.ics.jung.graph.UndirectedGraph;
+import edu.usf.experiment.condition.FoundPlatform;
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.drawer.PathDrawer;
 import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.PlatformRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.SonarRobot;
 import edu.usf.experiment.subject.Subject;
@@ -14,6 +16,7 @@ import edu.usf.ratsim.nsl.modules.input.HeadDirection;
 import edu.usf.ratsim.nsl.modules.input.PlatformPosition;
 import edu.usf.ratsim.nsl.modules.input.Position;
 import edu.usf.ratsim.nsl.modules.input.SonarReadings;
+import edu.usf.ratsim.nsl.modules.input.SubFoundPlatform;
 import edu.usf.ratsim.nsl.modules.pathplanning.Edge;
 import edu.usf.ratsim.nsl.modules.pathplanning.ExperienceRoadMap;
 import edu.usf.ratsim.nsl.modules.pathplanning.PointNode;
@@ -48,12 +51,16 @@ public class BugAndGraphModel extends Model implements GraphModel {
 		PlatformPosition platPos = new PlatformPosition("Plat Pos");
 		addModule(platPos);
 		
+		SubFoundPlatform foundPlat = new SubFoundPlatform("Found Plat", (PlatformRobot) robot);
+		addModule(foundPlat);
+		
 		erm = new ExperienceRoadMap("Experience road map", algorithm, robot);
 		erm.addInPort("sonarReadings", sReadings.getOutPort("sonarReadings"));
 		erm.addInPort("sonarAngles", sReadings.getOutPort("sonarAngles"));
 		erm.addInPort("position", rPos.getOutPort("position"));
 		erm.addInPort("orientation", orientation.getOutPort("orientation"));
 		erm.addInPort("platformPosition", platPos.getOutPort("platformPosition"));
+		erm.addInPort("foundPlatform", foundPlat.getOutPort("foundPlatform"));
 		addModule(erm);		
 		
 		DisplaySingleton.getDisplay().addUniverseDrawer(new ExpGraphDrawer(erm), 0);

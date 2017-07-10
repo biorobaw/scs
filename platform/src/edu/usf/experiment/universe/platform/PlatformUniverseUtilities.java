@@ -9,7 +9,7 @@ public class PlatformUniverseUtilities {
 
 	public static boolean hasRobotFoundPlatform(List<Platform> platforms, Coordinate robotPos) {
 		for (Platform plat : platforms)
-			if (plat.getPosition().distance(robotPos) < plat.getRadius())
+			if (plat.getPosition().distance(robotPos) <= plat.getRadius())
 				return true;
 		return false;
 	}
