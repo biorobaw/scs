@@ -37,7 +37,7 @@ public class ExperienceRoadMap extends Module {
 
 	private static final float MAX_SINGLE_ACTIVATION = .98f;
 
-	private static final float DIST_TO_GOAL_THRS = .15f;
+	private static final float DIST_TO_GOAL_THRS = .2f;
 
 	private static final float NEXT_NODE_DIST_THRS = 0.15f;
 
@@ -100,99 +100,103 @@ public class ExperienceRoadMap extends Module {
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
 		PointPort platPos = (PointPort) getInPort("platformPosition");
 
-		// Compute active nodes
-		List<PointNode> active = new LinkedList<PointNode>();
-		float totalActivation = 0;
-		float maxActivation = Float.NEGATIVE_INFINITY;
-		PointNode maxActive = null;
-		for (PointNode n : g.getVertices()) {
-			n.updateActivation(rPos.get(), rOrient.get(), sonarReadings, sonarAngles);
-
-			float activation = n.getActivation();
-			totalActivation += activation;
-			if (activation > ACTIVATION_THRS)
-				active.add(n);
-
-			if (activation > maxActivation) {
-				maxActivation = activation;
-				maxActive = n;
-			}
-		}
-
-		// Creation of new nodes
-		if ((totalActivation < MIN_ACTIVATION && maxActivation < MAX_SINGLE_ACTIVATION)
-				|| (platPos.get().distance(rPos.get()) < DIST_TO_GOAL_THRS && totalActivation < 3 * MIN_ACTIVATION)) {
-			// System.out.println("Creating a node");
-			// Create new node
-			PointNode nv = new PointNode(rPos.get());
-			g.addVertex(nv);
-			// Add to the active set
-			nv.updateActivation(rPos.get(), rOrient.get(), sonarReadings, sonarAngles);
-			active.add(nv);
-			maxActive = nv;
-		}
-
-		// Connectivity of all active nodes
-		for (int i = 0; i < active.size(); i++) {
-			PointNode n1 = active.get(i);
-			for (int j = i + 1; j < active.size(); j++) {
-				PointNode n2 = active.get(j);
-				if (!g.isNeighbor(n1, n2)){
-					if (shouldConnect(n1, n2, rPos.get(), rOrient.get(), sonarReadings, sonarAngles)){
-						g.addEdge(new Edge((float) n1.prefLoc.distance(n2.prefLoc)), n1, n2);
-					}
-				}
-			}
-
-		}
-
-//		if (prevMaxActive != null)
-//			g.addEdge(new Edge((float) maxActive.prefLoc.distance(prevMaxActive.prefLoc)), maxActive, prevMaxActive);
-
-		prevActive = active;
-		prevMaxActive = maxActive;
-
-		// Compute dijsktra
-		// Get the current node
-		PointNode mostActive = active.get(0);
-		for (PointNode pn : active)
-			if (pn.activation > mostActive.activation)
-				mostActive = pn;
-		// Get the goal node
-		PointNode goalNode = null;
-		for (PointNode pn : g.getVertices())
-			if (pn.prefLoc.distance(platPos.get()) < DIST_TO_GOAL_THRS)
-				if (goalNode == null)
-					goalNode = pn;
-				else if (goalNode.prefLoc.distance(platPos.get()) > pn.prefLoc.distance(platPos.get()))
-					goalNode = pn;
-
 		List<Edge> bestPath = null;
 		PointNode start = null;
-		if (goalNode != null) {
-			float minDist = Float.MAX_VALUE;
-			for (PointNode n : active){
-				// Compute the shortest path
-				Transformer<Edge, Float> wtTransformer = new Transformer<Edge, Float>() {
-					public Float transform(Edge link) {
-						return link.weight;
-					}
-				};
-				DijkstraShortestPath<PointNode, Edge> alg = new DijkstraShortestPath(g, wtTransformer);
-				List<Edge> l = alg.getPath(n, goalNode);
-				Number dist = alg.getDistance(n, goalNode);
-				if (dist != null && dist.floatValue() < minDist){
-					minDist = dist.floatValue();
-					bestPath = l;
-					start = n;
+		List<PointNode> active = new LinkedList<PointNode>();
+		synchronized (g) {
+			// Compute active nodes
+			float totalActivation = 0;
+			float maxActivation = Float.NEGATIVE_INFINITY;
+			PointNode maxActive = null;
+			for (PointNode n : g.getVertices()) {
+				n.updateActivation(rPos.get(), rOrient.get(), sonarReadings, sonarAngles);
+
+				float activation = n.getActivation();
+				totalActivation += activation;
+				if (activation > ACTIVATION_THRS)
+					active.add(n);
+
+				if (activation > maxActivation) {
+					maxActivation = activation;
+					maxActive = n;
 				}
 			}
+
+			// Creation of new nodes
+			if ((totalActivation < MIN_ACTIVATION && maxActivation < MAX_SINGLE_ACTIVATION)
+					|| (platPos.get().distance(rPos.get()) < DIST_TO_GOAL_THRS && totalActivation < 3 * MIN_ACTIVATION)) {
+				// System.out.println("Creating a node");
+				// Create new node
+				PointNode nv = new PointNode(rPos.get());
+				g.addVertex(nv);
+				// Add to the active set
+				nv.updateActivation(rPos.get(), rOrient.get(), sonarReadings, sonarAngles);
+				active.add(nv);
+				maxActive = nv;
+			}
+
+			// Connectivity of all active nodes
+			for (int i = 0; i < active.size(); i++) {
+				PointNode n1 = active.get(i);
+				for (int j = i + 1; j < active.size(); j++) {
+					PointNode n2 = active.get(j);
+					if (!g.isNeighbor(n1, n2)){
+						if (shouldConnect(n1, n2, rPos.get(), rOrient.get(), sonarReadings, sonarAngles)){
+							g.addEdge(new Edge((float) n1.prefLoc.distance(n2.prefLoc)), n1, n2);
+						}
+					}
+				}
+
+			}
 			
-			// System.out.println("The shortest path from" + mostActive + " to "
-			// + goalNode + " is:");
-			// System.out.println(l.toString());
-			// System.out.println("and the length of the path is: " + dist);
+			prevActive = active;
+
+			// Compute dijsktra
+			// Get the current node
+			PointNode mostActive = active.get(0);
+			for (PointNode pn : active)
+				if (pn.activation > mostActive.activation)
+					mostActive = pn;
+			// Get the goal node
+			PointNode goalNode = null;
+			float minDistToGoal = Float.MAX_VALUE;
+			for (PointNode pn : g.getVertices()){
+				float dist = (float) pn.prefLoc.distance(platPos.get());
+				if (dist < DIST_TO_GOAL_THRS && dist < minDistToGoal)
+					goalNode = pn;
+			}
+				
+
+
+			start = null;
+			if (goalNode != null) {
+				float minDist = Float.MAX_VALUE;
+				for (PointNode n : active){
+					// Compute the shortest path
+					Transformer<Edge, Float> wtTransformer = new Transformer<Edge, Float>() {
+						public Float transform(Edge link) {
+							return link.weight;
+						}
+					};
+					DijkstraShortestPath<PointNode, Edge> alg = new DijkstraShortestPath(g, wtTransformer);
+					List<Edge> l = alg.getPath(n, goalNode);
+					Number dist = alg.getDistance(n, goalNode);
+					if (dist != null && dist.floatValue() < minDist){
+						minDist = dist.floatValue();
+						bestPath = l;
+						start = n;
+					}
+				}
+				
+				// System.out.println("The shortest path from" + mostActive + " to "
+				// + goalNode + " is:");
+				// System.out.println(l.toString());
+				// System.out.println("and the length of the path is: " + dist);
+			}
 		}
+		
+
+//		
 
 		// Publish a closer goal if there is a valid path
 		if (bestPath == null || bestPath.isEmpty()) {

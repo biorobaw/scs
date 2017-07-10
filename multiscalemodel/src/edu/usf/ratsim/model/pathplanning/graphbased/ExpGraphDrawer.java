@@ -31,27 +31,29 @@ public class ExpGraphDrawer implements Drawer {
 		UndirectedGraph<PointNode, Edge> graph = erm.getGraph();
 		
 		if (graph != null){
-			ConcurrentLinkedQueue<Edge> edges = new ConcurrentLinkedQueue<Edge>(graph.getEdges());
-			for (Edge e : edges){
-				g.setColor(Color.GRAY);
-				Point dst = s.scale(graph.getEndpoints(e).getFirst().prefLoc);
-				Point src = s.scale(graph.getEndpoints(e).getSecond().prefLoc);
-				
-				g.drawLine(src.x, src.y, dst.x, dst.y);
+			synchronized (graph) {
+				for (Edge e : graph.getEdges()){
+					g.setColor(Color.GRAY);
+					Point dst = s.scale(graph.getEndpoints(e).getFirst().prefLoc);
+					Point src = s.scale(graph.getEndpoints(e).getSecond().prefLoc);
+					
+					g.drawLine(src.x, src.y, dst.x, dst.y);
+				}
+				PointNode followingNode = erm.getFollowingNode();
+				Collection<PointNode> vertices = new LinkedList<PointNode>(graph.getVertices());
+				for (PointNode pn : vertices){
+					Point pos = s.scale(new Coordinate(pn.prefLoc.x, pn.prefLoc.y));
+					if (pn == followingNode)
+						g.setColor(Color.GREEN);
+					else if (pn.getActivation() == 0)
+						g.setColor(Color.BLUE);
+					else
+						g.setColor(new Color(1, 1- pn.getActivation(), 1 - pn.getActivation()));
+					g.fillOval(pos.x - (int) (NODE_R * s.xscale), pos.y - (int) (NODE_R * s.yscale),
+							(int) (NODE_R * s.xscale * 2), (int) (NODE_R * s.yscale * 2));
+				}
 			}
-			PointNode followingNode = erm.getFollowingNode();
-			Collection<PointNode> vertices = new LinkedList<PointNode>(graph.getVertices());
-			for (PointNode pn : vertices){
-				Point pos = s.scale(new Coordinate(pn.prefLoc.x, pn.prefLoc.y));
-				if (pn == followingNode)
-					g.setColor(Color.GREEN);
-				else if (pn.getActivation() == 0)
-					g.setColor(Color.BLUE);
-				else
-					g.setColor(new Color(1, 1- pn.getActivation(), 1 - pn.getActivation()));
-				g.fillOval(pos.x - (int) (NODE_R * s.xscale), pos.y - (int) (NODE_R * s.yscale),
-						(int) (NODE_R * s.xscale * 2), (int) (NODE_R * s.yscale * 2));
-			}
+			
 		}
 			
 	}
