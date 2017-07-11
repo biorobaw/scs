@@ -23,6 +23,7 @@ public class BugUtilities {
 	private static final float WF_MIN_FW_VEL = .05f;
 	private static final float WF_ROT_VEL_OBS_FRONT = 1f;
 	private static final float MAX_GS_PROP_DIST = 0.3f;
+	private static final float MAX_ERR = .2f;
 
 	public static Velocities goalSeek(Coordinate rPos, float rOrient, Coordinate platPos) {
 		float linear, angular; 
@@ -48,11 +49,12 @@ public class BugUtilities {
 			float quot = left / leftFront;
 			float targetquot = (float) Math.cos(Math.PI / 8);
 
-			float close_prop = left - WL_RIGHT_TARGET;
+			float close_prop = Math.min(MAX_ERR, left - WL_RIGHT_TARGET);
 			
 			angular = PROP_ANG_PARALLEL * (targetquot - quot) + PROP_ANG_WALL_CLOSE * close_prop;
 
-			linear = Math.max(PROP_LINEAR_WF * (front - WL_FW_TARGET), WF_MIN_FW_VEL);
+			float front_err = Math.min(front - WL_FW_TARGET, MAX_ERR);
+			linear = Math.max(PROP_LINEAR_WF * (front_err), WF_MIN_FW_VEL);
 		}
 		
 		return new Velocities(linear, angular);

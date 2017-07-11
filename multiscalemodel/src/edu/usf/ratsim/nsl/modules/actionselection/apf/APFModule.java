@@ -4,12 +4,10 @@ package edu.usf.ratsim.nsl.modules.actionselection.apf;
 import java.awt.geom.Point2D;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.util.NoninvertibleTransformationException;
 
 import edu.usf.experiment.robot.DifferentialRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.GeomUtils;
-import edu.usf.experiment.utils.RigidTransformation;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.vector.PointPort;
@@ -18,25 +16,15 @@ import edu.usf.ratsim.nsl.modules.actionselection.bugs.Velocities;
 
 public class APFModule extends Module {
 
-	private static final float MIN_DIST_TO_OBS = 0.1f;
-
-	private static final float MIN_DIST_TO_OBS_ROT = 0.3f;
-
-	private static final float REP_ANGULAR_P = 1f;
-
-	private static final float ANGULAR_P = .4f;
+	private static final float ANGULAR_P = 1f;
 
 	private static final float LINEAR_P = .2f;
 
-	private static final float REP_LINEAR_P = .3f;
+	private static final float REP_MULTIPLIER = .01f;
 
-	private static final float CLOSE_THRS = .15f;
+	private static final float ATTRACT_MAGNITUDE = .1f;
 
-	private static final float MAX_READ = .3f;
-
-	private static final float REP_MULTIPLIER = 10f;
-
-	private static final float ATTRACT_MAGNITUDE = .2f;
+	private static final float MAX_REP_DIST = 0.2f;
 
 	private DifferentialRobot r;
 
@@ -57,22 +45,26 @@ public class APFModule extends Module {
 
 		// Start with the attractive field
 		float relAngleToPlat = GeomUtils.relativeAngleToPoint(rPos.get(), rOrient.get(), platPos.get());
-		Point2D.Float pGradient = new Point2D.Float((float) (Math.cos(relAngleToPlat) * ATTRACT_MAGNITUDE),
+		Coordinate pGradient = new Coordinate((float) (Math.cos(relAngleToPlat) * ATTRACT_MAGNITUDE),
 				(float) (Math.sin(relAngleToPlat) * ATTRACT_MAGNITUDE));
+		System.out.println(relAngleToPlat);
 		// Add all repulsive fields, one per sensor
 		for (int a = 0; a < angles.getSize(); a++) {
 			float angle = angles.get(a);
 			float reading = readings.get(a);
 			float opposite = (float) (angle - Math.PI);
-			float magnitude = (float) Math.exp(REP_MULTIPLIER * Math.pow(MAX_READ - reading, 2)) - 1;
-			Point2D.Float rep = new Point2D.Float((float) Math.cos(opposite) * magnitude,
+			float magnitude;
+			if (reading < MAX_REP_DIST)
+				magnitude = (float) (REP_MULTIPLIER * Math.pow(1 / reading - 1 / MAX_REP_DIST, 2));
+			else
+				magnitude = 0f;
+			Coordinate rep = new Coordinate((float) Math.cos(opposite) * magnitude,
 					(float) (Math.sin(opposite) * magnitude));
-			pGradient = new Point2D.Float((float) (pGradient.getX() + rep.getX()),
-					(float) (pGradient.getY() + rep.getY()));
+			pGradient = new Coordinate(pGradient.x + rep.x, pGradient.y + rep.y);
 		}
 
-		float angle = (float) Math.atan2(pGradient.getY(), pGradient.getX());
-		float magnitude = (float) pGradient.distance(0, 0);
+		float angle = (float) Math.atan2(pGradient.y, pGradient.x);
+		float magnitude = (float) pGradient.distance(new Coordinate());
 
 		Velocities v = new Velocities();
 		// Angular is proportional to angle difference
