@@ -10,11 +10,12 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.DifferentialRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.robot.PlatformRobot;
 import edu.usf.experiment.robot.SonarRobot;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot, Runnable {
+public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot, PlatformRobot, Runnable {
 
     private static final String PORT = "/dev/ttyUSB0";
     private static final int BAUD_RATE = 57600;
@@ -22,7 +23,7 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
     private static final int MAX_XVEL = 127;
     private static final int MAX_TVEL = 127;
 	private static final int ZERO_VEL = 128;
-    private static final float XVEL_CONV = MAX_XVEL / .5f;
+    private static final float XVEL_CONV = MAX_XVEL / 50;
     private static final float TVEL_CONV = (float) (MAX_TVEL / (Math.PI * 2 * 1));
     
 	private static final long CONTROL_PERIOD = 100;
@@ -126,7 +127,7 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 			tVelShort = (short) Math.max(0, Math.min(tVelShort, 255));
 			byte[] dataToSend = {(byte) xVelShort, (byte) 128, (byte) tVelShort};
 			
-//			System.out.println(xVelShort + " " + tVelShort);
+			System.out.println(xVelShort + " " + tVelShort);
 			try {
 				myDevice.sendData(remoteDevice, dataToSend);
 			} catch (XBeeException e) {
@@ -190,6 +191,12 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 	@Override
 	public float getOrientationAngle() {
 		return 0f;
+	}
+
+	@Override
+	public boolean hasFoundPlatform() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 
