@@ -35,7 +35,7 @@
 			
 			<sonarAngles>0.0,0.5235988,1.0471976,1.5707964,2.0943952,2.6179938,3.1415927,3.6651914,4.1887903,4.712389,5.2359877,5.7595863</sonarAngles>
 			<sonarAperture>0.52</sonarAperture>
-			<sonarMaxDist>.3</sonarMaxDist>
+			<sonarMaxDist>.5</sonarMaxDist>
 			<sonarNumRays>9</sonarNumRays>
 			
 		</params>
