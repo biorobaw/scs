@@ -1,24 +1,17 @@
 package edu.usf.ratsim.nsl.modules.pathplanning;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Paint;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.swing.JFrame;
 
 import org.apache.commons.collections15.Transformer;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
-import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import edu.uci.ics.jung.graph.util.Pair;
-import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
@@ -77,7 +70,7 @@ public class ExperienceRoadMap extends Module {
 		this.maxNodeRadiusCreate = maxNodeRadiusCreate;
 		this.maxNodeRadiusConnect = maxNodeRadiusConnect;
 		this.maxNodeRadiusFollow = maxNodeRadiusFollow;
-		
+
 		prevToConnect = null;
 	}
 
@@ -101,7 +94,7 @@ public class ExperienceRoadMap extends Module {
 			for (PointNode n : g.getVertices()) {
 				n.updateDistance(rPos.get(), rOrient.get(), sonarReadings, sonarAngles);
 				minDistToRobot = Math.min(minDistToRobot, n.distToRobot);
-				
+
 				if (n.distToRobot < maxNodeRadiusFollow)
 					toFollow.add(n);
 				if (n.distToRobot < maxNodeRadiusConnect)
@@ -121,7 +114,7 @@ public class ExperienceRoadMap extends Module {
 			}
 
 			// Connectivity of all active nodes
-			if (toConnect.size() == 1 && prevToConnect != null) { 
+			if (toConnect.size() == 1 && prevToConnect != null) {
 				PointNode node = toConnect.get(0);
 				for (PointNode pn : prevToConnect) {
 					g.addEdge(new Edge((float) node.prefLoc.distance(pn.prefLoc)), node, pn);
@@ -131,7 +124,8 @@ public class ExperienceRoadMap extends Module {
 					PointNode n1 = toConnect.get(i);
 					for (int j = i + 1; j < toConnect.size(); j++) {
 						PointNode n2 = toConnect.get(j);
-						if (!g.isNeighbor(n1, n2) && n1.distToRobot < maxNodeRadiusConnect && n2.distToRobot < maxNodeRadiusConnect) {
+						if (!g.isNeighbor(n1, n2) && n1.distToRobot < maxNodeRadiusConnect
+								&& n2.distToRobot < maxNodeRadiusConnect) {
 							// if (shouldConnect(n1, n2, rPos.get(),
 							// rOrient.get(), sonarReadings, sonarAngles)) {
 							g.addEdge(new Edge((float) n1.prefLoc.distance(n2.prefLoc)), n1, n2);
@@ -155,7 +149,7 @@ public class ExperienceRoadMap extends Module {
 				}
 			}
 
-			start = null;
+//			System.out.println("Goal node " + goalNode);
 			if (goalNode != null) {
 				float minDist = Float.MAX_VALUE;
 				for (PointNode n : toFollow) {
@@ -175,22 +169,25 @@ public class ExperienceRoadMap extends Module {
 					}
 				}
 
-				// System.out.println("The shortest path from" + mostActive + "
-				// to "
-				// + goalNode + " is:");
-				// System.out.println(l.toString());
-				// System.out.println("and the length of the path is: " + dist);
+//				System.out.println("The shortest path from" + start + " to " + goalNode + " is:");
+//				System.out.println(bestPath.toString());
+//				System.out.println("and the length of the path is: " + minDist);
 			}
 		}
 
 		//
+		following = null;
+		for (PointNode n : g.getVertices())
+			n.following = false;
 
 		// Publish a closer goal if there is a valid path
-		if (bestPath == null || bestPath.isEmpty()) {
+		if (bestPath == null) {
 			intermediateGoal.set(platPos.get());
+//			System.out.println("Executing bug");
 			bug.run();
 
 		} else {
+//			System.out.println("Executing apf");
 			// Point3f next = g.getEndpoints(l.get(0)).getSecond().prefLoc;
 			// if (next.distance(rPos.get()) > NEXT_NODE_DIST_THRS)
 			// intermediateGoal.set(next);
@@ -215,14 +212,12 @@ public class ExperienceRoadMap extends Module {
 				i++;
 			}
 
-			// if (prevNode.prefLoc.distance(rPos.get()) >
-			// MIN_DISTANCE_TO_NEXT_NODE)
-			// following = prevNode;
-			// else
-			following = prevNode;
-
-			for (PointNode n : g.getVertices())
-				n.following = false;
+			// If didn't reach the end of the path, take the last in toFollow
+			if (i < bestPath.size())
+				following = prevNode;
+			else
+				// Else, take the last one
+				following = nextNode;
 
 			if (i >= bestPath.size() || following == null)
 				intermediateGoal.set(platPos.get());
