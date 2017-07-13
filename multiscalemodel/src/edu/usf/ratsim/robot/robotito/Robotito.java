@@ -23,13 +23,12 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
     private static final int MAX_XVEL = 127;
     private static final int MAX_TVEL = 127;
 	private static final int ZERO_VEL = 128;
-    private static final float XVEL_CONV = MAX_XVEL / 50;
+    private static final float XVEL_CONV = MAX_XVEL / 5 * 30;
     private static final float TVEL_CONV = (float) (MAX_TVEL / (Math.PI * 2 * 1));
     
 	private static final long CONTROL_PERIOD = 100;
 	private static final int NUM_SONARS = 12;
 
-    
 	private XBeeDevice myDevice;
 	private RemoteXBeeDevice remoteDevice;
 	private float xVel;
@@ -37,6 +36,8 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 
 	private float[] sonarReading;
 	private float[] sonarAngles;
+	
+	private ROSPoseDetector poseDetector;
     
 	public Robotito(ElementWrapper params, Universe u) {
 		sonarAngles = new float[NUM_SONARS];
@@ -44,12 +45,11 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 		for (int i = 0; i < NUM_SONARS; i++){
 			sonarAngles[i] = (float) (2 * Math.PI / NUM_SONARS * i);
 			System.out.print(sonarAngles[i] + ",");
-			sonarReading[i] = 0f;
+			sonarReading[i] = .3f;
 		}
 		
-		myDevice = new XBeeDevice(PORT, BAUD_RATE);
-		
 		try {
+			myDevice = new XBeeDevice(PORT, BAUD_RATE);
 			myDevice.open();
 			
 			myDevice.addDataListener(new IDataReceiveListener() {
@@ -87,12 +87,22 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 			remoteDevice = new RemoteXBeeDevice(myDevice, new XBee64BitAddress("0x00002222"));
 		} catch (XBeeException e) {
 			e.printStackTrace();
-			System.exit(1);
 		}
 		
 		xVel = 0;
 		tVel = 0;
 		
+		poseDetector = ROSPoseDetector.getInstance();
+		System.out.println("[+] Waiting for updated localization information");
+		long now = System.currentTimeMillis();
+		while (poseDetector.lastPoseReceived < now)
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		System.out.println("[+] Got new info");
 		// Start a thread to send vel packets
 		new Thread(this).start();
 	}
@@ -131,7 +141,7 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 			try {
 				myDevice.sendData(remoteDevice, dataToSend);
 			} catch (XBeeException e) {
-				e.printStackTrace();
+				System.err.println("XBee error");
 			}
 			
 			try {
@@ -185,12 +195,12 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 
 	@Override
 	public Coordinate getPosition() {
-		return new Coordinate();
+		return poseDetector.getPosition();
 	}
 
 	@Override
 	public float getOrientationAngle() {
-		return 0f;
+		return poseDetector.getAngle();
 	}
 
 	@Override

@@ -29,6 +29,7 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 	 */
 	private static final long serialVersionUID = 6489459171441343768L;
 	private static final int PADDING = 10;
+	private static final int INITIAL_SPEED = 1;
 	private UniversePanel uPanel;
 	private JPanel plotsPanel;
 	private JPanel uViewPanel;
@@ -42,9 +43,9 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		
 		// Add slider for simulation velocity
 		Globals g = Globals.getInstance();
-		g.put("simulationSpeed", 0);
+		g.put("simulationSpeed", INITIAL_SPEED);
 		JSlider simVel = new JSlider(JSlider.HORIZONTAL,
-                0, 9, 0);
+                0, 9, INITIAL_SPEED);
 		simVel.setPreferredSize(new Dimension(300, 50));
 		simVel.addChangeListener(this);
 		
