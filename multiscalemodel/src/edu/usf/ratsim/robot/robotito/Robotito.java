@@ -20,14 +20,21 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
     private static final String PORT = "/dev/ttyUSB0";
     private static final int BAUD_RATE = 57600;
     
-    private static final int MAX_XVEL = 127;
-    private static final int MAX_TVEL = 127;
-	private static final int ZERO_VEL = 128;
-    private static final float XVEL_CONV = MAX_XVEL / 5 * 30;
-    private static final float TVEL_CONV = (float) (MAX_TVEL / (Math.PI * 2 * 1));
+    // Shared constants with the arduino code
+    // 100 is the max absolute value for the command
+    private static final int MAX_XVEL = 100;
+    private static final int MAX_TVEL = 100;
+    // 100 means 5 m/s linear vel
+    private static final float XVEL_CONV = MAX_XVEL / 5;
+    // 100 means 4 turns/s angular vel
+    private static final float TVEL_CONV = (float) (MAX_TVEL / (Math.PI * 8));
+    // 128 means zero in the final byte (b = 128 + cmd)
+    private static final int ZERO_VEL = 128;
     
-	private static final long CONTROL_PERIOD = 100;
+	private static final long CONTROL_PERIOD = 50;
 	private static final int NUM_SONARS = 12;
+	private static final float LINEAR_INERTIA = 0;
+	private static final float ANGULAR_INERTIA = 0;
 
 	private XBeeDevice myDevice;
 	private RemoteXBeeDevice remoteDevice;
@@ -38,6 +45,10 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 	private float[] sonarAngles;
 	
 	private ROSPoseDetector poseDetector;
+	private int kP = 20;
+	// kI is divided by 10 in the robot
+	private int kI = 40;
+	private int kD = 0;
     
 	public Robotito(ElementWrapper params, Universe u) {
 		sonarAngles = new float[NUM_SONARS];
@@ -103,8 +114,27 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 				e.printStackTrace();
 			}
 		System.out.println("[+] Got new info");
+		
+		sendKs();
+		
 		// Start a thread to send vel packets
-		new Thread(this).start();
+		Thread runner = new Thread(this);
+		runner.setPriority(Thread.MAX_PRIORITY);
+		runner.start();
+	}
+
+	private void sendKs() {
+		byte[] dataToSend = {(byte)'k', 
+				(byte)(kP + 128), (byte)(kI + 128), (byte)(kD + 128),
+				(byte)(kP + 128), (byte)(kI + 128), (byte)(kD + 128),
+				(byte)(kP + 128), (byte)(kI + 128), (byte)(kD + 128),
+				(byte)(kP + 128), (byte)(kI + 128), (byte)(kD + 128)};
+		
+		try {
+			myDevice.sendData(remoteDevice, dataToSend);
+		} catch (XBeeException e) {
+			System.err.println("XBee error");
+		}		
 	}
 
 	@Override
@@ -131,15 +161,15 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 	public void run() {
 		while (true){
 			System.out.println(xVel + " " + tVel);
-			short xVelShort = (short) (xVel * XVEL_CONV + ZERO_VEL);
+			short xVelShort = (short) (xVel * XVEL_CONV + LINEAR_INERTIA * Math.signum(xVel) + ZERO_VEL);
 			xVelShort = (short) Math.max(0, Math.min(xVelShort, 255));
-			short tVelShort = (short) (tVel * TVEL_CONV + ZERO_VEL);
+			short tVelShort = (short) (tVel * TVEL_CONV + ANGULAR_INERTIA * Math.signum(xVel) + ZERO_VEL);
 			tVelShort = (short) Math.max(0, Math.min(tVelShort, 255));
-			byte[] dataToSend = {(byte) xVelShort, (byte) 128, (byte) tVelShort};
+			byte[] dataToSend = {(byte)'v', (byte) Math.abs(xVelShort), (byte) 128, (byte) Math.abs(tVelShort)};
 			
 			System.out.println(xVelShort + " " + tVelShort);
 			try {
-				myDevice.sendData(remoteDevice, dataToSend);
+				myDevice.sendDataAsync(remoteDevice, dataToSend);
 			} catch (XBeeException e) {
 				System.err.println("XBee error");
 			}
@@ -153,26 +183,6 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 				
 	}
 	
-	public static void main(String[] args){
-		Robotito r = new Robotito(null, null);
-		r.setLinearVel(0f);
-		r.setAngularVel(0f);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		r.setLinearVel(0);
-		r.setAngularVel(0f);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		System.exit(0);
-		
-	}
-
 	@Override
 	public float[] getSonarReadings() {
 		return sonarReading;
@@ -209,6 +219,24 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 		return false;
 	}
 
-
+	public static void main(String[] args){
+		Robotito r = new Robotito(null, null);
+		r.setLinearVel(.2f);
+		r.setAngularVel((float) (-4));
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+//		r.setLinearVel(0);
+//		r.setAngularVel(0f);
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+		System.exit(0);
+		
+	}
 
 }
