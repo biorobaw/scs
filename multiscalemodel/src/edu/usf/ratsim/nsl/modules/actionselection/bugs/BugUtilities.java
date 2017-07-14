@@ -16,7 +16,7 @@ public class BugUtilities {
 	private static final float PROP_ANG_WALL_CLOSE = 2f;
 	private static final float PROP_LINEAR_WF = 0.125f;
 	private static final float PROP_LINEAR_GS = 0.25f;
-	private static final float PROP_ANGULAR_GS = .1f;
+	private static final float PROP_ANGULAR_GS = 1f;
 
 	private static final float WL_FW_TARGET = .15f;   	
 	private static final float WL_RIGHT_TARGET = .1f; 
@@ -39,7 +39,7 @@ public class BugUtilities {
 		float minLeft = SonarUtils.getMinReading(readings, angles, (float) (Math.PI/2), (float) (Math.PI/12));
 		float front = SonarUtils.getReading(0f, readings, angles);
 		float left = SonarUtils.getReading((float) (Math.PI/2), readings, angles);
-		float leftFront = SonarUtils.getReading((float) (Math.PI/4), readings, angles);
+		float leftFront = SonarUtils.getReading((float) (Math.PI/3), readings, angles);
 		if (minFront < OBSTACLE_FOUND_THRS){
 			angular = -WF_ROT_VEL_OBS_FRONT;
 			linear = 0;
@@ -47,7 +47,7 @@ public class BugUtilities {
 			// Get the current relation and the target relation (wall parallel
 			// to robot)
 			float quot = left / leftFront;
-			float targetquot = (float) Math.cos(Math.PI / 8);
+			float targetquot = (float) Math.cos(Math.PI / 6);
 
 			float close_prop = Math.min(MAX_ERR, left - WL_RIGHT_TARGET);
 			
