@@ -63,9 +63,9 @@ public class SetUpRandomWalls extends Task {
 		System.out.println("[+] Adding small walls");
 		wu.setRevertWallPoint();
 		
-//		while (!placeWalls(wu, pu, gcu))
-//			DisplaySingleton.getDisplay().repaint();
-//			;
+		while (!placeWalls(wu, pu, gcu))
+			DisplaySingleton.getDisplay().repaint();
+			;
 		System.out.println("[+] Small walls added");
 	}
 	

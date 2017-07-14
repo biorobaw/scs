@@ -16,7 +16,7 @@ import edu.usf.ratsim.nsl.modules.actionselection.bugs.Velocities;
 
 public class APFModule extends Module {
 
-	private static final float ANGULAR_P = 1f;
+	private static final float ANGULAR_P = 10f;
 
 	private static final float LINEAR_P = .2f;
 
@@ -47,7 +47,6 @@ public class APFModule extends Module {
 		float relAngleToPlat = GeomUtils.relativeAngleToPoint(rPos.get(), rOrient.get(), platPos.get());
 		Coordinate pGradient = new Coordinate((float) (Math.cos(relAngleToPlat) * ATTRACT_MAGNITUDE),
 				(float) (Math.sin(relAngleToPlat) * ATTRACT_MAGNITUDE));
-		System.out.println(relAngleToPlat);
 		// Add all repulsive fields, one per sensor
 		for (int a = 0; a < angles.getSize(); a++) {
 			float angle = angles.get(a);
