@@ -16,7 +16,7 @@ public class BugUtilities {
 	private static final float PROP_ANG_WALL_CLOSE = 2f;
 	private static final float PROP_LINEAR_WF = 0.125f;
 	private static final float PROP_LINEAR_GS = 0.25f;
-	private static final float PROP_ANGULAR_GS = 10f;
+	private static final float PROP_ANGULAR_GS = .1f;
 
 	private static final float WL_FW_TARGET = .15f;   	
 	private static final float WL_RIGHT_TARGET = .1f; 

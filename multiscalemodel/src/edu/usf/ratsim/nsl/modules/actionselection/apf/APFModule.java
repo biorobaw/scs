@@ -16,7 +16,7 @@ import edu.usf.ratsim.nsl.modules.actionselection.bugs.Velocities;
 
 public class APFModule extends Module {
 
-	private static final float ANGULAR_P = 10f;
+	private static final float ANGULAR_P = .1f;
 
 	private static final float LINEAR_P = .2f;
 
