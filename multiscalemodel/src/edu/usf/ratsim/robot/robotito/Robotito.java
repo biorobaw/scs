@@ -35,6 +35,7 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 	private static final int NUM_SONARS = 12;
 	private static final float LINEAR_INERTIA = 0;
 	private static final float ANGULAR_INERTIA = 0;
+	private static final float ROBOT_RADIUS = 0.075f;
 
 	private XBeeDevice myDevice;
 	private RemoteXBeeDevice remoteDevice;
@@ -237,6 +238,11 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 //		}
 		System.exit(0);
 		
+	}
+
+	@Override
+	public float getRadius() {
+		return ROBOT_RADIUS;
 	}
 
 }

@@ -26,5 +26,7 @@ public interface SonarRobot {
 	 * @return The maximum possible reading value
 	 */
 	public float getSonarMaxReading();
+
+
 	
 }

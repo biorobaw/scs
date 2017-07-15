@@ -10,7 +10,7 @@ import edu.usf.experiment.universe.GlobalCameraUniverse;
 
 public class RobotDrawer implements Drawer {
 
-	private static final float RADIUS = .05f;
+	private static final float RADIUS = .075f;
 	private GlobalCameraUniverse u;
 	
 	public RobotDrawer(GlobalCameraUniverse gcu){

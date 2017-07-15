@@ -40,10 +40,6 @@ public class Bug1Module extends Module {
 		Float0dPort rOrient = (Float0dPort) getInPort("orientation");
 		PointPort platPos = (PointPort) getInPort("platformPosition");
 
-		float front = SonarUtils.getReading(0f, readings, angles);
-		float left = SonarUtils.getReading((float) (Math.PI / 2), readings, angles);
-		float leftFront = SonarUtils.getReading((float) (Math.PI / 4), readings, angles);
-
 		// State switching criteria
 		switch (state) {
 		case GOAL_SEEKING:
@@ -102,7 +98,7 @@ public class Bug1Module extends Module {
 		case WF_AWAY_FROM_HP:
 		case WF_RETURN_TO_HP:
 		case WF_GO_TO_CP:
-			v = BugUtilities.wallFollowRight(readings, angles);
+			v = BugUtilities.wallFollowRight(readings, angles, r.getRadius());
 			break;
 		}
 

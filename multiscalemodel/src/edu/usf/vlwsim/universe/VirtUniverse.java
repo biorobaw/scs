@@ -131,7 +131,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		robotPos = new RigidTransformation();
 
 		robotWantsToEat = false;
-		
+
 		list = maze.getChildren("wall");
 		for (ElementWrapper wall : list) {
 			Wall w = new Wall(wall.getChildFloat("x1"), wall.getChildFloat("y1"), wall.getChildFloat("x2"),
@@ -163,8 +163,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		list = maze.getChildren("platform");
 		platforms = new LinkedList<Platform>();
 		for (ElementWrapper platform : list) {
-			Platform p = new Platform(
-					new Coordinate(platform.getChildFloat("x"), platform.getChildFloat("y")),
+			Platform p = new Platform(new Coordinate(platform.getChildFloat("x"), platform.getChildFloat("y")),
 					platform.getChildFloat("r"), Color.YELLOW);
 			platforms.add(p);
 		}
@@ -179,7 +178,6 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		DisplaySingleton.getDisplay().addUniverseDrawer(new FeederDrawer(this));
 		DisplaySingleton.getDisplay().addUniverseDrawer(new WallDrawer(this));
 		DisplaySingleton.getDisplay().addUniverseDrawer(new RobotDrawer(this));
-			
 
 	}
 
@@ -336,10 +334,10 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		platforms.clear();
 	}
 
-	public void addPlatform(Coordinate pos, float radius){
+	public void addPlatform(Coordinate pos, float radius) {
 		addPlatform(pos, radius, Color.YELLOW);
 	}
-	
+
 	public void addPlatform(Coordinate pos, float radius, Color color) {
 		platforms.add(new Platform(pos, radius, color));
 	}
@@ -360,7 +358,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	 *************************************/
 	public void setRobotPosition(Coordinate pos) {
 		robotPos = new RigidTransformation(pos, robotPos.getRotation());
-		
+
 		robotAte = robotTriedToEat = false;
 	}
 
@@ -404,7 +402,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	 *            Direction and magnitude of the movement
 	 */
 	public void moveRobot(Coordinate vector) {
-		Coordinate from = robotPos.getTranslation(); 
+		Coordinate from = robotPos.getTranslation();
 
 		// Create a new transforme with the translation
 		RigidTransformation trans = new RigidTransformation(vector, 0);
@@ -429,13 +427,12 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 
 		robotAte = robotTriedToEat = false;
 	}
-	
+
 	public void rotateRobot(float angle) {
 		robotPos.composeBefore(new RigidTransformation(angle));
 
 		robotAte = robotTriedToEat = false;
 	}
-
 
 	public boolean canRobotMove(float angle, float step) {
 		RigidTransformation move = new RigidTransformation(step, 0f, angle);
@@ -455,7 +452,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		RigidTransformation move = new RigidTransformation(step, 0f, angle);
 		Coordinate to = robotPos.getTranslation();
 		move.transform(to, to);
-		
+
 		// Check if crosses any wall
 		boolean intesectsWall = false;
 		LineSegment path = new LineSegment(robotPos.getTranslation(), to);
@@ -546,7 +543,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	private boolean pointCanBeSeenByRobot(Coordinate p, float halfFieldOfView, float visionDist) {
 		boolean inField = false, closeEnough = false, intersects = true;
 
-		float angleToPoint = GeomUtils.relativeAngleToPoint(getRobotPosition(), getRobotOrientationAngle(),  p);
+		float angleToPoint = GeomUtils.relativeAngleToPoint(getRobotPosition(), getRobotOrientationAngle(), p);
 		inField = Math.abs(angleToPoint) <= halfFieldOfView;
 
 		if (inField) {
@@ -578,12 +575,15 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	 *            The maximum distance that can be sensed
 	 * @param numRays
 	 *            The number of rays to use. Must be at least two
+	 * @param robot_radius
+	 *            The radius of the robot. Sonars are assumed to be on the
+	 *            periphery of the robot
 	 * @return
 	 */
-	public float getRobotSonarReading(float angle, float sonarAperture, float maxDist, int numRays) {
+	public float getRobotSonarReading(float angle, float sonarAperture, float maxDist, int numRays,
+			float robot_radius) {
 		// Working data
 		Coordinate rPos = getRobotPosition();
-		Coordinate rCoor = new Coordinate(rPos.x, rPos.y);
 
 		float closestDist = maxDist;
 		float robotAngle = getRobotOrientationAngle();
@@ -594,16 +594,21 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 			// It goes in the segment [angle - aperture/2, angle + aperture/2]
 			float rayAngle = angle - sonarAperture / 2 + ((float) i) / (numRays - 1) * sonarAperture;
 			float absRayAngle = rayAngle + robotAngle;
+			// Sensor coordinate - Sonars are assumed to be on the periphery of
+			// the robot
+			Coordinate rayStart = new Coordinate(rPos.x + Math.cos(absRayAngle) * robot_radius,
+					rPos.y + Math.sin(absRayAngle) * robot_radius);
 			// Create each point in the robot frame of reference
-			Coordinate rayEnd = new Coordinate(rPos.x + Math.cos(absRayAngle) * maxDist, rPos.y + Math.sin(absRayAngle) * maxDist);
+			Coordinate rayEnd = new Coordinate(rPos.x + Math.cos(absRayAngle) * (robot_radius + maxDist),
+					rPos.y + Math.sin(absRayAngle) * (robot_radius + maxDist));
 			// Create a segment from the robot to the point
-			LineSegment ray = new LineSegment(rCoor, rayEnd);
+			LineSegment ray = new LineSegment(rayStart, rayEnd);
 			// Intersect the segment to all walls to find closest point to the
 			// robot
 			for (Wall w : getWalls()) {
 				Coordinate intersection = w.s.intersection(ray);
 				if (intersection != null) {
-					float dist = (float) intersection.distance(rCoor);
+					float dist = (float) intersection.distance(rayStart);
 					if (dist < closestDist)
 						closestDist = dist;
 				}

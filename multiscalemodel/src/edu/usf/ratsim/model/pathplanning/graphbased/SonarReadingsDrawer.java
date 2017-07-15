@@ -27,23 +27,25 @@ public class SonarReadingsDrawer implements Drawer {
 		float[] angles = sRobot.getSonarAngles();
 		Coordinate rPos = lRobot.getPosition();
 		float robotOrient = lRobot.getOrientationAngle();
-		
+
 		g.setColor(Color.RED);
-		Point readingStart = s.scale(rPos);
-		for (int i = 0; i < readings.length; i++){
+		for (int i = 0; i < readings.length; i++) {
 			float reading = readings[i];
 			float angle = angles[i];
 			float absAngle = robotOrient + angle;
-			
-			Point readingEnd = s.scale(new Coordinate(rPos.x + Math.cos(absAngle) * reading, rPos.y + Math.sin(absAngle) * reading));
-			
+
+			Point readingStart = s.scale(new Coordinate(rPos.x + Math.cos(absAngle) * sRobot.getRadius(),
+					rPos.y + Math.sin(absAngle) * sRobot.getRadius()));
+			Point readingEnd = s.scale(new Coordinate(rPos.x + Math.cos(absAngle) * (sRobot.getRadius() + reading),
+					rPos.y + Math.sin(absAngle) * (sRobot.getRadius() + reading)));
+
 			g.drawLine(readingStart.x, readingStart.y, readingEnd.x, readingEnd.y);
 		}
 	}
-	
+
 	@Override
 	public void clearState() {
-		
+
 	}
 
 }
