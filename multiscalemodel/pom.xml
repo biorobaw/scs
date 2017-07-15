@@ -4,6 +4,12 @@
 	<groupId>models</groupId>
 	<artifactId>models</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
 
 	<repositories>
 		<repository>
@@ -16,7 +22,16 @@
 			<name>springsource</name>
 			<url>http://repo.jfrog.org/artifactory/libs-releases/</url>
 		</repository>
+		<repository>
+			<id>digi</id>
+			<name>digi</name>
+			<url>http://ftp1.digi.com/support/m-repo</url>
+		</repository>
 	</repositories>
+
+	<modules>
+		<module>../platform</module>
+	</modules>
 
 
 	<build>
@@ -47,11 +62,6 @@
 			<version>1.13</version>
 		</dependency>
 		<dependency>
-			<groupId>com.digi.xbee</groupId>
-			<artifactId>xbee-java-library</artifactId>
-			<version>1.2.0</version>
-		</dependency>
-		<dependency>
 			<groupId>de.erichseifert.vectorgraphics2d</groupId>
 			<artifactId>VectorGraphics2D</artifactId>
 			<version>0.11</version>
@@ -61,25 +71,30 @@
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
 		</dependency>
-  	<dependency>
-  		<groupId>net.sf.jung</groupId>
-  		<artifactId>jung-algorithms</artifactId>
-  		<version>2.0.1</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>net.sf.jung</groupId>
-  		<artifactId>jung-api</artifactId>
-  		<version>2.0.1</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>net.sf.jung</groupId>
-  		<artifactId>jung-graph-impl</artifactId>
-  		<version>2.0.1</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.ros.rosjava_core</groupId>
-  		<artifactId>rosjava</artifactId>
-  		<version>0.3.4</version>
-  	</dependency>
+		<dependency>
+			<groupId>net.sf.jung</groupId>
+			<artifactId>jung-algorithms</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jung</groupId>
+			<artifactId>jung-api</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jung</groupId>
+			<artifactId>jung-graph-impl</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ros.rosjava_core</groupId>
+			<artifactId>rosjava</artifactId>
+			<version>0.3.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.digi.xbee</groupId>
+			<artifactId>xbee-java-library</artifactId>
+			<version>1.2.0</version>
+		</dependency>
 	</dependencies>
 </project>
