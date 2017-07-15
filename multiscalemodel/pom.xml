@@ -35,7 +35,6 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
-		<outputDirectory>../bin</outputDirectory>
 		<resources>
 			<resource>
 				<directory>src</directory>
@@ -72,16 +71,6 @@
 		</plugins>
 	</build>
 	<dependencies>
-		<dependency>
-			<groupId>micronsl</groupId>
-			<artifactId>micronsl</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>platform</groupId>
-			<artifactId>platform</artifactId>
-			<version>1.0.0</version>
-		</dependency>
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
 			<artifactId>jts</artifactId>
@@ -147,6 +136,11 @@
 			<groupId>org.ros.rosjava_bootstrap</groupId>
 			<artifactId>message_generation</artifactId>
 			<version>0.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>platform</groupId>
+			<artifactId>platform</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 </project>
