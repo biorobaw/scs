@@ -10,7 +10,6 @@ import org.ros.node.DefaultNodeMainExecutor;
 import org.ros.node.Node;
 import org.ros.node.NodeConfiguration;
 import org.ros.node.NodeMain;
-import org.ros.node.NodeMainExecutor;
 import org.ros.node.topic.Subscriber;
 
 import com.vividsolutions.jts.geom.Coordinate;

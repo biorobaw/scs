@@ -3,12 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>platform</groupId>
 	<artifactId>platform</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
-
-	<modules>
-		<module>../micronsl</module>
-	</modules>
+	<version>1.0.0</version>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -25,6 +20,7 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
+		<outputDirectory>../bin</outputDirectory>
 		<resources>
 			<resource>
 				<directory>src</directory>
@@ -46,24 +42,39 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<groupId>micronsl</groupId>
+			<artifactId>micronsl</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
 		</dependency>
-  	<dependency>
-  		<groupId>com.vividsolutions</groupId>
-  		<artifactId>jts</artifactId>
-  		<version>1.8</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>jacl</groupId>
-  		<artifactId>jacl</artifactId>
-  		<version>1.2.6</version>
-  	</dependency>
-  	<dependency>
-	    <groupId>de.erichseifert.vectorgraphics2d</groupId>
-	    <artifactId>VectorGraphics2D</artifactId>
-	    <version>0.10</version>
-	</dependency>
-  </dependencies>
+		<dependency>
+			<groupId>com.vividsolutions</groupId>
+			<artifactId>jts</artifactId>
+			<version>1.8</version>
+		</dependency>
+		<dependency>
+			<groupId>jacl</groupId>
+			<artifactId>jacl</artifactId>
+			<version>1.2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>de.erichseifert.vectorgraphics2d</groupId>
+			<artifactId>VectorGraphics2D</artifactId>
+			<version>0.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20160810</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>2.6.1</version>
+		</dependency>
+	</dependencies>
 </project>

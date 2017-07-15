@@ -3,8 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>models</groupId>
 	<artifactId>models</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
+	<version>2.0.0</version>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -27,15 +26,16 @@
 			<name>digi</name>
 			<url>http://ftp1.digi.com/support/m-repo</url>
 		</repository>
+		<repository>
+			<id>central</id>
+			<name>central</name>
+			<url>http://central.maven.org/maven2/</url>
+		</repository>
 	</repositories>
-
-	<modules>
-		<module>../platform</module>
-	</modules>
-
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
+		<outputDirectory>../bin</outputDirectory>
 		<resources>
 			<resource>
 				<directory>src</directory>
@@ -53,9 +53,35 @@
 					<target />
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
+		<dependency>
+			<groupId>micronsl</groupId>
+			<artifactId>micronsl</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>platform</groupId>
+			<artifactId>platform</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
 			<artifactId>jts</artifactId>
@@ -87,14 +113,40 @@
 			<version>2.0.1</version>
 		</dependency>
 		<dependency>
+			<groupId>com.digi.xbee</groupId>
+			<artifactId>xbee-java-library</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20160810</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>2.6.1</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.ros.rosjava_core</groupId>
 			<artifactId>rosjava</artifactId>
 			<version>0.3.4</version>
 		</dependency>
 		<dependency>
-			<groupId>com.digi.xbee</groupId>
-			<artifactId>xbee-java-library</artifactId>
-			<version>1.2.0</version>
+			<groupId>org.ros.rosjava_messages</groupId>
+			<artifactId>geometry_msgs</artifactId>
+			<version>1.12.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ros.rosjava_messages</groupId>
+			<artifactId>std_msgs</artifactId>
+			<version>0.5.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ros.rosjava_bootstrap</groupId>
+			<artifactId>message_generation</artifactId>
+			<version>0.3.0</version>
 		</dependency>
 	</dependencies>
 </project>

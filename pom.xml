@@ -6,6 +6,8 @@
 	<version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 	<modules>
+		<module>micronsl</module>
+		<module>platform</module>
 		<module>multiscalemodel</module>
 	</modules>
 
