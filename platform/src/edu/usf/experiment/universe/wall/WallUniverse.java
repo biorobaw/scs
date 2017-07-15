@@ -1,6 +1,7 @@
 package edu.usf.experiment.universe.wall;
 
 import java.util.List;
+import java.util.Set;
 
 import com.vividsolutions.jts.geom.LineSegment;
 
@@ -13,7 +14,7 @@ public interface WallUniverse extends Universe {
 	
 	public void addWall(float x, float y, float x2, float y2);
 
-	public List<Wall> getWalls();
+	public Set<Wall> getWalls();
 	
 	public void setRevertWallPoint();
 

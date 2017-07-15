@@ -4,12 +4,13 @@ import java.awt.Color;
 import java.awt.geom.Rectangle2D.Float;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
 import edu.usf.experiment.display.DisplaySingleton;
-import edu.usf.experiment.display.drawer.FeederDrawer;
 import edu.usf.experiment.display.drawer.PlatformDrawer;
 import edu.usf.experiment.display.drawer.RobotDrawer;
 import edu.usf.experiment.display.drawer.WallDrawer;
@@ -27,14 +28,14 @@ public class ROSUniverse implements GlobalCameraUniverse, WallUniverse, Platform
 
 	private static final long SLEEP_PERIOD = 10;
 	private LinkedList<Platform> platforms;
-	private LinkedList<Wall> walls;
+	private Set<Wall> walls;
 	private LinkedList<Wall> revertWalls;
 	private ROSPoseDetector ROSPose;
 
 	
 	public ROSUniverse(ElementWrapper params, String logPath) {
 		platforms = new LinkedList<Platform>();
-		walls = new LinkedList<Wall>();
+		walls = new ConcurrentSkipListSet<Wall>();
 		revertWalls = new LinkedList<Wall>();
 		
 		ROSPose = ROSPoseDetector.getInstance();
@@ -93,7 +94,7 @@ public class ROSUniverse implements GlobalCameraUniverse, WallUniverse, Platform
 	}
 
 	@Override
-	public List<Wall> getWalls() {
+	public Set<Wall> getWalls() {
 		return walls;
 	}
 

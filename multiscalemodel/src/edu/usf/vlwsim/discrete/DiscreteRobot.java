@@ -1,6 +1,6 @@
 package edu.usf.vlwsim.discrete;
 
-import java.util.List;
+import java.util.Set;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -50,7 +50,7 @@ public class DiscreteRobot implements LocalizableRobot, PlatformRobot, TeleportR
 	}
 
 	@Override
-	public List<Wall> getWalls() {
+	public Set<Wall> getWalls() {
 		return u.getWalls();
 	}
 

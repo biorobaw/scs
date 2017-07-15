@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.w3c.dom.Document;
 
@@ -78,7 +80,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	/**
 	 * Wall data
 	 */
-	private List<Wall> walls;
+	private Set<Wall> walls;
 	private List<Wall> wallsToRevert;
 
 	/**
@@ -113,7 +115,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		CLOSE_TO_FOOD_THRS = params.getChildFloat("closeToFoodThrs");
 		setDeltaT(params.getChildFloat("deltaT"));
 
-		walls = new LinkedList<Wall>();
+		walls = new ConcurrentSkipListSet<Wall>();
 		feeders = new HashMap<Integer, Feeder>();
 
 		// Assumes maze is already copied by pre-experiment or experiment
@@ -306,7 +308,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		walls.add(wall);
 	}
 
-	public List<Wall> getWalls() {
+	public Set<Wall> getWalls() {
 		return walls;
 	}
 
