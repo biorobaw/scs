@@ -193,7 +193,7 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.RPlotter</name>
 					<params>
-						<plotScript>/edu/usf/experiment/plot/plotMaze.r</plotScript>
+						<plotScript>platform/src/edu/usf/experiment/plot/plotMaze.r</plotScript>
 					</params>
 				</plotter>
 				<!-- Plot path for each episode -->
@@ -203,7 +203,7 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.RPlotter</name>
 					<params>
-						<plotScript>/edu/usf/experiment/plot/plotExpRoadmap.r</plotScript>
+						<plotScript>platform/src/edu/usf/experiment/plot/plotExpRoadmap.r</plotScript>
 					</params>
 				</plotter>
 				<plotter>

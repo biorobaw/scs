@@ -26,7 +26,7 @@ public class RPlotter extends Plotter {
 		return new Runnable(){
 			@Override
 			public void run() {
-				IOUtils.copyResource(getClass().getResource(plotScript), logPath + filename);
+				IOUtils.copyFile(plotScript, logPath + filename);
 				IOUtils.exec("Rscript " + filename, logPath);
 			}
 		};
