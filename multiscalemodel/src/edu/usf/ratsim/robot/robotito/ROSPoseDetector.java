@@ -1,6 +1,8 @@
 package edu.usf.ratsim.robot.robotito;
 
 import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.logging.Log;
 import org.ros.message.MessageListener;
@@ -15,7 +17,7 @@ import org.ros.node.topic.Subscriber;
 import com.vividsolutions.jts.geom.Coordinate;
 
 public class ROSPoseDetector implements NodeMain {
-
+	
 	private static ROSPoseDetector instance = null;
 	
 	public float x, y, theta;
@@ -59,7 +61,6 @@ public class ROSPoseDetector implements NodeMain {
 		subscriber.addMessageListener(new MessageListener<geometry_msgs.Pose2D>() {
 			@Override
 			public void onNewMessage(geometry_msgs.Pose2D p) {
-				log.info("I heard: (" + p.getX() + "," + p.getY() + "," + p.getTheta() + ")");
 				x = (float) p.getX();
 				y = (float) p.getY();
 				theta = (float) p.getTheta();
