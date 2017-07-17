@@ -1,11 +1,16 @@
 package edu.usf.ratsim.robot.robotito;
 
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.digi.xbee.api.RemoteXBeeDevice;
 import com.digi.xbee.api.XBeeDevice;
 import com.digi.xbee.api.exceptions.XBeeException;
-import com.digi.xbee.api.listeners.IDataReceiveListener;
 import com.digi.xbee.api.models.XBee64BitAddress;
-import com.digi.xbee.api.models.XBeeMessage;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.DifferentialRobot;
@@ -40,61 +45,26 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 	private XBeeDevice myDevice;
 	private RemoteXBeeDevice remoteDevice;
 	private float xVel;
+	private float yVel;
 	private float tVel;
 
-	private float[] sonarReading;
-	private float[] sonarAngles;
-	
 	private ROSPoseDetector poseDetector;
 	private int kP = 20;
 	// kI is divided by 10 in the robot
 	private int kI = 40;
 	private int kD = 0;
+	private SonarReceiver sonarReceiver;
     
 	public Robotito(ElementWrapper params, Universe u) {
-		sonarAngles = new float[NUM_SONARS];
-		sonarReading = new float[NUM_SONARS];
-		for (int i = 0; i < NUM_SONARS; i++){
-			sonarAngles[i] = (float) (2 * Math.PI / NUM_SONARS * i);
-			System.out.print(sonarAngles[i] + ",");
-			sonarReading[i] = .3f;
-		}
+		
+		
 		
 		try {
 			myDevice = new XBeeDevice(PORT, BAUD_RATE);
 			myDevice.open();
-			
-			myDevice.addDataListener(new IDataReceiveListener() {
-				
-
-				public void dataReceived(XBeeMessage msg) {
-					byte[] data = msg.getData();
-					for (int i = 0; i < data.length; i+=2){
-						byte hi = data[i];
-						byte lo = data[i+1];
-						int val =  (hi & 0xff) << 8 | (lo & 0xff);
-						sonarReading[i / 2] = convert(val);
-//						System.out.print(sonarReading[i / 2] + " ");
-					}
-//					System.out.println();
-				}
-
-				private float convert(int val) {
-					float volt = (val/1024.0f) * 5;
-					if (volt < .3)
-						return .3f; //FLT_MAX;
-					else if (volt < 1.8){
-						// Inverse of distance using eq
-						float distinv = 0.0758f * volt - 0.00265f;
-						float dist = 1 / distinv - 0.42f;
-						return dist / 100f;
-					} else {
-						float distinv = 0.1111f * volt - 0.07831f;
-						float dist = 1 / distinv - 0.42f;
-						return dist / 100f;
-					}
-				}
-			});
+			sonarReceiver = new SonarReceiver(myDevice, NUM_SONARS);
+			sonarReceiver.setPriority(Thread.MAX_PRIORITY);
+			sonarReceiver.start();
 			
 			remoteDevice = new RemoteXBeeDevice(myDevice, new XBee64BitAddress("0x00002222"));
 		} catch (XBeeException e) {
@@ -102,6 +72,7 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 		}
 		
 		xVel = 0;
+		yVel = 0;
 		tVel = 0;
 		
 		poseDetector = ROSPoseDetector.getInstance();
@@ -121,7 +92,9 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 		// Start a thread to send vel packets
 		Thread runner = new Thread(this);
 		runner.setPriority(Thread.MAX_PRIORITY);
-		runner.start();
+//		runner.start();
+		Logger xbeeLogger = Logger.getLogger("com.digi.xbee.api.connection.DataReader");
+		xbeeLogger.setLevel(Level.OFF);
 	}
 
 	private void sendKs() {
@@ -164,9 +137,11 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 			System.out.println(xVel + " " + tVel);
 			short xVelShort = (short) (xVel * XVEL_CONV + LINEAR_INERTIA * Math.signum(xVel) + ZERO_VEL);
 			xVelShort = (short) Math.max(0, Math.min(xVelShort, 255));
+			short yVelShort = (short) (yVel * XVEL_CONV + LINEAR_INERTIA * Math.signum(yVel) + ZERO_VEL);
+			yVelShort = (short) Math.max(0, Math.min(yVelShort, 255));
 			short tVelShort = (short) (tVel * TVEL_CONV + ANGULAR_INERTIA * Math.signum(xVel) + ZERO_VEL);
 			tVelShort = (short) Math.max(0, Math.min(tVelShort, 255));
-			byte[] dataToSend = {(byte)'v', (byte) Math.abs(xVelShort), (byte) 128, (byte) Math.abs(tVelShort)};
+			byte[] dataToSend = {(byte)'v', (byte) Math.abs(xVelShort), (byte) Math.abs(yVelShort), (byte) Math.abs(tVelShort)};
 			
 			System.out.println(xVelShort + " " + tVelShort);
 			try {
@@ -186,12 +161,12 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 	
 	@Override
 	public float[] getSonarReadings() {
-		return sonarReading;
+		return sonarReceiver.sonarReading;
 	}
 
 	@Override
 	public float[] getSonarAngles() {
-		return sonarAngles;
+		return sonarReceiver.sonarAngles;
 	}
 	
 	@Override
@@ -222,10 +197,14 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 
 	public static void main(String[] args){
 		Robotito r = new Robotito(null, null);
+
+		r.calibrateSonars();
+		
 		r.setLinearVel(.0f);
+		r.yVel = .1f;
 		r.setAngularVel((float) (0));
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(500000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -238,6 +217,33 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 //		}
 		System.exit(0);
 		
+	}
+
+	private void calibrateSonars() {
+		List<Float> volts = new LinkedList<Float>();
+		List<Float> dists = new LinkedList<Float>();
+		for (float dist = 5f; dist <= 30; dist += 5f){
+			System.out.println("Place the robot at dist " + dist + " and press enter");
+			try {
+				System.in.read();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			float raw = sonarReceiver.rawReadings[0];
+			volts.add(raw);
+			dists.add(dist);
+		}
+		
+		sonarReceiver.calibrate(volts, dists);
 	}
 
 	@Override
