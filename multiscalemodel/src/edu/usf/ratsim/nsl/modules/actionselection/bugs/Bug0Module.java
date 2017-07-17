@@ -78,7 +78,7 @@ public class Bug0Module extends Module {
 			v = BugUtilities.wallFollowLeft(readings,angles);
 			break;
 		case WALL_FOLLOWING_RIGHT:
-			v = BugUtilities.wallFollowRight(readings, angles);
+			v = BugUtilities.wallFollowRight(readings, angles, r.getRadius());
 		}
 
 		// Enforce maximum velocities

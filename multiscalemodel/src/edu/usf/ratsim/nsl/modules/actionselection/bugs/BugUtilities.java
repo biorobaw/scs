@@ -9,8 +9,8 @@ import edu.usf.ratsim.support.SonarUtils;
 public class BugUtilities {
 	
 	//TODO: change deltaT to be more realistic in seconds, and fix constants 
-	public static final float OBSTACLE_FOUND_THRS = .15f;
-	public static final float CLOSE_THRS = .15f;
+	public static final float OBSTACLE_FOUND_THRS = .1f;
+	public static final float CLOSE_THRS = .1f;
 	
 	private static final float PROP_ANG_PARALLEL = 1f;
 	private static final float PROP_ANG_WALL_CLOSE = 2f;
@@ -18,8 +18,8 @@ public class BugUtilities {
 	private static final float PROP_LINEAR_GS = 0.25f;
 	private static final float PROP_ANGULAR_GS = 1f;
 
-	private static final float WL_FW_TARGET = .15f;   	
-	private static final float WL_RIGHT_TARGET = .2f; 
+	private static final float WL_FW_TARGET = .1f;   	
+	private static final float WL_RIGHT_TARGET = .05f; 
 	private static final float WF_MIN_FW_VEL = .05f;
 	private static final float WF_ROT_VEL_OBS_FRONT = 1f;
 	private static final float MAX_GS_PROP_DIST = 0.3f;
@@ -32,7 +32,7 @@ public class BugUtilities {
 		return new Velocities(linear, angular);
 	}
 
-	public static Velocities wallFollowRight(Float1dPort readings, Float1dPort angles) {
+	public static Velocities wallFollowRight(Float1dPort readings, Float1dPort angles, float robotRadius) {
 		float linear, angular; 
 		
 		float minFront = SonarUtils.getMinReading(readings, angles, 0f, (float) (Math.PI/3));
@@ -46,7 +46,7 @@ public class BugUtilities {
 		} else {
 			// Get the current relation and the target relation (wall parallel
 			// to robot)
-			float quot = left / leftFront;
+			float quot = (left + robotRadius) / (leftFront + robotRadius);
 			float targetquot = (float) Math.cos(Math.PI / 6);
 
 			float close_prop = Math.min(MAX_ERR, left - WL_RIGHT_TARGET);

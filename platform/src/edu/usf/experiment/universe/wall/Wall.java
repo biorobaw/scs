@@ -6,7 +6,7 @@ import com.vividsolutions.jts.geom.LineSegment;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Polygon;
 
-public class Wall {
+public class Wall implements Comparable<Wall>{
 
 	public LineSegment s;
 	
@@ -53,6 +53,11 @@ public class Wall {
 	
 	public boolean intersects(LineSegment wall) {
 		return s.intersection(wall) != null;
+	}
+
+	@Override
+	public int compareTo(Wall o) {
+		return o.s.compareTo(s);
 	}
 
 }

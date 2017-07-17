@@ -26,7 +26,7 @@ import edu.usf.vlwsim.universe.VirtUniverse;
 public class VirtualRobot
 		implements FeederRobot, LocalizableRobot, SonarRobot, PlatformRobot, WallRobot, TeleportRobot {
 
-	private final float ROBOT_LENGTH = .1f;
+	private final float ROBOT_RADIUS = .075f;
 
 	private VirtUniverse universe;
 
@@ -226,7 +226,7 @@ public class VirtualRobot
 
 		int i = 0;
 		for (float angle : sonarAngles) {
-			readings[i++] = universe.getRobotSonarReading(angle, sonarAperture, sonarMaxDist, sonarNumRays);
+			readings[i++] = universe.getRobotSonarReading(angle, sonarAperture, sonarMaxDist, sonarNumRays, ROBOT_RADIUS);
 		}
 
 		return readings;
@@ -249,6 +249,11 @@ public class VirtualRobot
 	@Override
 	public float getSonarAperture() {
 		return sonarAperture;
+	}
+	
+	@Override
+	public float getRadius() {
+		return ROBOT_RADIUS;
 	}
 
 	@Override
@@ -286,12 +291,13 @@ public class VirtualRobot
 	}
 
 	public float getRobotLength() {
-		return ROBOT_LENGTH;
+		return ROBOT_RADIUS;
 	}
 
 	@Override
 	public void setPosition(Coordinate pos) {
 		universe.setRobotPosition(new Coordinate(pos.x, pos.y));
 	}
+
 
 }

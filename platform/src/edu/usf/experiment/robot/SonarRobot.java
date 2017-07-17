@@ -1,6 +1,6 @@
 package edu.usf.experiment.robot;
 
-public interface SonarRobot {
+public interface SonarRobot extends Robot {
 
 	/**
 	 * Get the current readings for all sonar sensors
@@ -26,5 +26,7 @@ public interface SonarRobot {
 	 * @return The maximum possible reading value
 	 */
 	public float getSonarMaxReading();
+
+
 	
 }

@@ -230,4 +230,10 @@ public class MorseRobot
 		return 10f;
 	}
 
+	@Override
+	public float getRadius() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

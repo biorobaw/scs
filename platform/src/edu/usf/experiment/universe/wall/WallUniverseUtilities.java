@@ -1,6 +1,6 @@
 package edu.usf.experiment.universe.wall;
 
-import java.util.List;
+import java.util.Set;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
@@ -8,7 +8,7 @@ import com.vividsolutions.jts.geom.LineSegment;
 public class WallUniverseUtilities {
 
 	// Wall and other walls
-	public static boolean segmentIntersectsWalls(List<Wall> walls, LineSegment wall) {
+	public static boolean segmentIntersectsWalls(Set<Wall> walls, LineSegment wall) {
 		boolean intersects = false;
 		for (Wall w : walls)
 			intersects = intersects || w.intersects(wall);
@@ -17,7 +17,7 @@ public class WallUniverseUtilities {
 	}
 
 	// Walls and Robot
-	public static float shortestDistanceToWalls(List<Wall> walls, LineSegment wall) {
+	public static float shortestDistanceToWalls(Set<Wall> walls, LineSegment wall) {
 		float shortestDistance = Float.MAX_VALUE;
 		for (Wall w : walls)
 			if (w.distanceTo(wall) < shortestDistance)
@@ -26,7 +26,7 @@ public class WallUniverseUtilities {
 		return shortestDistance;
 	}
 
-	public static float shortestDistanceToWalls(List<Wall> walls, Coordinate x1) {
+	public static float shortestDistanceToWalls(Set<Wall> walls, Coordinate x1) {
 		float shortestDistance = Float.MAX_VALUE;
 		for (Wall w : walls)
 			if (w.distanceTo(x1) < shortestDistance)
@@ -35,7 +35,7 @@ public class WallUniverseUtilities {
 		return shortestDistance;
 	}
 
-	public static float getDistanceToClosestWall(List<Wall> walls, Coordinate p) {
+	public static float getDistanceToClosestWall(Set<Wall> walls, Coordinate p) {
 		Coordinate p2 = new Coordinate(p.x, p.y);
 
 		float shortestDistance = Float.MAX_VALUE;
@@ -58,7 +58,7 @@ public class WallUniverseUtilities {
 	 * @param dy
 	 * @return
 	 */
-	public static double distanceToNearestWall(List<Wall> walls, Coordinate p, float dx, float dy, float maxDistance) {
+	public static double distanceToNearestWall(Set<Wall> walls, Coordinate p, float dx, float dy, float maxDistance) {
 		Coordinate initCoordinate = new Coordinate(p.x, p.y);
 		Coordinate finalCoordinate = new Coordinate(p.x + dx, p.y + dy);
 
@@ -76,7 +76,7 @@ public class WallUniverseUtilities {
 		return minDistance;
 	}
 
-	public static float distanceToNearestWall(List<Wall> walls, Coordinate robotPos, float angle, float distance) {
+	public static float distanceToNearestWall(Set<Wall> walls, Coordinate robotPos, float angle, float distance) {
 		return (float) distanceToNearestWall(walls, robotPos, (float)Math.cos(angle)*distance, (float)Math.sin(angle)*distance, distance);
 	}
 }

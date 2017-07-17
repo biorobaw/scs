@@ -1,6 +1,6 @@
 package edu.usf.vlwsim.discrete;
 
-import java.util.List;
+import java.util.Set;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -15,6 +15,8 @@ import edu.usf.experiment.utils.ElementWrapper;
 
 public class DiscreteRobot implements LocalizableRobot, PlatformRobot, TeleportRobot, GlobalWallRobot {
 
+	private static final float ROBOT_RADIUS = 0.03f;
+	
 	private DiscreteVirtualUniverse u;
 	
 	public DiscreteRobot(Universe u) {
@@ -50,8 +52,13 @@ public class DiscreteRobot implements LocalizableRobot, PlatformRobot, TeleportR
 	}
 
 	@Override
-	public List<Wall> getWalls() {
+	public Set<Wall> getWalls() {
 		return u.getWalls();
+	}
+
+	@Override
+	public float getRadius() {
+		return ROBOT_RADIUS;
 	}
 
 }

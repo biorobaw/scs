@@ -1,13 +1,12 @@
 package edu.usf.vlwsim.discrete;
 
 import java.awt.Color;
-import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Float;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
-import com.sun.javafx.geom.Quat4f;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
@@ -27,7 +26,6 @@ import edu.usf.experiment.universe.platform.PlatformUniverse;
 import edu.usf.experiment.universe.wall.Wall;
 import edu.usf.experiment.universe.wall.WallUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.experiment.utils.GeomUtils;
 
 public class DiscreteVirtualUniverse
 		implements PlatformUniverse, WallUniverse, GlobalCameraUniverse, MovableRobotUniverse, GridUniverse, BoundedUniverse {
@@ -38,7 +36,7 @@ public class DiscreteVirtualUniverse
 	private float robotAngle;
 	private int gridWidth;
 	private int gridHeight;
-	private List<Wall> walls;
+	private Set<Wall> walls;
 	private List<Wall> wallsToRevert;
 	private List<Platform> platforms;
 	private int robotDx;
@@ -51,7 +49,7 @@ public class DiscreteVirtualUniverse
 		robotPos = new Coordinate();
 		robotAngle = 0;
 		
-		walls = new LinkedList<Wall>();
+		walls = new ConcurrentSkipListSet<Wall>();
 		wallsToRevert = new LinkedList<Wall>();
 
 		platforms = new LinkedList<Platform>();
@@ -111,7 +109,7 @@ public class DiscreteVirtualUniverse
 	}
 
 	@Override
-	public List<Wall> getWalls() {
+	public Set<Wall> getWalls() {
 		return walls;
 	}
 

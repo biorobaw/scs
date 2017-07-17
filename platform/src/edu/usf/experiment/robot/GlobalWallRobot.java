@@ -1,6 +1,6 @@
 package edu.usf.experiment.robot;
 
-import java.util.List;
+import java.util.Set;
 
 import edu.usf.experiment.universe.wall.Wall;
 
@@ -15,6 +15,6 @@ public interface GlobalWallRobot {
 	 * Returns all the walls in the Universe
 	 * @return
 	 */
-	public List<Wall> getWalls();
+	public Set<Wall> getWalls();
 
 }

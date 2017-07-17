@@ -1,7 +1,5 @@
 package edu.usf.experiment.plot;
 
-import java.net.URL;
-
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.IOUtils;
 
@@ -14,12 +12,10 @@ public class SummarizeRuntimes extends Plotter {
 	@Override
 	public Runnable plot() {
 		final String logPath = getLogPath();
-		final URL resource = getClass().getResource("/edu/usf/experiment/plot/summarize.r");
-
 		return new Runnable(){
 			@Override
 			public void run() {
-				IOUtils.copyResource(resource,logPath + "summarize.r");
+				IOUtils.copyFile("platform/src/edu/usf/experiment/plot/summarize.r",logPath + "summarize.r");
 				IOUtils.exec("Rscript summarize.r", logPath);
 			}
 		};
