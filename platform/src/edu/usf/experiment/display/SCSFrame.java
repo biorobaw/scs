@@ -29,7 +29,7 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 	 */
 	private static final long serialVersionUID = 6489459171441343768L;
 	private static final int PADDING = 10;
-	private static final int INITIAL_SPEED = 3;
+	private static final int INITIAL_SPEED = 0;
 	private UniversePanel uPanel;
 	private JPanel plotsPanel;
 	private JPanel uViewPanel;
