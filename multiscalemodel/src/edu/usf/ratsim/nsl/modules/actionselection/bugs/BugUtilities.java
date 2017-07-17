@@ -19,7 +19,7 @@ public class BugUtilities {
 	private static final float PROP_ANGULAR_GS = 1f;
 
 	private static final float WL_FW_TARGET = .15f;   	
-	private static final float WL_RIGHT_TARGET = .1f; 
+	private static final float WL_RIGHT_TARGET = .2f; 
 	private static final float WF_MIN_FW_VEL = .05f;
 	private static final float WF_ROT_VEL_OBS_FRONT = 1f;
 	private static final float MAX_GS_PROP_DIST = 0.3f;

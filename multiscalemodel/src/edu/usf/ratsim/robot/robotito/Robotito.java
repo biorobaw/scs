@@ -221,8 +221,8 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 
 	public static void main(String[] args){
 		Robotito r = new Robotito(null, null);
-		r.setLinearVel(.2f);
-		r.setAngularVel((float) (-4));
+		r.setLinearVel(.0f);
+		r.setAngularVel((float) (0));
 		try {
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {

@@ -74,7 +74,7 @@
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.maze.SetUpRandomWalls</name>
+				<name>edu.usf.experiment.task.maze.SetUpEmpty</name>
 				<params>
 				</params>
 			</task>
