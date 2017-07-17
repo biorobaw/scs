@@ -197,8 +197,9 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 
 	public static void main(String[] args){
 		Robotito r = new Robotito(null, null);
+		r.releaseMotors();
 
-		r.calibrateSonars();
+//		r.calibrateSonars();
 		
 		r.setLinearVel(.0f);
 		r.yVel = .1f;
@@ -217,6 +218,15 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 //		}
 		System.exit(0);
 		
+	}
+
+	private void releaseMotors() {
+		byte[] dataToSend = {(byte)'r'};		
+		try {
+			myDevice.sendData(remoteDevice, dataToSend);
+		} catch (XBeeException e) {
+			System.err.println("XBee error");
+		}				
 	}
 
 	private void calibrateSonars() {

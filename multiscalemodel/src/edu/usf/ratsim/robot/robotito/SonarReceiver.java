@@ -30,6 +30,22 @@ public class SonarReceiver extends Thread {
 		intervals = new LinkedList<Float>();
 		ms = new LinkedList<Float>();
 		ns = new LinkedList<Float>();
+		intervals.add(2.8857422f);
+		intervals.add(1.7626953f);
+		intervals.add(1.1914062f);
+		intervals.add(0.859375f);
+		intervals.add(0.6591797f);
+		intervals.add(0.5371094f);
+		ms.add(12.685129f);
+		ms.add(18.358536f);
+		ms.add(20.90976f);
+		ms.add(20.78333f);
+		ms.add(18.878817f);
+		ns.add(0.5453125f);
+		ns.add(8.3971024E-4f);
+		ns.add(-0.16460931f);
+		ns.add(-0.15841788f);
+		ns.add(-0.083496034f);
 		
 		for (int i = 0; i < numSonars; i++) {
 			sonarAngles[i] = (float) (2 * Math.PI / numSonars * i);
@@ -64,9 +80,9 @@ public class SonarReceiver extends Thread {
 			float volt = (val / 1024.0f) * 5;
 			rawReadings[i/2] = volt;
 			sonarReading[i / 2] = convert(volt);
-//			System.out.print(sonarReading[i / 2] + " ");
+			System.out.print(sonarReading[i / 2] + "\t");
 		}
-//		System.out.println();
+		System.out.println();
 	}
 
 	private float convert(float volt) {
@@ -74,22 +90,22 @@ public class SonarReceiver extends Thread {
 			return MAX_READ;
 		
 		if (volt > intervals.get(0))
-			return MAX_READ;
+			return MIN_READ;
 		
 		if (volt < intervals.get(intervals.size()-1))
-			return MIN_READ;
+			return MAX_READ;
 
 		int i = 1;
 		while (i < intervals.size() && volt < intervals.get(i))
 			i++;
 		
-		float m = ms.get(i-2);
-		float n = ns.get(i-2);
+		float m = ms.get(i-1);
+		float n = ns.get(i-1);
 		
-		float dist = (float) (m / (volt - n) - 0.42); 
+		float dist = (float) (m / (volt - n) - 0.42f); 
 		
 		return dist;
-//		
+		
 //		
 //		if (volt < .3)
 //			return .3f; // FLT_MAX;
@@ -111,7 +127,7 @@ public class SonarReceiver extends Thread {
 		ns.clear();
 		
 		float prevVolt = volts.get(0);
-		float prevX = dists.get(0);
+		float prevX = 1f/(dists.get(0) + 0.42f);
 		intervals.add(prevVolt);
 		for (int i = 1; i < volts.size(); i++){
 			float dist = dists.get(i);
@@ -127,6 +143,14 @@ public class SonarReceiver extends Thread {
 			prevVolt = volt;
 			prevX = x;
 		}		
+		
+		System.out.println("Calibration:");
+		for (int i = 0; i < intervals.size(); i++)
+			System.out.println("intervals.add(" + intervals.get(i) + "f);");
+		for (int i = 0; i < ms.size(); i++)
+			System.out.println("ms.add(" + ms.get(i) + "f);");
+		for (int i = 0; i < ns.size(); i++)
+			System.out.println("ns.add(" + ns.get(i) + "f);");
 	}
 
 }
