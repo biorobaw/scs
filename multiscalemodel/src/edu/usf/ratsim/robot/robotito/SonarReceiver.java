@@ -30,22 +30,28 @@ public class SonarReceiver extends Thread {
 		intervals = new LinkedList<Float>();
 		ms = new LinkedList<Float>();
 		ns = new LinkedList<Float>();
-		intervals.add(2.8857422f);
-		intervals.add(1.7626953f);
-		intervals.add(1.1914062f);
-		intervals.add(0.859375f);
-		intervals.add(0.6591797f);
-		intervals.add(0.5371094f);
-		ms.add(12.685129f);
-		ms.add(18.358536f);
-		ms.add(20.90976f);
-		ms.add(20.78333f);
-		ms.add(18.878817f);
-		ns.add(0.5453125f);
-		ns.add(8.3971024E-4f);
-		ns.add(-0.16460931f);
-		ns.add(-0.15841788f);
-		ns.add(-0.083496034f);
+		intervals.add(3.305664f);
+		intervals.add(1.8212891f);
+		intervals.add(1.2304688f);
+		intervals.add(0.96191406f);
+		intervals.add(0.7861328f);
+		intervals.add(0.6298828f);
+		intervals.add(0.56640625f);
+		intervals.add(0.390625f);
+		ms.add(16.766432f);
+		ms.add(18.986177f);
+		ms.add(16.912306f);
+		ms.add(18.248777f);
+		ms.add(24.164885f);
+		ms.add(13.678905f);
+		ms.add(50.332375f);
+		ns.add(0.21222651f);
+		ns.add(-8.00848E-4f);
+		ns.add(0.13369143f);
+		ns.add(0.06824231f);
+		ns.add(-0.16449207f);
+		ns.add(0.1802147f);
+		ns.add(-0.8546095f);
 		
 		for (int i = 0; i < numSonars; i++) {
 			sonarAngles[i] = (float) (2 * Math.PI / numSonars * i);
@@ -80,9 +86,9 @@ public class SonarReceiver extends Thread {
 			float volt = (val / 1024.0f) * 5;
 			rawReadings[i/2] = volt;
 			sonarReading[i / 2] = convert(volt);
-			System.out.print(sonarReading[i / 2] + "\t");
+//			System.out.print(sonarReading[i / 2] + "\t");
 		}
-		System.out.println();
+//		System.out.println();
 	}
 
 	private float convert(float volt) {
@@ -104,7 +110,8 @@ public class SonarReceiver extends Thread {
 		
 		float dist = (float) (m / (volt - n) - 0.42f); 
 		
-		return dist;
+		// Return in m
+		return dist / 100f;
 		
 //		
 //		if (volt < .3)
