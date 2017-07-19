@@ -3,14 +3,13 @@ package edu.usf.ratsim.robot.robotito;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.digi.xbee.api.RemoteXBeeDevice;
-import com.digi.xbee.api.XBeeDevice;
-import com.digi.xbee.api.exceptions.XBeeException;
-import com.digi.xbee.api.models.XBee64BitAddress;
+import com.rapplogic.xbee.api.XBee;
+import com.rapplogic.xbee.api.XBeeAddress16;
+import com.rapplogic.xbee.api.XBeeException;
+import com.rapplogic.xbee.api.wpan.TxRequest16;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.DifferentialRobot;
@@ -43,8 +42,10 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 	private static final float ROBOT_RADIUS = 0.075f;
 	private static final boolean WAIT_FOR_LOCATION = false;
 
-	private XBeeDevice myDevice;
-	private RemoteXBeeDevice remoteDevice;
+	private XBee xbee;
+	private XBeeAddress16 remoteAddress;
+    
+	
 	private float xVel;
 	private float yVel;
 	private float tVel;
@@ -55,22 +56,17 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 	private int kI = 10;
 	private int kD = 1;
 	private SonarReceiver sonarReceiver;
-    
+
 	public Robotito(ElementWrapper params, Universe u) {
 		
-		
-		
+		xbee = new XBee();
 		try {
-			myDevice = new XBeeDevice(PORT, BAUD_RATE);
-			myDevice.open();
-			sonarReceiver = new SonarReceiver(myDevice, NUM_SONARS);
-			sonarReceiver.setPriority(Thread.MAX_PRIORITY);
-			sonarReceiver.start();
-			
-			remoteDevice = new RemoteXBeeDevice(myDevice, new XBee64BitAddress("0x00002222"));
-		} catch (XBeeException e) {
-			e.printStackTrace();
+			xbee.open("/dev/ttyUSB0", 57600);
+		} catch (XBeeException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
+		remoteAddress = new XBeeAddress16(0x22, 0x22);
 		
 		xVel = 0;
 		yVel = 0;
@@ -90,9 +86,12 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 			System.out.println("[+] Got new info");
 		}
 		
+		sonarReceiver = new SonarReceiver(xbee, NUM_SONARS);
+		sonarReceiver.start();
+		
 		sendKs();
-//		engageMotors();
-		releaseMotors();
+		engageMotors();
+//		releaseMotors();
 		
 		// Start a thread to send vel packets
 		Thread runner = new Thread(this);
@@ -103,17 +102,21 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 	}
 
 	private void sendKs() {
-		byte[] dataToSend = {(byte)'k', 
+		int[] dataToSend = {(byte)'k', 
 				(byte)(kP + 128), (byte)(kI + 128), (byte)(kD + 128),
 				(byte)(kP + 128), (byte)(kI + 128), (byte)(kD + 128),
 				(byte)(kP + 128), (byte)(kI + 128), (byte)(kD + 128),
 				(byte)(kP + 128), (byte)(kI + 128), (byte)(kD + 128)};
 		
 		try {
-			myDevice.sendData(remoteDevice, dataToSend);
-		} catch (XBeeException e) {
-			System.err.println("XBee error");
+			TxRequest16 rq = new TxRequest16(remoteAddress, dataToSend);
+			// Disable ACKs
+			rq.setFrameId(0);
+			xbee.sendRequest(rq);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}		
+		
 	}
 
 	@Override
@@ -146,15 +149,20 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 			yVelShort = (short) Math.max(0, Math.min(yVelShort, 255));
 			short tVelShort = (short) (tVel * TVEL_CONV + ANGULAR_INERTIA * Math.signum(xVel) + ZERO_VEL);
 			tVelShort = (short) Math.max(0, Math.min(tVelShort, 255));
-			byte[] dataToSend = {(byte)'v', (byte) Math.abs(xVelShort), (byte) Math.abs(yVelShort), (byte) Math.abs(tVelShort)};
+			int[] dataToSend = {(byte)'v', (byte) Math.abs(xVelShort), (byte) Math.abs(yVelShort), (byte) Math.abs(tVelShort)};
 			
-//			System.out.println(xVelShort + " " + tVelShort);
+			System.out.println("Sending vels: " + xVelShort + " " + tVelShort);
 			try {
-				myDevice.sendDataAsync(remoteDevice, dataToSend);
+				TxRequest16 rq = new TxRequest16(remoteAddress, dataToSend);
+				// Disable ACKs
+				rq.setFrameId(0);
+				xbee.sendAsynchronous(rq);
 			} catch (XBeeException e) {
-				System.err.println("XBee error");
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			
+			System.out.println("Vels sent");
 			try {
 				Thread.sleep(CONTROL_PERIOD);
 			} catch (InterruptedException e) {
@@ -203,21 +211,27 @@ public class Robotito implements DifferentialRobot, SonarRobot, LocalizableRobot
 	
 
 	private void releaseMotors() {
-		byte[] dataToSend = {(byte)'r'};		
+		int[] dataToSend = {(byte)'r'};		
 		try {
-			myDevice.sendData(remoteDevice, dataToSend);
-		} catch (XBeeException e) {
-			System.err.println("XBee error");
-		}				
+			TxRequest16 rq = new TxRequest16(remoteAddress, dataToSend);
+			// Disable ACKs
+			rq.setFrameId(0);
+			xbee.sendRequest(rq);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}			
 	}
 
 	private void engageMotors() {
-		byte[] dataToSend = {(byte)'e'};		
+		int[] dataToSend = {(byte)'e'};		
 		try {
-			myDevice.sendData(remoteDevice, dataToSend);
-		} catch (XBeeException e) {
-			System.err.println("XBee error");
-		}				
+			TxRequest16 rq = new TxRequest16(remoteAddress, dataToSend);
+			// Disable ACKs
+			rq.setFrameId(0);
+			xbee.sendRequest(rq);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}			
 	}
 	
 	private void calibrateSonars() {

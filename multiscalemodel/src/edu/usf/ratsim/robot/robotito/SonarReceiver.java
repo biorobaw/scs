@@ -2,17 +2,18 @@ package edu.usf.ratsim.robot.robotito;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import com.digi.xbee.api.XBeeDevice;
-import com.digi.xbee.api.models.XBeeMessage;
+import com.rapplogic.xbee.api.ApiId;
+import com.rapplogic.xbee.api.XBee;
+import com.rapplogic.xbee.api.XBeeException;
+import com.rapplogic.xbee.api.XBeeResponse;
+import com.rapplogic.xbee.api.wpan.RxResponse16;
 
 public class SonarReceiver extends Thread {
 
 	private static final long PERIOD = 10;
 	private static final float MAX_READ = 0.4f;
 	private static final float MIN_READ = 0.05f;
-	private XBeeDevice xbee;
 	public float[] sonarReading;
 	public float[] sonarAngles;
 	public float[] rawReadings;
@@ -20,8 +21,9 @@ public class SonarReceiver extends Thread {
 	private List<Float> intervals;
  	private List<Float> ms;
 	private List<Float> ns;
+	private XBee xbee;
 
-	public SonarReceiver(XBeeDevice xbee, int numSonars) {
+	public SonarReceiver(XBee xbee, int numSonars) {
 		this.xbee = xbee;
 		sonarReading = new float[numSonars];
 		rawReadings = new float[numSonars];
@@ -63,25 +65,32 @@ public class SonarReceiver extends Thread {
 
 	public void run() {
 		while (true) {
-			XBeeMessage msg = xbee.readData();
-			if (msg != null) {
-				dataReceived(msg);
-			}
-//			System.out.println(msg);
+			
 			try {
-				Thread.sleep(PERIOD);
-			} catch (InterruptedException e) {
+				XBeeResponse rsp = xbee.getResponse();
+				if (rsp.getApiId() == ApiId.RX_16_RESPONSE){
+					RxResponse16 msg = (RxResponse16) rsp;
+					dataReceived(msg.getData());
+				}
+//				System.out.println(msg);
+				try {
+					Thread.sleep(PERIOD);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} catch (XBeeException e1) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				e1.printStackTrace();
 			}
+			
 		}
 	}
 
-	public void dataReceived(XBeeMessage msg) {
-		byte[] data = msg.getData();
+	public void dataReceived(int[] data) {
 		for (int i = 0; i < data.length; i += 2) {
-			byte hi = data[i];
-			byte lo = data[i + 1];
+			int hi = data[i];
+			int lo = data[i + 1];
 			int val = (hi & 0xff) << 8 | (lo & 0xff);
 			float volt = (val / 1024.0f) * 5;
 			rawReadings[i/2] = volt;
