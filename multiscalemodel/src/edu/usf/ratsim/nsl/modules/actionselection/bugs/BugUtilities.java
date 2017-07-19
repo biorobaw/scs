@@ -33,7 +33,7 @@ public class BugUtilities {
 	private static final float BLIND_ANGULAR = .6f;
 	private static final float PLANE_ESTIMATION_THRS = 0.25f;
 	private static final float PROP_ANG_PARALLEL =1.5f;
-	private static final float TARGET_WALL_AWAY = .05f;
+	private static final float TARGET_WALL_AWAY = .1f;
 	private static final float PROP_ANG_AWAY = 1;
 
 	public static Velocities goalSeek(Coordinate rPos, float rOrient, Coordinate platPos) {
