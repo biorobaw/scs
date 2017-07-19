@@ -5,6 +5,7 @@ import edu.usf.experiment.condition.FoundPlatform;
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.drawer.PathDrawer;
 import edu.usf.experiment.robot.DifferentialRobot;
+import edu.usf.experiment.robot.HolonomicRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.PlatformRobot;
 import edu.usf.experiment.robot.Robot;
@@ -44,7 +45,7 @@ public class StraightAndWallFollow extends Model implements GraphModel {
 		SubFoundPlatform foundPlat = new SubFoundPlatform("Found Plat", (PlatformRobot) robot);
 		addModule(foundPlat);
 		
-		StraightAndWF sawf = new StraightAndWF("Straight and WF", (DifferentialRobot) robot);
+		StraightAndWF sawf = new StraightAndWF("Straight and WF", (HolonomicRobot) robot);
 		sawf.addInPort("sonarReadings", sReadings.getOutPort("sonarReadings"));
 		sawf.addInPort("sonarAngles", sReadings.getOutPort("sonarAngles"));
 		addModule(sawf);

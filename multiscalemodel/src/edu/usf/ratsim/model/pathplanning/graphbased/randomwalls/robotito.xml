@@ -17,7 +17,7 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.model.pathplanning.graphbased.BugAndGraphModel</name>
+		<name>edu.usf.ratsim.model.pathplanning.graphbased.StraightAndWallFollow</name>
 		<params>
 			<algorithm>none</algorithm>
 		</params>
@@ -139,7 +139,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>5000</max>
+						<max>500000</max>
 					</params>
 				</condition>
 				<condition>

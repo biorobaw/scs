@@ -94,8 +94,8 @@ public class Bug2Module extends Module {
 		v.trim();
 
 		// Execute commands
-		r.setAngularVel(v.angular);
-		r.setLinearVel(v.linear);
+		r.setAngularVel(v.theta);
+		r.setLinearVel(v.x);
 	}
 
 	@Override

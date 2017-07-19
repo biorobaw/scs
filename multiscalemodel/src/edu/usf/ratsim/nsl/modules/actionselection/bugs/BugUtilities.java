@@ -32,19 +32,19 @@ public class BugUtilities {
 	private static final float BLIND_LINEAR = 0.05f;
 	private static final float BLIND_ANGULAR = .6f;
 	private static final float PLANE_ESTIMATION_THRS = 0.25f;
-	private static final float PROP_ANG_PARALLEL = 1f;
-	private static final float TARGET_WALL_AWAY = .1f;
-	private static final float PROP_ANG_AWAY = 0;
+	private static final float PROP_ANG_PARALLEL =1.5f;
+	private static final float TARGET_WALL_AWAY = .05f;
+	private static final float PROP_ANG_AWAY = 1;
 
 	public static Velocities goalSeek(Coordinate rPos, float rOrient, Coordinate platPos) {
 		float linear, angular;
 		linear = (float) (PROP_LINEAR_GS * Math.min(platPos.distance(rPos), MAX_GS_PROP_DIST));
 		angular = PROP_ANGULAR_GS * GeomUtils.relativeAngleToPoint(rPos, rOrient, platPos);
-		return new Velocities(linear, angular);
+		return new Velocities(linear, 0, angular);
 	}
 
 	public static Velocities wallFollowRight(Float1dPort readings, Float1dPort angles, float robotRadius) {
-		float linear, angular;
+		float x, y, angular;
 
 		// float minLeft = SonarUtils.getMinReading(readings, angles, (float)
 		// (Math.PI/2), (float) (Math.PI/12));
@@ -57,7 +57,7 @@ public class BugUtilities {
 		// readings, angles);
 		float minFront = SonarUtils.getMinReading(readings, angles, 0f, (float) (Math.PI / 6));
 		if (minFront < OBSTACLE_FOUND_THRS) {
-			linear = 0;
+			x = 0; y = 0;
 			angular = -BLIND_ANGULAR;
 		} else {
 
@@ -72,7 +72,8 @@ public class BugUtilities {
 			}
 
 			if (planeMeasures.isEmpty()) {
-				linear = BLIND_LINEAR;
+				x = BLIND_LINEAR;
+				y = 0;
 				angular = BLIND_ANGULAR;
 			} else {
 				double planeAngle;
@@ -101,12 +102,13 @@ public class BugUtilities {
 				float minLeft = SonarUtils.getMinReading(readings, angles, (float) (Math.PI / 2),
 						(float) (Math.PI / 6));
 				float awayErr = TARGET_WALL_AWAY - minLeft;
-				linear = BLIND_LINEAR;
-				angular = (float) (PROP_ANG_PARALLEL * planeAngle - PROP_ANG_AWAY * awayErr);
+				x = BLIND_LINEAR;
+				y = -PROP_ANG_AWAY * awayErr;
+				angular = (float) (PROP_ANG_PARALLEL * planeAngle );
 			}
 		}
 
-		return new Velocities(linear, angular);
+		return new Velocities(x, y, angular);
 	}
 
 	public static Velocities wallFollowLeft(Float1dPort readings, Float1dPort angles) {
@@ -133,6 +135,6 @@ public class BugUtilities {
 			linear = Math.max(PROP_LINEAR_WF * (front - WL_FW_TARGET), WF_MIN_FW_VEL);
 		}
 
-		return new Velocities(linear, angular);
+		return new Velocities(linear, 0, angular);
 	}
 }

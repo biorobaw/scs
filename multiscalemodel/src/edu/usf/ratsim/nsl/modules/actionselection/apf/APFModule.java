@@ -1,11 +1,10 @@
 
 package edu.usf.ratsim.nsl.modules.actionselection.apf;
 
-import java.awt.geom.Point2D;
-
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.DifferentialRobot;
+import edu.usf.experiment.robot.HolonomicRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
@@ -26,12 +25,12 @@ public class APFModule extends Module {
 
 	private static final float MAX_REP_DIST = 0.2f;
 
-	private DifferentialRobot r;
+	private HolonomicRobot r;
 
 	public APFModule(String name, Robot robot) {
 		super(name);
 
-		this.r = (DifferentialRobot) robot;
+		this.r = (HolonomicRobot) robot;
 
 	}
 
@@ -67,20 +66,19 @@ public class APFModule extends Module {
 
 		Velocities v = new Velocities();
 		// Angular is proportional to angle difference
-		v.angular = angle * ANGULAR_P;
+		v.theta = angle * ANGULAR_P;
 		// If to close in the front of the robot, just rotate
 		// float minDistFront = SonarUtils.getMinReading(readings, angles, 0f,
 		// (float) (Math.PI/12));
 		// if (minDistFront > CLOSE_THRS)
-		v.linear = magnitude * LINEAR_P;
+		v.x = magnitude * LINEAR_P;
 		// else
 		// v.linear = 0;
 		// Enforce maximum velocities
 		v.trim();
 
 		// Execute commands
-		r.setAngularVel(v.angular);
-		r.setLinearVel(v.linear);
+		r.setVels(v.x, v.y, v.theta);
 	}
 
 	@Override

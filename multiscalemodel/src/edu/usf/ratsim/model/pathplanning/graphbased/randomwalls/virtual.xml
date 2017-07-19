@@ -2,7 +2,7 @@
 	
 <experiment>
 	<universe>
-		<name>edu.usf.vlwsim.universe.DifferentialRobotVirtualUniverse</name>
+		<name>edu.usf.vlwsim.universe.HolonomicRobotVirtualUniverse</name>
 		<params>
 			<!-- Distance from which the food is accessible according to the universe -->
 			<closeToFoodThrs>0.1</closeToFoodThrs>
@@ -17,7 +17,7 @@
 	
 	<robot>
 		<!-- Robot to use. Use full name of the class -->
-		<name>edu.usf.vlwsim.robot.DifferentialVirtualRobot</name>
+		<name>edu.usf.vlwsim.robot.HolonomicVirtualRobot</name>
 		<params>
 			<!-- Percentual translational noise -->
 			<noise>.05</noise>

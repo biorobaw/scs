@@ -1,6 +1,7 @@
 package edu.usf.ratsim.model.pathplanning.graphbased;
 
 import edu.usf.experiment.robot.DifferentialRobot;
+import edu.usf.experiment.robot.HolonomicRobot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.BugUtilities;
@@ -13,12 +14,12 @@ public class StraightAndWF extends Module {
 		STRAIGHT, WF
 	};
 	private State state;
-	private DifferentialRobot robot;
+	private HolonomicRobot robot;
 	
-	public StraightAndWF(String name, DifferentialRobot robot) {
+	public StraightAndWF(String name, HolonomicRobot robot) {
 		super(name);
 		
-		state = State.STRAIGHT;
+		state = State.WF;
 		this.robot = robot;
 	}
 
@@ -36,21 +37,23 @@ public class StraightAndWF extends Module {
 			break;
 		}
 		
+//		System.out.println(state);
+		
 		Velocities v = new Velocities();
 		switch(state){
 		case STRAIGHT:
-			v = new Velocities(0.05f, 0);
+			v = new Velocities(0.05f,0, 0);
 			break;
 		case WF:
 			v = BugUtilities.wallFollowRight(readings, angles, robot.getRadius());
 			break;
 		}
+
 		
 		v.trim();
 
 		// Execute commands
-		robot.setAngularVel(v.angular);
-		robot.setLinearVel(v.linear);
+		robot.setVels(v.x, v.y, v.theta);
 	}
 
 	@Override

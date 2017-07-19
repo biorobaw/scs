@@ -3,6 +3,7 @@ package edu.usf.ratsim.nsl.modules.actionselection.bugs;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.robot.DifferentialRobot;
+import edu.usf.experiment.robot.HolonomicRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
@@ -12,7 +13,7 @@ import edu.usf.ratsim.support.SonarUtils;
 
 public class Bug1Module extends Module {
 
-	private DifferentialRobot r;
+	private HolonomicRobot r;
 
 	private enum State {
 		GOAL_SEEKING, WF_AWAY_FROM_HP, WF_RETURN_TO_HP, WF_GO_TO_CP
@@ -27,7 +28,7 @@ public class Bug1Module extends Module {
 		super(name);
 
 		// TODO: set to differential robot?
-		this.r = (DifferentialRobot) robot;
+		this.r = (HolonomicRobot) robot;
 
 		state = State.GOAL_SEEKING;
 	}
@@ -106,8 +107,7 @@ public class Bug1Module extends Module {
 		v.trim();
 
 		// Execute commands
-		r.setAngularVel(v.angular);
-		r.setLinearVel(v.linear);
+		r.setVels(v.x, v.y, v.theta);
 	}
 
 	@Override

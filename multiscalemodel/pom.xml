@@ -110,11 +110,6 @@
 			<version>2.0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.digi.xbee</groupId>
-			<artifactId>xbee-java-library</artifactId>
-			<version>1.2.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20160810</version>
@@ -155,5 +150,11 @@
 			<artifactId>flanagan</artifactId>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+		    <groupId>com.rapplogic</groupId>
+		    <artifactId>xbee-api</artifactId>
+		    <version>0.9.3</version>
+		</dependency>
+				
 	</dependencies>
 </project>
