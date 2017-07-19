@@ -1,5 +1,8 @@
 package edu.usf.ratsim.support;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 
@@ -64,5 +67,16 @@ public class SonarUtils {
 					minReading = readings.get(a);
 		}
 		return minReading;
+	}
+
+	public static Map<Float, Float> getReadings(Float1dPort readings, Float1dPort angles, float angle, float range) {
+		Map<Float,Float> map = new HashMap<Float, Float>();
+		for (int a = 0; a < angles.getSize(); a++){
+			float sensorAngle = angles.get(a);
+			if (Math.abs(GeomUtils.relativeAngle(angle, sensorAngle)) <= range + ANGLE_EPS)
+				map.put(sensorAngle, readings.get(a));
+		}
+		
+		return map;
 	}
 }
