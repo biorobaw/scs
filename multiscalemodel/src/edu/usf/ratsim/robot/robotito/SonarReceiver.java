@@ -10,7 +10,7 @@ import com.digi.xbee.api.models.XBeeMessage;
 public class SonarReceiver extends Thread {
 
 	private static final long PERIOD = 10;
-	private static final float MAX_READ = 0.3f;
+	private static final float MAX_READ = 0.4f;
 	private static final float MIN_READ = 0.05f;
 	private XBeeDevice xbee;
 	public float[] sonarReading;
