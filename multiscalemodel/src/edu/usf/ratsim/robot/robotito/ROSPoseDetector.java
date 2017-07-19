@@ -18,6 +18,8 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 public class ROSPoseDetector implements NodeMain {
 	
+	private static final String HOST = "localhost";
+
 	private static ROSPoseDetector instance = null;
 	
 	public float x, y, theta;
@@ -29,8 +31,8 @@ public class ROSPoseDetector implements NodeMain {
 		theta = 0;
 		lastPoseReceived = System.currentTimeMillis();
 		
-		NodeConfiguration conf = NodeConfiguration.newPublic("cmac1");
-		conf.setMasterUri(URI.create("http://cmac1:11311"));
+		NodeConfiguration conf = NodeConfiguration.newPublic(HOST);
+		conf.setMasterUri(URI.create("http://"+HOST+":11311"));
 		ROSPoseDetector node = this;
 		new Thread(new Runnable() {
 			
