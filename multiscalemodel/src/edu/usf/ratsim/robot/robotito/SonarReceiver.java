@@ -12,8 +12,8 @@ import com.rapplogic.xbee.api.wpan.RxResponse16;
 public class SonarReceiver extends Thread {
 
 	private static final long PERIOD = 10;
-	private static final float MAX_READ = 0.4f;
-	private static final float MIN_READ = 0.05f;
+	public static final float MAX_READ = 0.4f;
+	public static final float MIN_READ = 0.05f;
 	public float[] sonarReading;
 	public float[] sonarAngles;
 	public float[] rawReadings;
@@ -68,7 +68,7 @@ public class SonarReceiver extends Thread {
 			
 			try {
 				XBeeResponse rsp = xbee.getResponse();
-				if (rsp.getApiId() == ApiId.RX_16_RESPONSE){
+				if (rsp instanceof RxResponse16){
 					RxResponse16 msg = (RxResponse16) rsp;
 					dataReceived(msg.getData());
 				}

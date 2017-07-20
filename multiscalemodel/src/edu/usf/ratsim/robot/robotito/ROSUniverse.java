@@ -2,6 +2,7 @@ package edu.usf.ratsim.robot.robotito;
 
 import java.awt.Color;
 import java.awt.geom.Rectangle2D.Float;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -135,12 +136,24 @@ public class ROSUniverse implements GlobalCameraUniverse, WallUniverse, Platform
 
 	@Override
 	public void setRobotPosition(Coordinate snewPos) {
-		// Do nothing for now - TODO: ask user to move robot and block
+		System.out.println("[+] Please move the robot to " + snewPos + " and press enter");
+		try {
+			System.in.read();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void setRobotOrientation(float degrees) {
-		// Do nothing for now - TODO: ask user to move robot and block		
+		System.out.println("[+] Please rotate the robot to " + degrees + " and press enter");
+		try {
+			System.in.read();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

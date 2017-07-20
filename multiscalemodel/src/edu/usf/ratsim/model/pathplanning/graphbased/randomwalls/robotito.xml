@@ -17,7 +17,7 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.model.pathplanning.graphbased.StraightAndWallFollow</name>
+		<name>edu.usf.ratsim.model.pathplanning.graphbased.BugAndGraphModel</name>
 		<params>
 			<algorithm>none</algorithm>
 		</params>

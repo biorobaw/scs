@@ -13,9 +13,8 @@ import flanagan.analysis.Regression;
 public class BugUtilities {
 
 	// TODO: change deltaT to be more realistic in seconds, and fix constants
-	public static final float OBSTACLE_FOUND_THRS = .15f;
+	public static final float OBSTACLE_FOUND_THRS = .2f;
 	public static final float CLOSE_THRS = .2f;
-
 
 	private static final float PROP_ANG_WALL_CLOSE = 2f;
 	private static final float PROP_LINEAR_WF = 0.125f;
@@ -32,15 +31,16 @@ public class BugUtilities {
 	private static final float BLIND_LINEAR = 0.05f;
 	private static final float BLIND_ANGULAR = .6f;
 	private static final float PLANE_ESTIMATION_THRS = 0.3f;
-	private static final float PROP_ANG_PARALLEL =1.5f;
-	private static final float TARGET_WALL_AWAY = .15f;
-	private static final float PROP_ANG_AWAY = 2;
-	private static final float TOO_CLOSE_TRHS = 0.1f;
+	private static final float PROP_ANG_PARALLEL = 1.5f;
+	private static final float TARGET_WALL_AWAY = .1f;
+	private static final float PROP_ANG_AWAY = 0.5f;
+	private static final float TOO_CLOSE_TRHS = 0.15f;
 	private static final float LEFT_WALL_TOO_CLOSE_TRHS = 0.075f;
+	private static final double MIN_GS_LINEAR_COMP = 0.05f;
 
 	public static Velocities goalSeek(Coordinate rPos, float rOrient, Coordinate platPos) {
 		float linear, angular;
-		linear = (float) (PROP_LINEAR_GS * Math.min(platPos.distance(rPos), MAX_GS_PROP_DIST));
+		linear = (float) Math.max(MIN_GS_LINEAR_COMP, PROP_LINEAR_GS *  Math.min(platPos.distance(rPos), MAX_GS_PROP_DIST));
 		angular = PROP_ANGULAR_GS * GeomUtils.relativeAngleToPoint(rPos, rOrient, platPos);
 		return new Velocities(linear, 0, angular);
 	}
@@ -58,21 +58,22 @@ public class BugUtilities {
 		// float leftBack = SonarUtils.getReading((float) (2*Math.PI/3),
 		// readings, angles);
 		float minFront = SonarUtils.getMinReading(readings, angles, 0f, (float) (Math.PI / 6));
-		float minLeft = SonarUtils.getMinReading(readings, angles, (float) (Math.PI / 2),
-				(float) (Math.PI / 6));
-		if (minLeft < LEFT_WALL_TOO_CLOSE_TRHS){
-			angular = 0;
-			x = 2*BLIND_LINEAR;
-			y = -10*BLIND_LINEAR;
-		} else if (minFront < OBSTACLE_FOUND_THRS) {
-			if (minFront < TOO_CLOSE_TRHS){
-				x = 0; y = 0;
+		float minLeft = SonarUtils.getMinReading(readings, angles, (float) (Math.PI / 2), (float) (Math.PI / 6));
+
+		if (minFront < OBSTACLE_FOUND_THRS) {
+			if (minFront < TOO_CLOSE_TRHS) {
+				x = 0;
+				y = 0;
 				angular = -BLIND_ANGULAR;
 			} else {
 				angular = -BLIND_ANGULAR;
 				x = BLIND_LINEAR / 2;
 				y = 0;
 			}
+		} else if (minLeft < LEFT_WALL_TOO_CLOSE_TRHS) {
+			angular = 0;
+			x = BLIND_LINEAR;
+			y = -BLIND_LINEAR;
 		} else {
 
 			Map<Float, Float> leftReadings = SonarUtils.getReadings(readings, angles, (float) (Math.PI / 2),
@@ -98,8 +99,8 @@ public class BugUtilities {
 					for (Float angle : planeMeasures.keySet()) {
 						xs[i] = (robotRadius + planeMeasures.get(angle)) * Math.cos(angle);
 						ys[i] = (robotRadius + planeMeasures.get(angle)) * Math.sin(angle);
-						xs[i+1] = xs[i];
-						ys[i+1] = ys[i];
+						xs[i + 1] = xs[i];
+						ys[i + 1] = ys[i];
 						i += 2;
 					}
 					Regression reg = new Regression(xs, ys);
@@ -113,11 +114,10 @@ public class BugUtilities {
 						planeAngle = angle - Math.PI / 2;
 				}
 
-				
 				float awayErr = TARGET_WALL_AWAY - minLeft;
 				x = BLIND_LINEAR;
 				y = -PROP_ANG_AWAY * awayErr;
-				angular = (float) (PROP_ANG_PARALLEL * planeAngle );
+				angular = (float) (PROP_ANG_PARALLEL * planeAngle);
 			}
 		}
 

@@ -52,7 +52,7 @@ ratPathPlot <- function(pathData, p){
   pathSegs <- pathData[1:nrow(pathData)-1,]
   # Add two new columns with shifted data
   pathSegs[c('nX', 'nY')] <- pathData[-1,c('x','y')]
-  p + geom_segment(data=pathSegs[c('x','y','nX','nY','random')], aes(x,y,xend=nX,yend=nY,color = random), cex=.05) + scale_color_manual(values=c(true="red", false="blue")) 
+  p + geom_segment(data=pathSegs[c('x','y','nX','nY')], aes(x,y,xend=nX,yend=nY), color="blue", cex=.05)
 }
 
 ratPathPointsPlot <- function(pathData, p){
@@ -109,6 +109,7 @@ wallPlot <- function(wallData,p){
 }
 
 plotPathOnMaze <- function (preName, name, pathData, wallData, maze){
+
   # Get the individual components of the plot
   p <- ggplot()
   p <- ratPathPlot(pathData, p)

@@ -12,6 +12,7 @@ import com.rapplogic.xbee.api.XBeeException;
 import com.rapplogic.xbee.api.wpan.TxRequest16;
 import com.vividsolutions.jts.geom.Coordinate;
 
+import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.robot.DifferentialRobot;
 import edu.usf.experiment.robot.HolonomicRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
@@ -41,7 +42,8 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 	private static final float LINEAR_INERTIA = 0;
 	private static final float ANGULAR_INERTIA = 0;
 	private static final float ROBOT_RADIUS = 0.075f;
-	private static final boolean WAIT_FOR_LOCATION = false;
+	private static final boolean WAIT_FOR_LOCATION = true;
+	private static final double FOUND_PLAT_THRS = .1f;
 
 	private XBee xbee;
 	private XBeeAddress16 remoteAddress;
@@ -62,7 +64,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 		
 		xbee = new XBee();
 		try {
-			xbee.open("/dev/ttyUSB0", 57600);
+			xbee.open("/dev/ttyUSB1", 57600);
 		} catch (XBeeException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -152,7 +154,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 			tVelShort = (short) Math.max(0, Math.min(tVelShort, 255));
 			int[] dataToSend = {(byte)'v', (byte) Math.abs(xVelShort), (byte) Math.abs(yVelShort), (byte) Math.abs(tVelShort)};
 			
-			System.out.println("Sending vels: " + xVelShort + " " + tVelShort);
+//			System.out.println("Sending vels: " + xVelShort + " " + tVelShort);
 			try {
 				TxRequest16 rq = new TxRequest16(remoteAddress, dataToSend);
 				// Disable ACKs
@@ -163,7 +165,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 				e.printStackTrace();
 			}
 			
-			System.out.println("Vels sent");
+//			System.out.println("Vels sent");
 			try {
 				Thread.sleep(CONTROL_PERIOD);
 			} catch (InterruptedException e) {
@@ -185,7 +187,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 	
 	@Override
 	public float getSonarMaxReading() {
-		return .3f;
+		return SonarReceiver.MAX_READ;
 	}
 
 	@Override
@@ -205,8 +207,11 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 
 	@Override
 	public boolean hasFoundPlatform() {
-		// TODO Auto-generated method stub
-		return false;
+		String posStr = PropertyHolder.getInstance().getProperty("platformPosition");
+		String[] fields = posStr.split(",");
+		float x = Float.parseFloat(fields[0]);
+		float y = Float.parseFloat(fields[1]);
+		return new Coordinate(x,y).distance(getPosition()) < FOUND_PLAT_THRS;
 	}
 
 	

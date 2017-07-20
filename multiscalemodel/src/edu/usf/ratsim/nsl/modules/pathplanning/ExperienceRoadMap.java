@@ -12,6 +12,7 @@ import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import edu.uci.ics.jung.graph.util.Pair;
+import edu.usf.experiment.robot.HolonomicRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.module.Module;
@@ -180,6 +181,11 @@ public class ExperienceRoadMap extends Module {
 		for (PointNode n : g.getVertices())
 			n.following = false;
 
+		if (foundPlat.get()){
+			((HolonomicRobot)robot).setVels(0, 0, 0);
+			return;
+		}
+		
 		// Publish a closer goal if there is a valid path
 		if (bestPath == null) {
 			intermediateGoal.set(platPos.get());

@@ -18,7 +18,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 public class ROSPoseDetector implements NodeMain {
 	
-	private static final String HOST = "localhost";
+	private static final String HOST = "cmac1";
 
 	private static ROSPoseDetector instance = null;
 	
