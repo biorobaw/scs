@@ -15,13 +15,13 @@ import edu.usf.ratsim.nsl.modules.actionselection.bugs.Velocities;
 
 public class APFModule extends Module {
 
-	private static final float ANGULAR_P = .1f;
+	private static final float ANGULAR_P = 1f;
 
-	private static final float LINEAR_P = .2f;
+	private static final float LINEAR_P = .15f;
 
-	private static final float REP_MULTIPLIER = .01f;
+	private static final float REP_MULTIPLIER = .001f;
 
-	private static final float ATTRACT_MAGNITUDE = .1f;
+	private static final float ATTRACT_MAGNITUDE = .5f;
 
 	private static final float MAX_REP_DIST = 0.2f;
 

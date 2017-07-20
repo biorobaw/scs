@@ -65,16 +65,6 @@
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
 			<task>
-				<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
-				<params>
-					<point>
-						<x>2</x>
-						<y>0</y>
-						<theta>3.14</theta>
-					</point>
-				</params>
-			</task>
-			<task>
 				<name>edu.usf.experiment.task.maze.SetUpEmpty</name>
 				<params>
 				</params>

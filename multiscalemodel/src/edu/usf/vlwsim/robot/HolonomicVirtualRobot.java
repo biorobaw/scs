@@ -23,6 +23,7 @@ public class HolonomicVirtualRobot extends VirtualRobot implements HolonomicRobo
 	@Override
 	public void setVels(float x, float y, float th) {
 		universe.setRobotVels(x, y, th);
+		System.out.println(x + " " + y + " " + th);
 	}
 	
 }
