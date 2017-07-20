@@ -57,8 +57,10 @@ public class ExperienceRoadMap extends Module {
 
 	private List<PointNode> prevToConnect;
 
+	private float obstFoundThrs;
+
 	public ExperienceRoadMap(String name, String algorithm, Robot robot, float maxNodeRadiusCreate,
-			float maxNodeRadiusConnect, float maxNodeRadiusFollow, float platformWidth) {
+			float maxNodeRadiusConnect, float maxNodeRadiusFollow, float platformWidth, float obstFoundThrs) {
 		super(name);
 
 		intermediateGoal = new PointPort(this);
@@ -71,6 +73,7 @@ public class ExperienceRoadMap extends Module {
 		this.maxNodeRadiusCreate = maxNodeRadiusCreate;
 		this.maxNodeRadiusConnect = maxNodeRadiusConnect;
 		this.maxNodeRadiusFollow = maxNodeRadiusFollow;
+		this.obstFoundThrs = obstFoundThrs;
 
 		prevToConnect = null;
 	}
@@ -320,9 +323,9 @@ public class ExperienceRoadMap extends Module {
 		if (algorithm.equals("bug0"))
 			bug = new Bug0Module("Bug0", robot);
 		else if (algorithm.equals("bug1"))
-			bug = new Bug1Module("Bug1", robot);
+			bug = new Bug1Module("Bug1", robot, obstFoundThrs);
 		else if (algorithm.equals("bug2"))
-			bug = new Bug2Module("Bug2", robot);
+			bug = new Bug2Module("Bug2", robot, obstFoundThrs);
 		else
 			throw new NotImplementedException();
 

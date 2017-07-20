@@ -12,7 +12,7 @@ import edu.usf.ratsim.support.SonarUtils;
 
 public class Bug0Module extends Module {
 
-	private static final float FREE_PASSAGE_THRS = 1.5f * BugUtilities.OBSTACLE_FOUND_THRS;
+	private static final float FREE_PASSAGE_THRS = 1.5f * BugUtilities.DEFAULT_OBSTACLE_FOUND_THRS;
 
 	private DifferentialRobot r;
 
@@ -22,13 +22,21 @@ public class Bug0Module extends Module {
 
 	private State state;
 
-	public Bug0Module(String name, Robot robot) {
+	private float obstFoundThrs;
+
+	public Bug0Module(String name, Robot robot, float obstFoundThrs) {
 		super(name);
 
 		// TODO: set to differential robot?
 		this.r = (DifferentialRobot) robot;
+		this.obstFoundThrs = obstFoundThrs;
 
 	}
+	
+	public Bug0Module(String name, Robot robot) {
+		this(name, robot, BugUtilities.DEFAULT_OBSTACLE_FOUND_THRS);
+	}
+	
 
 	@Override
 	public void run() {
@@ -78,7 +86,7 @@ public class Bug0Module extends Module {
 			v = BugUtilities.wallFollowLeft(readings,angles);
 			break;
 		case WALL_FOLLOWING_RIGHT:
-			v = BugUtilities.wallFollowRight(readings, angles, r.getRadius());
+			v = BugUtilities.wallFollowRight(readings, angles, r.getRadius(), obstFoundThrs);
 		}
 
 		// Enforce maximum velocities

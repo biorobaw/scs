@@ -13,7 +13,7 @@ import flanagan.analysis.Regression;
 public class BugUtilities {
 
 	// TODO: change deltaT to be more realistic in seconds, and fix constants
-	public static final float OBSTACLE_FOUND_THRS = .2f;
+	public static final float DEFAULT_OBSTACLE_FOUND_THRS = .1f;
 	public static final float CLOSE_THRS = .2f;
 
 	private static final float PROP_ANG_WALL_CLOSE = 2f;
@@ -45,7 +45,7 @@ public class BugUtilities {
 		return new Velocities(linear, 0, angular);
 	}
 
-	public static Velocities wallFollowRight(Float1dPort readings, Float1dPort angles, float robotRadius) {
+	public static Velocities wallFollowRight(Float1dPort readings, Float1dPort angles, float robotRadius, float obstFoundThrs) {
 		float x, y, angular;
 
 		// float minLeft = SonarUtils.getMinReading(readings, angles, (float)
@@ -60,7 +60,7 @@ public class BugUtilities {
 		float minFront = SonarUtils.getMinReading(readings, angles, 0f, (float) (Math.PI / 6));
 		float minLeft = SonarUtils.getMinReading(readings, angles, (float) (Math.PI / 2), (float) (Math.PI / 6));
 
-		if (minFront < OBSTACLE_FOUND_THRS) {
+		if (minFront < obstFoundThrs) {
 			if (minFront < TOO_CLOSE_TRHS) {
 				x = 0;
 				y = 0;
@@ -132,7 +132,7 @@ public class BugUtilities {
 		float front = SonarUtils.getReading(0f, readings, angles);
 		float right = SonarUtils.getReading((float) (-Math.PI / 2), readings, angles);
 		float rightFront = SonarUtils.getReading((float) (-Math.PI / 4), readings, angles);
-		if (minFront < OBSTACLE_FOUND_THRS || minRight >= 1.5 * OBSTACLE_FOUND_THRS) {
+		if (minFront < DEFAULT_OBSTACLE_FOUND_THRS || minRight >= 1.5 * DEFAULT_OBSTACLE_FOUND_THRS) {
 			angular = WF_ROT_VEL_OBS_FRONT;
 			linear = 0;
 		} else {

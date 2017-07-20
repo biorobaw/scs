@@ -23,14 +23,20 @@ public class Bug1Module extends Module {
 	private float minDistToGoal;
 	private Coordinate minDistPlace;
 	private Coordinate hitPoint;
+	private float obstFoundThrs;
 
-	public Bug1Module(String name, Robot robot) {
+	public Bug1Module(String name, Robot robot, float obstFoundThrs) {
 		super(name);
 
 		// TODO: set to differential robot?
 		this.r = (HolonomicRobot) robot;
-
+		this.obstFoundThrs = obstFoundThrs;
+		
 		state = State.GOAL_SEEKING;
+	}
+	
+	public Bug1Module(String name, Robot robot) {
+		this(name, robot, BugUtilities.DEFAULT_OBSTACLE_FOUND_THRS);
 	}
 
 	@Override
@@ -46,7 +52,7 @@ public class Bug1Module extends Module {
 		case GOAL_SEEKING:
 			// Check the middle sensor for obstacles
 			float minFront = SonarUtils.getMinReading(readings, angles, 0f, (float) (Math.PI/6));
-			if (minFront < BugUtilities.OBSTACLE_FOUND_THRS) {
+			if (minFront < BugUtilities.DEFAULT_OBSTACLE_FOUND_THRS) {
 				state = State.WF_AWAY_FROM_HP;
 				minDistToGoal = (float) rPos.get().distance(platPos.get());
 				minDistPlace = rPos.get();
@@ -99,7 +105,7 @@ public class Bug1Module extends Module {
 		case WF_AWAY_FROM_HP:
 		case WF_RETURN_TO_HP:
 		case WF_GO_TO_CP:
-			v = BugUtilities.wallFollowRight(readings, angles, r.getRadius());
+			v = BugUtilities.wallFollowRight(readings, angles, r.getRadius(), obstFoundThrs);
 			break;
 		}
 

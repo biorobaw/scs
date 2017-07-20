@@ -1,6 +1,5 @@
 package edu.usf.ratsim.model.pathplanning.graphbased;
 
-import edu.usf.experiment.robot.DifferentialRobot;
 import edu.usf.experiment.robot.HolonomicRobot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
@@ -31,7 +30,7 @@ public class StraightAndWF extends Module {
 		float minFront = SonarUtils.getMinReading(readings, angles, 0f, (float) (Math.PI/6));
 		switch(state){
 		case STRAIGHT:
-			if (minFront < BugUtilities.OBSTACLE_FOUND_THRS){
+			if (minFront < BugUtilities.DEFAULT_OBSTACLE_FOUND_THRS){
 				state = State.WF;
 			}
 			break;
@@ -45,7 +44,7 @@ public class StraightAndWF extends Module {
 			v = new Velocities(0.05f,0, 0);
 			break;
 		case WF:
-			v = BugUtilities.wallFollowRight(readings, angles, robot.getRadius());
+			v = BugUtilities.wallFollowRight(readings, angles, robot.getRadius(), BugUtilities.DEFAULT_OBSTACLE_FOUND_THRS);
 			break;
 		}
 

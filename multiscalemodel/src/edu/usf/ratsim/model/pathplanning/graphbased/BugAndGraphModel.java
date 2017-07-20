@@ -29,6 +29,7 @@ import edu.usf.ratsim.nsl.modules.pathplanning.PointNode;
 public class BugAndGraphModel extends Model implements GraphModel {
 
 
+	private static final float PLATFORM_WIDTH = 0.1f;
 	private ExperienceRoadMap erm;
 
 	public BugAndGraphModel() {
@@ -38,6 +39,7 @@ public class BugAndGraphModel extends Model implements GraphModel {
 			Robot robot) {
 		
 		String algorithm = params.getChildText("algorithm");
+		float obstFoundThrs = params.getChildFloat("obstFoundThrs");
 		
 		SonarReadings sReadings = new SonarReadings("Sonar Readings", (SonarRobot) robot);
 		addModule(sReadings);
@@ -58,7 +60,7 @@ public class BugAndGraphModel extends Model implements GraphModel {
 		float connectThrs = sonarMaxReading / 3;
 		float createThrs = sonarMaxReading / 3;
 		float followThrs = sonarMaxReading;
-		erm = new ExperienceRoadMap("Experience road map", algorithm, robot,createThrs ,connectThrs, followThrs, .1f);
+		erm = new ExperienceRoadMap("Experience road map", algorithm, robot,createThrs ,connectThrs, followThrs, PLATFORM_WIDTH, obstFoundThrs);
 		erm.addInPort("sonarReadings", sReadings.getOutPort("sonarReadings"));
 		erm.addInPort("sonarAngles", sReadings.getOutPort("sonarAngles"));
 		erm.addInPort("position", rPos.getOutPort("position"));

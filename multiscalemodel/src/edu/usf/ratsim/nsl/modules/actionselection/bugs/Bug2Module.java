@@ -22,16 +22,22 @@ public class Bug2Module extends Module {
 	private State state;
 	private LineSegment mLine;
 	private Coordinate hitPoint;
+	private float obstFoundThrs;
 
-	public Bug2Module(String name, Robot robot) {
+	public Bug2Module(String name, Robot robot, float obstFoundThrs) {
 		super(name);
 
 		// TODO: change to differential robot?
 		this.r = (DifferentialRobot) robot;
-
+		this.obstFoundThrs = obstFoundThrs;
+		
 		state = State.GOAL_SEEKING;
 
 		mLine = null;
+	}
+	
+	public Bug2Module(String name, Robot robot) {
+		this(name, robot, BugUtilities.DEFAULT_OBSTACLE_FOUND_THRS);
 	}
 
 	@Override
@@ -55,7 +61,7 @@ public class Bug2Module extends Module {
 		switch (state) {
 		case GOAL_SEEKING:
 			// Check the middle sensor for obstacles
-			if (front < BugUtilities.OBSTACLE_FOUND_THRS) {
+			if (front < BugUtilities.DEFAULT_OBSTACLE_FOUND_THRS) {
 				state = State.WF_AWAY_FROM_ML;
 				hitPoint = rPos.get();
 			}
@@ -86,7 +92,7 @@ public class Bug2Module extends Module {
 			break;
 		case WF_AWAY_FROM_ML:
 		case WF_RETURN_TO_ML:
-			v = BugUtilities.wallFollowRight(readings, angles, r.getRadius());
+			v = BugUtilities.wallFollowRight(readings, angles, r.getRadius(), obstFoundThrs);
 			break;
 		}
 
