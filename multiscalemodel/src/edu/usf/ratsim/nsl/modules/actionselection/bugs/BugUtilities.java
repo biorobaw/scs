@@ -15,7 +15,7 @@ public class BugUtilities {
 
 	// TODO: change deltaT to be more realistic in seconds, and fix constants
 	public static final float DEFAULT_OBSTACLE_FOUND_THRS = .1f;
-	public static final float CLOSE_THRS = .2f;
+	public static final float CLOSE_THRS = .3f;
 
 	private static final float PROP_ANG_WALL_CLOSE = 2f;
 	private static final float PROP_LINEAR_WF = 0.125f;
@@ -29,12 +29,13 @@ public class BugUtilities {
 	private static final float MAX_GS_PROP_DIST = 0.3f;
 	private static final float MAX_ERR = .2f;
 
-	private static final float BLIND_LINEAR = 0.1f;
+	private static final float BLIND_LINEAR = 0.07f;
 	private static final float BLIND_ANGULAR = .6f;
-	private static final float PROP_ANG_PARALLEL = 1f;
-	private static final float PROP_LINEAR_PARALLEL = 0.1f;
-	private static final float PROP_LINEAR_AWAY = 0.2f;
-	private static final float TARGET_WALL_AWAY = .05f;
+	private static final float PROP_ANG_PARALLEL = 0.5f;
+	private static final float PROP_LINEAR_PARALLEL_X = 0.05f;
+	private static final float PROP_LINEAR_PARALLEL_Y = 0.1f;
+	private static final float PROP_LINEAR_AWAY = .05f;
+	private static final float TARGET_WALL_AWAY = .1f;
 
 	private static final float TOO_CLOSE_TRHS = 0.15f;
 	private static final float LEFT_WALL_TOO_CLOSE_TRHS = 0.075f;
@@ -113,9 +114,12 @@ public class BugUtilities {
 			float awayAngle = (float) (planeAngle - Math.PI / 2);
 			
 			x = 0; y = 0; angular = 0;
-			x = (float) (Math.cos(parallelAngle) * PROP_LINEAR_PARALLEL + Math.cos(awayAngle) * awayErr * PROP_LINEAR_AWAY); 
-			y= (float) (Math.sin(parallelAngle) * PROP_LINEAR_PARALLEL + Math.sin(awayAngle) * awayErr * PROP_LINEAR_AWAY); 
+//			if (Math.abs(parallelAngle) < Math.PI / 16){
+			x = (float) (Math.cos(parallelAngle) * PROP_LINEAR_PARALLEL_X + Math.cos(awayAngle) * awayErr * PROP_LINEAR_AWAY); 
+			y= (float) (Math.sin(parallelAngle) * PROP_LINEAR_PARALLEL_Y + Math.sin(awayAngle) * awayErr * PROP_LINEAR_AWAY); 
+//			}
 			angular = (float) (PROP_ANG_PARALLEL * (parallelAngle));
+			System.out.println(parallelAngle);
 		}
 
 		return new Velocities(x, y, angular);

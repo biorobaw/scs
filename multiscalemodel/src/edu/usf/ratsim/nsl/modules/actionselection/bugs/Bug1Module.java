@@ -95,6 +95,7 @@ public class Bug1Module extends Module {
 			}
 			break;
 		}
+		System.out.println(state);
 		
 		// Cmd depending on state
 		Velocities v = new Velocities();
@@ -109,6 +110,7 @@ public class Bug1Module extends Module {
 			break;
 		}
 
+		
 		// Enforce maximum velocities
 		v.trim();
 

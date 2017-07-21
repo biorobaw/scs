@@ -90,6 +90,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 		}
 		
 		sonarReceiver = new SonarReceiver(xbee, NUM_SONARS);
+		sonarReceiver.setPriority(Thread.MAX_PRIORITY);
 		sonarReceiver.start();
 		
 		sendKs();
@@ -278,9 +279,9 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 
 //		r.calibrateSonars();
 		
-		r.setLinearVel(.1f);
+		r.setLinearVel(.0f);
 //		r.yVel = .1f;
-		r.setAngularVel((float) (0));
+		r.setAngularVel((float) (1));
 		try {
 			Thread.sleep(500000);
 		} catch (InterruptedException e) {
