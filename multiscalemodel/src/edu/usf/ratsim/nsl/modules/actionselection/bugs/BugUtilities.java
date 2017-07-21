@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LineSegment;
 
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
@@ -28,97 +29,93 @@ public class BugUtilities {
 	private static final float MAX_GS_PROP_DIST = 0.3f;
 	private static final float MAX_ERR = .2f;
 
-	private static final float BLIND_LINEAR = 0.05f;
+	private static final float BLIND_LINEAR = 0.1f;
 	private static final float BLIND_ANGULAR = .6f;
-	private static final float PLANE_ESTIMATION_THRS = 0.3f;
-	private static final float PROP_ANG_PARALLEL = 1.5f;
-	private static final float TARGET_WALL_AWAY = .1f;
-	private static final float PROP_ANG_AWAY = 0.5f;
+	private static final float PROP_ANG_PARALLEL = 1f;
+	private static final float PROP_LINEAR_PARALLEL = 0.1f;
+	private static final float PROP_LINEAR_AWAY = 0.2f;
+	private static final float TARGET_WALL_AWAY = .05f;
+
 	private static final float TOO_CLOSE_TRHS = 0.15f;
 	private static final float LEFT_WALL_TOO_CLOSE_TRHS = 0.075f;
 	private static final double MIN_GS_LINEAR_COMP = 0.05f;
 
+
 	public static Velocities goalSeek(Coordinate rPos, float rOrient, Coordinate platPos) {
 		float linear, angular;
-		linear = (float) Math.max(MIN_GS_LINEAR_COMP, PROP_LINEAR_GS *  Math.min(platPos.distance(rPos), MAX_GS_PROP_DIST));
+		linear = (float) Math.max(MIN_GS_LINEAR_COMP,
+				PROP_LINEAR_GS * Math.min(platPos.distance(rPos), MAX_GS_PROP_DIST));
 		angular = PROP_ANGULAR_GS * GeomUtils.relativeAngleToPoint(rPos, rOrient, platPos);
 		return new Velocities(linear, 0, angular);
 	}
 
-	public static Velocities wallFollowRight(Float1dPort readings, Float1dPort angles, float robotRadius, float obstFoundThrs) {
+	public static Velocities wallFollowRight(Float1dPort readings, Float1dPort angles, float robotRadius,
+			float obstFoundThrs) {
 		float x, y, angular;
 
-		// float minLeft = SonarUtils.getMinReading(readings, angles, (float)
-		// (Math.PI/2), (float) (Math.PI/12));
-		// float front = SonarUtils.getReading(0f, readings, angles);
-		// float left = SonarUtils.getReading((float) (Math.PI/2), readings,
-		// angles);
-		// float leftFront = SonarUtils.getReading((float) (Math.PI/3),
-		// readings, angles);
-		// float leftBack = SonarUtils.getReading((float) (2*Math.PI/3),
-		// readings, angles);
 		float minFront = SonarUtils.getMinReading(readings, angles, 0f, (float) (Math.PI / 6));
 		float minLeft = SonarUtils.getMinReading(readings, angles, (float) (Math.PI / 2), (float) (Math.PI / 6));
+		float leftFront = SonarUtils.getReading((float) (Math.PI / 6), readings, angles);
+		// Get the entier front half to detect walls
+		Map<Float, Float> wallReadings = SonarUtils.getReadings(readings, angles, 0f, (float) (Math.PI / 2));
+		// Get measures below close thrs
+		Map<Float, Float> planeMeasures = new HashMap<Float, Float>();
+		for (Float angle : wallReadings.keySet()) {
+			float reading = wallReadings.get(angle);
+			if (reading < obstFoundThrs)
+				planeMeasures.put(angle, reading);
+		}
 
-		if (minFront < obstFoundThrs) {
-			if (minFront < TOO_CLOSE_TRHS) {
-				x = 0;
-				y = 0;
-				angular = -BLIND_ANGULAR;
-			} else {
-				angular = -BLIND_ANGULAR;
-				x = BLIND_LINEAR / 2;
-				y = 0;
-			}
-		} else if (minLeft < LEFT_WALL_TOO_CLOSE_TRHS) {
-			angular = 0;
+		// If no measures, just circle hoping to find the wall
+		// If I see a wall with more wall going forward (leftFront sensor detecting), also should just circle it
+		if (planeMeasures.isEmpty()) {
 			x = BLIND_LINEAR;
-			y = -BLIND_LINEAR;
-		} else {
-
-			Map<Float, Float> leftReadings = SonarUtils.getReadings(readings, angles, (float) (Math.PI / 2),
-					(float) (Math.PI / 6));
-			// Get measures below close thrs
-			Map<Float, Float> planeMeasures = new HashMap<Float, Float>();
-			for (Float angle : leftReadings.keySet()) {
-				float reading = leftReadings.get(angle);
-				if (reading < PLANE_ESTIMATION_THRS)
-					planeMeasures.put(angle, reading);
-			}
-
-			if (planeMeasures.isEmpty()) {
-				x = BLIND_LINEAR;
-				y = 0;
-				angular = BLIND_ANGULAR;
-			} else {
-				double planeAngle;
-				if (planeMeasures.size() > 1) {
-					double[] xs = new double[planeMeasures.size() * 2];
-					double[] ys = new double[planeMeasures.size() * 2];
-					int i = 0;
-					for (Float angle : planeMeasures.keySet()) {
-						xs[i] = (robotRadius + planeMeasures.get(angle)) * Math.cos(angle);
-						ys[i] = (robotRadius + planeMeasures.get(angle)) * Math.sin(angle);
-						xs[i + 1] = xs[i];
-						ys[i + 1] = ys[i];
-						i += 2;
-					}
-					Regression reg = new Regression(xs, ys);
-					reg.linear();
-					double[] estimates = reg.getBestEstimates();
-					double m = estimates[1];
-					planeAngle = Math.atan(m);
-				} else {
-					planeAngle = 0;
-					for (Float angle : planeMeasures.keySet())
-						planeAngle = angle - Math.PI / 2;
+			y = 0;
+			angular = BLIND_ANGULAR;
+		} else  {
+			double planeAngle;
+			float distToPlane = 0;
+			if (planeMeasures.size() > 1) {
+				double[] xs = new double[planeMeasures.size() * 2];
+				double[] ys = new double[planeMeasures.size() * 2];
+				int i = 0;
+				for (Float angle : planeMeasures.keySet()) {
+					xs[i] = (robotRadius + planeMeasures.get(angle)) * Math.cos(angle);
+					ys[i] = (robotRadius + planeMeasures.get(angle)) * Math.sin(angle);
+					xs[i + 1] = xs[i];
+					ys[i + 1] = ys[i];
+					i += 2;
 				}
-
-				float awayErr = TARGET_WALL_AWAY - minLeft;
-				x = BLIND_LINEAR;
-				y = -PROP_ANG_AWAY * awayErr;
-				angular = (float) (PROP_ANG_PARALLEL * planeAngle);
+				Regression reg = new Regression(xs, ys);
+				reg.linear();
+				double[] estimates = reg.getBestEstimates();
+				double m = estimates[1];
+				double n = estimates[0];
+				// If it intersects y in the negative side, the line is to the right, so following the opposite direction
+				if (n < 0)
+					planeAngle = Math.atan(m) - Math.PI;
+				else
+					planeAngle = Math.atan(m);
+				
+				LineSegment planeSeg = new LineSegment(new Coordinate(0, n), new Coordinate(0, -(n/m)));
+				distToPlane = (float) planeSeg.distancePerpendicular(new Coordinate());
+			} else {
+				planeAngle = 0;
+				for (Float angle : planeMeasures.keySet()){
+					planeAngle = GeomUtils.standardAngle(angle) - Math.PI / 2;
+					distToPlane = planeMeasures.get(angle);
+				}
 			}
+			
+			
+			float awayErr = TARGET_WALL_AWAY - distToPlane;
+			float parallelAngle = (float) planeAngle;
+			float awayAngle = (float) (planeAngle - Math.PI / 2);
+			
+			x = 0; y = 0; angular = 0;
+			x = (float) (Math.cos(parallelAngle) * PROP_LINEAR_PARALLEL + Math.cos(awayAngle) * awayErr * PROP_LINEAR_AWAY); 
+			y= (float) (Math.sin(parallelAngle) * PROP_LINEAR_PARALLEL + Math.sin(awayAngle) * awayErr * PROP_LINEAR_AWAY); 
+			angular = (float) (PROP_ANG_PARALLEL * (parallelAngle));
 		}
 
 		return new Velocities(x, y, angular);

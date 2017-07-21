@@ -35,9 +35,8 @@ public class GeomUtils {
 	 */
 	public static float relativeAngle(float angle, float base){
 		float deltaAngle =(float) ((angle - base) % (2*Math.PI));
-		if (deltaAngle >= Math.PI ) return (float)(deltaAngle - 2*Math.PI);
-		if (deltaAngle < -Math.PI ) return (float)(deltaAngle + 2*Math.PI);
-		return deltaAngle;
+		
+		return standardAngle(deltaAngle);
 	
 	}
 	
@@ -145,6 +144,13 @@ public class GeomUtils {
 		float a1angle = Math.abs(GeomUtils.relativeAngle(a1, angle));
 		float a2angle = Math.abs(GeomUtils.relativeAngle(a2, angle));
 		return a1angle <= a1a2 && a2angle <= a1a2;
+	}
+
+	public static float standardAngle(Float angle) {
+		float norm = angle;
+		if (norm >= Math.PI ) return (float)(norm - 2*Math.PI);
+		if (norm < -Math.PI ) return (float)(norm + 2*Math.PI);
+		return angle;
 	}
 
 }

@@ -154,7 +154,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 			tVelShort = (short) Math.max(0, Math.min(tVelShort, 255));
 			int[] dataToSend = {(byte)'v', (byte) Math.abs(xVelShort), (byte) Math.abs(yVelShort), (byte) Math.abs(tVelShort)};
 			
-//			System.out.println("Sending vels: " + xVelShort + " " + tVelShort);
+			System.out.println("Sending vels: " + xVelShort + " " + tVelShort);
 			try {
 				TxRequest16 rq = new TxRequest16(remoteAddress, dataToSend);
 				// Disable ACKs
@@ -278,7 +278,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 
 //		r.calibrateSonars();
 		
-		r.setLinearVel(.05f);
+		r.setLinearVel(.1f);
 //		r.yVel = .1f;
 		r.setAngularVel((float) (0));
 		try {

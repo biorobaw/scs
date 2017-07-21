@@ -21,9 +21,8 @@ public class HolonomicRobotVirtualUniverse extends VirtUniverse {
 
 	@Override
 	public void stepMotion() {
-		rotateRobot(robotW / 2 * getDeltaT());
 		moveRobot(new Coordinate(robotVx * getDeltaT(), robotVy * getDeltaT()));
-		rotateRobot(robotW / 2 * getDeltaT());
+		rotateRobot(robotW * getDeltaT());
 	}
 	
 	/**

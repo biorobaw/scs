@@ -20,7 +20,7 @@
 		<name>edu.usf.ratsim.model.pathplanning.graphbased.BugAndGraphModel</name>
 		<params>
 			<algorithm>none</algorithm>
-			<obstFoundThrs>0.2</obstFoundThrs>
+			<obstFoundThrs>0.1</obstFoundThrs>
 		</params>
 	</model>
 	
