@@ -3,6 +3,7 @@ package edu.usf.ratsim.robot.robotito;
 import java.awt.Color;
 import java.awt.geom.Rectangle2D.Float;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +33,7 @@ public class ROSUniverse implements GlobalCameraUniverse, WallUniverse, Platform
 	private Set<Wall> walls;
 	private LinkedList<Wall> revertWalls;
 	private ROSPoseDetector ROSPose;
+	private ROSWallDetector wallDetector;
 
 	
 	public ROSUniverse(ElementWrapper params, String logPath) {
@@ -40,6 +42,7 @@ public class ROSUniverse implements GlobalCameraUniverse, WallUniverse, Platform
 		revertWalls = new LinkedList<Wall>();
 		
 		ROSPose = ROSPoseDetector.getInstance();
+		wallDetector = ROSWallDetector.getInstance();
 		
 		DisplaySingleton.getDisplay().setupUniversePanel(this);
 		DisplaySingleton.getDisplay().addUniverseDrawer(new PlatformDrawer(this));
@@ -84,19 +87,19 @@ public class ROSUniverse implements GlobalCameraUniverse, WallUniverse, Platform
 
 	@Override
 	public void addWall(LineSegment segment) {
-		walls.add(new Wall(segment));
+//		walls.add(new Wall(segment));
 		// TODO: ask to add wall to user
 	}
 
 	@Override
 	public void addWall(float x, float y, float x2, float y2) {
-		walls.add(new Wall(x,y,x2,y2));
+//		walls.add(new Wall(x,y,x2,y2));
 		// TODO: ask to add wall to user
 	}
 
 	@Override
 	public Set<Wall> getWalls() {
-		return walls;
+		return new HashSet<Wall>(wallDetector.getWalls());
 	}
 
 	@Override

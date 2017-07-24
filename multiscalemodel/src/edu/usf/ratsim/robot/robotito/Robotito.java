@@ -54,7 +54,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 	private float tVel;
 
 	private ROSPoseDetector poseDetector;
-	private int kP = 60;
+	private int kP = 100;
 	// kI is divided by 10 in the robot
 	private int kI = 10;
 	private int kD = 1;
@@ -155,7 +155,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 			tVelShort = (short) Math.max(0, Math.min(tVelShort, 255));
 			int[] dataToSend = {(byte)'v', (byte) Math.abs(xVelShort), (byte) Math.abs(yVelShort), (byte) Math.abs(tVelShort)};
 			
-			System.out.println("Sending vels: " + xVelShort + " " + tVelShort);
+//			System.out.println("Sending vels: " + xVelShort + " " + tVelShort);
 			try {
 				TxRequest16 rq = new TxRequest16(remoteAddress, dataToSend);
 				// Disable ACKs

@@ -31,11 +31,11 @@ public class BugUtilities {
 
 	private static final float BLIND_LINEAR = 0.07f;
 	private static final float BLIND_ANGULAR = .6f;
-	private static final float PROP_ANG_PARALLEL = 0.5f;
-	private static final float PROP_LINEAR_PARALLEL_X = 0.05f;
-	private static final float PROP_LINEAR_PARALLEL_Y = 0.1f;
-	private static final float PROP_LINEAR_AWAY = .05f;
-	private static final float TARGET_WALL_AWAY = .1f;
+	private static final float PROP_ANG_PARALLEL = 1f;
+	private static final float PROP_LINEAR_PARALLEL_X = 0.075f;
+	private static final float PROP_LINEAR_PARALLEL_Y = 0.09f;
+	private static final float PROP_LINEAR_AWAY = .5f;
+	private static final float TARGET_WALL_AWAY = .05f;
 
 	private static final float TOO_CLOSE_TRHS = 0.15f;
 	private static final float LEFT_WALL_TOO_CLOSE_TRHS = 0.075f;
@@ -58,12 +58,12 @@ public class BugUtilities {
 		float minLeft = SonarUtils.getMinReading(readings, angles, (float) (Math.PI / 2), (float) (Math.PI / 6));
 		float leftFront = SonarUtils.getReading((float) (Math.PI / 6), readings, angles);
 		// Get the entier front half to detect walls
-		Map<Float, Float> wallReadings = SonarUtils.getReadings(readings, angles, 0f, (float) (Math.PI / 2));
+		Map<Float, Float> wallReadings = SonarUtils.getReadings(readings, angles, 0f, (float) Math.PI);
 		// Get measures below close thrs
 		Map<Float, Float> planeMeasures = new HashMap<Float, Float>();
 		for (Float angle : wallReadings.keySet()) {
 			float reading = wallReadings.get(angle);
-			if (reading < obstFoundThrs)
+			if (reading < obstFoundThrs * 2)
 				planeMeasures.put(angle, reading);
 		}
 
@@ -113,10 +113,12 @@ public class BugUtilities {
 			float parallelAngle = (float) planeAngle;
 			float awayAngle = (float) (planeAngle - Math.PI / 2);
 			
+			System.out.println(parallelAngle);
+			
 			x = 0; y = 0; angular = 0;
-//			if (Math.abs(parallelAngle) < Math.PI / 16){
-			x = (float) (Math.cos(parallelAngle) * PROP_LINEAR_PARALLEL_X + Math.cos(awayAngle) * awayErr * PROP_LINEAR_AWAY); 
-			y= (float) (Math.sin(parallelAngle) * PROP_LINEAR_PARALLEL_Y + Math.sin(awayAngle) * awayErr * PROP_LINEAR_AWAY); 
+//			if (Math.abs(parallelAngle) < Math.PI / 4){
+				x = (float) (Math.cos(parallelAngle) * PROP_LINEAR_PARALLEL_X + Math.cos(awayAngle) * awayErr * PROP_LINEAR_AWAY); 
+				y= (float) (Math.sin(parallelAngle) * PROP_LINEAR_PARALLEL_Y + Math.sin(awayAngle) * awayErr * PROP_LINEAR_AWAY); 
 //			}
 			angular = (float) (PROP_ANG_PARALLEL * (parallelAngle));
 			System.out.println(parallelAngle);

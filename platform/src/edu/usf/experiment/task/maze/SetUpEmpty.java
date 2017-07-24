@@ -53,7 +53,7 @@ public class SetUpEmpty extends Task {
 		wu.revertWalls();
 		pu.clearPlatforms();
 		
-		pu.addPlatform(new Coordinate(-2f, 0), .1f);
+		pu.addPlatform(new Coordinate(-1.5f, 0), .1f);
 		
 		float len = 2.5f;
 		wu.addWall(len, len/2, -len, len/2);
