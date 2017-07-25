@@ -29,13 +29,13 @@ public class BugUtilities {
 	private static final float MAX_GS_PROP_DIST = 0.3f;
 	private static final float MAX_ERR = .2f;
 
-	private static final float BLIND_LINEAR = 0.07f;
-	private static final float BLIND_ANGULAR = .8f;
+	private static final float BLIND_LINEAR = 0.05f;
+	private static final float BLIND_ANGULAR = 1f;
 	private static final float PROP_ANG_PARALLEL = 1f;
 	private static final float PROP_LINEAR_PARALLEL_X = 0.075f;
 	private static final float PROP_LINEAR_PARALLEL_Y = 0.09f;
 	private static final float PROP_LINEAR_AWAY = 1f;
-	private static final float TARGET_WALL_AWAY = .1f;
+	private static final float TARGET_WALL_AWAY = .12f;
 
 	private static final double MIN_GS_LINEAR_COMP = 0.05f;
 	private static final float PLANE_MEASURE_THRS = .15f;
@@ -70,7 +70,7 @@ public class BugUtilities {
 		// If I see a wall with more wall going forward (leftFront sensor detecting), also should just circle it
 		if (planeMeasures.isEmpty()) {
 			x = BLIND_LINEAR;
-			y = 0;
+			y = BLIND_LINEAR;
 			angular = BLIND_ANGULAR;
 		} else  {
 			double planeAngle;
