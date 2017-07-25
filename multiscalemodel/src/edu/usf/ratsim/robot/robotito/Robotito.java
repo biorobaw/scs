@@ -42,7 +42,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 	private static final float LINEAR_INERTIA = 0;
 	private static final float ANGULAR_INERTIA = 0;
 	private static final float ROBOT_RADIUS = 0.075f;
-	private static final boolean WAIT_FOR_LOCATION = true;
+	private static final boolean WAIT_FOR_LOCATION = false;
 	private static final double FOUND_PLAT_THRS = .1f;
 
 	private XBee xbee;
@@ -64,7 +64,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 		
 		xbee = new XBee();
 		try {
-			xbee.open("/dev/ttyUSB1", 57600);
+			xbee.open(PORT, BAUD_RATE);
 		} catch (XBeeException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

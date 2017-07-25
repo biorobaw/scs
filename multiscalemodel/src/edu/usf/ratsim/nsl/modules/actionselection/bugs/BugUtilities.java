@@ -30,16 +30,15 @@ public class BugUtilities {
 	private static final float MAX_ERR = .2f;
 
 	private static final float BLIND_LINEAR = 0.07f;
-	private static final float BLIND_ANGULAR = .6f;
+	private static final float BLIND_ANGULAR = .8f;
 	private static final float PROP_ANG_PARALLEL = 1f;
 	private static final float PROP_LINEAR_PARALLEL_X = 0.075f;
 	private static final float PROP_LINEAR_PARALLEL_Y = 0.09f;
-	private static final float PROP_LINEAR_AWAY = .5f;
-	private static final float TARGET_WALL_AWAY = .05f;
+	private static final float PROP_LINEAR_AWAY = 1f;
+	private static final float TARGET_WALL_AWAY = .1f;
 
-	private static final float TOO_CLOSE_TRHS = 0.15f;
-	private static final float LEFT_WALL_TOO_CLOSE_TRHS = 0.075f;
 	private static final double MIN_GS_LINEAR_COMP = 0.05f;
+	private static final float PLANE_MEASURE_THRS = .15f;
 
 
 	public static Velocities goalSeek(Coordinate rPos, float rOrient, Coordinate platPos) {
@@ -63,7 +62,7 @@ public class BugUtilities {
 		Map<Float, Float> planeMeasures = new HashMap<Float, Float>();
 		for (Float angle : wallReadings.keySet()) {
 			float reading = wallReadings.get(angle);
-			if (reading < obstFoundThrs * 2)
+			if (reading < PLANE_MEASURE_THRS)
 				planeMeasures.put(angle, reading);
 		}
 
@@ -98,7 +97,12 @@ public class BugUtilities {
 				else
 					planeAngle = Math.atan(m);
 				
-				LineSegment planeSeg = new LineSegment(new Coordinate(0, n), new Coordinate(0, -(n/m)));
+				
+				LineSegment planeSeg;
+				if (m != 0)
+					planeSeg = new LineSegment(new Coordinate(0, n), new Coordinate(-(n/m), 0));
+				else
+					planeSeg = new LineSegment(new Coordinate(0, n), new Coordinate(1, n));
 				distToPlane = (float) planeSeg.distancePerpendicular(new Coordinate());
 			} else {
 				planeAngle = 0;
@@ -113,7 +117,6 @@ public class BugUtilities {
 			float parallelAngle = (float) planeAngle;
 			float awayAngle = (float) (planeAngle - Math.PI / 2);
 			
-			System.out.println(parallelAngle);
 			
 			x = 0; y = 0; angular = 0;
 //			if (Math.abs(parallelAngle) < Math.PI / 4){

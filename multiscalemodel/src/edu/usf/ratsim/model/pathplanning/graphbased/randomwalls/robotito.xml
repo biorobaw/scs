@@ -17,7 +17,7 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.model.pathplanning.graphbased.BugAndGraphModel</name>
+		<name>edu.usf.ratsim.model.pathplanning.graphbased.StraightAndWallFollow</name>
 		<params>
 			<algorithm>none</algorithm>
 			<obstFoundThrs>0.15</obstFoundThrs>
@@ -83,16 +83,16 @@
 			<sleep>10</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
-				<task>
-					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
-					<params>
-						<point>
-							<x>2</x>
-							<y>0</y>
-							<theta>3.14</theta>
-						</point>
-					</params>
-				</task>
+<!--				<task>-->
+<!--					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>-->
+<!--					<params>-->
+<!--						<point>-->
+<!--							<x>2</x>-->
+<!--							<y>0</y>-->
+<!--							<theta>3.14</theta>-->
+<!--						</point>-->
+<!--					</params>-->
+<!--				</task>-->
 			</beforeEpisodeTasks>
 			<!-- Tasks to performe before each cycle -->
 			<beforeCycleTasks>
