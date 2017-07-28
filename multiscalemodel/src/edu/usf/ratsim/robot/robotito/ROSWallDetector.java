@@ -66,7 +66,8 @@ public class ROSWallDetector implements NodeMain {
 			public void onNewMessage(geometry_msgs.PoseStamped p) {
 				float x = (float) p.getPose().getPosition().getX();
 				float y = (float) p.getPose().getPosition().getY();
-				float t = (float) (2 * Math.acos(p.getPose().getOrientation().getW() / 2));
+				// Hack - the orientation is not really a quaternion, it encodes theta on the w component directly
+				float t = (float) p.getPose().getOrientation().getW();
 				Wall wall = new Wall((float) (-Math.cos(t) * HALF_WALL + x), (float) (-Math.sin(t) * HALF_WALL + y),
 						(float) (Math.cos(t) * HALF_WALL + x), (float) (Math.sin(t) * HALF_WALL + y));
 				int id = Integer.parseInt(p.getHeader().getFrameId());
