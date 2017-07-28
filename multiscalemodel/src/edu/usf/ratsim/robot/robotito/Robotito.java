@@ -23,7 +23,7 @@ import edu.usf.experiment.utils.ElementWrapper;
 
 public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, LocalizableRobot, PlatformRobot, Runnable {
 
-    private static final String PORT = "/dev/ttyUSB0";
+    private static final String PORT = "/dev/ttyUSB1";
     private static final int BAUD_RATE = 57600;
     
     // Shared constants with the arduino code
@@ -31,9 +31,9 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
     private static final int MAX_XVEL = 100;
     private static final int MAX_TVEL = 100;
     // 100 means 5 m/s linear vel
-    private static final float XVEL_CONV = MAX_XVEL / 5;
+    private static final float XVEL_CONV = MAX_XVEL / 1;
     // 100 means 4 turns/s angular vel
-    private static final float TVEL_CONV = (float) (MAX_TVEL / (Math.PI * 8));
+    private static final float TVEL_CONV = (float) (MAX_TVEL / (Math.PI * 2));
     // 128 means zero in the final byte (b = 128 + cmd)
     private static final int ZERO_VEL = 128;
     
@@ -54,10 +54,9 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 	private float tVel;
 
 	private ROSPoseDetector poseDetector;
-	private int kP = 100;
-	// kI is divided by 10 in the robot
-	private int kI = 10;
-	private int kD = 1;
+	private int kP = 10;
+	private int kI = 1;
+	private int kD = 0;
 	private SonarReceiver sonarReceiver;
 
 	public Robotito(ElementWrapper params, Universe u) {
@@ -155,7 +154,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 			tVelShort = (short) Math.max(0, Math.min(tVelShort, 255));
 			int[] dataToSend = {(byte)'v', (byte) Math.abs(xVelShort), (byte) Math.abs(yVelShort), (byte) Math.abs(tVelShort)};
 			
-//			System.out.println("Sending vels: " + xVelShort + " " + tVelShort);
+			System.out.println("Sending vels: " + xVelShort + " " + tVelShort);
 			try {
 				TxRequest16 rq = new TxRequest16(remoteAddress, dataToSend);
 				// Disable ACKs
