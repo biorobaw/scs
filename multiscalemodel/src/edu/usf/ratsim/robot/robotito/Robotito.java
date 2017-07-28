@@ -23,7 +23,7 @@ import edu.usf.experiment.utils.ElementWrapper;
 
 public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, LocalizableRobot, PlatformRobot, Runnable {
 
-    private static final String PORT = "/dev/ttyUSB1";
+    private static final String PORT = "/dev/ttyUSB0";
     private static final int BAUD_RATE = 57600;
     
     // Shared constants with the arduino code
@@ -54,8 +54,8 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 	private float tVel;
 
 	private ROSPoseDetector poseDetector;
-	private int kP = 10;
-	private int kI = 1;
+	private int kP = 100;
+	private int kI = 5;
 	private int kD = 0;
 	private SonarReceiver sonarReceiver;
 
@@ -280,7 +280,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 		
 		r.setLinearVel(.0f);
 //		r.yVel = .1f;
-		r.setAngularVel((float) (1));
+		r.setAngularVel((float) (3));
 		try {
 			Thread.sleep(500000);
 		} catch (InterruptedException e) {
