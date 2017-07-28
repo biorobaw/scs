@@ -1,11 +1,15 @@
 package edu.usf.ratsim.model.pathplanning.apf;
 
+import edu.usf.experiment.display.DisplaySingleton;
+import edu.usf.experiment.display.drawer.PathDrawer;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.SonarRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
+import edu.usf.ratsim.model.pathplanning.graphbased.ExpGraphDrawer;
+import edu.usf.ratsim.model.pathplanning.graphbased.SonarReadingsDrawer;
 import edu.usf.ratsim.nsl.modules.actionselection.apf.APFModule;
 import edu.usf.ratsim.nsl.modules.input.HeadDirection;
 import edu.usf.ratsim.nsl.modules.input.PlatformPosition;
@@ -40,6 +44,9 @@ public class APFModel extends Model {
 		apf.addInPort("orientation", orientation.getOutPort("orientation"));
 		apf.addInPort("platformPosition", platPos.getOutPort("platformPosition"));
 		addModule(apf);
+		
+		DisplaySingleton.getDisplay().addUniverseDrawer(new SonarReadingsDrawer((SonarRobot) robot, (LocalizableRobot) robot), 0);
+		DisplaySingleton.getDisplay().addUniverseDrawer(new PathDrawer((LocalizableRobot) robot));
 	}
 
 	public void newTrial() {

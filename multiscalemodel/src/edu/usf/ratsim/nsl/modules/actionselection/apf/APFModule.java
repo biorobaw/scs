@@ -19,11 +19,13 @@ public class APFModule extends Module {
 
 	private static final float LINEAR_P = .15f;
 
-	private static final float REP_MULTIPLIER = .001f;
+	private static final float REP_MULTIPLIER = .005f;
 
 	private static final float ATTRACT_MAGNITUDE = .5f;
 
 	private static final float MAX_REP_DIST = 0.2f;
+
+	private static final float MAX_LINEAR_SPEED = 0.07f;
 
 	private HolonomicRobot r;
 
@@ -67,11 +69,10 @@ public class APFModule extends Module {
 		Velocities v = new Velocities();
 		// Angular is proportional to angle difference
 		v.theta = angle * ANGULAR_P;
-		// If to close in the front of the robot, just rotate
-		// float minDistFront = SonarUtils.getMinReading(readings, angles, 0f,
-		// (float) (Math.PI/12));
-		// if (minDistFront > CLOSE_THRS)
-		v.x = magnitude * LINEAR_P;
+		
+		// If too much angle, just rotate
+		if (Math.abs(angle) < Math.PI / 2)
+			v.x = Math.min(magnitude * LINEAR_P, MAX_LINEAR_SPEED);
 		// else
 		// v.linear = 0;
 		// Enforce maximum velocities
