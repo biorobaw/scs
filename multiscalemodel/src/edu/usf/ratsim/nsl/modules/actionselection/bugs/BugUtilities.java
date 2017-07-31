@@ -30,15 +30,15 @@ public class BugUtilities {
 	private static final float MAX_ERR = .2f;
 
 	private static final float BLIND_LINEAR = 0.05f;
-	private static final float BLIND_ANGULAR = .5f;
-	private static final float PROP_ANG_PARALLEL = 1.5f;
+	private static final float BLIND_ANGULAR = .6f;
+	private static final float PROP_ANG_PARALLEL = 1.3f;
 	private static final float PROP_LINEAR_PARALLEL_X = 0.075f;
 	private static final float PROP_LINEAR_PARALLEL_Y = 0.09f;
-	private static final float PROP_LINEAR_AWAY = .5f;
-	private static final float TARGET_WALL_AWAY = .12f;
+	private static final float PROP_LINEAR_AWAY = .3f;
+	private static final float TARGET_WALL_AWAY = .14f;
 
 	private static final double MIN_GS_LINEAR_COMP = 0.05f;
-	private static final float PLANE_MEASURE_THRS = .15f;
+	private static final float PLANE_MEASURE_THRS = .2f;
 
 
 	public static Velocities goalSeek(Coordinate rPos, float rOrient, Coordinate platPos) {
@@ -68,9 +68,9 @@ public class BugUtilities {
 
 		// If no measures, just circle hoping to find the wall
 		// If I see a wall with more wall going forward (leftFront sensor detecting), also should just circle it
-		if (planeMeasures.isEmpty()) {
+		if (planeMeasures.size() <= 1) {
 			x = BLIND_LINEAR;
-			y = BLIND_LINEAR;
+			y = BLIND_LINEAR/2;
 			angular = BLIND_ANGULAR;
 		} else  {
 			double planeAngle;
