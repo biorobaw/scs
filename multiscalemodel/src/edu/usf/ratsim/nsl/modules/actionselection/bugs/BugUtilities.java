@@ -30,8 +30,8 @@ public class BugUtilities {
 	private static final float MAX_ERR = .2f;
 
 	private static final float BLIND_LINEAR = 0.05f;
-	private static final float BLIND_ANGULAR = 1f;
-	private static final float PROP_ANG_PARALLEL = 1f;
+	private static final float BLIND_ANGULAR = .5f;
+	private static final float PROP_ANG_PARALLEL = 1.2f;
 	private static final float PROP_LINEAR_PARALLEL_X = 0.075f;
 	private static final float PROP_LINEAR_PARALLEL_Y = 0.09f;
 	private static final float PROP_LINEAR_AWAY = 1f;

@@ -54,8 +54,8 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 	private float tVel;
 
 	private ROSPoseDetector poseDetector;
-	private int kP = 100;
-	private int kI = 5;
+	private int kP = 40;
+	private int kI = 10;
 	private int kD = 0;
 	private SonarReceiver sonarReceiver;
 
@@ -150,11 +150,11 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 			xVelShort = (short) Math.max(0, Math.min(xVelShort, 255));
 			short yVelShort = (short) (yVel * XVEL_CONV + LINEAR_INERTIA * Math.signum(yVel) + ZERO_VEL);
 			yVelShort = (short) Math.max(0, Math.min(yVelShort, 255));
-			short tVelShort = (short) (tVel * TVEL_CONV + ANGULAR_INERTIA * Math.signum(xVel) + ZERO_VEL);
+			short tVelShort = (short) (tVel * TVEL_CONV + ANGULAR_INERTIA * Math.signum(tVel) + ZERO_VEL);
 			tVelShort = (short) Math.max(0, Math.min(tVelShort, 255));
 			int[] dataToSend = {(byte)'v', (byte) Math.abs(xVelShort), (byte) Math.abs(yVelShort), (byte) Math.abs(tVelShort)};
 			
-			System.out.println("Sending vels: " + xVelShort + " " + tVelShort);
+			System.out.println("Sending vels: " + xVelShort + " " + yVelShort + " " + tVelShort);
 			try {
 				TxRequest16 rq = new TxRequest16(remoteAddress, dataToSend);
 				// Disable ACKs
@@ -279,8 +279,8 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 //		r.calibrateSonars();
 		
 		r.setLinearVel(.0f);
-//		r.yVel = .1f;
-		r.setAngularVel((float) (3));
+		r.yVel = -3f;
+		r.setAngularVel((float) (0));
 		try {
 			Thread.sleep(500000);
 		} catch (InterruptedException e) {
