@@ -35,7 +35,7 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 	VirtUniverse universe;
 	
 	
-	Float closeEnoughToTargetPosition = 0.02f*0.02f; //distance squared
+	Float closeEnoughToTargetPosition = 0.02f*0.02f/2; //distance squared
 	
 	
 	public PuckRobot(ElementWrapper params, Universe univ){
@@ -61,7 +61,7 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 		if(currentAction instanceof DifferentialNavigationPolarAction ||
 			currentAction instanceof DifferentialNavigationAction){
 			
-			
+			// speeds are already set so do nothing
 			
 		} else if (currentAction instanceof FeederTaxicAction) {
 			
@@ -85,7 +85,8 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 					
 					if(tryToEatIfCloseToFeeder(destinyId)){
 						//if I successfully eat remove food from feeder -- this logic should be inside the feeder
-						universe.setEnableFeeder(destinyId, false);
+//						universe.setEnableFeeder(destinyId, false);
+						universe.setActiveFeeder(destinyId, false);
 					}
 					
 					//signal action completion
@@ -205,7 +206,7 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 			
 		}else if (action instanceof DifferentialNavigationPolarAction){
 			DifferentialNavigationPolarAction a = (DifferentialNavigationPolarAction)action;
-			navigation.setSpeeds(a.v(), a.w());
+			navigation.setPolarSpeeds( a.w(),a.v());
 			
 			currentAction = a;
 			

@@ -23,10 +23,7 @@ public class SubjectPositionLogger extends PositionLogger {
 		LocalizationInterface r = (LocalizationInterface) sub.getRobot();
 		Point3f pos = r.getPosition();
 		
-		if(sub instanceof SubjectOld)
-			addPose(new Pose(pos.x, pos.y, false, ((SubjectOld)sub).hasTriedToEat(), sub.hasEaten()));
-		else
-			addPose(new Pose(pos.x, pos.y, false, false, sub.hasEaten()));
+		addPose(new Pose(pos.x, pos.y, false, sub.hasTriedToEat(), sub.hasEaten()));
 	}
 	
 	@Override
