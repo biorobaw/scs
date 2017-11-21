@@ -10,11 +10,7 @@ import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.ratsim.experiment.subject.TSPSubject;
-import edu.usf.ratsim.experiment.subject.TSPFrance.TSPSubjectFrance;
-import edu.usf.ratsim.experiment.subject.TSPFrance.TSPSubjectFranceLocal;
 import edu.usf.ratsim.experiment.subject.interfaces.ActivityLoggerSubject;
-import edu.usf.ratsim.experiment.subject.multipleT.MultipleTSubject;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 
 public class PCLogger extends Logger {

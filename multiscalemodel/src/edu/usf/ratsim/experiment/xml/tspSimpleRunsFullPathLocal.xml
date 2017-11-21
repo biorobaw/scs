@@ -14,7 +14,7 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/experiment/mazes/tspSimpleRuns.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>false</display>
+			<display>true</display>
 		</params>
 	</universe>
 	
@@ -90,6 +90,7 @@
 			<name>edu.usf.experiment.task.AddAllFeedersTask</name>
 			<params>
 				<feederFile>InterLabFunctionality\Jan2016\FeedersFromSentFiles.txt</feederFile>
+				<selected>$(enabledFeeders)</selected>
 			</params>
 		</task>
 		

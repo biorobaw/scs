@@ -43,8 +43,9 @@ public class EnableFeeders extends Task {
 	}
 	
 	private void perform(Universe u){
-		for (Integer f : indexList)
+		for (Integer f : indexList){
 			u.setEnableFeeder(f, true);
+		}
 	}
 
 }

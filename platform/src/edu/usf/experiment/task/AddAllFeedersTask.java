@@ -1,5 +1,8 @@
 package edu.usf.experiment.task;
 
+
+import java.util.HashSet;
+
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Globals;
@@ -12,13 +15,24 @@ import edu.usf.experiment.utils.IOUtils;
 public class AddAllFeedersTask extends Task{
 	public Globals global = Globals.getInstance();
 	public String feedersFile;
+	HashSet<Integer> selected;
+	
+	
 
 	public AddAllFeedersTask(ElementWrapper params) {
 		super(params);
 		// TODO Auto-generated constructor stub
 		
-		feedersFile = params.getChildText("feederFile");			
-			
+		feedersFile = params.getChildText("feederFile");	
+		
+		if(params.getChildText("selected")==null) {
+			selected = null;
+		}
+		else {
+			selected = new HashSet<>();
+			selected.addAll( params.getChildIntList("selected"));
+		}
+		
 		//if not in globals
 		if(feedersFile==null){
 			System.err.println("WARNING: no feeder file");
@@ -62,7 +76,8 @@ public class AddAllFeedersTask extends Task{
 					id++;
 					Float x = Float.parseFloat(line[0]);
 					Float y = Float.parseFloat(line[1]);
-					univ.addFeeder(id, x, y);
+					if(selected==null || selected.contains(id))
+						univ.addFeeder(id, x, y);
 					
 				}
 			}

@@ -54,25 +54,30 @@
 			<!-- Cells per side of the square -->
 			<numPCCellsPerSide>16</numPCCellsPerSide>
 			<!-- Type of conjunctive cell -->
-			<placeCells>exponential</placeCells>
+			<placeCells>ExponentialNoThresholding</placeCells>
 			<!-- Map dimensions for conjuntive cell placing -->
 			<xmin>-1</xmin>
 			<ymin>-1</ymin>
 			<xmax>1</xmax>
 			<ymax>1</ymax>
 			
+	
+			<backendType>local</backendType>
+			<backendDeviceIndex>0</backendDeviceIndex>
+			<backendHost>127.0.0.1</backendHost>
+			<backendPort>12345</backendPort>
 			
-			<reservoirSize>1024</reservoirSize>
-			<leakRate>0.95</leakRate>
-			<learningRate>0.001</learningRate>
-			<initialStateScale>0.0</initialStateScale>
+			<reservoirSize>4096</reservoirSize>
+			<leakRate>1</leakRate>
+			<learningRate>0.000021244</learningRate>
+			<initialStateScale>0.01</initialStateScale>
 			<snippetsSize>10</snippetsSize>
-			<snippetsPerBurst>10</snippetsPerBurst>
-			<burstPerTrial>10</burstPerTrial>
+			<timeBudget>20000</timeBudget>
 			<rows>400</rows>
 			<cols>400</cols>
 			<sigma>1</sigma>
-		
+			<scale>0.0000001</scale>
+			<radius>0.2</radius>
 			<preamble>10</preamble>
 			
 			<!-- Order in which feeders are visited -->
@@ -148,7 +153,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>10</number>
+			<number>3</number>
 			<!-- time that advances on each sim cycle -->
 			<timeStep>0.1</timeStep>
 			<!-- Sleep between cycles for visualization -->
