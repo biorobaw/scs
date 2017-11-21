@@ -67,14 +67,14 @@
 			<backendHost>127.0.0.1</backendHost>
 			<backendPort>12345</backendPort>
 			
-			<reservoirSize>4096</reservoirSize>
-			<leakRate>1</leakRate>
-			<learningRate>0.000021244</learningRate>
+			<reservoirSize>1024</reservoirSize>
+			<leakRate>0.45</leakRate>
+			<learningRate>0.001</learningRate>
 			<initialStateScale>0.01</initialStateScale>
 			<snippetsSize>10</snippetsSize>
 			<timeBudget>20000</timeBudget>
-			<rows>400</rows>
-			<cols>400</cols>
+			<rows>100</rows>
+			<cols>100</cols>
 			<sigma>1</sigma>
 			<scale>0.0000001</scale>
 			<radius>0.2</radius>
@@ -88,7 +88,6 @@
 			
 			<filterVisitedFeedersProbability>$(P1)</filterVisitedFeedersProbability>
 			<moveToClosestFeederInSubsetProbability>$(P2)</moveToClosestFeederInSubsetProbability>
-			
 		</params>
 	</model>
 	
@@ -108,6 +107,7 @@
 			<name>edu.usf.experiment.task.AddAllFeedersTask</name>
 			<params>
 				<feederFile>InterLabFunctionality\Jan2016\FeedersFromSentFiles.txt</feederFile>
+				<selected>$(enabledFeeders)</selected>
 			</params>
 		</task>
 		

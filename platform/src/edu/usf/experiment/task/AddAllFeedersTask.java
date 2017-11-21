@@ -32,7 +32,7 @@ public class AddAllFeedersTask extends Task{
 			selected = new HashSet<>();
 			selected.addAll( params.getChildIntList("selected"));
 		}
-		
+		System.out.println("Selected : " + selected);
 		//if not in globals
 		if(feedersFile==null){
 			System.err.println("WARNING: no feeder file");

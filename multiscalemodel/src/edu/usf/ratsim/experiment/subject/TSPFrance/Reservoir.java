@@ -166,12 +166,12 @@ public class Reservoir {
 		TRN4JAVA.Simulation.Reservoir.WidrowHoff.configure(id, stimulus_size, stimulus_size, reservoir_size, leak_rate, initial_state_scale, learning_rate, seed, batch_size);
 		TRN4JAVA.Simulation.Reservoir.Weights.Feedforward.Uniform.configure(id, -1.0f, 1.0f, 0.0f);
 		TRN4JAVA.Simulation.Reservoir.Weights.Feedback.Uniform.configure(id, -1.0f, 1.0f, 0.0f);
-	//	TRN4JAVA.Simulation.Reservoir.Weights.Recurrent.Uniform.configure(id, -1.0f/(float)Math.sqrt(reservoir_size), 1.0f/(float)Math.sqrt(reservoir_size), 0.0f);
-		TRN4JAVA.Simulation.Reservoir.Weights.Recurrent.Gaussian.configure(id, 0, 0.5f/(float)Math.sqrt(reservoir_size));
+		TRN4JAVA.Simulation.Reservoir.Weights.Recurrent.Uniform.configure(id, -1.0f/(float)Math.sqrt(reservoir_size), 1.0f/(float)Math.sqrt(reservoir_size), 0.0f);
+		//TRN4JAVA.Simulation.Reservoir.Weights.Recurrent.Gaussian.configure(id, 0, 0.5f/(float)Math.sqrt(reservoir_size));
 			
 		TRN4JAVA.Simulation.Reservoir.Weights.Readout.Uniform.configure(id, -1e-3f, 1e-3f, 0.0f);
 		
-		TRN4JAVA.Simulation.Recording.States.configure(id, new TRN4JAVA.Simulation.Recording.States() 
+		/*TRN4JAVA.Simulation.Recording.States.configure(id, new TRN4JAVA.Simulation.Recording.States() 
 		{
 
 			@Override
@@ -182,7 +182,7 @@ public class Reservoir {
 				
 			
 			}
-		}, true, true, true);
+		}, true, true, true);*/
 		TRN4JAVA.Simulation.configure_end(id);
 	}
 	
