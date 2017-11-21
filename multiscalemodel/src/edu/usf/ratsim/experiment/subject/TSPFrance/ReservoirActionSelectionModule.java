@@ -14,7 +14,8 @@ import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromProbabilities;
 import edu.usf.ratsim.nsl.modules.port.ModelActionPort;
 
-public class ReservoirActionSelectionModule extends Module {
+public class ReservoirActionSelectionModule extends Module 
+{
 
 	//FeederTaxicAction action = new FeederTaxicAction(-1);
 	MoveToAction action = new MoveToAction(0.0f, 0.0f, 0.0f, 1.0f);
@@ -22,14 +23,10 @@ public class ReservoirActionSelectionModule extends Module {
 	ModelActionPort outport = new ModelActionPort(this, action);
 	Reservoir reservoir;
 
-	
-
-	
-
 	public ReservoirActionSelectionModule(String name, Reservoir reservoir) {
 		super(name);
 		this.reservoir = reservoir;
-		reservoir.finishInitialization(new PositionLoop(), new StimulusLoop());
+ 		reservoir.finishInitialization(new PositionLoop(), new StimulusLoop());
 		// TODO Auto-generated constructor stub
 	}
 
@@ -40,14 +37,25 @@ public class ReservoirActionSelectionModule extends Module {
 		
 		if (finishedAction.get())
 		{
+			
+			
+			Point3f next_position = reservoir.get_next_position();
+			if (next_position != null)
+			{
+				action.setX(next_position.x);
+				action.setY(next_position.y);
+				System.out.println("moving robot to position "  + next_position.x + ", " + next_position.y);
+			}
+			else
+			{
+				Point3f pos = ((Point3fPort)getInPort("position")).get();
+				float activation_pattern[] = ((Float1dSparsePortMap)getInPort("placeCells")).getData();
 		
-			Point3f pos = ((Point3fPort)getInPort("position")).get();
-			float activation_pattern[] = ((Float1dSparsePortMap)getInPort("placeCells")).getData();
-			float estimated_position[] =  {pos.x, pos.y};
-		
-			reservoir.reinject(estimated_position, activation_pattern);
+				reservoir.set_current_position(pos, activation_pattern);
+			}
+			
 		}
-		
+	
 		
 	}
 	
@@ -65,23 +73,23 @@ public class ReservoirActionSelectionModule extends Module {
 	}
 	
 	
-	class PositionLoop extends TRN4JAVA.Api.Loop
+	class PositionLoop extends TRN4JAVA.Simulation.Loop
 	{
 		@Override
-		public void callback(final float[] predicted_position)
+		public void callback(final long id, final long trial, final long evaluation, final float prediction[], final long rows, final long cols)
 		{
-			action.setX(predicted_position[0]);
-			action.setY(predicted_position[1]);
+			assert(rows == 1);
+			assert(cols == 2);
 			
-			System.out.println("RESERVOIR PREDICTED COORDINATES (" + action.x() +", "+ action.y() +", " + action.z() + ")");
-		
+			reservoir.append_next_position(id, trial, evaluation, new Point3f(prediction[0], prediction[1], 0.0f));
 		}	
 	}
-	class StimulusLoop extends TRN4JAVA.Api.Loop
+	class StimulusLoop extends TRN4JAVA.Simulation.Loop
 	{
 		@Override
-		public void callback(final float[] predicted_stimulus) 
+		public void callback(final long id, final long trial, final long evaluation, final float prediction[], final long rows, final long cols)
 		{
+			System.out.println("RESERVOIR PREDICTED STIMULUS");
 		}
 	}
 }
