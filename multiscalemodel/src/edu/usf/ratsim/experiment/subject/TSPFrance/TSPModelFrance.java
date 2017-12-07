@@ -57,6 +57,9 @@ public class TSPModelFrance extends Model {
 	Reservoir reservoir = null;
 	long simulation_id;
 	
+	int simulation_number;
+	int condition_number;
+	
 	
 	//BASIC MODEL RUNS VS RESERVOIR RUNS:
 	int basicRuns = 1;
@@ -202,6 +205,9 @@ public class TSPModelFrance extends Model {
 
 	public TSPModelFrance(ElementWrapper params, TSPSubjectFrance subject,PuckRobot robot) 
 	{
+		
+		condition_number  = params.getChildInt("condition_number");
+		simulation_number = params.getChildInt("simulation_number");
 		
 		taxicNextFeederFromFileModule = new TaxicNextFeederFromFileModule("taxicFromFile", params.getChildText("taxicPaths"));
 		taxicNextFeederFromFileModule.addInPort("newSelection", chooseNewFeeder);
@@ -662,7 +668,7 @@ public class TSPModelFrance extends Model {
 	@Override
 	public void initialTask(){
 		//System.out.println("Initial Task");
-		chooseNewFeeder.set(robot.actionMessageBoard.get(FeederTaxicAction.actionID) != null);
+		chooseNewFeeder.set(robot.actionMessageBoard.get(FeederTaxicAction.actionID) != null || (Integer)Globals.getInstance().get("cycle")==0);
 		
 		finishReservoirAction.set(robot.actionMessageBoard.get(MoveToAction.actionID) != null || robot.actionMessageBoard.get(FeederTaxicAction.actionID) != null);
 	
@@ -694,19 +700,21 @@ public class TSPModelFrance extends Model {
 			float estimated_position[] = {pos.x, pos.y};
 		
 			boolean append = true;
+			float displacement = 0.0f;
 			if (!posHistory.isEmpty())
 			{
 				float last_position[] = posHistory.getLast();
 		
 				float dx2 = (float)Math.pow(last_position[0] - estimated_position[0], 2);
 				float dy2 = (float)Math.pow(last_position[1] - estimated_position[1], 2);
-				float d = (float)Math.sqrt(dx2 + dy2);
-				append = d > 0.0f;
+				displacement = (float)Math.sqrt(dx2 + dy2);
+			
+				append = displacement > 0.0f;
 			}
 			
-			if (append)
+			if (append && ((Integer)Globals.getInstance().get("episode") % (basicRuns+reservoirRuns+1) <= basicRuns))
 			{
-			
+				//System.out.println("displacement : " + displacement);
 				ateHistory.add(ate);
 				pcActivationHistory.add(activation_pattern);
 				posHistory.add(estimated_position);
@@ -747,14 +755,14 @@ public class TSPModelFrance extends Model {
 		//System.out.println(subject.robot.pendingActions.size() + " ");
 		if ((Integer)Globals.getInstance().get("episode") % (basicRuns+reservoirRuns+1) < basicRuns)
 		{
-			System.out.println("Basic RUN");
+			//System.out.println("Basic RUN");
 			if(basicRunMode.equals("pq")) {
 				
 				subject.robot.pendingActions.add(randomOrClosestFeederTaxicActionModule.action);
 				
 			}
 			else if(basicRunMode.equals("fromFile")) {
-				
+				//System.out.println("FROM FILE: " + taxicNextFeederFromFileModule.action);
 				subject.robot.pendingActions.add(taxicNextFeederFromFileModule.action);
 				
 			}
@@ -765,7 +773,7 @@ public class TSPModelFrance extends Model {
 			}
 		}else if((Integer)Globals.getInstance().get("episode") % (basicRuns+reservoirRuns+1) == basicRuns) {
 			
-			System.out.println("TARGET SEQUENCE");
+			//System.out.println("TARGET SEQUENCE");
 			subject.robot.pendingActions.add(taxicNextFeederFromFileModule.action);
 			
 		}

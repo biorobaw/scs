@@ -206,8 +206,8 @@ public class Reservoir {
 	
 		TRN4JAVA.Extended.Simulation.configure_begin(id);
 		TRN4JAVA.Advanced.Simulation.Loop.SpatialFilter.configure(id, batch_size, stimulus_size, seed, position, stimulus, rows, cols, x_min, x_max, y_min, y_max, response, sigma, radius, scale, POS_TAG);	
-		TRN4JAVA.Extended.Simulation.Scheduler.Snippets.configure(id, seed, snippets_size, time_budget, "");
-		//TRN4JAVA.Simulation.Scheduler.Tiled.configure(id, 100);
+		//TRN4JAVA.Extended.Simulation.Scheduler.Snippets.configure(id, seed, snippets_size, time_budget, REW_TAG);
+		TRN4JAVA.Extended.Simulation.Scheduler.Tiled.configure(id, 100);
 		TRN4JAVA.Extended.Simulation.Reservoir.WidrowHoff.configure(id, stimulus_size, stimulus_size, reservoir_size, leak_rate, initial_state_scale, learning_rate, seed, batch_size);
 		TRN4JAVA.Extended.Simulation.Reservoir.Weights.Feedforward.Uniform.configure(id, -1.0f, 1.0f, 0.0f);
 		TRN4JAVA.Extended.Simulation.Reservoir.Weights.Feedback.Uniform.configure(id, -1.0f, 1.0f, 0.0f);
@@ -308,7 +308,7 @@ public class Reservoir {
 	 
 	 public void append_next_position(final long id, final long trial, final long evaluation, Point3f position)
 	 {	 
-		// assert(pending_points.isEmpty());
+		 assert(pending_points.isEmpty());
 		 assert(this.id == id);
 		 this.trial = trial;
 		 this.evaluation = evaluation;

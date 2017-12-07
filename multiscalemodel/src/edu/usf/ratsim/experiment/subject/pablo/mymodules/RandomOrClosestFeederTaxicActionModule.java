@@ -80,7 +80,7 @@ public class RandomOrClosestFeederTaxicActionModule extends Module {
 			action.setId(nextDestiny);
 		}
 		
-		System.out.println("NEXT DESTINY "+ nextDestiny);
+		//System.out.println("NEXT DESTINY "+ nextDestiny);
 		
 		
 //		try {

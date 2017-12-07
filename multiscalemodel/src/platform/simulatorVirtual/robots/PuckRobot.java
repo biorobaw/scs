@@ -78,7 +78,7 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 				
 			}else{
 				
-				System.out.println("Destiny: " + " " + destinyId + " " + universe.getFeeder(destinyId));
+				//System.out.println("Destiny: " + " " + destinyId + " " + universe.getFeeder(destinyId));
 				Point3f feederPos = universe.getFeeder(destinyId).getPosition();	
 				//System.out.println("feederPos "+feederPos);
 				
