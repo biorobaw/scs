@@ -27,7 +27,7 @@ public class Reservoir {
 
 
 	java.util.List<String> accumulated_sequences;
-	String target_sequence;
+
 	static final String TRAINING_SET = "training_set"; 
 	
 
@@ -291,7 +291,7 @@ public class Reservoir {
 			
 		if (getState() == State.TRAINED)
 		{
-			target_sequence = label;
+			
 			priming_sequence = new float[preamble * 2];
 			System.arraycopy(position, 0, priming_sequence, 0, preamble * 2);
 			changeState(State.READY);
@@ -354,7 +354,9 @@ public class Reservoir {
 			changeState(State.PRIMING);
 			try
 			{
-			TRN4JAVA.Extended.Simulation.test(id, target_sequence, INC_TAG, EXP_TAG, preamble, true, 0); // at beginning of new episode - this provides predictions
+				assert(accumulated_sequences.size() == 1);
+				String target_sequence = accumulated_sequences.get(0);
+				TRN4JAVA.Extended.Simulation.test(id, target_sequence, INC_TAG, EXP_TAG, preamble, true, 0); // at beginning of new episode - this provides predictions
 			}
 			catch (Exception e)
 			{
