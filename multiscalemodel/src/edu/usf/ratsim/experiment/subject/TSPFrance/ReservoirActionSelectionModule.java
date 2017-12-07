@@ -73,7 +73,7 @@ public class ReservoirActionSelectionModule extends Module
 	}
 	
 	
-	class PositionLoop extends TRN4JAVA.Simulation.Loop
+	class PositionLoop extends TRN4JAVA.Custom.Simulation.Loop
 	{
 		@Override
 		public void callback(final long id, final long trial, final long evaluation, final float prediction[], final long rows, final long cols)
@@ -84,7 +84,7 @@ public class ReservoirActionSelectionModule extends Module
 			reservoir.append_next_position(id, trial, evaluation, new Point3f(prediction[0], prediction[1], 0.0f));
 		}	
 	}
-	class StimulusLoop extends TRN4JAVA.Simulation.Loop
+	class StimulusLoop extends TRN4JAVA.Custom.Simulation.Loop
 	{
 		@Override
 		public void callback(final long id, final long trial, final long evaluation, final float prediction[], final long rows, final long cols)

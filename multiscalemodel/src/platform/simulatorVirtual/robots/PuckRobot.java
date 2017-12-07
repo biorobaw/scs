@@ -74,9 +74,11 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 				System.exit(0);
 				
 				moveRobot(navigation.getDisplacement(deltaT));
+				currentAction = null;
 				
 			}else{
 				
+				System.out.println("Destiny: " + " " + destinyId + " " + universe.getFeeder(destinyId));
 				Point3f feederPos = universe.getFeeder(destinyId).getPosition();	
 				//System.out.println("feederPos "+feederPos);
 				
@@ -91,6 +93,7 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 					
 					//signal action completion
 					actionMessageBoard.put(currentAction.actionId, "done");
+					currentAction = null;
 					
 				};
 				
@@ -104,6 +107,7 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 			if(navigateToCoordinate(new Point3f(a.x(),a.y(),a.z()), deltaT, closeEnoughToTargetPosition)){
 				
 				actionMessageBoard.put(currentAction.actionId,"done");
+				currentAction = null;
 				
 			}
 			

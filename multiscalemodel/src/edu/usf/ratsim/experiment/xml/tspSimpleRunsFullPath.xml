@@ -64,7 +64,7 @@
 	
 			<backendType>local</backendType>
 			<backendDeviceIndex>0</backendDeviceIndex>
-			<backendHost>127.0.0.1</backendHost>
+			<backendHost>kashyyyk</backendHost>
 			<backendPort>12345</backendPort>
 			
 			<reservoirSize>1024</reservoirSize>
@@ -88,6 +88,14 @@
 			
 			<filterVisitedFeedersProbability>$(P1)</filterVisitedFeedersProbability>
 			<moveToClosestFeederInSubsetProbability>$(P2)</moveToClosestFeederInSubsetProbability>
+			
+			<basicRuns>4</basicRuns>
+			<reservoirRuns>1</reservoirRuns>
+			<!-- <basicRunMode>pq</basicRunMode>  -->
+			<basicRunMode>fromFile</basicRunMode>
+			<taxicPaths>feederPaths.txt</taxicPaths>
+			
+			
 		</params>
 	</model>
 	
@@ -153,7 +161,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>3</number>
+			<number>5</number>
 			<!-- time that advances on each sim cycle -->
 			<timeStep>0.1</timeStep>
 			<!-- Sleep between cycles for visualization -->
@@ -312,6 +320,13 @@
 	
 	<!-- Tasks to perform after the experiment is over -->
 	<afterExperimentTasks>
+	
+		<task>
+			<name>edu.usf.ratsim.experiment.subject.TSPFrance.CloseReservoirTask</name>
+			<params>
+			</params>
+		</task>
+	
 	</afterExperimentTasks>
 	<!-- Loggers to execute after the experiment is over -->
 	<afterExperimentLoggers>

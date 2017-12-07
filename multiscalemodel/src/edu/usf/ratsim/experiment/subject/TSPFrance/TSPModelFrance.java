@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +28,7 @@ import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 import edu.usf.ratsim.experiment.subject.pablo.mymodules.NonVisitedFeederSetModule;
 import edu.usf.ratsim.experiment.subject.pablo.mymodules.RandomOrClosestFeederTaxicActionModule;
+import edu.usf.ratsim.experiment.subject.pablo.mymodules.TaxicNextFeederFromFileModule;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromPathModule;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
@@ -53,16 +55,23 @@ public class TSPModelFrance extends Model {
 	CurrentFeederModule currentFeeder;
 	VisibleFeedersModule visibleFeeders;
 	Reservoir reservoir = null;
-	static final int ID = 0;
+	long simulation_id;
+	
+	
+	//BASIC MODEL RUNS VS RESERVOIR RUNS:
+	int basicRuns = 1;
+	int reservoirRuns = 1;
+	String basicRunMode = "pq"; //pq or fromFile, when mode=fromFile, next feeder is chosen according to a file
 
 	
 	//CELL MODULES
 	
 	//ACTION SELECTION MODULES
-	ActionFromPathModule actionFromPathModule;
+	//ActionFromPathModule actionFromPathModule;
 	NonVisitedFeederSetModule nonVisitedFeederSetMoudle;
 	RandomOrClosestFeederTaxicActionModule randomOrClosestFeederTaxicActionModule;
 	ReservoirActionSelectionModule reservoirActionSelectionModule = null;
+	private TaxicNextFeederFromFileModule taxicNextFeederFromFileModule =null;
 	
 	
 	
@@ -74,125 +83,10 @@ public class TSPModelFrance extends Model {
 	TSPSubjectFrance subject;
 	VirtUniverse universe = VirtUniverse.getInstance();
 	
-	private int episode;
-	private int call_number = 0;
+	//private int episode;
+
 	PuckRobot robot;
 	
-	static 
-	{
-		System.loadLibrary("vcomp120");
-		System.loadLibrary("msvcr120");
-		System.loadLibrary("msvcp120");
-
-		System.loadLibrary("vcruntime140");
-		System.loadLibrary("concrt140");
-		System.loadLibrary("msvcp140");
-
-		System.loadLibrary("vcomp140");
-
-		System.loadLibrary("tbb");
-		System.loadLibrary("tbbmalloc");
-
-		System.loadLibrary("libimalloc");
-		System.loadLibrary("libiomp5md");
-		System.loadLibrary("mkl_core");
-		System.loadLibrary("mkl_intel_thread");
-		System.loadLibrary("mkl_sequential");
-		System.loadLibrary("mkl_tbb_thread");
-		System.loadLibrary("mkl_def");
-		System.loadLibrary("mkl_avx");
-		System.loadLibrary("mkl_avx2");
-		System.loadLibrary("mkl_avx512");
-		System.loadLibrary("mkl_avx512_mic");
-
-		System.loadLibrary("mkl_mc");
-		System.loadLibrary("mkl_mc3");
-		System.loadLibrary("mkl_rt");
-
-		System.loadLibrary("mkl_vml_avx");
-		System.loadLibrary("mkl_vml_avx2");
-		System.loadLibrary("mkl_vml_avx512");
-		System.loadLibrary("mkl_vml_avx512_mic");
-		System.loadLibrary("mkl_vml_cmpt");
-		System.loadLibrary("mkl_vml_def");
-		System.loadLibrary("mkl_vml_mc");
-		System.loadLibrary("mkl_vml_mc2");
-		System.loadLibrary("mkl_vml_mc3");
-
-		System.loadLibrary("hdf5");
-
-		System.loadLibrary("icudt56");
-		System.loadLibrary("icuin56");
-		System.loadLibrary("icuio56");
-		System.loadLibrary("icuuc56");
-		System.loadLibrary("zlib1");
-		System.loadLibrary("libexpat");
-
-		System.loadLibrary("libmwfl");
-		System.loadLibrary("libmwfoundation_usm");
-		System.loadLibrary("libmwi18n");
-		System.loadLibrary("libmwresource_core");
-
-		System.loadLibrary("libut");
-		System.loadLibrary("libmat");
-		System.loadLibrary("libmx");
-
-		System.loadLibrary("cudart64_90");
-		System.loadLibrary("cublas64_90");
-		System.loadLibrary("curand64_90");
-
-		System.loadLibrary("boost_chrono-vc120-mt-1_56");
-		System.loadLibrary("boost_date_time-vc120-mt-1_56");
-		System.loadLibrary("boost_filesystem-vc120-mt-1_56");
-		System.loadLibrary("boost_log-vc120-mt-1_56");
-		System.loadLibrary("boost_regex-vc120-mt-1_56");
-		System.loadLibrary("boost_serialization-vc120-mt-1_56");
-		System.loadLibrary("boost_signals-vc120-mt-1_56");
-		System.loadLibrary("boost_thread-vc120-mt-1_56");
-		System.loadLibrary("boost_system-vc120-mt-1_56");
-
-
-		System.loadLibrary("boost_chrono-vc140-mt-1_62");
-		System.loadLibrary("boost_date_time-vc140-mt-1_62");
-		System.loadLibrary("boost_filesystem-vc140-mt-1_62");
-		System.loadLibrary("boost_thread-vc140-mt-1_62");
-		System.loadLibrary("boost_program_options-vc140-mt-1_62");
-		System.loadLibrary("boost_serialization-vc140-mt-1_62");
-		System.loadLibrary("boost_system-vc140-mt-1_62");
-		System.loadLibrary("boost_zlib-vc140-mt-1_62");
-		System.loadLibrary("boost_bzip2-vc140-mt-1_62");
-		System.loadLibrary("boost_log-vc140-mt-1_62");
-		System.loadLibrary("boost_regex-vc140-mt-1_62");
-		System.loadLibrary("boost_log_setup-vc140-mt-1_62");
-		System.loadLibrary("boost_iostreams-vc140-mt-1_62");
-		System.loadLibrary("boost_mpi-vc140-mt-1_62");
-		
-		System.loadLibrary("Backend");
-		System.loadLibrary("GPU");
-		System.loadLibrary("CPU");
-
-		System.loadLibrary("Helper");
-		System.loadLibrary("Core");
-		System.loadLibrary("Initializer");
-		System.loadLibrary("Loop");
-		System.loadLibrary("Measurement");
-		System.loadLibrary("Mutator");
-		System.loadLibrary("Reservoir");
-		System.loadLibrary("Scheduler");
-		System.loadLibrary("Simulator");
-		System.loadLibrary("Model");
-
-		System.loadLibrary("Network");
-
-		System.loadLibrary("Engine");
-		System.loadLibrary("Remote");
-		System.loadLibrary("Distributed");
-		System.loadLibrary("Local");
-	
-		System.loadLibrary("ViewModel");
-		System.loadLibrary("TRN4CPP");
-		System.loadLibrary("TRN4JAVA");
-	}	
 
 	public static void debug_2D_buffer(float buffer[], int rows, int cols)
 	{
@@ -309,7 +203,36 @@ public class TSPModelFrance extends Model {
 	public TSPModelFrance(ElementWrapper params, TSPSubjectFrance subject,PuckRobot robot) 
 	{
 		
-		TRN4JAVA.Engine.Events.Trained.install(new TRN4JAVA.Engine.Events.Trained()
+		taxicNextFeederFromFileModule = new TaxicNextFeederFromFileModule("taxicFromFile", params.getChildText("taxicPaths"));
+		taxicNextFeederFromFileModule.addInPort("newSelection", chooseNewFeeder);
+		addModule(taxicNextFeederFromFileModule);
+		
+		String severity = params.getChild("loggingSeverity").getText().toUpperCase();
+		switch (severity)
+		{
+		case "TRACE" :
+			TRN4JAVA.Basic.Logging.Severity.Trace.setup();
+			break;
+		case "DEBUG" :
+			TRN4JAVA.Basic.Logging.Severity.Debug.setup();
+			break;
+		case "INFORMATION" :
+			TRN4JAVA.Basic.Logging.Severity.Information.setup();
+			break;
+		case "WARNING" :
+			TRN4JAVA.Basic.Logging.Severity.Warning.setup();
+			break;
+		case "ERROR" :
+			TRN4JAVA.Basic.Logging.Severity.Error.setup();
+			break;
+		default :
+			throw new IllegalArgumentException(severity);
+		}
+		TRN4JAVA.Basic.Logging.Severity.Debug.setup();		
+		
+
+		
+		TRN4JAVA.Advanced.Engine.Events.Trained.install(new TRN4JAVA.Advanced.Engine.Events.Trained()
 		{
 			@Override
 			public void callback(final long id)
@@ -318,7 +241,7 @@ public class TSPModelFrance extends Model {
 				reservoir.onTrained(id);
 			}
 		});
-		TRN4JAVA.Engine.Events.Tested.install(new TRN4JAVA.Engine.Events.Tested()
+		TRN4JAVA.Advanced.Engine.Events.Tested.install(new TRN4JAVA.Advanced.Engine.Events.Tested()
 		{
 			@Override
 			public void callback(final long id)
@@ -327,7 +250,7 @@ public class TSPModelFrance extends Model {
 				reservoir.onTested(id);
 			}
 		});
-		TRN4JAVA.Engine.Events.Primed.install(new TRN4JAVA.Engine.Events.Primed()
+		TRN4JAVA.Advanced.Engine.Events.Primed.install(new TRN4JAVA.Advanced.Engine.Events.Primed()
 		{
 			@Override
 			public void callback(final long id)
@@ -336,7 +259,7 @@ public class TSPModelFrance extends Model {
 				reservoir.onPrimed(id);
 			}
 		});
-		TRN4JAVA.Engine.Events.Completed.install(new TRN4JAVA.Engine.Events.Completed()
+		TRN4JAVA.Advanced.Engine.Events.Completed.install(new TRN4JAVA.Advanced.Engine.Events.Completed()
 		{
 			@Override
 			public void callback()
@@ -344,7 +267,7 @@ public class TSPModelFrance extends Model {
 				System.out.println("Simulations completed");
 			}
 		});
-		TRN4JAVA.Engine.Events.Allocated.install(new TRN4JAVA.Engine.Events.Allocated()
+		TRN4JAVA.Advanced.Engine.Events.Allocated.install(new TRN4JAVA.Advanced.Engine.Events.Allocated()
 		{
 			@Override
 			public void callback(final long id, final int rank)
@@ -377,7 +300,7 @@ public class TSPModelFrance extends Model {
 				{
 					index = params.getChildInt("backendDeviceIndex");
 				}
-				TRN4JAVA.Engine.Backend.Local.initialize(new int []{index});
+				TRN4JAVA.Basic.Engine.Backend.Local.initialize(new int []{index});
 			}
 			break;
 			
@@ -403,7 +326,10 @@ public class TSPModelFrance extends Model {
 				{
 					port = (short)params.getChildInt("backendPort");
 				}
-				TRN4JAVA.Engine.Backend.Remote.initialize(host, port);
+				TRN4JAVA.Basic.Engine.Backend.Remote.initialize(host, port);
+				
+				
+				//TRN4JAVA.Engine.uninitialize();
 			}
 			break;
 			
@@ -411,7 +337,38 @@ public class TSPModelFrance extends Model {
 			      throw new IllegalArgumentException("Invalid backend type :" + backendType);
 		}
 		
+		boolean callbacks_installed = false;
+		for (ElementWrapper plugin : params.getChildren("plugin"))
+		{
+			String plugin_name = plugin.getChildText("name");
+			String plugin_interface = plugin.getChildText("interface").toUpperCase();
+			String plugin_path = plugin.getChildText("path");
+			java.util.Map<String, String> plugin_arguments = new java.util.HashMap<String,String>();
+			for (ElementWrapper argument : plugin.getChildren("argument"))
+			{
+				String argument_key = argument.getChildText("key");
+				String argument_value = argument.getChildText("value");
+				plugin_arguments.put(argument_key,  argument_value);
+			}
+			switch (plugin_interface)
+			{
+			case "CUSTOM" :
+				TRN4JAVA.Custom.Plugin.initialize(plugin_path, plugin_name, plugin_arguments);
+				break;
+			case "CALLBACKS" :
+				TRN4JAVA.Callbacks.Plugin.initialize(plugin_path, plugin_name, plugin_arguments);
+				callbacks_installed = true;
+				break;
+			case "SIMPLIFIED" :
+				TRN4JAVA.Simplified.Plugin.initialize(plugin_path, plugin_name, plugin_arguments);
+				break;
+			default :
+			      throw new IllegalArgumentException("Invalid plugin interface :" + plugin_interface);
+			}
+		}
+		
 	
+		//
 		
 	
 		
@@ -453,12 +410,18 @@ public class TSPModelFrance extends Model {
 		float xmax = params.getChildFloat("xmax");
 		float ymax = params.getChildFloat("ymax");
 		
+		reservoirRuns = params.getChildInt("reservoirRuns");
+		basicRuns	  = params.getChildInt("basicRuns");
+		basicRunMode  = params.getChildText("basicRunMode");
+		
+		
+		
 		this.robot = robot;
 		
 		List<Integer> order = params.getChildIntList("feederOrder");
 		
 		
-		String pathFile = params.getChild("pathFile").getText();
+		//String pathFile = params.getChild("pathFile").getText();
 		
 		
 		//BASIC NAVIGATION PARAMS:
@@ -499,6 +462,8 @@ public class TSPModelFrance extends Model {
 		
 		
 		
+		
+		
 		//       CELL MODULES 
 		
 		// palce cells
@@ -528,7 +493,7 @@ public class TSPModelFrance extends Model {
 		randomOrClosestFeederTaxicActionModule.addInPort("newSelection", chooseNewFeeder);
 		
 		//MOVE USING A PATH:
-		actionFromPathModule = new ActionFromPathModule("actionFromPath", pathFile);
+		//actionFromPathModule = new ActionFromPathModule("actionFromPath", pathFile);
 		//addModule(actionFromPathModule);	
 		
 		//Reservoir Action:
@@ -573,9 +538,20 @@ public class TSPModelFrance extends Model {
 		
 		//test_response( -0.3f, -1.0f, response, stimulus_size, rows, cols);
 	//	
-	
+		TRN4JAVA.Basic.Simulation.Identifier identifier = new TRN4JAVA.Basic.Simulation.Identifier();
+		identifier.condition_number = 1;
+		identifier.frontend_number = 0;
+		identifier.simulation_number = 1;
+		simulation_id = TRN4JAVA.Basic.Simulation.encode(identifier);
+		TRN4JAVA.Extended.Simulation.allocate(simulation_id);	
+		if (callbacks_installed)
+		{
+			TRN4JAVA.Extended.Simulation.Recording.Performances.configure(simulation_id, true, true, true);
+			TRN4JAVA.Extended.Simulation.Measurement.Position.Raw.configure(simulation_id, 1);
+		}
 		
-		reservoir = new Reservoir(ID,
+		reservoir = new Reservoir(simulation_id,
+			
 				stimulus_size, reservoir_size, leak_rate, initial_state_scale, learning_rate,
 				snippets_size, time_budget,
 				rows, cols, xmin, xmax, ymin, ymax, response, sigma, radius, scale,
@@ -590,7 +566,18 @@ public class TSPModelFrance extends Model {
 		// Schme selection module:
 		Module schemeSelector = new SchemeSelector("schemeSelector");
 		addModule(schemeSelector);
-		
+		/*
+		 * 	public static class Identifier
+	{
+		public short frontend_number;
+		public short condition_number;
+		public int simulation_number;
+	}
+
+	public static native long	encode(final Identifier identifier);
+	public static native Identifier	decode(final long id);
+		 * 
+		 * */
 		
 		//TRN4Java INITIALIZATION
 //		TRN4JAVA.initialize_local(0, 0);
@@ -604,8 +591,9 @@ public class TSPModelFrance extends Model {
 		
 		
 		
-		episode = 0;
+//		episode = 0;
 	}
+
 
 	public void newTrial() {
 	}
@@ -616,7 +604,7 @@ public class TSPModelFrance extends Model {
 
 	@Override
 	public void newEpisode() {
-		episode++;
+		//episode++;
 		reservoir.newEpisode();
 		super.newEpisode();
 		// TODO Auto-generated method stub		
@@ -624,6 +612,13 @@ public class TSPModelFrance extends Model {
 		// COMMENT OUT RESERVOIR
 		//reservoir.newEpisode();
 		//reservoirActionSelectionModule.newEpisode();
+		
+//		try {
+//			System.in.read();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	
 		
 
@@ -633,16 +628,31 @@ public class TSPModelFrance extends Model {
 
 	
 	public void endEpisode(){
+		int episode = (Integer)Globals.getInstance().get("episode");
+		String sequenceName = "" + episode;
+		
+		//System.out.println("EPISODE: " +Globals.getInstance().get("episode"));
+		
 		
 		if (!pcActivationHistory.isEmpty() && !posHistory.isEmpty() && !ateHistory.isEmpty())
 		{
-			reservoir.train(pcActivationHistory, posHistory, ateHistory);
+			reservoir.gather(sequenceName, pcActivationHistory, posHistory, ateHistory);
 			pcActivationHistory.clear();
 			posHistory.clear();
 			ateHistory.clear();
 		}
 		
-//		reservoir.newEpisode();
+		if (episode % (basicRuns+reservoirRuns+1) <= basicRuns) {
+			//advance path from file
+			taxicNextFeederFromFileModule.nextPathInList();
+			
+		} 
+		if(episode % (basicRuns+reservoirRuns+1) == basicRuns-1) {
+			reservoir.train();
+	
+		}
+
+
 		
 	}
 
@@ -673,13 +683,13 @@ public class TSPModelFrance extends Model {
 		//number of pace cells : numPCs;
 	
 	
-		call_number++;
-		if (call_number > 3)
-		{
-			Boolean finishedAction = finishReservoirAction.get();
+//		call_number++;
+//		if (call_number > 3)
+//		{
+		Boolean finishedAction = finishReservoirAction.get();
 		
-		/*if (finishedAction)
-		{*/
+		if (finishedAction || ((Integer)Globals.getInstance().get("episode") % (basicRuns+reservoirRuns+1) <= basicRuns))
+		{
 			Boolean ate = ((Bool0dPort)subAte.getOutPort("subAte")).get();
 			if(ate) System.out.println("subject ate? "+ ate);
 			float activation_pattern[] = ((Float1dSparsePortMap)placeCells.getOutPort("activation")).getData();
@@ -724,19 +734,50 @@ public class TSPModelFrance extends Model {
 		
 		//PERFORM ACTION OF TAXIC MODULE
 		//randomFeederTaxicActionModule.outport.data
+		/*
+		 * episode 1 -> gather(sequnece1)
+		 * episode 2 -> gather(sequence2)
+		 * episode 3 -> gather(sequence3) + train()
+		 * episode 4 -> gather(sequence4)
+		 * episode 5 -> test(sequence4)
+		 * episode 6 -> gather(sequnece1)
+		 * episode 7 -> gather(sequence2)
+		 * episode 8 -> gather(sequence3) + train()
+		 * episode 9 -> gather(sequence4)
+		 * episode 10 -> test(sequence4)
+		 */
 		
-	
+		
 		//System.out.println(subject.robot.pendingActions.size() + " ");
-		if (episode % 2 == 0)
+		if ((Integer)Globals.getInstance().get("episode") % (basicRuns+reservoirRuns+1) < basicRuns)
 		{
-			//System.out.println("RESERVOIR ACTION SELECTED");
-	
-			subject.robot.pendingActions.add(reservoirActionSelectionModule.action);
+			System.out.println("Basic RUN");
+			if(basicRunMode.equals("pq")) {
+				
+				subject.robot.pendingActions.add(randomOrClosestFeederTaxicActionModule.action);
+				
+			}
+			else if(basicRunMode.equals("fromFile")) {
+				
+				subject.robot.pendingActions.add(taxicNextFeederFromFileModule.action);
+				
+			}
+				
+			else {
+				System.out.println("ERROR: basicRunMode value is not valid");
+				System.exit(-1);
+			}
+		}else if((Integer)Globals.getInstance().get("episode") % (basicRuns+reservoirRuns+1) == basicRuns) {
+			
+			System.out.println("TARGET SEQUENCE");
+			subject.robot.pendingActions.add(taxicNextFeederFromFileModule.action);
+			
 		}
 		else
 		{
-			//System.out.println("RANDOM FEEDER ACTION SELECTED");
-			subject.robot.pendingActions.add(randomOrClosestFeederTaxicActionModule.action);
+			System.out.println("Reservoir (x,y)= " + reservoirActionSelectionModule.action.x() + " " + reservoirActionSelectionModule.action.y() );
+			
+			subject.robot.pendingActions.add(reservoirActionSelectionModule.action);
 		}
 				
 	}
