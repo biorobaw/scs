@@ -26,9 +26,24 @@ public class Reservoir {
 	static final String POS_TAG = "Position";
 
 
-	java.util.List<String> training_sequences;
+	java.util.List<String> accumulated_sequences;
 	String target_sequence;
 	static final String TRAINING_SET = "training_set"; 
+	
+
+	enum State
+	{
+		EMPTY,
+		TRAINING, 
+		TRAINED,
+		READY,
+		PRIMING,
+		EVALUATING,
+		EVALUATED
+	}
+	private State state = State.EMPTY; 
+	private final Lock state_lock = new ReentrantLock();
+	private final Condition state_condition = state_lock.newCondition();
 	
 	private TRN4JAVA.Custom.Simulation.Loop position = null;	 
 	private TRN4JAVA.Custom.Simulation.Loop stimulus = null;
@@ -46,23 +61,19 @@ public class Reservoir {
 	private float sigma, radius, scale;
 	private long seed;
 	
-	
-	private boolean evaluating;
+	private boolean callbacks_installed;
 	private long trial, evaluation;
 	private float priming_sequence[];
 	private  java.util.Queue<Point3f> pending_points = new ConcurrentLinkedQueue<Point3f>();
 	
-	private boolean trained = false;
-	private final Lock trained_lock = new ReentrantLock();
-	private final Condition trained_condition = trained_lock.newCondition();
 	private boolean injected = false;
-	public Reservoir(long id, long stimulus_size, long reservoir_size, float leak_rate, float initial_state_scale, float learning_rate,
+	public Reservoir(boolean callbacks_installed, long id, long stimulus_size, long reservoir_size, float leak_rate, float initial_state_scale, float learning_rate,
 			int snippets_size, int time_budget,
 			long rows, long cols, float xmin, float xmax, float ymin, float ymax, float response[], float sigma, float radius, float scale,
 			int preamble)
 	{
-		this.training_sequences = new java.util.ArrayList<String>();
-		this.evaluating = false;
+		this.callbacks_installed = callbacks_installed;
+		this.accumulated_sequences = new java.util.ArrayList<String>();
 		this.id = id;
 		this.batch_size = 1;
 		this.preamble=preamble;
@@ -89,6 +100,49 @@ public class Reservoir {
 		//customEventQueue.enqueue(ALLOCATE_SIMULATION, id);
 	}
 	
+	private State getState()
+	{
+		State result;
+
+		state_lock.lock();
+		result = state;
+		state_lock.unlock();
+		
+		return result;
+	}
+	
+	private void waitForState(State expected)
+	{
+		try
+		{
+			state_lock.lock();
+
+			while (state != expected)
+				state_condition.await();
+		}
+		catch (InterruptedException ie)
+		{
+			ie.printStackTrace();
+		}
+		finally
+		{
+			state_lock.unlock();
+		}
+	}
+	
+	private void changeState(State target)
+	{
+		try 
+		{
+		   state_lock.lock();
+		   state = target;
+		   state_condition.signal();
+	    }
+		finally
+		{
+			state_lock.unlock();
+	    }
+	}
 
 	public static void debug_2D_buffer(final String label, float buffer[], int rows, int cols)
 	{
@@ -174,21 +228,26 @@ public class Reservoir {
 			
 			}
 		}, true, true, true);*/
+		if (callbacks_installed)
+		{
+			TRN4JAVA.Extended.Simulation.Recording.Performances.configure(id, true, true, true);
+			TRN4JAVA.Extended.Simulation.Recording.Scheduling.configure(id);
+
+			TRN4JAVA.Extended.Simulation.Measurement.Position.Raw.configure(id, 1);
+		}
 		TRN4JAVA.Extended.Simulation.configure_end(id);
 	}
 	
 	void train()
 	{
 		//String[][] name = new String [size1][size]();
-		String sequences[] = training_sequences.toArray(new String[training_sequences.size()]);
+		String sequences[] = accumulated_sequences.toArray(new String[accumulated_sequences.size()]);
 		TRN4JAVA.Extended.Simulation.declare_set(id,  TRAINING_SET,  INC_TAG, sequences);
 		TRN4JAVA.Extended.Simulation.declare_set(id,  TRAINING_SET,  EXP_TAG, sequences);
 		TRN4JAVA.Extended.Simulation.declare_set(id,  TRAINING_SET,  REW_TAG, sequences);
 		TRN4JAVA.Extended.Simulation.declare_set(id,  TRAINING_SET,  POS_TAG, sequences);
-		training_sequences.clear();
-		
-
-		trained = false;
+		accumulated_sequences.clear();
+		changeState(State.TRAINING);
 		TRN4JAVA.Extended.Simulation.train(id, TRAINING_SET, INC_TAG, EXP_TAG);
 	 }
 	 void gather(final String label, LinkedList<float[]> pcHistory ,LinkedList<float[]> posHistory ,LinkedList<Boolean> ateHistory)
@@ -226,23 +285,25 @@ public class Reservoir {
 		TRN4JAVA.Extended.Simulation.declare_sequence(id, label, REW_TAG, reward, observations);
 		TRN4JAVA.Extended.Simulation.declare_sequence(id, label, POS_TAG, position, observations);
 		
-		if (trained)
+
+		if (getState() == State.TRAINING)
+			waitForState(State.TRAINED);
+			
+		if (getState() == State.TRAINED)
 		{
 			target_sequence = label;
 			priming_sequence = new float[preamble * 2];
 			System.arraycopy(position, 0, priming_sequence, 0, preamble * 2);
-		}
-		else
-		{
-			training_sequences.add(label);
+			changeState(State.READY);
 		}
 		
+		accumulated_sequences.add(label);
 	
 	}
 	
 	 public Point3f get_next_position()
 	 {
-		 return pending_points.poll();
+		return pending_points.poll();
 	 }
 	 
 	 public void append_next_position(final long id, final long trial, final long evaluation, Point3f position)
@@ -260,76 +321,54 @@ public class Reservoir {
 	 
 	 public void set_current_position(Point3f position, float place_cell_activation_pattern[])
 	 {
-		 synchronized(this)
-		 {
-			 if (evaluating && pending_points.isEmpty() && !injected)
-			 {
-				 System.out.println("injecting robot position in TRN Loop : " + position.x + ", " + position.y);
-				 this.position.notify(id, trial, evaluation, new float[]{position.x, position.y}, 1, 2);
-				 this.stimulus.notify(id, trial, evaluation, place_cell_activation_pattern, 1, place_cell_activation_pattern.length);
-				 trial = -1;
-				 evaluation = -1;
-				 injected = true;
-			 }
+		if (getState() == State.EVALUATING && pending_points.isEmpty() && !injected)
+		{
+			System.out.println("injecting robot position in TRN Loop : " + position.x + ", " + position.y);
+			 this.position.notify(id, trial, evaluation, new float[]{position.x, position.y}, 1, 2);
+			 this.stimulus.notify(id, trial, evaluation, place_cell_activation_pattern, 1, place_cell_activation_pattern.length);
+			 trial = -1;
+			 evaluation = -1;
+			 injected = true;
 		}
 	 }
 	
 	public  void onTrained(final long id)
 	{
-		synchronized(this)
-		{
-			assert(this.id == id);
-			assert(pending_points.isEmpty());
-			
-			try 
-			{
-			   trained_lock.lock();
-			   trained = true;
-		       trained_condition.signal();
-		    }
-			finally
-			{
-				trained_lock.unlock();
-		    }
-		}
+		changeState(State.TRAINED);
 	}
 	public  void onPrimed(final long id)
 	{
-		synchronized(this)
-		{
-			assert(this.id == id);
-			evaluating = true;
-		}
+		changeState(State.EVALUATING);
 	}
 	public  void onTested(final long id)
 	{
-		synchronized(this)
-		{
-			assert(this.id == id);
-			evaluating = false;
-			target_sequence = null;
-			
-			Globals.getInstance().put("done",true);
-			//scs.stop()
-			//customEventQueue.enqueue(DEALLOCATE_SIMULATION, id);
-		
-		}
+		changeState(State.EVALUATED);
+
+		Globals.getInstance().put("done",true);
 	}
 	
 	public  void newEpisode()
 	{
-		if (priming_sequence != null && target_sequence != null)
+		if (getState() == State.READY)
 		{
+			changeState(State.PRIMING);
+			try
+			{
+			TRN4JAVA.Extended.Simulation.test(id, target_sequence, INC_TAG, EXP_TAG, preamble, true, 0); // at beginning of new episode - this provides predictions
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 			for (int t = 0; t < preamble; t++)
 				pending_points.add(new Point3f(priming_sequence[t * 2], priming_sequence[t * 2 + 1], 0.0f));
 			priming_sequence = null;
-			
-			TRN4JAVA.Extended.Simulation.test(id, target_sequence, INC_TAG, EXP_TAG, preamble, true, 0); // at beginning of new episode - this provides predictions
 		}
-		//while (!customEventQueue.isempty()) {
-			
-		//}
-		 
+	}
+	
+	public void endEpisode()
+	{
+	
 	}
 	
 	void setup()

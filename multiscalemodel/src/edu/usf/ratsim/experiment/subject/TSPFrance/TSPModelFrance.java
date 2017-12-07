@@ -228,10 +228,8 @@ public class TSPModelFrance extends Model {
 		default :
 			throw new IllegalArgumentException(severity);
 		}
-		TRN4JAVA.Basic.Logging.Severity.Debug.setup();		
 		
-
-		
+	
 		TRN4JAVA.Advanced.Engine.Events.Trained.install(new TRN4JAVA.Advanced.Engine.Events.Trained()
 		{
 			@Override
@@ -544,13 +542,11 @@ public class TSPModelFrance extends Model {
 		identifier.simulation_number = 1;
 		simulation_id = TRN4JAVA.Basic.Simulation.encode(identifier);
 		TRN4JAVA.Extended.Simulation.allocate(simulation_id);	
-		if (callbacks_installed)
-		{
-			TRN4JAVA.Extended.Simulation.Recording.Performances.configure(simulation_id, true, true, true);
-			TRN4JAVA.Extended.Simulation.Measurement.Position.Raw.configure(simulation_id, 1);
-		}
+
 		
-		reservoir = new Reservoir(simulation_id,
+		reservoir = new Reservoir(
+				callbacks_installed,
+				simulation_id,
 			
 				stimulus_size, reservoir_size, leak_rate, initial_state_scale, learning_rate,
 				snippets_size, time_budget,
@@ -629,7 +625,7 @@ public class TSPModelFrance extends Model {
 	
 	public void endEpisode(){
 		int episode = (Integer)Globals.getInstance().get("episode");
-		String sequenceName = "" + episode;
+		String sequenceName = "episode_" + episode;
 		
 		//System.out.println("EPISODE: " +Globals.getInstance().get("episode"));
 		
@@ -652,7 +648,7 @@ public class TSPModelFrance extends Model {
 	
 		}
 
-
+		reservoir.endEpisode();
 		
 	}
 
