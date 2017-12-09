@@ -18,7 +18,7 @@ public class TSPSubjectFrance extends Subject implements ActivityLoggerSubject {
 	public float leftAngle;
 	public float rightAngle;
 	
-	private TSPModelFrance model;
+	public TSPModelFrance model;
 	
 	public PuckRobot robot;
 

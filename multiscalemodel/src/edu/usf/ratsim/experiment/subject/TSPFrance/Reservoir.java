@@ -206,13 +206,13 @@ public class Reservoir {
 	
 		TRN4JAVA.Extended.Simulation.configure_begin(id);
 		TRN4JAVA.Advanced.Simulation.Loop.SpatialFilter.configure(id, batch_size, stimulus_size, seed, position, stimulus, rows, cols, x_min, x_max, y_min, y_max, response, sigma, radius, scale, POS_TAG);	
-		//TRN4JAVA.Extended.Simulation.Scheduler.Snippets.configure(id, seed, snippets_size, time_budget, REW_TAG);
-		TRN4JAVA.Extended.Simulation.Scheduler.Tiled.configure(id, 100);
-		TRN4JAVA.Extended.Simulation.Reservoir.WidrowHoff.configure(id, stimulus_size, stimulus_size, reservoir_size, leak_rate, initial_state_scale, learning_rate, seed, batch_size);
+		TRN4JAVA.Extended.Simulation.Scheduler.Snippets.configure(id, seed+1, snippets_size, time_budget, REW_TAG);
+		//TRN4JAVA.Extended.Simulation.Scheduler.Tiled.configure(id, 100);
+		TRN4JAVA.Extended.Simulation.Reservoir.WidrowHoff.configure(id, stimulus_size, stimulus_size, reservoir_size, leak_rate, initial_state_scale, learning_rate, seed+2, batch_size);
 		TRN4JAVA.Extended.Simulation.Reservoir.Weights.Feedforward.Uniform.configure(id, -1.0f, 1.0f, 0.0f);
 		TRN4JAVA.Extended.Simulation.Reservoir.Weights.Feedback.Uniform.configure(id, -1.0f, 1.0f, 0.0f);
-		TRN4JAVA.Extended.Simulation.Reservoir.Weights.Recurrent.Uniform.configure(id, -1.0f/(float)Math.sqrt(reservoir_size), 1.0f/(float)Math.sqrt(reservoir_size), 0.0f);
-		//TRN4JAVA.Simulation.Reservoir.Weights.Recurrent.Gaussian.configure(id, 0, 0.5f/(float)Math.sqrt(reservoir_size));
+		//TRN4JAVA.Extended.Simulation.Reservoir.Weights.Recurrent.Uniform.configure(id, -1.0f/(float)Math.sqrt(reservoir_size), 1.0f/(float)Math.sqrt(reservoir_size), 0.0f);
+		TRN4JAVA.Extended.Simulation.Reservoir.Weights.Recurrent.Gaussian.configure(id, 0, 0.5f/(float)Math.sqrt(reservoir_size));
 			
 		TRN4JAVA.Extended.Simulation.Reservoir.Weights.Readout.Uniform.configure(id, -1e-3f, 1e-3f, 0.0f);
 		
@@ -231,9 +231,10 @@ public class Reservoir {
 		if (callbacks_installed)
 		{
 			TRN4JAVA.Extended.Simulation.Recording.Performances.configure(id, true, true, true);
+			TRN4JAVA.Extended.Simulation.Recording.States.configure(id, true, true, true);
+			TRN4JAVA.Extended.Simulation.Recording.Weights.configure(id, true, true);
 			TRN4JAVA.Extended.Simulation.Recording.Scheduling.configure(id);
-
-			TRN4JAVA.Extended.Simulation.Measurement.Position.Raw.configure(id, 1);
+			TRN4JAVA.Extended.Simulation.Measurement.Position.Raw.configure(id, batch_size);
 		}
 		TRN4JAVA.Extended.Simulation.configure_end(id);
 	}
@@ -254,51 +255,54 @@ public class Reservoir {
 	 {
 	
 	
-		//incoming = whole pc sequence (time 1 to n-1)
-		//expected = pc sequence (2 to n)
-		//reward  = sequence of received rewards
-		//observations = num rows 
-		 
-		int observations = pcHistory.size()-1;
-		int num_pc = pcHistory.get(0).length;
-		float[] incoming = new float[observations*num_pc];
-		float[] expected = new float[observations*num_pc];
-		float[] position = new float[observations*2];
-		float[] reward = new float[observations];
-		
-		for(int i=0;i<observations;i++)
-		{
-			for(int j=0;j<num_pc; j++)
+			//incoming = whole pc sequence (time 1 to n-1)
+			//expected = pc sequence (2 to n)
+			//reward  = sequence of received rewards
+			//observations = num rows 
+			 
+			int observations = pcHistory.size()-1;
+			if (observations == 0)
+				return;
+			int num_pc = pcHistory.get(0).length;
+			float[] incoming = new float[observations*num_pc];
+			float[] expected = new float[observations*num_pc];
+			float[] position = new float[observations*2];
+			float[] reward = new float[observations];
+			
+			for(int i=0;i<observations;i++)
 			{
-				incoming[i*num_pc + j] = pcHistory.get(i)[j];
-				expected[i*num_pc + j] = pcHistory.get(i+1)[j];
+				for(int j=0;j<num_pc; j++)
+				{
+					incoming[i*num_pc + j] = pcHistory.get(i)[j];
+					expected[i*num_pc + j] = pcHistory.get(i+1)[j];
+				}
+				position[i * 2] = posHistory.get(i)[0];
+				position[i * 2 + 1] = posHistory.get(i)[1];
+				
+				reward[i] = ateHistory.get(i) ? 1f : 0f;
 			}
-			position[i * 2] = posHistory.get(i)[0];
-			position[i * 2 + 1] = posHistory.get(i)[1];
+				
 			
-			reward[i] = ateHistory.get(i) ? 1f : 0f;
-		}
-			
-		
-		TRN4JAVA.Extended.Simulation.declare_sequence(id, label, INC_TAG, incoming, observations);
-		TRN4JAVA.Extended.Simulation.declare_sequence(id, label, EXP_TAG, expected, observations);
-		TRN4JAVA.Extended.Simulation.declare_sequence(id, label, REW_TAG, reward, observations);
-		TRN4JAVA.Extended.Simulation.declare_sequence(id, label, POS_TAG, position, observations);
-		
-
-		if (getState() == State.TRAINING)
-			waitForState(State.TRAINED);
-			
-		if (getState() == State.TRAINED)
-		{
-			
-			priming_sequence = new float[preamble * 2];
-			System.arraycopy(position, 0, priming_sequence, 0, preamble * 2);
-			changeState(State.READY);
-		}
-		
-		accumulated_sequences.add(label);
 	
+			TRN4JAVA.Extended.Simulation.declare_sequence(id, label, INC_TAG, incoming, observations);
+			TRN4JAVA.Extended.Simulation.declare_sequence(id, label, EXP_TAG, expected, observations);
+			TRN4JAVA.Extended.Simulation.declare_sequence(id, label, REW_TAG, reward, observations);
+			TRN4JAVA.Extended.Simulation.declare_sequence(id, label, POS_TAG, position, observations);
+			
+	
+			if (getState() == State.TRAINING)
+				waitForState(State.TRAINED);
+				
+			if (getState() == State.TRAINED)
+			{
+				
+				priming_sequence = new float[preamble * 2];
+				System.arraycopy(position, 0, priming_sequence, 0, preamble * 2);
+				changeState(State.READY);
+			}
+			
+			accumulated_sequences.add(label);
+		
 	}
 	
 	 public Point3f get_next_position()

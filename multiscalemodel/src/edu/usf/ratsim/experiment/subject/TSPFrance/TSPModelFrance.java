@@ -30,6 +30,7 @@ import edu.usf.ratsim.experiment.subject.pablo.mymodules.NonVisitedFeederSetModu
 import edu.usf.ratsim.experiment.subject.pablo.mymodules.RandomOrClosestFeederTaxicActionModule;
 import edu.usf.ratsim.experiment.subject.pablo.mymodules.TaxicNextFeederFromFileModule;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
+import edu.usf.ratsim.experiment.universe.virtual.drawingUtilities.DrawCycleInformation;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromPathModule;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.nsl.modules.celllayer.TesselatedPlaceCellLayer;
@@ -47,7 +48,7 @@ public class TSPModelFrance extends Model {
 	public LinkedList<float[]> posHistory = new LinkedList<float[]>();
 	private TesselatedPlaceCellLayer placeCells;	
 	private int numPCs;
-	static final int DEFAULT_INDEX = 0; // 0 = CPU, > 0 = GPU
+
 	//INPUT MODULES
 	HeadDirection hdModule;
 	Position posModule;
@@ -56,11 +57,7 @@ public class TSPModelFrance extends Model {
 	VisibleFeedersModule visibleFeeders;
 	Reservoir reservoir = null;
 	long simulation_id;
-	
-	int simulation_number;
-	int condition_number;
-	
-	
+	static final int DEFAULT_INDEX = 0; // 0 = CPU, > 0 = GPU
 	//BASIC MODEL RUNS VS RESERVOIR RUNS:
 	int basicRuns = 1;
 	int reservoirRuns = 1;
@@ -206,170 +203,12 @@ public class TSPModelFrance extends Model {
 	public TSPModelFrance(ElementWrapper params, TSPSubjectFrance subject,PuckRobot robot) 
 	{
 		
-		condition_number  = params.getChildInt("condition_number");
-		simulation_number = params.getChildInt("simulation_number");
+
 		
 		taxicNextFeederFromFileModule = new TaxicNextFeederFromFileModule("taxicFromFile", params.getChildText("taxicPaths"));
 		taxicNextFeederFromFileModule.addInPort("newSelection", chooseNewFeeder);
 		addModule(taxicNextFeederFromFileModule);
 		
-		String severity = params.getChild("loggingSeverity").getText().toUpperCase();
-		switch (severity)
-		{
-		case "TRACE" :
-			TRN4JAVA.Basic.Logging.Severity.Trace.setup();
-			break;
-		case "DEBUG" :
-			TRN4JAVA.Basic.Logging.Severity.Debug.setup();
-			break;
-		case "INFORMATION" :
-			TRN4JAVA.Basic.Logging.Severity.Information.setup();
-			break;
-		case "WARNING" :
-			TRN4JAVA.Basic.Logging.Severity.Warning.setup();
-			break;
-		case "ERROR" :
-			TRN4JAVA.Basic.Logging.Severity.Error.setup();
-			break;
-		default :
-			throw new IllegalArgumentException(severity);
-		}
-		
-	
-		TRN4JAVA.Advanced.Engine.Events.Trained.install(new TRN4JAVA.Advanced.Engine.Events.Trained()
-		{
-			@Override
-			public void callback(final long id)
-			{
-				System.out.println("Simulation " + id + " is trained");
-				reservoir.onTrained(id);
-			}
-		});
-		TRN4JAVA.Advanced.Engine.Events.Tested.install(new TRN4JAVA.Advanced.Engine.Events.Tested()
-		{
-			@Override
-			public void callback(final long id)
-			{
-				System.out.println("Simulation " + id + " is tested");
-				reservoir.onTested(id);
-			}
-		});
-		TRN4JAVA.Advanced.Engine.Events.Primed.install(new TRN4JAVA.Advanced.Engine.Events.Primed()
-		{
-			@Override
-			public void callback(final long id)
-			{
-				System.out.println("Simulation " + id + " is primed");
-				reservoir.onPrimed(id);
-			}
-		});
-		TRN4JAVA.Advanced.Engine.Events.Completed.install(new TRN4JAVA.Advanced.Engine.Events.Completed()
-		{
-			@Override
-			public void callback()
-			{
-				System.out.println("Simulations completed");
-			}
-		});
-		TRN4JAVA.Advanced.Engine.Events.Allocated.install(new TRN4JAVA.Advanced.Engine.Events.Allocated()
-		{
-			@Override
-			public void callback(final long id, final int rank)
-			{
-				System.out.println("Simulation " + id + " allocated on processor rank " + rank);
-			}
-		});
-		
-		ElementWrapper wr = params.getChild("backendType");
-		String backendType = "local";
-		if (wr == null)
-		{
-			System.out.println("backendTypeWrapper parameter does not exist. Using default type " + backendType);
-		}
-		else
-		{
-			backendType = params.getChildText("backendType");
-		}
-		switch (backendType.toUpperCase())
-		{
-			case "LOCAL" :
-			{
-				int index = DEFAULT_INDEX;
-				wr = params.getChild("backendDeviceIndex");
-				if (wr == null)
-				{
-					System.out.println("deviceIndex parameter does not exist. Using default index " + index);
-				}
-				else
-				{
-					index = params.getChildInt("backendDeviceIndex");
-				}
-				TRN4JAVA.Basic.Engine.Backend.Local.initialize(new int []{index});
-			}
-			break;
-			
-			case "REMOTE" :
-			{
-				String host = "127.0.0.1";
-				short port = 12345;
-				wr = params.getChild("backendHost");
-				if (wr == null)
-				{
-					System.out.println("backendHost parameter does not exist. Using default host " + host);
-				}
-				else
-				{
-					host = params.getChildText("backendHost");
-				}
-				wr = params.getChild("backendPort");
-				if (wr == null)
-				{
-					System.out.println("backendPort parameter does not exist. Using default port " + port);
-				}
-				else
-				{
-					port = (short)params.getChildInt("backendPort");
-				}
-				TRN4JAVA.Basic.Engine.Backend.Remote.initialize(host, port);
-				
-				
-				//TRN4JAVA.Engine.uninitialize();
-			}
-			break;
-			
-			default :
-			      throw new IllegalArgumentException("Invalid backend type :" + backendType);
-		}
-		
-		boolean callbacks_installed = false;
-		for (ElementWrapper plugin : params.getChildren("plugin"))
-		{
-			String plugin_name = plugin.getChildText("name");
-			String plugin_interface = plugin.getChildText("interface").toUpperCase();
-			String plugin_path = plugin.getChildText("path");
-			java.util.Map<String, String> plugin_arguments = new java.util.HashMap<String,String>();
-			for (ElementWrapper argument : plugin.getChildren("argument"))
-			{
-				String argument_key = argument.getChildText("key");
-				String argument_value = argument.getChildText("value");
-				plugin_arguments.put(argument_key,  argument_value);
-			}
-			switch (plugin_interface)
-			{
-			case "CUSTOM" :
-				TRN4JAVA.Custom.Plugin.initialize(plugin_path, plugin_name, plugin_arguments);
-				break;
-			case "CALLBACKS" :
-				TRN4JAVA.Callbacks.Plugin.initialize(plugin_path, plugin_name, plugin_arguments);
-				callbacks_installed = true;
-				break;
-			case "SIMPLIFIED" :
-				TRN4JAVA.Simplified.Plugin.initialize(plugin_path, plugin_name, plugin_arguments);
-				break;
-			default :
-			      throw new IllegalArgumentException("Invalid plugin interface :" + plugin_interface);
-			}
-		}
 		
 	
 		//
@@ -539,17 +378,172 @@ public class TSPModelFrance extends Model {
 			}
 		
 		}
+		String severity = params.getChild("loggingSeverity").getText().toUpperCase();
+		switch (severity)
+		{
+		case "TRACE" :
+			TRN4JAVA.Basic.Logging.Severity.Trace.setup();
+			break;
+		case "DEBUG" :
+			TRN4JAVA.Basic.Logging.Severity.Debug.setup();
+			break;
+		case "INFORMATION" :
+			TRN4JAVA.Basic.Logging.Severity.Information.setup();
+			break;
+		case "WARNING" :
+			TRN4JAVA.Basic.Logging.Severity.Warning.setup();
+			break;
+		case "ERROR" :
+			TRN4JAVA.Basic.Logging.Severity.Error.setup();
+			break;
+		default :
+			throw new IllegalArgumentException(severity);
+		}
 		
+	
+		TRN4JAVA.Advanced.Engine.Events.Trained.install(new TRN4JAVA.Advanced.Engine.Events.Trained()
+		{
+			@Override
+			public void callback(final long id)
+			{
+				System.out.println("Simulation " + id + " is trained");
+
+				reservoir.onTrained(id);
+			}
+		});
+		TRN4JAVA.Advanced.Engine.Events.Tested.install(new TRN4JAVA.Advanced.Engine.Events.Tested()
+		{
+			@Override
+			public void callback(final long id)
+			{
+				System.out.println("Simulation " + id + " is tested");
+				reservoir.onTested(id);
+			}
+		});
+		TRN4JAVA.Advanced.Engine.Events.Primed.install(new TRN4JAVA.Advanced.Engine.Events.Primed()
+		{
+			@Override
+			public void callback(final long id)
+			{
+				System.out.println("Simulation " + id + " is primed");
+				reservoir.onPrimed(id);
+			}
+		});
+		TRN4JAVA.Advanced.Engine.Events.Completed.install(new TRN4JAVA.Advanced.Engine.Events.Completed()
+		{
+			@Override
+			public void callback()
+			{
+				System.out.println("Simulations completed");
+			}
+		});
+		TRN4JAVA.Advanced.Engine.Events.Allocated.install(new TRN4JAVA.Advanced.Engine.Events.Allocated()
+		{
+			@Override
+			public void callback(final long id, final int rank)
+			{
+				System.out.println("Simulation " + id + " allocated on processor rank " + rank);
+			}
+		});
+		
+		ElementWrapper wr = params.getChild("backendType");
+		String backendType = "local";
+		if (wr == null)
+		{
+			System.out.println("backendTypeWrapper parameter does not exist. Using default type " + backendType);
+		}
+		else
+		{
+			backendType = params.getChildText("backendType");
+		}
+		switch (backendType.toUpperCase())
+		{
+			case "LOCAL" :
+			{
+				int index = DEFAULT_INDEX;
+				wr = params.getChild("backendDeviceIndex");
+				if (wr == null)
+				{
+					System.out.println("deviceIndex parameter does not exist. Using default index " + index);
+				}
+				else
+				{
+					index = params.getChildInt("backendDeviceIndex");
+				}
+				TRN4JAVA.Basic.Engine.Backend.Local.initialize(new int []{index});
+			}
+			break;
+			
+			case "REMOTE" :
+			{
+				String host = "127.0.0.1";
+				short port = 12345;
+				wr = params.getChild("backendHost");
+				if (wr == null)
+				{
+					System.out.println("backendHost parameter does not exist. Using default host " + host);
+				}
+				else
+				{
+					host = params.getChildText("backendHost");
+				}
+				wr = params.getChild("backendPort");
+				if (wr == null)
+				{
+					System.out.println("backendPort parameter does not exist. Using default port " + port);
+				}
+				else
+				{
+					port = (short)params.getChildInt("backendPort");
+				}
+				TRN4JAVA.Basic.Engine.Backend.Remote.initialize(host, port);
+			}
+			break;
+			
+			default :
+			      throw new IllegalArgumentException("Invalid backend type :" + backendType);
+		}
+		
+		boolean callbacks_installed = false;
+		for (ElementWrapper plugin : params.getChildren("plugin"))
+		{
+			String plugin_name = plugin.getChildText("name");
+			String plugin_interface = plugin.getChildText("interface").toUpperCase();
+			String plugin_path = plugin.getChildText("path");
+			java.util.Map<String, String> plugin_arguments = new java.util.HashMap<String,String>();
+			for (ElementWrapper argument : plugin.getChildren("argument"))
+			{
+				String argument_key = argument.getChildText("key");
+				String argument_value = argument.getChildText("value");
+				plugin_arguments.put(argument_key,  argument_value);
+			}
+			switch (plugin_interface)
+			{
+			case "CUSTOM" :
+				TRN4JAVA.Custom.Plugin.initialize(plugin_path, plugin_name, plugin_arguments);
+				break;
+			case "CALLBACKS" :
+				TRN4JAVA.Callbacks.Plugin.initialize(plugin_path, plugin_name, plugin_arguments);
+				callbacks_installed = true;
+				break;
+			case "SIMPLIFIED" :
+				TRN4JAVA.Simplified.Plugin.initialize(plugin_path, plugin_name, plugin_arguments);
+				break;
+			default :
+			      throw new IllegalArgumentException("Invalid plugin interface :" + plugin_interface);
+			}
+		}
 		//test_response( -0.3f, -1.0f, response, stimulus_size, rows, cols);
 	//	
 		TRN4JAVA.Basic.Simulation.Identifier identifier = new TRN4JAVA.Basic.Simulation.Identifier();
-		identifier.condition_number = 1;
+		identifier.condition_number = (short)params.getChildInt("condition_number");
 		identifier.frontend_number = 0;
-		identifier.simulation_number = 1;
-		simulation_id = TRN4JAVA.Basic.Simulation.encode(identifier);
-		TRN4JAVA.Extended.Simulation.allocate(simulation_id);	
-
+		identifier.simulation_number = params.getChildInt("simulation_number");
 		
+		simulation_id = TRN4JAVA.Basic.Simulation.encode(identifier);
+	
+
+		TRN4JAVA.Extended.Simulation.allocate(simulation_id);	
 		reservoir = new Reservoir(
 				callbacks_installed,
 				simulation_id,
@@ -568,6 +562,10 @@ public class TSPModelFrance extends Model {
 		// Schme selection module:
 		Module schemeSelector = new SchemeSelector("schemeSelector");
 		addModule(schemeSelector);
+		
+		
+		universe.addDrawingFunction(new DrawCycleInformation(375, 50, 15));
+		
 		/*
 		 * 	public static class Identifier
 	{
@@ -615,12 +613,6 @@ public class TSPModelFrance extends Model {
 		//reservoir.newEpisode();
 		//reservoirActionSelectionModule.newEpisode();
 		
-//		try {
-//			System.in.read();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 	
 		
 
@@ -714,7 +706,7 @@ public class TSPModelFrance extends Model {
 			
 			if (append && ((Integer)Globals.getInstance().get("episode") % (basicRuns+reservoirRuns+1) <= basicRuns))
 			{
-				//System.out.println("displacement : " + displacement);
+				System.out.println("displacement : " + displacement);
 				ateHistory.add(ate);
 				pcActivationHistory.add(activation_pattern);
 				posHistory.add(estimated_position);
@@ -779,7 +771,7 @@ public class TSPModelFrance extends Model {
 		}
 		else
 		{
-			System.out.println("Reservoir (x,y)= " + reservoirActionSelectionModule.action.x() + " " + reservoirActionSelectionModule.action.y() );
+			//System.out.println("Reservoir (x,y)= " + reservoirActionSelectionModule.action.x() + " " + reservoirActionSelectionModule.action.y() );
 			
 			subject.robot.pendingActions.add(reservoirActionSelectionModule.action);
 		}
