@@ -8,4 +8,4 @@ group=$3
 indiv=$4
 
 
-java -cp "./platform/src/:./multiscalemodel/src/:./bin/:./deps/*:./deps/j3dport/*" edu.usf.experiment.Experiment $experimentFile $logPath $group $indiv
+java -cp multiscalemodel/target/models-2.0.0-jar-with-dependencies.jar edu.usf.experiment.Experiment -display $experimentFile $logPath $group $indiv
