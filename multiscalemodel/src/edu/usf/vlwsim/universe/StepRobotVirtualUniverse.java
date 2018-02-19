@@ -18,9 +18,7 @@ public class StepRobotVirtualUniverse extends VirtUniverse {
 
 	public void stepMotion(){
 		if (turnAngle != 0){
-			setRobotOrientation(turnAngle);
-			while (!canRobotMove(0, .1f)) // TODO: this mimics rotations until the wall is not in front anymore - this should be done by the model
-				setRobotOrientation(turnAngle);
+			rotateRobot(turnAngle);
 		}
 				
 		moveRobot(new Coordinate(forwardDistance, 0));
