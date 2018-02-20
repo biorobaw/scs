@@ -2,7 +2,8 @@
 
 
 logPath=$1
-if [ `whoami` == "martin" ]; then
+# Check for usf cluster
+if ! $(hostname | grep --quiet "usf.edu"); then
   export PATH=/work/R-3.3.3/bin:$PATH
   export R_LIBS=/work/R-3.3.3/library/
 else
@@ -11,6 +12,5 @@ else
   module add apps/jre/1.8.0_121.x86  
   module unload apps/jre/1.7.0_80.x64
 fi
-
-java -cp "./platform/src/:./multiscalemodel/src/:./bin/:./deps/*:./deps/j3dport/*" edu.usf.experiment.PostExperiment $logPath > $logPath/postProc.txt 2>&1
+java -cp multiscalemodel/target/models-2.0.0-jar-with-dependencies.jar edu.usf.experiment.PostExperiment $logPath > $logPath/postProc.txt 2>&1
 

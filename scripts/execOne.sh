@@ -15,7 +15,8 @@ fi
 
 echo "Individual " $individual
 
-if [ `whoami` == "martin" ]; then
+# Check for usf cluster
+if ! $(hostname | grep --quiet "usf.edu"); then
   export PATH=/work/R-3.3.3/bin:$PATH
   export R_LIBS=/work/R-3.3.3/library/
 else
@@ -27,5 +28,5 @@ else
   java -version
 fi
 
-java -Xmx1500m -cp "./platform/src/:./multiscalemodel/src/:./bin/:./deps/*:./deps/j3dport/*" edu.usf.experiment.RunIndividualByNumber $logPath $individual
+java -cp multiscalemodel/target/models-2.0.0-jar-with-dependencies.jar -Xmx1500m edu.usf.experiment.RunIndividualByNumber $logPath $individual
 

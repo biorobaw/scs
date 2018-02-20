@@ -5,7 +5,7 @@ logPath=$2
 fromIndiv=$3
 toIndiv=$4
 
-ant compile
+mvn package
 
 ./scripts/preProcess.sh $experimentFile $logPath
 

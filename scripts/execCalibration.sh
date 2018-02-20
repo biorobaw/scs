@@ -5,12 +5,9 @@ logPath=$2
 fromIndiv=$3
 toIndiv=$4
 
-<<<<<<< HEAD
 echo Executing from $fromIndiv to $toIndiv
 
-=======
->>>>>>> bug-algs
-ant compile
+mvn package
 
 ./scripts/preProcessCalibration.sh $calibrationFile $logPath
 

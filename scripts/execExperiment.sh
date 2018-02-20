@@ -7,7 +7,7 @@ toIndiv=$4
 
 #idMessage=`sbatch ./scripts/compile.sh`
 #compileId=`echo $idMessage | cut -d " " -f 4`
-ant compile
+mvn package
 
 
 #idMessage=`sbatch --dependency=afterok:$compileId scripts/preProcess.sh $experimentFile $logPath`
