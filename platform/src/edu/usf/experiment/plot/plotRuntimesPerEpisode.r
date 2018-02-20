@@ -28,11 +28,13 @@ plotArrival <- function(pathData, plotName){
 }
 
 # Plot runtimes per episode
-files <- list.files('.', 'runtimes.csv', recursive=T)
-runtimeFrames<-lapply(files,function(x) {data <- read.csv(x,sep='\t'); data['file'] <- x; data})
+files <- list.files('.', 'summary.RData', recursive=T)
+data <- list()
+runtimeFrames<-lapply(files,function(x) {load(x); summarizedRunTimes['file'] <- x; summarizedRunTimes})
 library(data.table)
 runtimes<-rbindlist(runtimeFrames)
 save(runtimes, file="runtimes.RData")
 load('runtimes.RData')
 # runtimes <- runtimes[runtimes$runtime != 200000,]
 ddply(runtimes, .(trial), function(x) plotArrival(x, plotName="runtimesEpisode"))
+
