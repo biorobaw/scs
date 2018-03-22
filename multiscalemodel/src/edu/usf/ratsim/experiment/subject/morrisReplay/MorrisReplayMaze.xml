@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="us-ascii"?>
+
+<world>
+        
+    <mazeElement>
+		<name>Pool</name>
+		<params>
+			<r>0.75</r>
+			<h>.025</h>
+			<cr>1</cr>
+			<cg>0</cg>
+			<cb>0</cb>
+			<x>0</x>
+			<y>0</y>
+			<z>0</z>
+		</params>
+	</mazeElement>
+	
+<!-- 	<platform>
+		<r>.01</r>
+		<h>0</h>
+		<cr>0</cr>
+		<cg>1</cg>
+		<cb>0</cb>
+		<x>.5</x>
+		<y>.5</y>
+		<z>0</z>
+	</platform>		 -->
+		
+
+        
+        
+    <boundingRect>
+		<x>-1</x>
+		<y>-1</y>
+		<w>2.0</w>
+		<h>2.0</h>
+	</boundingRect>
+	
+	
+	<floor>
+		<r>1</r>
+		<h>0</h>
+		<cr>0</cr>
+		<cg>0</cg>
+		<cb>0</cb>
+		<x>0</x>
+		<y>0</y>
+		<z>-.075</z>
+	</floor>
+
+
+
+
+
+	
+	<!-- Views -->
+	<topview>
+		<x>0</x>
+		<y>0</y>
+		<r>1</r>
+		<z>15</z> 
+		<!-- <x>0</x>
+		<y>1.3</y>
+		<z>15</z>
+		<r>2</r> -->
+	</topview>
+	<thirdview>
+		<x>2.1</x>
+		<y>2.5</y>
+		<z>2.1</z>
+	</thirdview>
+	<robotview>
+		<x>1</x>
+		<y>.1</y>
+		<z>0</z>
+		<theta>1.57</theta>
+	</robotview>
+
+</world>
+

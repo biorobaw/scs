@@ -3,6 +3,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import edu.usf.experiment.Globals;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
@@ -51,6 +53,9 @@ public class PlaceCellTransitionMatrixUpdater extends Module {
 
 		@Override
 		public void run() {
+			
+//			System.out.println("Starting update of W " + Globals.getInstance().get("cycle"));
+			
 			Float1dSparsePort pc = (Float1dSparsePort) getInPort("PC");
 			Float2dSparsePort wPort = (Float2dSparsePort) getInPort("wPort");
 
@@ -75,6 +80,7 @@ public class PlaceCellTransitionMatrixUpdater extends Module {
 			oldPCs = new HashMap<Integer, Float>(pc.getNonZero());
 
 //			System.out.println(wPort.getNonZero().keySet().size());
+//			System.out.println("Updated W: "+Globals.getInstance().get("cycle"));
 		}
 
 	}

@@ -11,6 +11,7 @@ import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.onedimensional.vector.Point3fPort;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceCell;
+import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceCellForMultipleT;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.nsl.modules.cell.ProportionalPlaceCell;
 
@@ -82,6 +83,8 @@ public class TesselatedPlaceCellLayer extends Module {
 					cells.add(new ProportionalPlaceCell(new Point3f(x, y, 0), radius));
 				else if (placeCellType.equals("exponential"))
 					cells.add(new ExponentialPlaceCell(new Point3f(x, y, 0), radius));
+				else if(placeCellType.equals("exponentialMultipleT"))
+					cells.add(new ExponentialPlaceCellForMultipleT(new Point3f(x, y,0),radius));
 				else
 					throw new RuntimeException("Place cell type not implemented");
 			}

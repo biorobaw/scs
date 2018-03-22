@@ -128,7 +128,9 @@ public class VirtUniverse extends Universe {
 			// Top view
 			ElementWrapper tv = maze.getChild("topview");
 			ViewNode vn = new ViewNode(tv);
+//			vn.
 			topView = vn.getView();
+//			topView.
 			bg.addChild(vn);
 
 			bg.addChild(new DirectionalLightNode(new Vector3f(0f, 0f, -5),
@@ -157,7 +159,10 @@ public class VirtUniverse extends Universe {
 	
 	public void render(Boolean waitForDoneRendering){
 		
-		if (display) frame.render(waitForDoneRendering);
+		if (display) {
+			
+			frame.render(waitForDoneRendering);
+		}
 	}
 	
 	public void addDrawingFunction(DrawingFunction function){

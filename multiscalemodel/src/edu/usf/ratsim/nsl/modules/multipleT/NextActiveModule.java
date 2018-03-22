@@ -92,6 +92,8 @@ public class NextActiveModule extends Module {
 		//set nextActive equal to active for consistency (since at each cycle active <= nextActive)
 		nextActive.set(active);
 		
+		System.out.println("Start at: " + active);
+		
 		
 	
 	}

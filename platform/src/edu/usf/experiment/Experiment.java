@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
+import edu.usf.experiment.log.Logger;
+import edu.usf.experiment.log.LoggerLoader;
 import edu.usf.experiment.plot.Plotter;
+import edu.usf.experiment.plot.PlotterLoader;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.RobotLoader;
 import edu.usf.experiment.subject.Subject;
@@ -37,6 +40,10 @@ public class Experiment implements Runnable {
 	private List<Trial> trials;
 	private List<Task> beforeTasks;
 	private List<Task> afterTasks;
+	private List<Logger> beforeLoggers;
+	private List<Logger> afterLoggers;
+	private List<Plotter> beforePlotters;
+	private List<Plotter> afterPlotters;
 	private Universe universe;
 	private Subject subject;
 	private boolean makePlots;
@@ -201,6 +208,24 @@ public class Experiment implements Runnable {
 		afterTasks = TaskLoader.getInstance().load(
 				params.getChild("afterExperimentTasks"));
 		
+		
+		System.out.println("creating loggers, logpath: " + logPath);
+		beforeLoggers = LoggerLoader.getInstance().load(
+				params.getChild("beforeExperimentLoggers"), 
+				logPath);
+		
+		afterLoggers = LoggerLoader.getInstance().load(
+				params.getChild("afterExperimentLoggers"), 
+				logPath);
+		
+		beforePlotters = PlotterLoader.getInstance().load(
+				params.getChild("beforeExperimentPlotters"), 
+				logPath);
+
+		afterPlotters = PlotterLoader.getInstance().load(
+				params.getChild("afterExperimentPlotters"), 
+				logPath);
+		
 		System.out.println("[+] After Tasks loaded");
 
 	}
@@ -224,6 +249,14 @@ public class Experiment implements Runnable {
 		System.out.println("after tasks" + afterTasks.size());
 		for (Task task : beforeTasks)
 			task.perform(this);
+		
+		for (Logger l : beforeLoggers){
+			l.log(this);
+			l.finalizeLog();
+		}
+		
+		for (Plotter p : beforePlotters)
+			p.plot();
 
 		if (Debug.sleepBeforeStart)
 			try {
@@ -243,6 +276,14 @@ public class Experiment implements Runnable {
 		// Do all after trial tasks
 		for (Task task : afterTasks)
 			task.perform(this);
+		
+		for (Logger l : afterLoggers){
+			l.log(this);
+			l.finalizeLog();
+		}
+		
+		for (Plotter p : afterPlotters)
+			p.plot();
 		
     // Wait for threads
 		Plotter.join();

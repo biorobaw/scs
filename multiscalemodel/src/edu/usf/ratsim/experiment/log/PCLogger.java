@@ -12,6 +12,7 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.experiment.subject.TSPSubject;
 import edu.usf.ratsim.experiment.subject.TSPFrance.TSPSubjectFrance;
+import edu.usf.ratsim.experiment.subject.morrisReplay.MorrisReplaySubject;
 import edu.usf.ratsim.experiment.subject.multipleT.MultipleTSubject;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 
@@ -30,6 +31,8 @@ public class PCLogger extends Logger {
 			cells = ((MultipleTSubject) sub).getPlaceCells();
 		else if (sub instanceof TSPSubjectFrance)
 			cells = ((TSPSubjectFrance) sub).getPlaceCells();
+		else if (sub instanceof MorrisReplaySubject)
+			cells = ((MorrisReplaySubject) sub).getPlaceCells();
 		else
 			throw new IllegalArgumentException(
 					"PC logger can only be used with TSPModel or MultipleTModel");
@@ -63,19 +66,23 @@ public class PCLogger extends Logger {
 //			String episode = props.getProperty("episode");
 			
 			Globals g = Globals.getInstance();
-			String trialName = g.get("trial").toString();
 			String groupName = g.get("group").toString();
 			String subName = g.get("subName").toString();
-			String episode = g.get("episode").toString();
+			
+//			setLogPath(getLogPath() + groupName + "/" + subName + "/");
+//			System.out.println("logpath:       " +getLogPath());
+//			String trialName = g.get("trial").toString();
+//			String episode = g.get("episode").toString();
 
 			PrintWriter writer = getWriter();
 			int cellNum = 0;
 			for (PlaceCell cell : cells) {
-				writer.println(groupName + '\t' + subName + '\t'
-						+ cellNum + '\t'
-						+ cell.getPreferredLocation().x  + '\t'
-						+ cell.getPreferredLocation().y + '\t'
-						+ cell.getPlaceRadius());
+				writer.println(groupName + '\t' 
+										 + subName + '\t'
+										 + cellNum + '\t'
+										 + cell.getPreferredLocation().x  + '\t'
+										 + cell.getPreferredLocation().y + '\t'
+										 + cell.getPlaceRadius());
 				cellNum++;
 			}
 

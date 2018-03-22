@@ -54,6 +54,11 @@ public class UniverseFrame extends java.awt.Frame {
 	//rendering synchronization
 	private Semaphore renderLock = new Semaphore(1);
 	private Semaphore doneRenderLock = new Semaphore(1);
+	
+	private int framesPerRender = 2;
+	private int remainingRenderingFrames = 0;
+	private boolean iHaveLock = false;
+	
 
 	public UniverseFrame(VirtUniverse world) {
 		this.expUniv = world;
@@ -98,32 +103,46 @@ public class UniverseFrame extends java.awt.Frame {
 			@Override
 			public void preRender(){
 				
-				//view has not been set yet, do what ever
-				try {
-					renderLock.acquire();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				super.preRender();
+				
+				if(!iHaveLock){
+					try {
+						//wait until 
+//						System.out.println("renderer waiting to start next frame...");
+						renderLock.acquire();
+						iHaveLock = true;
+//						System.out.println("renderer commanded to start next frame..."+Globals.getInstance().get("cycle"));
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
 				}
+				
+				
 				
 				
 			}
 			
 			@Override
 			public void renderField(int arg0) {
+				super.renderField(arg0);
 				// TODO Auto-generated method stub
 				
 				//view has been set, and opaque scene graph objects drawn
 				
 				//draw own opaque objects
+//				System.out.println("drawing functions: "+Globals.getInstance().get("cycle"));
 				for (Runnable r : drawingFunctions)
 					r.run();
+//				System.out.println("done drawing functions: "+Globals.getInstance().get("cycle"));
 				
 			}
 			
 			@Override
 			public void postRender()
 	        {
+				super.postRender();
 				//transparent
 				
 				
@@ -132,10 +151,27 @@ public class UniverseFrame extends java.awt.Frame {
 			
 			@Override
 			public void postSwap() {
+				super.postSwap();
 				// TODO Auto-generated method stub
 				//for sychronization
 				
-				doneRenderLock.release();
+//				System.out.println("Releasing doneRender lock: "+Globals.getInstance().get("cycle"));
+				
+				//if somebody waiting on lock release it
+				remainingRenderingFrames--;
+				if (remainingRenderingFrames==0){
+					iHaveLock = false;
+					doneRenderLock.release();
+					
+				}
+					
+
+
+				
+				
+				
+				
+				
 				
 			}
 			
@@ -152,10 +188,13 @@ public class UniverseFrame extends java.awt.Frame {
 
 	public void render(Boolean waitDoneRendering){
 			
+		remainingRenderingFrames = framesPerRender;
 		renderLock.release();
 		if(waitDoneRendering)
 			try {
+//				System.out.println("waiting...");
 				doneRenderLock.acquire();
+//				System.out.println("done waiting for done!\n");
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

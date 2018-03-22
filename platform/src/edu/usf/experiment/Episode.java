@@ -136,6 +136,7 @@ public class Episode {
 		for (Logger logger : beforeEpisodeLoggers)
 			logger.log(this);
 		
+		g.put("cycle",-1);
 		getSubject().newEpisode();
 	
 		Plotter.plot(beforeEpisodePlotters);
