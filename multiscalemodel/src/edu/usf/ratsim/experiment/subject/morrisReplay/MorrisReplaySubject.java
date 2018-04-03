@@ -66,7 +66,7 @@ public class MorrisReplaySubject extends SubjectOld {
 		
 		Globals g = Globals.getInstance();
 		
-		if(VirtUniverse.getInstance().display) recorder = new CanvasRecorder(VirtUniverse.getInstance().frame.topViewPanel,"");
+		//if(VirtUniverse.getInstance().display) recorder = new CanvasRecorder(VirtUniverse.getInstance().frame.topViewPanel,"");
 
 
 		lRobot = (VirtualRobot) robot;
