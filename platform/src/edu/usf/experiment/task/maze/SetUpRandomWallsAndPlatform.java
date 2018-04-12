@@ -19,15 +19,15 @@ import edu.usf.experiment.universe.wall.WallUniverseUtilities;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
 
-public class SetUpRandomWalls extends Task {
+public class SetUpRandomWallsAndPlatform extends Task {
 	
 	private final float DEFAULT_X_RADIUS = 2f;
 	private final float DEFAULT_Y_RADIUS = .75f;
 	private static final float DEFAULT_LENGTH = .75f;
 	private static final int DEFAULT_NUM_WALLS = 10;
-	private static final float MIN_DIST_TO_PLATFORM_INTERIOR = 0.2f;
+	private static final float MIN_DIST_TO_PLATFORM_INTERIOR = 0.3f;
 	private static final int MAX_WATCH_DOG = 10000;
-	private static final float MIN_DIST_TO_ROBOT = .1f;
+	private static final float MIN_DIST_TO_ROBOT = .5f;
 	private static final double DEFAULT_MIN_DIST_BETWEEN_WALLS = .4f;
 	
 	private int watchDogCount;
@@ -40,7 +40,7 @@ public class SetUpRandomWalls extends Task {
 
 
 
-	public SetUpRandomWalls(ElementWrapper params) {
+	public SetUpRandomWallsAndPlatform(ElementWrapper params) {
 		super(params);
 		
 		if (params.hasChild("numWalls"))
@@ -56,12 +56,12 @@ public class SetUpRandomWalls extends Task {
 		if (params.hasChild("xradius"))
 			xradius = params.getChildFloat("xradius");
 		else
-			xradius = DEFAULT_X_RADIUS;
+			xradius = DEFAULT_LENGTH;
 		
 		if (params.hasChild("yradius"))
 			yradius = params.getChildFloat("yradius");
 		else
-			yradius = DEFAULT_Y_RADIUS;
+			yradius = DEFAULT_LENGTH;
 		
 		if (params.hasChild("minDistBetweenWalls"))
 			minDistBetweenWalls = params.getChildFloat("minDistBetweenWalls");
@@ -83,6 +83,17 @@ public class SetUpRandomWalls extends Task {
 		
 		GlobalCameraUniverse gcu = (GlobalCameraUniverse) u; 
 		
+		wu.revertWalls();
+		pu.clearPlatforms();
+		
+		pu.addPlatform(new Coordinate(-2f, 0), .1f);
+		
+		float len = 2.5f;
+		wu.addWall(len, len/2, -len, len/2);
+		wu.addWall(-len, len/2, -len, -len/2);
+		wu.addWall(-len, -len/2, len, -len/2);
+		wu.addWall(len, -len/2, len, len/2);
+		System.out.println("[+] Adding small walls");
 		wu.setRevertWallPoint();
 		
 		while (!placeWalls(wu, pu, gcu))
@@ -115,8 +126,6 @@ public class SetUpRandomWalls extends Task {
 			}
 
 			wu.addWall(wall);
-			
-			DisplaySingleton.getDisplay().repaint();
 			
 //			LineSegment w2 = new LineSegment(new Coordinate(wall.p0), new Coordinate(wall.p1));
 //			float offset = .02f;

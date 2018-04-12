@@ -165,5 +165,9 @@ public class ElementWrapper {
 
 	}
 
+	public boolean hasChild(String string) {
+		return getChildText(string) != null;
+	}
+
 
 }

@@ -101,7 +101,7 @@
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.maze.SetUpRandomWalls</name>
+				<name>edu.usf.experiment.task.maze.SetUpRandomWallsAndPlatform</name>
 				<params>
 				</params>
 			</task>
