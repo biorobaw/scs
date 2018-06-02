@@ -40,8 +40,8 @@ public class FFSpikingModel extends Model {
 			}
 			addModule(nl);
 			
-			DisplaySingleton.getDisplay().addPlot(new NetPlot("Last Plot", "", "", 50, nl.getNeurons()),
-					0, l, 1, 1);
+//			DisplaySingleton.getDisplay().addPlot(new NetPlot("Last Plot", "", "", 50, nl.getNeurons()),
+//					0, l, 1, 1);
 
 			SpikingUtils.connect(prevLayer.getNeurons(), nl.getNeurons(), connProb, weight,
 					RandomSingleton.getInstance());

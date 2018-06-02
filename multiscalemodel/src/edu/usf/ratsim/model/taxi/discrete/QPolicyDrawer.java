@@ -15,7 +15,7 @@ import edu.usf.experiment.robot.affordance.AbsoluteAngleDiscreteAffordance;
 import edu.usf.experiment.robot.affordance.Affordance;
 import edu.usf.experiment.robot.affordance.AffordanceRobot;
 
-public class QPolicyDrawer implements Drawer {
+public class QPolicyDrawer extends Drawer {
 
 	private static final float TRIANGLE_HEIGHT = .4f;
 	private static final float GRID_HALF = 0.5f;
@@ -68,6 +68,12 @@ public class QPolicyDrawer implements Drawer {
 
 	@Override
 	public void clearState() {
+		
+	}
+
+	@Override
+	public void updateData() {
+		// TODO Auto-generated method stub
 		
 	}
 }

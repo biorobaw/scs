@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
@@ -61,11 +61,11 @@ public class FeedingLogger extends DistributedLogger {
 
 	@Override
 	public void finalizeLog() {
-		PropertyHolder props = PropertyHolder.getInstance();
-		String trialName = props.getProperty("trial");
-		String groupName = props.getProperty("group");
-		String subName = props.getProperty("subject");
-		String episode = props.getProperty("episode");
+		Globals g = Globals.getInstance();
+		String trialName = g.get("trial").toString();
+		String groupName = g.get("group").toString();
+		String subName = g.get("subName").toString();
+		String episode = g.get("episode").toString();
 
 
 		synchronized (PositionLogger.class) {

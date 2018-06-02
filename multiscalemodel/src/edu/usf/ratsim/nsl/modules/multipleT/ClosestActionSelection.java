@@ -38,7 +38,8 @@ public class ClosestActionSelection extends Module {
 		
 		double theta = Math.atan2(nextPos.y-pos.y,nextPos.x-pos.x );
 		if (theta < 0) theta+=(2*Math.PI);
-		action.set((int)(Math.round(theta/deltaAngle) % numActions));
+		int a = (int)(Math.round(theta/deltaAngle) % numActions);
+		action.set(a);
 		
 
 	}

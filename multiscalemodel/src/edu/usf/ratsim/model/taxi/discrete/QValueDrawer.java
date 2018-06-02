@@ -11,7 +11,7 @@ import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
 import edu.usf.experiment.model.ValueModel;
 
-public class QValueDrawer implements Drawer {
+public class QValueDrawer extends Drawer {
 
 	private ValueModel model;
 
@@ -55,6 +55,12 @@ public class QValueDrawer implements Drawer {
 
 	@Override
 	public void clearState() {
+		
+	}
+
+	@Override
+	public void updateData() {
+		// TODO Auto-generated method stub
 		
 	}
 }

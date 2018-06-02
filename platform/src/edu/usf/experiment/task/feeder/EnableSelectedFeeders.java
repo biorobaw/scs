@@ -5,7 +5,7 @@ import java.util.StringTokenizer;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
@@ -32,7 +32,7 @@ public class EnableSelectedFeeders extends Task {
 		
 		FeederUniverse fu = (FeederUniverse) u;
 		
-		String feeders = PropertyHolder.getInstance().getProperty("SelectedFeeders");
+		String feeders = (String)Globals.getInstance().get("SelectedFeeders");
 		StringTokenizer tok = new StringTokenizer(feeders,",");
 		indexList = new LinkedList<Integer>();
 		while (tok.hasMoreTokens())

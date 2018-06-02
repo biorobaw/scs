@@ -1,6 +1,6 @@
 package edu.usf.experiment.plot;
 
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.IOUtils;
 
@@ -17,15 +17,16 @@ public class GifMaker extends Plotter {
 	@Override
 	public Runnable plot() {
 		final String logPath = getLogPath();
-		final String group = PropertyHolder.getInstance().getProperty("group");
-		final String subject = PropertyHolder.getInstance().getProperty("subject");
-		final String trial = PropertyHolder.getInstance().getProperty("trial");	
+		Globals g = Globals.getInstance();
+		String trialName = g.get("trial").toString();
+		String groupName = g.get("group").toString();
+		String subName = g.get("subName").toString();
 		
 		return new Runnable(){
 			@Override
 			public void run() {
 				IOUtils.copyResource(getClass().getResource("/edu/usf/experiment/plot/makegif.sh"), logPath + "makegif.sh");
-				IOUtils.exec("bash makegif.sh " + group + " " + subject + " " + trial + " " + plot, logPath);
+				IOUtils.exec("bash makegif.sh " + groupName + " " + subName + " " + trialName + " " + plot, logPath);
 			}
 		};
 	}

@@ -1,7 +1,9 @@
 package edu.usf.experiment.display.drawer.discrete;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.ArrayList;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -10,9 +12,12 @@ import edu.usf.experiment.display.drawer.Scaler;
 import edu.usf.experiment.universe.platform.Platform;
 import edu.usf.experiment.universe.platform.PlatformUniverse;
 
-public class DiscretePlatformDrawer implements Drawer {
+public class DiscretePlatformDrawer extends Drawer {
 
 	private PlatformUniverse u;
+	
+	private ArrayList<Coordinate> coordinates = new ArrayList<>();
+	private ArrayList<Color> colors = new ArrayList<>();
 
 	public DiscretePlatformDrawer(PlatformUniverse pu) {
 		u = pu;
@@ -20,9 +25,9 @@ public class DiscretePlatformDrawer implements Drawer {
 
 	@Override
 	public void draw(Graphics g, Scaler s) {
-		for (Platform p : u.getPlatforms()) {
-			Coordinate pos = p.getPosition();
-			g.setColor(p.getColor());
+		for (int i=0;i<coordinates.size();i++) {
+			Coordinate pos = coordinates.get(i);
+			g.setColor(colors.get(i));
 			Point ul = s.scale(new Coordinate(pos.x, pos.y + 1));
 			Point lr = s.scale(new Coordinate(pos.x + 1, pos.y));
 
@@ -34,6 +39,18 @@ public class DiscretePlatformDrawer implements Drawer {
 	@Override
 	public void clearState() {
 
+	}
+
+	@Override
+	public void updateData() {
+		// TODO Auto-generated method stub
+		coordinates.clear();
+		colors.clear();
+		for (Platform p : u.getPlatforms()){
+			coordinates.add(p.getPosition());
+			colors.add(p.getColor());
+		}
+		
 	}
 
 }

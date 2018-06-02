@@ -50,7 +50,7 @@ public class StraightAndWallFollow extends Model implements GraphModel {
 		sawf.addInPort("sonarAngles", sReadings.getOutPort("sonarAngles"));
 		addModule(sawf);
 		
-		DisplaySingleton.getDisplay().addUniverseDrawer(new SonarReadingsDrawer((SonarRobot) robot, (LocalizableRobot) robot), 0);
+		DisplaySingleton.getDisplay().addDrawer("universe","sonar",new SonarReadingsDrawer((SonarRobot) robot, (LocalizableRobot) robot), 0);
 	}
 
 	public UndirectedGraph<PointNode, Edge> getGraph() {

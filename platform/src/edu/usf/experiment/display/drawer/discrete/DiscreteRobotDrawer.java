@@ -10,20 +10,22 @@ import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
 
-public class DiscreteRobotDrawer implements Drawer {
+public class DiscreteRobotDrawer extends Drawer {
 
 	private static final float RADIUS = .4f;
 	private static final float HALF_SQUARE = 0.5f;
 	private GlobalCameraUniverse u;
-
+	
+	float angle = 0;
+	Coordinate pos = new Coordinate(-1000000, -1000000);
+	
 	public DiscreteRobotDrawer(GlobalCameraUniverse gcu) {
 		u = gcu;
 	}
 
 	@Override
 	public void draw(Graphics g, Scaler s) {
-		Coordinate pos = u.getRobotPosition();
-		float angle = u.getRobotOrientationAngle();
+		
 
 		float centerx = (float) pos.x + HALF_SQUARE;
 		float centery = (float) pos.y + HALF_SQUARE;
@@ -39,7 +41,15 @@ public class DiscreteRobotDrawer implements Drawer {
 
 	@Override
 	public void clearState() {
+		
+	}
 
+	@Override
+	public void updateData() {
+		// TODO Auto-generated method stub
+		pos = u.getRobotPosition();
+		angle = u.getRobotOrientationAngle();
+		
 	}
 
 }

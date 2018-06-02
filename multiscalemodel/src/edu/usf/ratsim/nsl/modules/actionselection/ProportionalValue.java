@@ -31,7 +31,7 @@ public class ProportionalValue extends Module {
 
 	public void run() {
 		Float1dSparsePort states = (Float1dSparsePort) getInPort("states");
-		FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
+		Float2dPort value = (Float2dPort) getInPort("value");
 		
 		run(states.getNonZero(), value);
 	}

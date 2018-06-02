@@ -21,14 +21,14 @@ public class ActionGatingModule extends Module {
 	public float[] probabilities;
 
 	private AffordanceRobot robot;
+	int numActions ;
 
-
-	public ActionGatingModule(String name, Robot robot) {
+	public ActionGatingModule(String name, Robot robot,int numActions) {
 		super(name);
-
+		this.numActions = numActions;
 		this.robot = (AffordanceRobot) robot;
 		
-		probabilities = new float[this.robot.getPossibleAffordances().size()];
+		probabilities = new float[numActions];
 		this.addOutPort("probabilities", new Float1dPortArray(this, probabilities));
 
 	}
@@ -41,14 +41,14 @@ public class ActionGatingModule extends Module {
 		aff = robot.checkAffordances(aff);
 		
 		float sum = 0;
-		for (int i =0;i<aff.size();i++)
+		for (int i =0;i<numActions;i++)
 		{
 			probabilities[i] =  (float)(input.get(i)*aff.get(i).getRealizable());
 			sum += probabilities[i];
 		}
 		
 		// Normalize - its probabilities
-		for (int i =0;i<aff.size();i++)
+		for (int i =0;i<numActions;i++)
 		{
 			probabilities[i] /= sum;
 		}

@@ -42,8 +42,7 @@ public class UniverseLoader {
 			constructor = Class.forName(
 					universeNode.getChildText("name")).getConstructor(
 					ElementWrapper.class, String.class);
-			Universe universe = (Universe) constructor.newInstance(universeNode
-					.getChild("params"), logPath);
+			Universe universe = (Universe) constructor.newInstance(universeNode.getChild("params"), logPath);
 			return universe;
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();

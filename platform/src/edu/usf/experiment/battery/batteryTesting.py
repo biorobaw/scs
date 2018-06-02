@@ -14,19 +14,16 @@ if __name__=='__main__':
 	columnTypes = []
 	columnValues = []
 	combinationType = None
-	workDir = './'
-	batFolder = None
 	
 	obligatoryColumns = {'SOURCE_FOLDERS':-1,'MAIN_CLASS':-1,'EXPERIMENT_XML':-1,'LOG_FOLDER':-1,'GROUP':-1,'RAT_NUMBER':-1}
 	
-	optionalArguments = ['feederFile','nFoodStopCondition','feederOrder','startPosition','ratpath']
+	optionalArguments = ['feederFile','nFoodStopCondition','feederOrder','startPosition','ratpath','enabledFeeders']
 	possibleColumns = obligatoryColumns.keys() + optionalArguments
 	
 	readingColumn = None 
 	
 	def processFile(fileName):
-		global columnNames,columnTypes,columnValues,combinationType,obligatoryColumns,optionalArguments,readingColumn,workDir
-		global batFolder
+		global columnNames,columnTypes,columnValues,combinationType,obligatoryColumns,optionalArguments,readingColumn
 		f = open(fileName)
 		i=0
 		for l in f:
@@ -52,12 +49,6 @@ if __name__=='__main__':
 				readingColumn = len(columnNames)-1
 			elif line[0] == 'combine':
 				combinationType = line[1]
-				readingColumn = None
-			elif line[0] == 'work_dir':
-				workDir  = line[1]
-				readingColumn = None
-			elif line[0] == 'battery_folder':
-				batFolder = line[1]
 				readingColumn = None
 			else:
 				if readingColumn == None:
@@ -145,20 +136,21 @@ if __name__=='__main__':
 			order += [i]
 
 	#create resulting table	
+	print 'total entries:',totalEntries
 	resultTable  = [['' for i in range(0,totalEntries)] for i in range(0,realColumns)]
 	#first fill constant and variable columns:
 	print 'o',order
 	print 't',columnTypes
 	print 'n',columnNames
-	print 'rt',len(resultTable)
+	print 'resultTable columns: ',len(resultTable) #,len(resultTable[6])
+	print 'r',realColumns
+	cumulative = 1
 	for col in order:
 		if columnTypes[col] == "constant" or columnTypes[col] == 'variable':
-			print 'cn',col,len(columnValues[col])
-			for k in range(0,len(columnValues[col])):
-				entriesPerValue = totalEntries/len(columnValues[col])
-				for row in range(0,entriesPerValue):
-	
-					resultTable[col][k*entriesPerValue +row] = columnValues[col][k]
+			cantValues = len(columnValues[col])			
+			for k in range(0,totalEntries):
+				resultTable[col][k] = columnValues[col][(k / cumulative) % cantValues]
+			cumulative = cumulative * cantValues
 	
 	def parseError(col):
 		global columnNames
@@ -195,17 +187,13 @@ if __name__=='__main__':
 	for i in range(0,totalEntries):
 		for j in range(0,len(obligatoryColumns)):
 			if columnNames[order[j]] == 'LOG_FOLDER':
-				if batFolder != None:
-					commands[i] += 'logs/Experiment/'+batFolder+'/bat'
-				else:
-					commands[i] += 'logs/Experiment/bat'
+				commands[i] += 'logs/Experiment/bat'
 			commands[i] += str(resultTable[order[j]][i]) + ' '
 		for j in range(len(obligatoryColumns),len(order)):
 			if columnNames[order[j]] in possibleColumns:
 				commands[i] += columnNames[order[j]]+ ' '+ str(resultTable[order[j]][i]) + ' '
 				
 	executionCommand = "java -cp "
-	os.chdir(workDir)
 	for i in range(0,totalEntries):
 		print 'Executing:'
 		print executionCommand + commands[i]

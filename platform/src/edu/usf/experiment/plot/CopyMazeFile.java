@@ -1,6 +1,6 @@
 package edu.usf.experiment.plot;
 
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.IOUtils;
 
@@ -12,9 +12,8 @@ public class CopyMazeFile extends Plotter {
 
 	@Override
 	public Runnable plot() {
-		PropertyHolder props = PropertyHolder.getInstance();
-		final String logPath = getLogPath();
-		final String mazeFile = props.getProperty("maze.file");
+		final String logPath = Globals.getInstance().get("logPath").toString();
+		final String mazeFile = Globals.getInstance().get("maze.file").toString();
 		return new Runnable(){
 			@Override
 			public void run() {

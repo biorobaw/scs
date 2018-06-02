@@ -5,7 +5,7 @@ import java.util.List;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -26,10 +26,11 @@ public class CyclesLogger extends SingleFileLogger {
 
 	@Override
 	public void finalizeLog() {
-		PropertyHolder props = PropertyHolder.getInstance();
-		String groupName = props.getProperty("group");
-		String subName = props.getProperty("subject");
-		String trial = props.getProperty("trial");
+//		PropertyHolder props = PropertyHolder.getInstance();
+		Globals g = Globals.getInstance();
+		String groupName = (String)g.get("group");
+		String subName = (String) g.get("subName");
+		String trial = (String)g.get("trial");
 		
 		for (CompletionTime ct : times)
 			append(trial + '\t' + groupName + '\t' + subName + '\t' + ct.episode + '\t' 
@@ -39,9 +40,9 @@ public class CyclesLogger extends SingleFileLogger {
 	}
 
 	private void log() {
-		PropertyHolder props = PropertyHolder.getInstance();
-		int episode = Integer.parseInt(props.getProperty("episode"));
-		int cycle = Integer.parseInt(props.getProperty("cycle"));
+		Globals g = Globals.getInstance();
+		int episode = (Integer)g.get("episode");
+		int cycle = (Integer)g.get("cycle");
 		times.add(new CompletionTime(episode, cycle));
 	}
 

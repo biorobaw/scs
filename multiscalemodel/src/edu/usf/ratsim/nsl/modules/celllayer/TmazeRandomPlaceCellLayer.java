@@ -102,7 +102,7 @@ public class TmazeRandomPlaceCellLayer extends Module {
 	/**
 	 * Creates pc layer using the given cells
 	 * @param name
-	 * @param radius
+	 * @param relativeRadius
 	 * @param numCells
 	 * @param placeCellType
 	 */
@@ -201,6 +201,10 @@ public class TmazeRandomPlaceCellLayer extends Module {
 	
 	public void newEpisode() {
 		clear();
+	}
+	
+	public Float1dSparsePortMap getActivationPort() {
+		return activationPort;
 	}
 
 }

@@ -10,7 +10,7 @@ import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
 import edu.usf.experiment.universe.GridUniverse;
 
-public class GridDrawer implements Drawer {
+public class GridDrawer extends Drawer {
 	
 	private GridUniverse u;
 
@@ -35,6 +35,12 @@ public class GridDrawer implements Drawer {
 	
 	@Override
 	public void clearState() {
+		
+	}
+
+	@Override
+	public void updateData() {
+		// TODO Auto-generated method stub
 		
 	}
 }

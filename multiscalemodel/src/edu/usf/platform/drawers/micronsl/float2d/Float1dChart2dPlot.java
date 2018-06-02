@@ -1,4 +1,4 @@
-package edu.usf.micronsl.plot.float1d;
+package edu.usf.platform.drawers.micronsl.float2d;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -12,7 +12,6 @@ import info.monitorenter.gui.chart.Chart2D;
 import info.monitorenter.gui.chart.ITracePainter;
 import info.monitorenter.gui.chart.rangepolicies.RangePolicyFixedViewport;
 import info.monitorenter.gui.chart.traces.Trace2DLtd;
-import info.monitorenter.gui.chart.traces.painters.TracePainterFill;
 import info.monitorenter.util.Range;
 
 public abstract class Float1dChart2dPlot extends JPanel {
@@ -28,15 +27,13 @@ public abstract class Float1dChart2dPlot extends JPanel {
 	private double minSoFar;
 	private Chart2D chart;
 
-	public Float1dChart2dPlot(Float1dPort port, String name){
+	public Float1dChart2dPlot(Float1dPort port){
 		chart = new Chart2D();
         trace = new Trace2DLtd(port.getSize());
         trace.setTracePainter(getPainter());
         trace.setColor(Color.BLACK);
-        trace.setName(name);
         chart.addTrace(trace);
         chart.setSize(100, 100);
-        chart.setBackground(new Color(238,238,238));
         
         this.port = port;
         

@@ -2,7 +2,6 @@ package edu.usf.experiment;
 
 import java.io.File;
 import java.util.List;
-
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.NoDisplay;
 import edu.usf.experiment.log.Logger;

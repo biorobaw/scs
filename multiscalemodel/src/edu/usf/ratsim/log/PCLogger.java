@@ -5,7 +5,7 @@ import java.util.List;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.DistributedLogger;
 import edu.usf.experiment.subject.Subject;
@@ -50,11 +50,9 @@ public class PCLogger extends DistributedLogger {
 	public void finalizeLog() {
 		synchronized (PCLogger.class) {
 			System.out.println("[+] Logging cells");
-			PropertyHolder props = PropertyHolder.getInstance();
-			String trialName = props.getProperty("trial");
-			String groupName = props.getProperty("group");
-			String subName = props.getProperty("subject");
-			String episode = props.getProperty("episode");
+			Globals g = Globals.getInstance();
+			String groupName = g.get("group").toString();
+			String subName = g.get("subName").toString();
 
 			PrintWriter writer = getWriter();
 			int cellNum = 0;

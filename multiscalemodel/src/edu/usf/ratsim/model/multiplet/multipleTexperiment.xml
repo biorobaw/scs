@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-<!--	<seed>-59875563504154406</seed>-->
+
 	
 	 <!-- load will load the subject (indicated by the input to the program) as saved after the specified episode  of the specified  trial-->
 	<!-- <load>
@@ -9,6 +9,21 @@
 		<trial>Travel</trial>
 		<type>bin</type>
 	</load>  -->
+	
+	<!-- Add variables to define global variables -->
+	<variables>
+		<var>
+			<name>sample</name>
+			<value>1</value>  <!-- will always be considered as strings, can be used within xml file -->
+		</var>
+	</variables>
+	
+	<simulationControls>
+		<simulationSpeed>9</simulationSpeed>
+		<display>true</display>
+		<seed>3365448354185182426</seed>
+		<syncDisplay>true</syncDisplay>
+	</simulationControls>
 	
 	<universe>
 		<name>edu.usf.vlwsim.universe.AbsoluteDirectionRobotVirtualUniverse</name>
@@ -20,7 +35,6 @@
 			<!-- Map file -->
 			<maze>multiscalemodel/src/edu/usf/ratsim/model/multiplet/multipleTmaze.xml</maze>
 			<!-- Display de window or run without GUI -->
-			<display>true</display>
 		</params>
 	</universe>
 	
@@ -56,15 +70,9 @@
 			<!-- Step length in meters / second -->
 			<step>0.08</step>
 			
-			<!-- Left rotation amount in radians -->
-			<!-- <leftAngle>0.195</leftAngle> -->
-			<!-- Right rotation amount in radians -->
-			<!-- <rightAngle>-0.195</rightAngle> -->
-			
 			<!-- model params: -->
 			
 			<!-- Type of learning -->
-			<!--  <rlType>actorCritic</rlType> -->
 			<!-- discount factor in rl -->
 			<discountFactor>0.999</discountFactor>
 			<!-- rl learning rate -->
@@ -81,7 +89,7 @@
 			<replayThres>.001</replayThres>
 			
 			<!-- number of directions the rat con move towards -->
-			<numActions>9</numActions>
+			<numActions>8</numActions>
 			<sameActionBias>0.85</sameActionBias>
 			
 			<!-- Minimum conjuntive layer cell radius -->
@@ -166,8 +174,6 @@
 		<episodes>
 			<!-- Number of episodes -->
 			<number>10</number>
-			<!-- Sleep between cycles for visualization -->
-			<sleep>0</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Place the animat in a given place -->
@@ -301,8 +307,6 @@
 		<episodes>
 			<!-- Number of episodes -->
 			<number>40</number><!-- 24 session * (80 + 80 laps * 8 replays) =   -->
-			<!-- Sleep between cycles for visualization -->
-			<sleep>00</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- <task>

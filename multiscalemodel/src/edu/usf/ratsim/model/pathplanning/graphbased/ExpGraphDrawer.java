@@ -17,7 +17,7 @@ import edu.usf.ratsim.nsl.modules.pathplanning.Edge;
 import edu.usf.ratsim.nsl.modules.pathplanning.ExperienceRoadMap;
 import edu.usf.ratsim.nsl.modules.pathplanning.PointNode;
 
-public class ExpGraphDrawer implements Drawer {
+public class ExpGraphDrawer extends Drawer {
 
 	private static final float NODE_R = .05f;
 	private ExperienceRoadMap erm;
@@ -62,6 +62,12 @@ public class ExpGraphDrawer implements Drawer {
 	
 	@Override
 	public void clearState() {
+		
+	}
+
+	@Override
+	public void updateData() {
+		// TODO Auto-generated method stub
 		
 	}
 

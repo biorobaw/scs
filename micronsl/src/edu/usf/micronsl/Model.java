@@ -4,49 +4,87 @@ import edu.usf.micronsl.module.Module;
 
 public class Model {
 
-	private ModuleSetRunner modulesPre;
-	private ModuleSetRunner modulesPost;
+	private ModuleSetRunner modules;
+	
+	private InitialModule initialModule = new InitialModule();
+	private FinalModule finalModule = new FinalModule();
 
 	public Model(){
-		modulesPre = new ModuleSetRunner();
-		modulesPost = new ModuleSetRunner();
+		modules = new ModuleSetRunner();
+		modules.addModule(initialModule);
+		modules.addModule(finalModule);
+		finalModule.addPreReq(initialModule);
 	}
 	
-	public void runPre() {
-		modulesPre.simRun();
+	public void run() {
+		modules.simRun();
 	}
 	
-	public void runPost() {
-		modulesPost.simRun();
-	}
 	
 	public void addModule(Module m){
-		modulesPre.addModule(m);
+		m.addPreReq(initialModule);
+		finalModule.addPreReq(m);
+		modules.addModule(m);
 	}
 	
-	public void addModulePre(Module m){
-		modulesPre.addModule(m);
-	}
 	
-	public void addModulePost(Module m){
-		modulesPost.addModule(m);
-	}
 	
 	public Module getModule(String name){
-		Module m = modulesPre.getModule(name);
-		return m != null ? m : modulesPost.getModule(name);
+		Module m = modules.getModule(name);
+		return m;
 	}
 	
 	public void newEpisode(){
-		modulesPre.newEpisode();
-		modulesPost.newEpisode();
+		modules.newEpisode();
 	}
 	
 	public void newTrial(){
-		modulesPre.newTrial();
-		modulesPost.newTrial();
+		modules.newTrial();
 	}
 
 	public void endEpisode() {
+	}
+	
+	public void initialTask(){};
+	public void finalTask(){};
+	
+	private class InitialModule extends Module{
+		
+		public InitialModule() {
+			super("InitialTask");
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public void run() {
+			initialTask();
+			
+		}
+
+		@Override
+		public boolean usesRandom() {
+			return true;
+		}
+		
+	}
+	
+	private class FinalModule extends Module{
+		
+		public FinalModule() {
+			super("FinalTask");
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public void run() {
+			finalTask();
+			
+		}
+
+		@Override
+		public boolean usesRandom() {
+			return true;
+		}
+		
 	}
 }

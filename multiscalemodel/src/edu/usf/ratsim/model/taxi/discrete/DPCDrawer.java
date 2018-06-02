@@ -17,7 +17,7 @@ import edu.usf.ratsim.nsl.modules.cell.DiscretePlaceCell;
  * @author martin
  *
  */
-public class DPCDrawer implements Drawer {
+public class DPCDrawer extends Drawer {
 
 
 	private BoundedUniverse bu;
@@ -47,6 +47,12 @@ public class DPCDrawer implements Drawer {
 	
 	@Override
 	public void clearState() {
+		
+	}
+
+	@Override
+	public void updateData() {
+		// TODO Auto-generated method stub
 		
 	}
 

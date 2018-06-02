@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules.goaldecider;
 
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.micronsl.module.Module;
@@ -28,7 +28,7 @@ public class ActiveFeederGoalDecider extends Module {
 
 	public void run() {
 		// Get the active feeder from the published property
-		currentGoal = Integer.parseInt(PropertyHolder.getInstance().getProperty("activeFeeder"));
+		currentGoal = Integer.parseInt(Globals.getInstance().get("activeFeeder").toString());
 
 		goalFeeder[0] = currentGoal;
 		if (Debug.printActiveGoal)

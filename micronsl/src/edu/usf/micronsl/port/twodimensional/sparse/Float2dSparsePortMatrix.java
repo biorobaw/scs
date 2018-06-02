@@ -53,8 +53,10 @@ public class Float2dSparsePortMatrix extends Float2dSparsePort {
 
 	@Override
 	public void set(int i, int j, float x) {
-		if (i < 0 || i >= nrow || j < 0 || j >= ncol)
+		if (i < 0 || i >= nrow || j < 0 || j >= ncol) {
+			System.out.println("(i,j) = ("+i+","+j+") out of range");
 			throw new IllegalArgumentException();
+		}
 		
 		Entry e = new Entry(i,j);
 		if (x == 0){

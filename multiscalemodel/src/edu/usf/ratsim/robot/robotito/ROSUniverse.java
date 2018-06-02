@@ -45,9 +45,9 @@ public class ROSUniverse implements GlobalCameraUniverse, WallUniverse, Platform
 		wallDetector = ROSWallDetector.getInstance();
 		
 		DisplaySingleton.getDisplay().setupUniversePanel(this);
-		DisplaySingleton.getDisplay().addUniverseDrawer(new PlatformDrawer(this));
-		DisplaySingleton.getDisplay().addUniverseDrawer(new WallDrawer(this));
-		DisplaySingleton.getDisplay().addUniverseDrawer(new RobotDrawer(this));
+		DisplaySingleton.getDisplay().addDrawer("universe","platform",new PlatformDrawer(this));
+		DisplaySingleton.getDisplay().addDrawer("universe","walls",new WallDrawer(this));
+		DisplaySingleton.getDisplay().addDrawer("universe","robot",new RobotDrawer(this));
 	}
 
 	@Override

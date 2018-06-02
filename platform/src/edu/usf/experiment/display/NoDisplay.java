@@ -22,7 +22,7 @@ public class NoDisplay implements Display {
 	}
 
 	@Override
-	public void addPlot(JComponent component, int gridx, int gridy, int gridwidth, int gridheight) {
+	public void addPanel(DrawPanel panel,String id,int gridx, int gridy, int gridwidth, int gridheight) {
 	}
 
 	@Override
@@ -30,16 +30,41 @@ public class NoDisplay implements Display {
 	}
 
 	@Override
-	public void addUniverseDrawer(Drawer d) {
+	public void addDrawer(String panelID, String drawerID, Drawer d) {
 	}
 
 	@Override
-	public void addUniverseDrawer(Drawer d, int pos) {
+	public void addDrawer(String panelID, String drawerID, Drawer d, int pos) {
 		
 	}
 
 	@Override
 	public void newEpisode() {
 	}
+
+	@Override
+	public void addKeyAction(int key, Runnable action) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void updateData() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sync(int cycle) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void waitUntilDoneRendering() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 
 }

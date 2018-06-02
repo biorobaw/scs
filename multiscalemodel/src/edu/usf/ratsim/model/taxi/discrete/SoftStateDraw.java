@@ -33,9 +33,9 @@ public class SoftStateDraw {
 		PDFDisplay pdfd = new PDFDisplay("logs/cellpaint/");
 		pdfd.setupUniversePanel(dvu);
 		
-		pdfd.addUniverseDrawer(new DPCDrawer(dvu, pc, robot));
-		pdfd.addUniverseDrawer(new GridDrawer(dvu));
-		pdfd.addUniverseDrawer(new WallDrawer(dvu, 4));
+		pdfd.addDrawer("universe","DPCD",new DPCDrawer(dvu, pc, robot));
+		pdfd.addDrawer("universe","grid",new GridDrawer(dvu));
+		pdfd.addDrawer("universe","walls",new WallDrawer(dvu, 4));
 
 		
 		pdfd.repaint();

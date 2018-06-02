@@ -11,7 +11,7 @@ import java.util.List;
 import javax.swing.JComponent;
 
 import de.erichseifert.vectorgraphics2d.PDFGraphics2D;
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
 import edu.usf.experiment.universe.BoundedUniverse;
@@ -20,8 +20,8 @@ public class PDFDisplay implements Display {
 
 	private static final double WIDTH = 200;
 	private static final double HEIGHT = 200;
-	private static final int XMARGIN = 10;
-	private static final int YMARGIN = 10;
+	private static final float XMARGIN = 10;
+	private static final float YMARGIN = 10;
 	private static final String FRAMES_FOLDER = "frames";
 	private int image;
 	private List<Drawer> drawers;
@@ -29,7 +29,7 @@ public class PDFDisplay implements Display {
 	private File frameDir;
 
 	public PDFDisplay() {
-		this(PropertyHolder.getInstance().getProperty("log.directory") + File.separator + FRAMES_FOLDER);
+		this(Globals.getInstance().get("logPath") + File.separator + FRAMES_FOLDER);
 	}
 	
 	public PDFDisplay(String logPath) {
@@ -41,7 +41,7 @@ public class PDFDisplay implements Display {
 	}
 
 	@Override
-	public void addPlot(JComponent component, int gridx, int gridy, int gridwidth, int gridheight) {
+	public void addPanel(DrawPanel panel,String id,int gridx, int gridy, int gridwidth, int gridheight) {
 	}
 
 	@Override
@@ -74,28 +74,18 @@ public class PDFDisplay implements Display {
 
 	@Override
 	public void setupUniversePanel(BoundedUniverse bu) {
-		Float univRect = bu.getBoundingRect();
-		// The scaling factors are the relation between effective draw space and
-		// the universe bounding box (taken from the xml file for the maze)
-		float xscale = (float) ((WIDTH - 2 * XMARGIN) / univRect.width);
-		float yscale = (float) ((HEIGHT - 2 * YMARGIN) / univRect.height);
-		// Take the minimum of both scales to keep aspect ratio
-		float defScale = Math.min(xscale, yscale);
-		// The x offset is just the lowest x coordinate of the universe
-		float xoffset = -(univRect.x - XMARGIN / defScale);
-		// The y offset includes the bounding box height, to be able to invert
-		// the y component (it grows to the bottom in the screen)
-		float yoffset = -(univRect.height + univRect.y + YMARGIN / defScale);
-		s = new Scaler(defScale, defScale, xoffset, yoffset);
+		Float worldCoordiantes = bu.getBoundingRect();
+		Float panelCoordinates = new Float(XMARGIN, YMARGIN, (float)(WIDTH-2*XMARGIN), (float)(HEIGHT-2*YMARGIN));
+		s = new Scaler(worldCoordiantes,panelCoordinates,true);
 	}
 
 	@Override
-	public void addUniverseDrawer(Drawer d) {
+	public void addDrawer(String panelID, String drawerID, Drawer d) {
 		drawers.add(d);
 	}
 
 	@Override
-	public void addUniverseDrawer(Drawer d, int pos) {
+	public void addDrawer(String panelID, String drawerID, Drawer d, int pos) {
 		drawers.add(pos, d);
 	}
 
@@ -103,6 +93,30 @@ public class PDFDisplay implements Display {
 	public void newEpisode() {
 		for (Drawer d : drawers)
 			d.clearState();
+	}
+
+	@Override
+	public void addKeyAction(int key, Runnable action) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void updateData() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sync(int cycle) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void waitUntilDoneRendering() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

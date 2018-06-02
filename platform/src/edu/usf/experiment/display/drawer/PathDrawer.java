@@ -7,9 +7,10 @@ import java.util.LinkedList;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.robot.LocalizableRobot;
 
-public class PathDrawer implements Drawer {
+public class PathDrawer extends Drawer {
 
 	private LocalizableRobot robot;
 	private LinkedList<Coordinate> poses;
@@ -22,8 +23,8 @@ public class PathDrawer implements Drawer {
 
 	@Override
 	public void draw(Graphics g, Scaler s) {
-		Coordinate pos = robot.getPosition();
-		poses.add(pos);
+		if(!doDraw) return;
+		
 
 		g.setColor(Color.DARK_GRAY);
 		Point start = s.scale(poses.get(0));
@@ -38,6 +39,14 @@ public class PathDrawer implements Drawer {
 	@Override
 	public void clearState() {
 		poses.clear();
+	}
+
+	@Override
+	public void updateData() {
+		// TODO Auto-generated method stub
+		Coordinate pos = robot.getPosition();
+		poses.add(pos);
+		
 	}
 
 }

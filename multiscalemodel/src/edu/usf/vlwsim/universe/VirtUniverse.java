@@ -1,6 +1,7 @@
 package edu.usf.vlwsim.universe;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -124,9 +125,6 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		ElementWrapper maze = new ElementWrapper(doc.getDocumentElement());
 		List<ElementWrapper> list;
 
-		ElementWrapper brEW = maze.getChild("boundingRect");
-		setBoundingRect(new Rectangle2D.Float(brEW.getChildFloat("x"), brEW.getChildFloat("y"), brEW.getChildFloat("w"),
-				brEW.getChildFloat("h")));
 
 		robotPos = new RigidTransformation();
 
@@ -173,11 +171,29 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		robotTriedToEat = false;
 		robotAte = false;
 
+		
+		ElementWrapper brEW = maze.getChild("boundingRect");
+		if(brEW.hasChild("x"))
+			setBoundingRect(new Rectangle2D.Float(brEW.getChildFloat("x"), brEW.getChildFloat("y"), brEW.getChildFloat("w"),
+					brEW.getChildFloat("h")));
+		else {
+			float mx=Float.MAX_VALUE, Mx=-Float.MAX_VALUE;
+			float my=Float.MAX_VALUE, My=-Float.MAX_VALUE;
+			for(Wall w : getWalls()) {
+				my = (float)Math.min(my, Math.min(w.s.p0.y, w.s.p1.y));
+				My = (float)Math.max(My, Math.max(w.s.p0.y, w.s.p1.y));
+				mx = (float)Math.min(mx, Math.min(w.s.p0.x, w.s.p1.x));
+				Mx = (float)Math.max(Mx, Math.max(w.s.p0.x, w.s.p1.x));
+			}
+			setBoundingRect(new Rectangle2D.Float(mx, my, Mx-mx, My-my));
+		}
+		
+		
 		DisplaySingleton.getDisplay().setupUniversePanel(this);
-		DisplaySingleton.getDisplay().addUniverseDrawer(new PlatformDrawer(this));
-		DisplaySingleton.getDisplay().addUniverseDrawer(new FeederDrawer(this));
-		DisplaySingleton.getDisplay().addUniverseDrawer(new WallDrawer(this));
-		DisplaySingleton.getDisplay().addUniverseDrawer(new RobotDrawer(this));
+		DisplaySingleton.getDisplay().addDrawer("universe","platform",new PlatformDrawer(this));
+		DisplaySingleton.getDisplay().addDrawer("universe","feeder",new FeederDrawer(this));
+		DisplaySingleton.getDisplay().addDrawer("universe","walls",new WallDrawer(this));
+		DisplaySingleton.getDisplay().addDrawer("universe","robot",new RobotDrawer(this));
 
 	}
 

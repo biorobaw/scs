@@ -12,7 +12,7 @@ import com.rapplogic.xbee.api.XBeeException;
 import com.rapplogic.xbee.api.wpan.TxRequest16;
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.robot.DifferentialRobot;
 import edu.usf.experiment.robot.HolonomicRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
@@ -207,7 +207,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 
 	@Override
 	public boolean hasFoundPlatform() {
-		String posStr = PropertyHolder.getInstance().getProperty("platformPosition");
+		String posStr = Globals.getInstance().get("platformPosition").toString();
 		String[] fields = posStr.split(",");
 		float x = Float.parseFloat(fields[0]);
 		float y = Float.parseFloat(fields[1]);

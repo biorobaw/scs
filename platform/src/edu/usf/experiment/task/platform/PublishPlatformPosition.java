@@ -2,7 +2,7 @@ package edu.usf.experiment.task.platform;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.universe.Universe;
@@ -27,7 +27,7 @@ public class PublishPlatformPosition extends Task {
 		
 		Coordinate pos = pu.getPlatforms().get(0).getPosition();
 		
-		PropertyHolder.getInstance().setProperty("platformPosition", pos.x + "," + pos.y);
+		Globals.getInstance().put("platformPosition", pos.x + "," + pos.y);
 	}
 
 	

@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.utils.ElementWrapper;
 
@@ -50,7 +50,7 @@ public abstract class SingleFileLogger extends Logger {
 	public abstract String getFileName();
 
 	public String getLogPath() {
-		return PropertyHolder.getInstance().getProperty("root.path");
+		return Globals.getInstance().get("logPath").toString();
 	}
 
 }

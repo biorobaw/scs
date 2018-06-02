@@ -56,26 +56,18 @@ public class Trial implements Runnable {
 		File file = new File(logPath);
 		file.mkdirs();
 
-		beforeTasks = TaskLoader.getInstance().load(
-				trialNode.getChild("beforeTrialTasks"));
-		afterTasks = TaskLoader.getInstance().load(
-				trialNode.getChild("afterTrialTasks"));
+		beforeTasks = TaskLoader.getInstance().load(trialNode.getChild("beforeTrialTasks"));
+		afterTasks = TaskLoader.getInstance().load(trialNode.getChild("afterTrialTasks"));
+		
 		if (makePlots){
-			beforePlotters = PlotterLoader.getInstance().load(
-					trialNode.getChild("beforeTrialPlotters"), logPath);
-			afterPlotters = PlotterLoader.getInstance().load(
-					trialNode.getChild("afterTrialPlotters"), logPath);
+			beforePlotters = PlotterLoader.getInstance().load(trialNode.getChild("beforeTrialPlotters"), logPath);
+			afterPlotters = PlotterLoader.getInstance().load(trialNode.getChild("afterTrialPlotters"), logPath);
 		} else {
 			beforePlotters = new LinkedList<Plotter>();
 			afterPlotters = new LinkedList<Plotter>();;
 		}
-		beforeLoggers = LoggerLoader.getInstance().load(
-				trialNode.getChild("beforeTrialLoggers"), logPath);
-		afterLoggers = LoggerLoader.getInstance().load(
-				trialNode.getChild("afterTrialLoggers"), logPath);
-		
-		// This should not happen here, this is at loading time
-//		subject.newTrial();
+		beforeLoggers = LoggerLoader.getInstance().load(trialNode.getChild("beforeTrialLoggers"), logPath);
+		afterLoggers = LoggerLoader.getInstance().load(trialNode.getChild("afterTrialLoggers"), logPath);
 
 		episodes = new LinkedList<Episode>();
 		int numEpisodes = trialNode.getChild("episodes").getChildInt("number");
@@ -88,42 +80,33 @@ public class Trial implements Runnable {
 		// Lock on the subject to ensure mutual exclusion for the same rat
 		// Assumes is fifo
 		synchronized (getSubject()) {
-			PropertyHolder props = PropertyHolder.getInstance();
-			props.setProperty("trial", name);
-			props.setProperty("log.directory", logPath);
-			
+			g.put("trial", name);
 			
 			
 			// Do all before trial tasks
-			for (Task task : beforeTasks)
-				task.perform(this);
-			for (Logger logger : beforeLoggers)
-				logger.log(this);
+			for (Task task : beforeTasks) task.perform(this);
+			for (Logger logger : beforeLoggers) logger.log(this);
 			
 			getSubject().getModel().newTrial();
 			
-			for (Logger logger : beforeLoggers)
-				logger.finalizeLog();
+			for (Logger logger : beforeLoggers) logger.finalizeLog();
 			Plotter.plot(beforePlotters);
+			
 			// Run each episode
 			for (Episode episode : episodes) {
 				episode.run();
-				g.put("episode", (int)g.get("episode")+1);
 			}
 			
 			// Do all after trial tasks
-			for (Task task : afterTasks)
-				task.perform(this);
+			for (Task task : afterTasks) task.perform(this);
 			// Log and finalize
-			for (Logger logger : afterLoggers)
-				logger.log(this);
-			for (Logger logger : afterLoggers)
-				logger.finalizeLog(); 
-			
-      // Plot
-      // Wait until all plots are done before contuining
-      // because some plots create files used by trial plots
-      Plotter.join();  
+			for (Logger logger : afterLoggers) logger.log(this);
+			for (Logger logger : afterLoggers) logger.finalizeLog(); 
+		
+		    // Plot
+		    // Wait until all plots are done before contuining
+		    // because some plots create files used by trial plots
+			Plotter.join();  
         
 			Plotter.plot(afterPlotters);
 			

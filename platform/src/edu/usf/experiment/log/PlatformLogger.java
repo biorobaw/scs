@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.platform.Platform;
@@ -21,9 +21,9 @@ public class PlatformLogger extends DistributedLogger {
 		PlatformUniverse fu = (PlatformUniverse) univ;
 		
 		synchronized (PlatformLogger.class) {
-			PropertyHolder props = PropertyHolder.getInstance();
-			String groupName = props.getProperty("group");
-			String subName = props.getProperty("subject");
+			Globals g = Globals.getInstance();
+			String groupName = g.get("group").toString();
+			String subName = g.get("subName").toString();
 
 			PrintWriter writer = getWriter();
 			for (Platform p : fu.getPlatforms())

@@ -3,6 +3,7 @@ package edu.usf.experiment;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import edu.usf.experiment.condition.Condition;
 import edu.usf.experiment.condition.ConditionLoader;
@@ -38,7 +39,6 @@ public class Episode {
 	private List<Condition> stopConds;
 	private List<Task> beforeCycleTasks;
 	private List<Task> afterCycleTasks;
-	private int sleep;
 	private String logPath;
 	private List<Task> beforeEpisodeTasks;
 	private List<Task> afterEpisodeTasks;
@@ -50,17 +50,32 @@ public class Episode {
 	private List<Logger> afterEpisodeLoggers;
 	private boolean makePlots;
 	
-	private int[] sleepValues = new int[] {0,1,10,50,100,500,1000,2000,3000,5000};
+	//execution contriol variables
+	//implement modified consumer producer for doing step by step execution
+	static private Semaphore pauseSemaphore = new Semaphore(0);
+	static private Semaphore accessMutex = new Semaphore(1);
+	static private int stepsAvailable = 0;
+	static private boolean paused = false;
+	
+	public float timeStep;
+	private int[] sleepValues = new int[] {5000,3000,2000,1000,500,400,300,100,30,0};
 	private NSLSimulation nslSim;
 
 	public Episode(ElementWrapper episodeNode, String parentLogPath, Trial trial, int episodeNumber, boolean makePlots) {
 		this.trial = trial;
 		this.episodeNumber = episodeNumber;
-		this.sleep = episodeNode.getChildInt("sleep");
 		this.makePlots = makePlots;
 		
+		String timeStepString = episodeNode.getChildText("timeStep");
+		if(timeStepString!=null) this.timeStep = Float.parseFloat(timeStepString);
+		else this.timeStep = 1;
+
+	
+		Globals.getInstance().put("sleepValues", sleepValues);
 		
 //		this.sleepValues[sleepValues.length-1] = episodeNode.getChildInt("sleep");
+		
+		
 
 
 		logPath = parentLogPath
@@ -71,33 +86,23 @@ public class Episode {
 		File file = new File(logPath);
 		file.mkdirs();
 
-		beforeEpisodeTasks = TaskLoader.getInstance().load(
-				episodeNode.getChild("beforeEpisodeTasks"));
-		beforeCycleTasks = TaskLoader.getInstance().load(
-				episodeNode.getChild("beforeCycleTasks"));
-		afterCycleTasks = TaskLoader.getInstance().load(
-				episodeNode.getChild("afterCycleTasks"));
-		afterEpisodeTasks = TaskLoader.getInstance().load(
-				episodeNode.getChild("afterEpisodeTasks"));
-		stopConds = ConditionLoader.getInstance().load(
-				episodeNode.getChild("stopConditions"));
+		beforeEpisodeTasks 	= TaskLoader.getInstance().load(episodeNode.getChild("beforeEpisodeTasks"));
+		afterEpisodeTasks 	= TaskLoader.getInstance().load(episodeNode.getChild("afterEpisodeTasks"));
+		beforeCycleTasks   	= TaskLoader.getInstance().load(episodeNode.getChild("beforeCycleTasks"));
+		afterCycleTasks 	= TaskLoader.getInstance().load(episodeNode.getChild("afterCycleTasks"));
+		stopConds 			= ConditionLoader.getInstance().load(episodeNode.getChild("stopConditions"));
+		
 		if (makePlots){
-			beforeEpisodePlotters = PlotterLoader.getInstance().load(
-					episodeNode.getChild("beforeEpisodePlotters"), logPath);
-			afterEpisodePlotters = PlotterLoader.getInstance().load(
-					episodeNode.getChild("afterEpisodePlotters"), logPath);
+			beforeEpisodePlotters = PlotterLoader.getInstance().load(episodeNode.getChild("beforeEpisodePlotters"), logPath);
+			afterEpisodePlotters  = PlotterLoader.getInstance().load(episodeNode.getChild("afterEpisodePlotters"), logPath);
 		} else {
 			beforeEpisodePlotters = new LinkedList<Plotter>();
-			afterEpisodePlotters = new LinkedList<Plotter>();
+			afterEpisodePlotters  = new LinkedList<Plotter>();
 		}
-		beforeEpisodeLoggers = LoggerLoader.getInstance().load(
-				episodeNode.getChild("beforeEpisodeLoggers"), logPath);
-		beforeCycleLoggers = LoggerLoader.getInstance().load(
-				episodeNode.getChild("beforeCycleLoggers"), logPath);
-		afterCycleLoggers = LoggerLoader.getInstance().load(
-				episodeNode.getChild("afterCycleLoggers"), logPath);
-		afterEpisodeLoggers = LoggerLoader.getInstance().load(
-				episodeNode.getChild("afterEpisodeLoggers"), logPath);
+		beforeEpisodeLoggers 	= LoggerLoader.getInstance().load(episodeNode.getChild("beforeEpisodeLoggers"), logPath);
+		beforeCycleLoggers 		= LoggerLoader.getInstance().load(episodeNode.getChild("beforeCycleLoggers"), logPath);
+		afterCycleLoggers 		= LoggerLoader.getInstance().load(episodeNode.getChild("afterCycleLoggers"), logPath);
+		afterEpisodeLoggers 	= LoggerLoader.getInstance().load(episodeNode.getChild("afterEpisodeLoggers"), logPath);
 		
 		nslSim = NSLSimulation.getInstance();
 	}
@@ -105,23 +110,21 @@ public class Episode {
 	public void run() {
 		Globals g = Globals.getInstance();
 		g.put("episodeLogPath", logPath);
-		PropertyHolder props = PropertyHolder.getInstance();
-		props.setProperty("episode", new Integer(episodeNumber).toString());
-		props.setProperty("log.directory", logPath);
+		g.put("episode",episodeNumber);
+		g.put("cycle",-1);
+		
 
 		System.out.println("[+] Episode " + trial.getName() + " "
 				+ trial.getGroup() + " " + trial.getSubjectName() + " "
 				+ episodeNumber + " started.");
 		
 		// Do all before trial tasks
-		for (Task task : beforeEpisodeTasks)
-			task.perform(this);
+		for (Task task : beforeEpisodeTasks) task.perform(this);
 		
 		// New episode is called after tasks are executed (e.g. reposition the robot)
 		getSubject().getModel().newEpisode();
 		
-		for (Logger logger : beforeEpisodeLoggers)
-			logger.log(this);
+		for (Logger logger : beforeEpisodeLoggers) logger.log(this);
 		
 		Plotter.plot(beforeEpisodePlotters);
 
@@ -131,27 +134,28 @@ public class Episode {
 		boolean finished = false;
 		int cycle = 0;
 		while (!finished) {
-			if((boolean)g.get("pause")) continue;
-			props.setProperty("cycle", new Integer(cycle).toString());
-			for (Logger l : beforeCycleLoggers)
-				l.log(this);
-			for (Task t : beforeCycleTasks)
-				t.perform(this);
+			g.put("cycle",cycle);
+			for (Logger l : beforeCycleLoggers) l.log(this);
+			for (Task t : beforeCycleTasks) 	t.perform(this);
 
-			getSubject().getModel().runPre();
+			getSubject().getModel().run();
+			
+			
+			display.updateData();
+			display.repaint();
+			display.waitUntilDoneRendering();
+			
+			waitOnPause(); //the pause is here so that the model state can be observed before performing the actions
 			
 			// Evaluate stop conditions
-			for (Condition sc : stopConds)
-				finished = finished || sc.holds(this);
-			if (finished)
-				break;
-//			display.repaint();
+			for (Condition sc : stopConds) finished = finished || sc.holds(this);
+			if (finished) break;
 			
 			getUniverse().step();
 			
 //			getSubject().getModel().runPost();
 			
-			display.repaint();
+			
 //			System.out.println("cycle");
 			// TODO: universe step cycle
 			
@@ -172,7 +176,8 @@ public class Episode {
 			if (cycle % 5000 == 0)
 				System.out.println("");
 
-			if (!finished && (sleep = sleepValues[(int)g.get("simulationSpeed")]) != 0)
+			int sleep = sleepValues[(int)g.get("simulationSpeed")];
+			if (sleep != 0 && !finished )
 				try {
 					Thread.sleep(sleep);
 				} catch (InterruptedException e) {
@@ -222,5 +227,53 @@ public class Episode {
 	public Universe getUniverse() {
 		return trial.getUniverse();
 	}
+	
+	static public void waitOnPause() {
+		try {
+			accessMutex.acquire();
+            if(paused){   
+            	stepsAvailable--;
+            	if(stepsAvailable<0) {
+            		accessMutex.release();
+            		pauseSemaphore.acquire();
+            	}else accessMutex.release();
+
+            } else accessMutex.release();
+        } catch (InterruptedException ex) {
+        }
+		
+	}
+	
+	static public boolean togglePause() {
+		try {
+			accessMutex.acquire();
+			paused=!paused;
+			if(!paused){
+				if(stepsAvailable<0) {
+					stepsAvailable=0;
+					pauseSemaphore.release();
+				}
+				
+			}
+            accessMutex.release();
+        } catch (InterruptedException ex) {
+            
+        }
+		return paused; //Only the gui calls this function, and only when pressing pause button, not necessary to make copy inside mutex
+	}
+	
+	
+	static public void step() {
+		try {
+			accessMutex.acquire();
+			if(paused) {
+				stepsAvailable++;
+				if(stepsAvailable<=0) pauseSemaphore.release();
+			}
+            accessMutex.release();
+        } catch (InterruptedException ex) {
+        }
+	}
+	
 
 }

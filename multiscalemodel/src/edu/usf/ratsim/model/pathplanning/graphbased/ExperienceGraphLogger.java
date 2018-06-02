@@ -6,7 +6,7 @@ import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.DistributedLogger;
 import edu.usf.experiment.subject.Subject;
@@ -17,12 +17,12 @@ import edu.usf.ratsim.nsl.modules.pathplanning.PointNode;
 
 public class ExperienceGraphLogger extends DistributedLogger {
 
-	private UndirectedGraph<PointNode, Edge> g;
+	private UndirectedGraph<PointNode, Edge> graph;
 
 	public ExperienceGraphLogger(ElementWrapper params, String logPath) {
 		super(params, logPath);
 
-		g = new UndirectedSparseGraph<PointNode, Edge>();
+		graph = new UndirectedSparseGraph<PointNode, Edge>();
 	}
 
 	@Override
@@ -45,22 +45,22 @@ public class ExperienceGraphLogger extends DistributedLogger {
 			throw new IllegalArgumentException("ExperienceGraphLogger needs a BugandGraphSubject");
 		GraphModel gs = (GraphModel) subject.getModel();
 
-		g = gs.getGraph();
+		graph = gs.getGraph();
 
 	}
 
 	@Override
 	public void finalizeLog() {
-		PropertyHolder props = PropertyHolder.getInstance();
-		String trialName = props.getProperty("trial");
-		String groupName = props.getProperty("group");
-		String subName = props.getProperty("subject");
-		String episode = props.getProperty("episode");
-		String cycle = props.getProperty("cycle");
+		Globals g = Globals.getInstance();
+		String trialName = g.get("trial").toString();
+		String groupName = g.get("group").toString();
+		String subName = g.get("subName").toString();
+		String episode = g.get("episode").toString();
+		String cycle = g.get("cycle").toString();
 		PrintWriter writer = getWriter();
-		for (Edge e : g.getEdges()) {
-			PointNode n1 = g.getEndpoints(e).getFirst();
-			PointNode n2 = g.getEndpoints(e).getSecond();
+		for (Edge e : graph.getEdges()) {
+			PointNode n1 = graph.getEndpoints(e).getFirst();
+			PointNode n2 = graph.getEndpoints(e).getSecond();
 			writer.println(trialName + '\t' + groupName + '\t' + subName + '\t' + episode + '\t' + cycle + '\t'
 					+ n1.prefLoc.x + "\t" + n1.prefLoc.y + "\t" + n2.prefLoc.x + '\t' + n2.prefLoc.y);
 		}

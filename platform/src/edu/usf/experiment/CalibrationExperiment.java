@@ -9,21 +9,18 @@ import edu.usf.experiment.utils.XMLExperimentParser;
 
 public class CalibrationExperiment {
 
-	public CalibrationExperiment(String logPath,
-			int individualNumber) {
+	public CalibrationExperiment(String logPath,int individualNumber) {
+		
 		logPath = logPath + File.separator;
 
 		// Assumes pre calibration put it on the folder
-		ElementWrapper calibrationRoot = XMLExperimentParser
-				.loadRoot(logPath + "calibration.xml");
+		ElementWrapper calibrationRoot = XMLExperimentParser.loadRoot(logPath + "calibration.xml");
 
 		String experimentFile = calibrationRoot.getChildText("experiment");
 
-		ElementWrapper experimentRoot = XMLExperimentParser
-				.loadRoot(experimentFile);
+		ElementWrapper experimentRoot = XMLExperimentParser.loadRoot(experimentFile);
 
-		Map<String, List<String>> paramsToCalibrate = calibrationRoot
-				.getCalibrationList(calibrationRoot);
+		Map<String, List<String>> paramsToCalibrate = calibrationRoot.getCalibrationList(calibrationRoot);
 
 		// Compute total individuals per experiment
 		List<ElementWrapper> groupNodes = experimentRoot.getChildren("group");
@@ -45,10 +42,9 @@ public class CalibrationExperiment {
 		}
 		logPath += File.separator;
 
-		int experimentIndividualNumber = individualNumber
-				% totalExperimentIndividuals;
-		RunIndividualByNumber.runIndividualByNumber(experimentRoot, logPath,
-				experimentIndividualNumber);
+		int experimentIndividualNumber = individualNumber % totalExperimentIndividuals;
+//		RunIndividualByNumber.runIndividualByNumber(experimentRoot, logPath,experimentIndividualNumber);
+		System.out.println("ERROR ===> Calibration Experiment needs to be fixed");
 
 	}
 

@@ -55,21 +55,12 @@ public class DiscreteVirtualUniversePanel extends JPanel {
 		super.paintComponent(g);
 		
 		// Define scaling factors
-		Float univRect = new Rectangle2D.Float(0, 0, u.getGridWidth(), u.getGridWidth());
+		Float worldCoordinates = new Rectangle2D.Float(0, 0, u.getGridWidth(), u.getGridWidth());
 		Dimension panelRect = getSize();
+		Float panelCoordinates = new Float(XMARGIN,YMARGIN,panelRect.width-2*XMARGIN,panelRect.height-2*YMARGIN);
 
-		// The scaling factors are the relation between effective draw space and
-		// the universe bounding box (taken from the xml file for the maze)
-		float xscale = (float) ((panelRect.getWidth() - 2 * XMARGIN) / univRect.width);
-		float yscale = (float) ((panelRect.getHeight() - 2 * YMARGIN) / univRect.height);
-		// Take the minimum of both scales to keep aspect ratio
-		float defScale = Math.min(xscale, yscale);
-		// The x offset is just the lowest x coordinate of the universe
-		float xoffset = -(univRect.x - XMARGIN / defScale);
-		// The y offset includes the bounding box height, to be able to invert
-		// the y component (it grows to the bottom in the screen)
-		float yoffset = -(univRect.height + univRect.y + YMARGIN / defScale);
-		Scaler s = new Scaler(defScale, defScale, xoffset, yoffset);
+
+		Scaler s = new Scaler(worldCoordinates,panelCoordinates,true);
 
 		for (Drawer d : drawers)
 			d.draw(g, s);

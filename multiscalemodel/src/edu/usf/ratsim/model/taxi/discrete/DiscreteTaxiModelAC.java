@@ -8,6 +8,7 @@ import java.util.Map;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.display.DisplaySingleton;
+import edu.usf.experiment.display.drawer.BrokenDrawer;
 import edu.usf.experiment.model.PolicyModel;
 import edu.usf.experiment.model.ValueModel;
 import edu.usf.experiment.robot.GlobalWallRobot;
@@ -18,10 +19,10 @@ import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.plot.float0d.Float0dSeriesPlot;
-import edu.usf.micronsl.plot.float1d.Float1dBarPlot;
-import edu.usf.micronsl.plot.float1d.Float1dDiscPlot;
-import edu.usf.micronsl.plot.float1d.Float1dFillPlot;
+import edu.usf.platform.drawers.micronsl.float0d.Float0dSeriesPlot;
+import edu.usf.platform.drawers.micronsl.float1d.Float1dBarPlot;
+import edu.usf.platform.drawers.micronsl.float1d.Float1dDiscPlot;
+import edu.usf.platform.drawers.micronsl.float1d.Float1dFillPlot;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
@@ -122,41 +123,43 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		currentStateQ.addInPort("states", actionPlaceCells.getActivationPort());
 		currentStateQ.addInPort("qValues", QTable);
 		addModule(currentStateQ);
-		DisplaySingleton.getDisplay().addPlot(new Float1dDiscPlot((Float1dPort) currentStateQ.getOutPort("votes"), "Action values"),
-				0, 0, 1, 1);
+//		DisplaySingleton.getDisplay().addPlot(new Float1dDiscPlot((Float1dPort) currentStateQ.getOutPort("votes"), "Action values"),
+//				0, 0, 1, 1);
+		
+		DisplaySingleton.getDisplay().addDrawer("universe","broken plot",new BrokenDrawer());
 
 		currentValue = new ProportionalValue("currentValueQ", foodReward);
 		currentValue.addInPort("states", valuePlaceCells.getActivationPort());
 		currentValue.addInPort("value", VTable);
 		addModule(currentValue);
-		DisplaySingleton.getDisplay()
-				.addPlot(new Float0dSeriesPlot((Float0dPort) currentValue.getOutPort("value"), "State Value"), 0, 1, 1, 1);
+//		DisplaySingleton.getDisplay()
+//				.addPlot(new Float0dSeriesPlot((Float0dPort) currentValue.getOutPort("value"), "State Value"), 0, 1, 1, 1);
 
 		// Create SoftMax module
 		Softmax softmax = new Softmax("softmax", numActions);
 		softmax.addInPort("input", currentStateQ.getOutPort("votes"));
-		addModulePre(softmax);
-		DisplaySingleton.getDisplay()
-				.addPlot(new Float1dFillPlot((Float1dPort) softmax.getOutPort("probabilities"), "Softmax Probs"), 0, 2, 1, 1);
+		addModule(softmax);
+//		DisplaySingleton.getDisplay()
+//				.addPlot(new Float1dFillPlot((Float1dPort) softmax.getOutPort("probabilities"), "Softmax Probs"), 0, 2, 1, 1);
 
 		// Create ActionGatingModule -- sets the probabilities of impossible
 		// actions to 0 and then normalizes them
-		ActionGatingModule actionGating = new ActionGatingModule("actionGating", robot);
+		ActionGatingModule actionGating = new ActionGatingModule("actionGating", robot,((AffordanceRobot)robot).getPossibleAffordances().size());
 		actionGating.addInPort("input", softmax.getOutPort("probabilities"));
-		addModulePre(actionGating);
-		DisplaySingleton.getDisplay()
-				.addPlot(new Float1dBarPlot((Float1dPort) actionGating.getOutPort("probabilities"), "Action Gating"), 0, 3, 1, 1);
+		addModule(actionGating);
+//		DisplaySingleton.getDisplay()
+//				.addPlot(new Float1dBarPlot((Float1dPort) actionGating.getOutPort("probabilities"), "Action Gating"), 0, 3, 1, 1);
 
 		// Create action selection module -- choose action according to
 		// probability distribution
 		Module actionSelection = new ActionFromProbabilities("actionFromProbabilities");
 		actionSelection.addInPort("probabilities", actionGating.getOutPort("probabilities"));
-		addModulePre(actionSelection);
+		addModule(actionSelection);
 
 		// Create Action Performer module
 		MaxAffordanceActionPerformer actionPerformer = new MaxAffordanceActionPerformer("actionPerformer", robot);
 		actionPerformer.addInPort("action", actionSelection.getOutPort("action"));
-		addModulePre(actionPerformer);
+		addModule(actionPerformer);
 
 		// // Cells are only computed after performing an action
 		// placeCells.addPreReq(actionPerformer);
@@ -188,8 +191,8 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		addModule(updateQ);
 		
 		
-		DisplaySingleton.getDisplay().addUniverseDrawer(new QValueDrawer(this), 0);
-		DisplaySingleton.getDisplay().addUniverseDrawer(new QPolicyDrawer(this, (AffordanceRobot) robot));
+		DisplaySingleton.getDisplay().addDrawer("universe","QValue",new QValueDrawer(this), 0);
+		DisplaySingleton.getDisplay().addDrawer("universe","qpolicy",new QPolicyDrawer(this, (AffordanceRobot) robot));
 	}
 
 	public void newEpisode() {

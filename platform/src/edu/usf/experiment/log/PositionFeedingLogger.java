@@ -4,7 +4,7 @@ import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public abstract class PositionFeedingLogger extends DistributedLogger {
@@ -17,11 +17,11 @@ public abstract class PositionFeedingLogger extends DistributedLogger {
 	}
 
 	public void finalizeLog() {
-		PropertyHolder props = PropertyHolder.getInstance();
-		String trialName = props.getProperty("trial");
-		String groupName = props.getProperty("group");
-		String subName = props.getProperty("subject");
-		String episode = props.getProperty("episode");
+		Globals g = Globals.getInstance();
+		String trialName = g.get("trial").toString();
+		String groupName = g.get("group").toString();
+		String subName = g.get("subName").toString();
+		String episode = g.get("episode").toString();
 		
 		System.out.println("Steps: " + poses.size());
 		synchronized (PositionFeedingLogger.class) {

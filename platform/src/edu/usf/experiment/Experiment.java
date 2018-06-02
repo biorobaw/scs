@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Random;
 
@@ -11,7 +12,10 @@ import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.NoDisplay;
 import edu.usf.experiment.display.SCSFrame;
+import edu.usf.experiment.log.Logger;
+import edu.usf.experiment.log.LoggerLoader;
 import edu.usf.experiment.plot.Plotter;
+import edu.usf.experiment.plot.PlotterLoader;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.RobotLoader;
 import edu.usf.experiment.subject.ModelLoader;
@@ -38,10 +42,40 @@ import edu.usf.micronsl.Model;
  * 
  */
 public class Experiment implements Runnable {
+	
+	
+	
+	public static void main(String[] args) {
+		
+		if (args.length < 4)
+		{
+			System.out.println("Usage: java edu.usf.experiment [-display]"
+					+ "exprimentLayout logPath group individual [ARGNAME ARGVAL]*");			
+			System.out.println();
+			System.exit(0);
+			
+		}
+		
+		System.out.println("[+] Loading Globals");
+		String experimentFile = loadGlobals(args);
+		Experiment e = new Experiment(experimentFile);
+		e.run();
+
+		System.out.println("[+] Finished running");
+		System.exit(0);
+	}
+	
+	
+	
+	
 
 	private List<Trial> trials;
 	private List<Task> beforeTasks;
 	private List<Task> afterTasks;
+	private List<Logger> beforeLoggers;
+	private List<Logger> afterLoggers;
+	private List<Plotter> beforePlotters;
+	private List<Plotter> afterPlotters;
 	private Universe universe;
 	private Subject subject;
 	private boolean makePlots;
@@ -52,171 +86,69 @@ public class Experiment implements Runnable {
 	}
 	
 	/** 
-	 * This constructor performs all file operations in addition to experimental setup
+	 * Loads experiment from experiment file, assumes globals have already been loaded
 	 * @param experimentFile
-	 * @param logPath
-	 * @param groupName
-	 * @param subjectName
-	 * @param display 
-	 * @param display 
 	 */
-	public Experiment(String experimentFile, String logPath, String groupName,
-			String subjectName, boolean display) {
-		Globals g = Globals.getInstance();
-		System.out.println("[+] Creating directories");
-		File file = new File(logPath +"/");
-		file.mkdirs();
+	public Experiment(String experimentFile) {
+
+		//create log folders and store experiment file, maze file and globals
+		createAndInitLogFolder(experimentFile);
 		
-		IOUtils.copyFile(experimentFile, logPath + "/experiment.xml");
+		//load experiment file
 		ElementWrapper root = XMLExperimentParser.loadRoot(experimentFile);
-		
-		ElementWrapper load = root.getChild("load");
-		if(load!=null) {
-			g.put("loadEpisode", load.getChildInt("episode"));
-			g.put("loadTrial", load.getChildText("trial"));
-			g.put("loadType",load.getChildText("type"));
-		}
-		g.put("pause", false);
-		g.put("simulationSpeed",0); //speed defined in xml file (sleep value)
-		String mazeFile = root.getChild("universe").getChild("params")
-				.getChildText("maze");
-		if (mazeFile != null)
-			IOUtils.copyFile(mazeFile, logPath + "/maze.xml");
 
-		setup(root, logPath, groupName, subjectName, display);
-	}
-	
-	/**
-	 * This constructor assumes all files (experiment.xml, maze.xml, the folder) have been put
-	 * into place and just setups the experiment.
-	 * @param root
-	 * @param logPath
-	 * @param groupName
-	 * @param subName
-	 */
-	public Experiment(ElementWrapper root, String logPath, String groupName,
-			String subName) {
+		//load required globals
 		Globals g = Globals.getInstance();
-		ElementWrapper load = root.getChild("load");
-		if(load!=null) {
-			g.put("loadEpisode", load.getChildInt("episode"));
-			g.put("loadTrial", load.getChildText("trial"));
-			g.put("loadType",load.getChildText("type"));
-		}
-		g.put("pause", false);
-		g.put("simulationSpeed",0); //speed defined in xml file (sleep value)
+		String groupName   = (String)g.get("group");
+		String subjectName = (String)g.get("subName");	
+		String logPath 	   = (String)g.get("logPath");
 		
-		setup(root, logPath, groupName, subName, false);
-	}
+		
+		System.out.println("[+] Starting group " + groupName + " individual "+ subjectName + " in log " + logPath);
+//		logPath = logPath ;
 
-	private void setup(ElementWrapper root, String logPath, String groupName,
-			String subjectName, boolean display) {
-		//Get globals:
-		Globals g = Globals.getInstance();
 		
 		
-		
-		// System.out.println(System.getProperty("java.class.path"));
-		System.out.println("[+] Starting group " + groupName + " individual "
-				+ subjectName + " in log " + logPath);
+		//Load display
+		loadDisplay();
 
-		// logPath = logPath + File.separator + groupName + File.separator
-		// + subjectName + File.separator;
-		logPath = logPath + "/";
-
-		PropertyHolder props = PropertyHolder.getInstance();
-		props.setProperty("log.directory", logPath);
-		props.setProperty("root.path", logPath);
-		props.setProperty("group", groupName);
-		props.setProperty("subject", subjectName);
 		
-		props.setProperty("maze.file", logPath + "maze.xml");
-		
-		Display displayer;
-		if (display){
-//			displayer = new PDFDisplay();
-			displayer = new SCSFrame();
-		} else {
-			displayer = new NoDisplay();
-		}
-		DisplaySingleton.setDisplay(displayer);
+		//load universe
+		System.out.println("Loading universe...");
+		universe = UniverseLoader.getInstance().load(root, logPath + "/");
 
-		universe = UniverseLoader.getInstance().load(root, logPath);
-
+		//load robot
+		System.out.println("Loading robot...");
 		robot = RobotLoader.getInstance().load(root, universe);
 		robot.startRobot();
-		
 		universe.setRobot(robot);
 		
+		
+		//set do plots (global plotting activator / deactivator
 		if (root.getChild("plot") != null)
 			makePlots = root.getChildBoolean("plot");
 		else
 			makePlots = true;
 		
-		long seed;
-		if (root.getChildText("seed") != null) {
-			seed = root.getChildLong("seed");
-			System.out.println("[+] Using seed from xml file");
-		} else {
-			seed = new Random().nextLong();
-		}
-		RandomSingleton.getInstance().setSeed(seed);
-		System.out.println("[+] Using seed " + seed);
-
-		// Load the subject using reflection and assign name and group
-//		//previously, if feederOrder is defined, set the property in the xml:
-//		if (g.get("feederOrder")!=null)
-//				root.getChild("model").getChild("params").
-//					 getChild("feederOrder").setText((String)g.get("feederOrder"));
-		ElementWrapper modelParams = root.getChild("model");
-		ElementWrapper groupParams = getGroupNode(root, groupName).getChild("params");
-		modelParams.merge(root, groupParams);
-		Model model = ModelLoader.getInstance().load(modelParams, robot);
 		
-		subject = new Subject(subjectName, groupName, model, robot);
+		//set seed
+		setSeed(root);
 
-		System.out.println("[+] Model created");
+		// Load model
+		loadModel(root,groupName,subjectName);
 
 		// Load trials that apply to the subject
-		trials = XMLExperimentParser.loadTrials(root, logPath, subject,
-				universe, makePlots);
+		trials = XMLExperimentParser.loadTrials(root, logPath, subject,universe, makePlots);
 		
-		System.out.println("[+] Trials Loaded");
-		
-		//check if we are loading from a particular trial
-		String t = (String)g.get("loadTrial");
-		Integer e = (Integer)g.get("loadEpisode");
-
-		if(t!=null){
-			//Pop trials until we get the 
-			for(int i =0;;i++){
-				if(trials.get(0).getName().equals(t)) break;
-				else trials.remove(0);
-			}
-			
-			//pop episodes from the trial until we reach the episode being loaded (remove that episode to since we have already executed that one)
-			for(int i=0;i<=e;i++)
-				trials.get(0).episodes.remove(0);
-			g.put("episode",e+1);
-			
-		}else{
-			g.put("episode",0);
-		}
-		
-
 		// Load tasks and plotters
-		ElementWrapper params = root;
-		beforeTasks = TaskLoader.getInstance().load(
-				params.getChild("beforeExperimentTasks"));
-
-		System.out.println("[+] Before Tasks loaded");
+		loadTasks(root);
 		
-		afterTasks = TaskLoader.getInstance().load(
-				params.getChild("afterExperimentTasks"));
-		
-		System.out.println("[+] After Tasks loaded");
-
+		//Load episode (if loading)
+		loadEpisode(root);
 	}
+	
+
+
 
 	private ElementWrapper getGroupNode(ElementWrapper root, String groupName) {
 		for(ElementWrapper g : root.getChildren("group"))
@@ -232,96 +164,48 @@ public class Experiment implements Runnable {
 	 */
 	public void run() {		
 		// Do all before trial tasks
-		System.out.println(beforeTasks.size());
-		System.out.println(trials.size());
-		System.out.println(afterTasks.size());
 		for (Task task : beforeTasks)
 			task.perform(this);
 
-		if (Debug.sleepBeforeStart)
-			try {
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		for (Logger l : beforeLoggers){
+			l.log(this);
+			l.finalizeLog();
+		}
 		
-		//robot.startRobot();
+		for (Plotter p : beforePlotters)
+			p.plot();
+		
+		//Debug Sleep at start
+		if (Debug.sleepBeforeStart) try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
 		
 		// Run each trial in order
-		
 		for (Trial t : trials)
 			t.run();
 
-		// Do all after trial tasks
+		// Do all after experiment tasks
 		for (Task task : afterTasks)
 			task.perform(this);
 		
-    // Wait for threads
+		for (Logger l : afterLoggers){
+			l.log(this);
+			l.finalizeLog();
+		}
+		
+		for (Plotter p : afterPlotters)
+			p.plot();
+		
+		// Wait for threads
 		Plotter.join();
 
 	}
 
-	public static void main(String[] args) {
-		if (args.length < 4)
-		{
-			System.out.println("Usage: java edu.usf.experiment [-display]"
-					+ "exprimentLayout logPath group individual [ARGNAME ARGVAL]*");
-			
-			System.out.println();
-			System.out.println("Possible ARGNAMES and ARGVALS:");
-			System.out.println("feederFile file - file of `x y` coordinates indicating feeder position");
-			System.out.println("nFoodStopCondition int - experiment end after eating 'int' times");
-			System.out.println("feederOrder x1,x2,... - indicates order in which feeders are visited");
-			System.out.println("startPosition x,y,theta - indicates rat's starting position");
-			
-		}
-		
-		int nextArg = 0;
-		
-		boolean display = args[nextArg].equals("-display");
-		if (display){
-			nextArg++;
-		} 
-
-		String xml = args[nextArg++];
-		//set global variables:
-		Globals g = Globals.getInstance();
-		if (args[nextArg].endsWith("/"))
-			args[nextArg] = args[nextArg].substring(0, args[nextArg].length()-1);			
-		g.put("logPath",args[nextArg++]);
-		g.put("groupName", args[nextArg++]);
-		g.put("subName", args[nextArg++]);
-		
-		for(int i =0; i < (args.length-4)/2;i++){
-			g.put(args[nextArg], args[nextArg+1]);
-			nextArg+=2;
-		}
-
-		
-		//Save globals to a file:
-		try {
-			File f = new File(g.get("logPath")+"/globals.txt");
-			f.getParentFile().mkdirs();
-			BufferedWriter bw = new BufferedWriter(new FileWriter(f));
-			for(String key : g.global.keySet()){
-				bw.write(key + " "  + g.get(key));
-				bw.newLine();
-			}
-			bw.close();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-			
-		
-		Experiment e = new Experiment(xml,(String)g.get("logPath") , (String)g.get("groupName"), (String)g.get("subName"), display);
-		e.run();
-
-		System.out.println("[+] Finished running");
-		
-		System.exit(0);
-	}
+	
 
 	public Universe getUniverse() {
 		return universe;
@@ -333,5 +217,221 @@ public class Experiment implements Runnable {
 	
 	public void setUniverse(Universe univ){
 		this.universe = univ;
+	}
+	
+	
+	static public String loadGlobalsFromIndividual(String args[]) {
+		
+		String logPath = args[0];
+		String xmlFile = logPath + File.separator + "experiment.xml";
+		int individual = Integer.parseInt(args[1]);
+
+		// Assumes pre-experiment put it in the right place
+		ElementWrapper root = XMLExperimentParser.loadRoot(xmlFile);
+		
+		
+		//find groupName and subName
+		List<ElementWrapper> groupNodes = root.getChildren("group");
+		// Look for the group of the individual to execute
+		for (ElementWrapper gNode : groupNodes) {
+			String groupName = gNode.getChildText("name");
+			int numMembers = gNode.getChildInt("numMembers");
+			
+			for (int i = 0; i < numMembers; i++){
+				// Decrease individual until we get to the one we want
+				individual--;
+				if (individual < 0){
+					// Get the name and create the experiment and run
+					String subName = new Integer(i).toString();
+					return loadGlobals(new String[] {xmlFile,logPath,groupName, subName});
+				}
+			}
+		}
+		
+		System.out.println("Error individual not found");
+		System.exit(-1);
+		return "";
+		
+	}
+	
+	static public String loadGlobals(String[] args ) {
+		
+		Globals g = Globals.getInstance();
+		
+		
+		//check display
+		int nextArg = 0;
+		boolean display = args[nextArg].equals("-display");
+		if (display){
+			nextArg++;
+		} 
+		g.put("display",display );
+
+		
+		//get xml file and load globals from xml file
+		String xml = args[nextArg++];
+		
+
+		//fix logpath if necessary
+		String logPath = args[nextArg++];
+		if (logPath.endsWith("/"))
+			logPath = logPath.substring(0, logPath.length()-1);
+		
+		//store variables that are always present, 
+		//init values might be overwritten by other parts of the code
+		g.put("logPath",logPath);
+		g.put("group", args[nextArg++]);
+		g.put("subName", args[nextArg++]);
+		g.put("maze.file",logPath + "/maze.xml");
+		g.put("simulationSpeed",9); //init at full speed
+		g.put("episode",0);
+		
+		
+		//Load globals from experiment file
+		ElementWrapper root = XMLExperimentParser.loadRoot(xml);
+		ElementWrapper experimentGlobals = root.getChild("variables");
+		if(experimentGlobals!=null)
+			for(ElementWrapper child : experimentGlobals.getChildren() ) {
+				String varName   = child.getChildText("name"); 
+				String value 	 = child.getChildText("value");
+				g.put(varName, value);
+			}
+		
+		loadSimControls(root);
+		
+		
+		//Load variables from command line
+		for(int i =0; i < (args.length-4)/2;i++){
+			g.put(args[nextArg], args[nextArg+1]);
+			nextArg+=2;
+		}
+
+		
+		
+		
+		return xml;
+	}
+	
+	void loadTasks(ElementWrapper root) {
+		String logPath = (String)Globals.getInstance().get("logPath");
+		
+		System.out.println("[+] Loading Experiment Tasks");
+		beforeTasks = TaskLoader.getInstance().load(root.getChild("beforeExperimentTasks"));
+		afterTasks = TaskLoader.getInstance().load(root.getChild("afterExperimentTasks"));		
+		
+		System.out.println("[+] creating loggers, logpath: " + logPath);
+		beforeLoggers = LoggerLoader.getInstance().load(root.getChild("beforeExperimentLoggers"),logPath);
+		afterLoggers = LoggerLoader.getInstance().load(root.getChild("afterExperimentLoggers"),logPath);
+		
+		beforePlotters = PlotterLoader.getInstance().load(root.getChild("beforeExperimentPlotters"),logPath);
+		afterPlotters = PlotterLoader.getInstance().load(root.getChild("afterExperimentPlotters"),logPath);
+	}
+	
+	void createAndInitLogFolder(String experimentFile) {
+		Globals g = Globals.getInstance();
+		String logPath = (String)g.get("logPath");
+		
+		//create log path directories
+		System.out.println("[+] Creating directories");
+		File file = new File(logPath +"/");
+		file.mkdirs();
+		
+		
+		//Copy experiment file
+		IOUtils.copyFile(experimentFile, logPath + "/experiment.xml");	
+		
+		
+		//Copy maze file
+		ElementWrapper root = XMLExperimentParser.loadRoot(experimentFile);
+		String mazeFile = root.getChild("universe").getChild("params").getChildText("maze");
+		if (mazeFile != null) IOUtils.copyFile(mazeFile, logPath + "/maze.xml");
+		
+		
+		//Save globals to a file:
+		try {
+			File f = new File(logPath+"/globals.txt");
+			f.getParentFile().mkdirs();
+			BufferedWriter bw = new BufferedWriter(new FileWriter(f));
+			for(String key : g.global.keySet()){
+				bw.write(key + " "  + g.get(key));
+				bw.newLine();
+			}
+			bw.close();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+	}
+
+	void loadEpisode(ElementWrapper root) {
+		
+		ElementWrapper load = root.getChild("load");
+		if(load==null) return;
+		
+		//Store globals
+		Globals g = Globals.getInstance();
+//		g.put("loadEpisode", load.getChildInt("episode"));
+//		g.put("loadTrial", load.getChildText("trial"));
+//		g.put("loadType",load.getChildText("type"));
+		
+		
+		String t = load.getChildText("trial");
+		Integer e = load.getChildInt("episode");
+
+		if(t!=null){
+			//Pop trials until we get the 
+			for(int i =0;;i++){
+				if(trials.get(0).getName().equals(t)) break;
+				else trials.remove(0);
+			}
+			
+			//pop episodes from the trial until we reach the episode being loaded (remove that episode to since we have already executed that one)
+			for(int i=0;i<=e;i++)
+				trials.get(0).episodes.remove(0);
+			g.put("episode",e+1);
+		}
+	}
+	
+	void loadDisplay() {
+		Display displayer;
+		if ((Boolean)Globals.getInstance().get("display")){
+//			displayer = new PDFDisplay();
+			displayer = new SCSFrame();
+		} else {
+			displayer = new NoDisplay();
+		}
+		DisplaySingleton.setDisplay(displayer);
+	}
+
+	void setSeed(ElementWrapper root) {
+		Long seed = (Long)Globals.getInstance().get("seed");
+		if (seed != null) System.out.println("[+] Using seed from xml file");
+		else seed = new Random().nextLong();
+
+		RandomSingleton.getInstance().setSeed(seed);
+		System.out.println("[+] Using seed " + seed);
+	}
+	
+	void loadModel(ElementWrapper root , String groupName, String subjectName) {
+		System.out.println("[+] Loading Model...");
+		ElementWrapper modelParams = root.getChild("model");
+		System.out.println("gName " + groupName);
+		ElementWrapper groupParams = getGroupNode(root, groupName).getChild("params");
+		modelParams.merge(root, groupParams);
+		Model model = ModelLoader.getInstance().load(modelParams, robot);
+		subject = new Subject(subjectName, groupName, model, robot);
+	}
+	
+	static void loadSimControls(ElementWrapper root) {
+		ElementWrapper controls = root.getChild("simulationControls");
+		if(controls==null) return;
+		
+		Globals g = Globals.getInstance();		
+		if(controls.hasChild("display")) g.put("display",controls.getChildBoolean("display") );
+		if(controls.hasChild("simulationSpeed")) g.put("simulationSpeed",controls.getChildInt("simulationSpeed") );
+		if(controls.hasChild("seed")) g.put("seed",controls.getChildLong("seed") );
+		g.put("syncDisplay", !controls.hasChild("syncDisplay") || controls.getChildBoolean("syncDisplay"));
+				
 	}
 }

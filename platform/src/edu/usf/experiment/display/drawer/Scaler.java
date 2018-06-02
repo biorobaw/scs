@@ -1,6 +1,7 @@
 package edu.usf.experiment.display.drawer;
 
 import java.awt.Point;
+import java.awt.geom.Rectangle2D.Float;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -12,6 +13,21 @@ import com.vividsolutions.jts.geom.Coordinate;
  */
 public class Scaler {
 
+	
+	/**
+	 * World cooridnates
+	 */
+	private Float worldCoordinates = new Float(-1, -1, 2, 2);
+	
+	/**
+	 * Panel coordinates
+	 */
+	private Float panelCoordinates = null;
+	
+	/**
+	 * Panel coordinates
+	 */
+	
 	/**
 	 * The x scaling factor
 	 */
@@ -29,12 +45,30 @@ public class Scaler {
 	 */
 	private float yoffset;
 
-	public Scaler(float xscale, float yscale, float xoffset, float yoffset) {
-		this.xscale = xscale;
-		this.yscale = yscale;
-		this.xoffset = xoffset;
-		this.yoffset = yoffset;
+	public Scaler(Float worldCoords, Float panelCoords,boolean keepAspectRatio) {
+		this.worldCoordinates = worldCoords;
+		this.panelCoordinates = panelCoords;
+		
+		// The scaling factors are the relation between effective draw space and
+		// the universe bounding box (taken from the xml file for the maze)
+		xscale =  (float)panelCoords.width  / worldCoords.width;
+		yscale =  (float)panelCoords.height / worldCoords.height;
+		
+		if(keepAspectRatio) {
+			// Take the minimum of both scales to keep aspect ratio
+			xscale = yscale = Math.min(xscale, yscale);
+		}
+		
+		
+		// The x and y offset centers the image by following the next equations:
+		// scale * (world_Xmidpoint + offset) = panel_Xmidpoint
+		//-scale * (world_Ymidpoint + offset) = panel_Ymidpoint
+		xoffset = 0.5f*( (float)panelCoords.width /xscale - 2*worldCoords.x - worldCoords.width  );
+		yoffset = -0.5f*( (float)panelCoords.height /yscale + 2*worldCoords.y + worldCoords.height  );
+		
+		
 	}
+	
 
 	/**
 	 * Transforms the universe coordinates in p to component (e.g. JPanel)
@@ -51,6 +85,27 @@ public class Scaler {
 		pScaled.x = (int) ((p.x + xoffset) * xscale);
 		pScaled.y = -(int) ((p.y + yoffset) * yscale);
 		return pScaled;
+	}
+	
+	public Point[] scale(Coordinate p[]) {
+		Point results[] = new Point[p.length];
+		for(int i=0;i<p.length;i++) results[i] = scale(p[i]);
+		return results;
+	}
+	
+	public float scaleDistanceX(float dx) {
+		return xscale*dx;
+	}
+	public float scaleDistanceY(float dy) {
+		return yscale*dy;
+	}
+	public Point scaleDistance(Coordinate p) {
+		return new Point((int)(p.x*xscale),(int)(p.y*yscale));
+	}
+	public Point[] scaleDistance(Coordinate p[]) {
+		Point results[] = new Point[p.length];
+		for(int i=0;i<p.length;i++) results[i] = scaleDistance(p[i]);
+		return results;
 	}
 
 }

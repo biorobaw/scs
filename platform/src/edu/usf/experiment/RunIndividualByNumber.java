@@ -1,10 +1,5 @@
 package edu.usf.experiment;
 
-import java.io.File;
-import java.util.List;
-
-import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.experiment.utils.XMLExperimentParser;
 
 
 /**
@@ -17,39 +12,16 @@ public class RunIndividualByNumber {
 
 	public static void main(String[] args) {
 		if (args.length < 2)
-			System.out.println("Usage: java edu.usf.ExperimentRunner "
-					+ "logPath individualIndex");
+			System.out.println("Usage: java edu.usf.ExperimentRunner " + "logPath individualIndex");
 		
-		String logPath = args[0];
-		int individual = Integer.parseInt(args[1]);
+		String experimentFile = Experiment.loadGlobalsFromIndividual(args);
+		Experiment e = new Experiment(experimentFile);
+		e.run();
 
-		// Assumes pre-experiment put it in the right place
-		ElementWrapper root = XMLExperimentParser.loadRoot(logPath + File.separator + "experiment.xml");
-		
-		runIndividualByNumber(root, logPath, individual);
+		System.out.println("[+] Finished running");
+		System.exit(0);
 		
 	}
-
-	public static void runIndividualByNumber(ElementWrapper root,
-			String logPath, int individual) {
-		List<ElementWrapper> groupNodes = root.getChildren("group");
-		// Look for the group of the individual to execute
-		for (ElementWrapper gNode : groupNodes) {
-			String groupName = gNode.getChildText("name");
-			int numMembers = gNode.getChildInt("numMembers");
-			
-			for (int i = 0; i < numMembers; i++){
-				// Decrease individual until we get to the one we want
-				individual--;
-				if (individual < 0){
-					// Get the name and create the experiment and run
-					String subName = new Integer(i).toString();
-					Experiment e = new Experiment(root, logPath, groupName, subName);
-					e.run();
-					System.exit(0);
-				}
-			}
-		}
-
-	}
+	
+	
 }

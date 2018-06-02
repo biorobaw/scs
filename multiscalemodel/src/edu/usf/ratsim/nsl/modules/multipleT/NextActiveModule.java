@@ -15,20 +15,23 @@ import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
  */
 public class NextActiveModule extends Module {	
 
-	Int0dPort nextActive = new Int0dPort(this);
+	Int0dPort nextActivePort = new Int0dPort(this);
+	Int0dPort activePort	 = new Int0dPort(this);
 	Float0dPort maxActivation = new Float0dPort(this);
 	boolean[] visited;
 	
 	public NextActiveModule(String name) {
 		super(name);		
-		this.addOutPort("nextActive", nextActive);
+		this.addOutPort("nextActive", nextActivePort);
+		this.addOutPort("active",activePort);
 		this.addOutPort("maxActivation", maxActivation);
 
 	}
 
 	
 	public void run() {
-		int active = ((Int0dPort)getInPort("active")).get();
+		int active = nextActivePort.get();
+		activePort.set(active);
 		Float2dSparsePort W = (Float2dSparsePort)getInPort("W");
 		
 //		System.out.println("active: "+active);
@@ -43,7 +46,7 @@ public class NextActiveModule extends Module {
 					maxId = e.j;
 				}
 
-		nextActive.set(maxId);
+		nextActivePort.set(maxId);
 		if(visited[maxId]){
 			Globals.getInstance().put("loopInReactivationPath", true);
 			maxActivation.set(-Float.MAX_VALUE);

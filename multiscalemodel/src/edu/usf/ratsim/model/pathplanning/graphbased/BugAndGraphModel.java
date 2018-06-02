@@ -69,9 +69,9 @@ public class BugAndGraphModel extends Model implements GraphModel {
 		erm.addInPort("foundPlatform", foundPlat.getOutPort("foundPlatform"));
 		addModule(erm);		
 		
-		DisplaySingleton.getDisplay().addUniverseDrawer(new ExpGraphDrawer(erm, followThrs), 0);
-		DisplaySingleton.getDisplay().addUniverseDrawer(new SonarReadingsDrawer((SonarRobot) robot, (LocalizableRobot) robot), 0);
-		DisplaySingleton.getDisplay().addUniverseDrawer(new PathDrawer((LocalizableRobot) robot));
+		DisplaySingleton.getDisplay().addDrawer("universe","graph",new ExpGraphDrawer(erm, followThrs), 0);
+		DisplaySingleton.getDisplay().addDrawer("universe","sonar",new SonarReadingsDrawer((SonarRobot) robot, (LocalizableRobot) robot), 0);
+		DisplaySingleton.getDisplay().addDrawer("universe","path",new PathDrawer((LocalizableRobot) robot));
 	}
 
 	public UndirectedGraph<PointNode, Edge> getGraph() {

@@ -6,7 +6,7 @@ import java.util.Random;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.robot.StepRobot;
 import edu.usf.experiment.robot.affordance.Affordance;
 import edu.usf.experiment.robot.affordance.EatAffordance;
@@ -73,7 +73,7 @@ public class StepVirtualRobot extends VirtualRobot implements StepRobot, LocalAc
 	public void executeAffordance(Affordance af) {
 		// WORKAROUND Dont execute the first cycle
 		// TODO: fix this with better model-universe interaction
-		if (PropertyHolder.getInstance().getProperty("cycle").equals("0"))
+		if (Globals.getInstance().get("cycle").equals(0))
 			return;
 
 		if (af instanceof TurnAffordance) {

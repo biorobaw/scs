@@ -38,7 +38,8 @@ public class XMLExperimentParser {
 				}
 			}
 		}
-
+		System.out.println("[+] Trials Loaded");
+		
 		return res;
 	}
 

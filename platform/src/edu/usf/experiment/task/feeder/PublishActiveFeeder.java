@@ -2,7 +2,7 @@ package edu.usf.experiment.task.feeder;
 
 import java.util.List;
 
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.universe.Universe;
@@ -31,7 +31,7 @@ public class PublishActiveFeeder extends Task {
 		FeederUniverse fu = (FeederUniverse) u;
 		
 		List<Feeder> activeFeeders = FeederUniverseUtilities.getActiveFeeders(fu.getFeeders());
-		PropertyHolder.getInstance().setProperty("activeFeeder", "" + activeFeeders.get(0).getId());
+		Globals.getInstance().put("activeFeeder", "" + activeFeeders.get(0).getId());
 	}
 
 

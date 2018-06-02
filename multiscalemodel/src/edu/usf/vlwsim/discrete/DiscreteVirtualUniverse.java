@@ -58,11 +58,11 @@ public class DiscreteVirtualUniverse
 		robotDy = 0;
 
 		DisplaySingleton.getDisplay().setupUniversePanel(this);
-		DisplaySingleton.getDisplay().addUniverseDrawer(new DiscretePlatformDrawer(this));
-		DisplaySingleton.getDisplay().addUniverseDrawer(new GridDrawer(this));
-		DisplaySingleton.getDisplay().addUniverseDrawer(new WallDrawer(this));
-		DisplaySingleton.getDisplay().addUniverseDrawer(new DiscretePathDrawer(this));
-		DisplaySingleton.getDisplay().addUniverseDrawer(new DiscreteRobotDrawer(this));
+		DisplaySingleton.getDisplay().addDrawer("universe","platform",new DiscretePlatformDrawer(this));
+		DisplaySingleton.getDisplay().addDrawer("universe","grid",new GridDrawer(this));
+		DisplaySingleton.getDisplay().addDrawer("universe","walls",new WallDrawer(this));
+		DisplaySingleton.getDisplay().addDrawer("universe","path",new DiscretePathDrawer(this));
+		DisplaySingleton.getDisplay().addDrawer("universe","robot",new DiscreteRobotDrawer(this));
 	}
 
 	public DiscreteVirtualUniverse(ElementWrapper params, String logPath) {

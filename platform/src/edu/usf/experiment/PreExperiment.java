@@ -2,7 +2,6 @@ package edu.usf.experiment;
 
 import java.io.File;
 import java.util.List;
-
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.log.LoggerLoader;
 import edu.usf.experiment.plot.Plotter;

@@ -7,7 +7,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.model.ValueModel;
 import edu.usf.experiment.subject.Subject;
@@ -26,12 +26,14 @@ public class ValueLogger extends DistributedLogger {
 	}
 
 	public void log(Universe univ, Subject sub) {
-		PropertyHolder props = PropertyHolder.getInstance();
-		String trialName = props.getProperty("trial");
-		String groupName = props.getProperty("group");
-		String subName = props.getProperty("subject");
-		String episodeName = props.getProperty("episode");
-		String cycle = props.getProperty("cycle");
+		Globals g = Globals.getInstance();
+		String trialName = g.get("trial").toString();
+		String groupName = g.get("group").toString();
+		String subName = g.get("subName").toString();
+		String episode = g.get("episode").toString();
+		String cycle = g.get("cycle").toString();
+		
+
 
 		System.out.println("Starting to log value");
 
@@ -42,7 +44,7 @@ public class ValueLogger extends DistributedLogger {
 	
 		for (Coordinate p : valPoints.keySet())
 			writer.println(trialName + '\t' + groupName + '\t'
-					+ subName + '\t' + episodeName + '\t' + cycle+ "\t" + p.x
+					+ subName + '\t' + episode + '\t' + cycle+ "\t" + p.x
 					+ "\t" + p.y + "\t" +  valPoints.get(p));
 
 		System.out.println("Finished loggin value");

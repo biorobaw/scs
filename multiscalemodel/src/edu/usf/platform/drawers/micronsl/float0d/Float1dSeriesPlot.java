@@ -1,4 +1,4 @@
-package edu.usf.micronsl.plot.float2d;
+package edu.usf.platform.drawers.micronsl.float0d;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -8,50 +8,62 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
+import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import info.monitorenter.gui.chart.Chart2D;
-import info.monitorenter.gui.chart.ITracePainter;
+import info.monitorenter.gui.chart.ITrace2D;
 import info.monitorenter.gui.chart.rangepolicies.RangePolicyFixedViewport;
 import info.monitorenter.gui.chart.traces.Trace2DLtd;
+import info.monitorenter.gui.chart.traces.Trace2DSimple;
+import info.monitorenter.gui.chart.traces.painters.TracePainterDisc;
+import info.monitorenter.gui.chart.traces.painters.TracePainterLine;
 import info.monitorenter.util.Range;
 
-public abstract class Float1dChart2dPlot extends JPanel {
+/** 
+ * This plots the evolution of one particular value in a 1d float port.
+ * @author martin
+ *
+ */
+public class Float1dSeriesPlot extends JPanel {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	private Trace2DLtd trace;
+	private static final long serialVersionUID = -2695029035531174298L;
 	private Float1dPort port;
 	private double maxSoFar;
 	private double minSoFar;
+	private Trace2DLtd trace;
+	private int time;
 	private Chart2D chart;
+	private int index;
 
-	public Float1dChart2dPlot(Float1dPort port){
+	public Float1dSeriesPlot(Float1dPort port, int index, String name){
 		chart = new Chart2D();
-        trace = new Trace2DLtd(port.getSize());
-        trace.setTracePainter(getPainter());
+        trace = new Trace2DLtd(20);
+        
+        TracePainterLine discPainter = new TracePainterLine();
+        trace.setTracePainter(discPainter);
         trace.setColor(Color.BLACK);
+        trace.setName(name);
+        chart.setBackground(new Color(238,238,238));
         chart.addTrace(trace);
+        // TODO: fix to autosize
         chart.setSize(100, 100);
         
         this.port = port;
+        this.index = index;
         
         maxSoFar = 0;
         minSoFar = 0;
+        time = 0;
         
         setLayout(new BorderLayout());
         add(chart);
 	}
 	
-	
-
 	@Override
 	public void paint(Graphics g) {
-		for (int i = 0; i < port.getData().length; i++) 
-        {
-            trace.addPoint(i, port.get(i));
-        }
+		trace.addPoint(time++, port.get(index));
 		
 		double min = trace.getMinY();
 		double max = trace.getMaxY();
@@ -62,7 +74,7 @@ public abstract class Float1dChart2dPlot extends JPanel {
 		
 		super.paint(g);
 	}
-
+	
 	@Override
 	public Dimension getMinimumSize(){
 		return new Dimension(500,200);
@@ -72,11 +84,5 @@ public abstract class Float1dChart2dPlot extends JPanel {
 	public Dimension getPreferredSize(){
 		return new Dimension(500,200);
 	}
-	
-	public Chart2D getChart() {
-		return chart;
-	}
 
-	public abstract ITracePainter<?> getPainter();
 }
-

@@ -11,10 +11,15 @@ import edu.usf.experiment.display.drawer.Scaler;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.SonarRobot;
 
-public class SonarReadingsDrawer implements Drawer {
+public class SonarReadingsDrawer extends Drawer {
 
 	private SonarRobot sRobot;
 	private LocalizableRobot lRobot;
+	
+	Coordinate rPos = new Coordinate(-1000000,-1000000);
+	float robotOrient = 0 ;
+	float[] readings = {};
+	float[] angles = {};
 
 	public SonarReadingsDrawer(SonarRobot robot, LocalizableRobot lRobot) {
 		this.sRobot = robot;
@@ -23,10 +28,8 @@ public class SonarReadingsDrawer implements Drawer {
 
 	@Override
 	public void draw(Graphics g, Scaler s) {
-		float[] readings = sRobot.getSonarReadings();
-		float[] angles = sRobot.getSonarAngles();
-		Coordinate rPos = lRobot.getPosition();
-		float robotOrient = lRobot.getOrientationAngle();
+
+		
 
 		g.setColor(Color.RED);
 		for (int i = 0; i < readings.length; i++) {
@@ -46,6 +49,15 @@ public class SonarReadingsDrawer implements Drawer {
 	@Override
 	public void clearState() {
 
+	}
+
+	@Override
+	public void updateData() {
+		// TODO Auto-generated method stub
+		rPos = lRobot.getPosition();
+		robotOrient = lRobot.getOrientationAngle();
+		readings = sRobot.getSonarReadings();
+		angles = sRobot.getSonarAngles();
 	}
 
 }

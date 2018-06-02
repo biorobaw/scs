@@ -5,13 +5,17 @@ import java.awt.Graphics;
 import java.awt.Point;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geomgraph.Position;
 
 import edu.usf.experiment.universe.GlobalCameraUniverse;
 
-public class RobotDrawer implements Drawer {
+public class RobotDrawer extends Drawer {
 
 	private static final float RADIUS = .075f;
 	private GlobalCameraUniverse u;
+	
+	Coordinate position = new Coordinate(-1000000,-1000000);
+	Float angle = 0f;
 	
 	public RobotDrawer(GlobalCameraUniverse gcu){
 		u = gcu;
@@ -19,9 +23,9 @@ public class RobotDrawer implements Drawer {
 
 	@Override
 	public void draw(Graphics g, Scaler s) {
-		Coordinate pos = u.getRobotPosition();
-		Point p = s.scale(pos);
-		float angle = u.getRobotOrientationAngle();
+		if(!doDraw) return;
+		Point p = s.scale(position);
+		
 
 		g.setColor(Color.BLACK);
 		g.drawOval(p.x - (int) (RADIUS * s.xscale), p.y - (int) (RADIUS * s.yscale),
@@ -32,6 +36,14 @@ public class RobotDrawer implements Drawer {
 
 	@Override
 	public void clearState() {
+		
+	}
+
+	@Override
+	public void updateData() {
+		// TODO Auto-generated method stub
+		position = u.getRobotPosition();
+		angle = u.getRobotOrientationAngle();
 		
 	}
 }

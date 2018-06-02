@@ -4,7 +4,7 @@ import java.util.StringTokenizer;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.Globals;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.vector.PointPort;
 
@@ -26,7 +26,7 @@ public class PlatformPosition extends Module {
 
 	@Override
 	public void run() {
-		String pos = PropertyHolder.getInstance().getProperty("platformPosition");
+		String pos = Globals.getInstance().get("platformPosition").toString();
 		if(pos != null){
 			StringTokenizer tok = new StringTokenizer(pos, ",");
 			float x = Float.parseFloat(tok.nextToken());

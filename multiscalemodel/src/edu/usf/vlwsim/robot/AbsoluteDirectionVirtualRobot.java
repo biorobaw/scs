@@ -1,5 +1,6 @@
 package edu.usf.vlwsim.robot;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -104,7 +105,7 @@ public class AbsoluteDirectionVirtualRobot extends VirtualRobot implements Absol
 
 	@Override
 	public List<Affordance> getPossibleAffordances() {
-		List<Affordance> res = new LinkedList<Affordance>();
+		List<Affordance> res = new ArrayList<Affordance>();
 
 		for (Float angle : motionAngles)
 			res.add(new AbsoluteAngleAffordance(angle, step));
