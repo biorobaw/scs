@@ -2,6 +2,7 @@ package edu.usf.experiment.display.drawer;
 
 import java.awt.Point;
 import java.awt.geom.Rectangle2D.Float;
+import java.util.List;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -82,29 +83,48 @@ public class Scaler {
 	 */
 	public Point scale(Coordinate p) {
 		Point pScaled = new Point();
-		pScaled.x = (int) ((p.x + xoffset) * xscale);
-		pScaled.y = -(int) ((p.y + yoffset) * yscale);
+		pScaled.x = (int)Math.round( ((p.x + xoffset) * xscale));
+		pScaled.y = -(int)Math.round( ((p.y + yoffset) * yscale));
 		return pScaled;
 	}
 	
-	public Point[] scale(Coordinate p[]) {
-		Point results[] = new Point[p.length];
-		for(int i=0;i<p.length;i++) results[i] = scale(p[i]);
+	public int[][] scale(Coordinate p[]) {
+		int results[][] = new int[2][p.length];
+		for(int i=0;i<p.length;i++) {
+			Point point = scale(p[i]);
+			results[0][i] = point.x;
+			results[1][i] = point.y;
+		}
 		return results;
 	}
 	
-	public float scaleDistanceX(float dx) {
-		return xscale*dx;
+	public int[][] scale(List<Coordinate> positions){
+		int results[][] = new int[2][positions.size()];
+		int i=0;
+		for(Coordinate c : positions) {
+			Point point = scale(c);
+			results[0][i] = point.x;
+			results[1][i] = point.y;
+			i++;
+		}
+		return results;
 	}
-	public float scaleDistanceY(float dy) {
-		return yscale*dy;
+	
+
+	
+	public int scaleDistanceX(float dx) {
+		return Math.round(xscale*dx);
 	}
-	public Point scaleDistance(Coordinate p) {
-		return new Point((int)(p.x*xscale),(int)(p.y*yscale));
+	public float scaleDistanceY(float dy,boolean signed) {
+		
+		return signed? -yscale*dy : yscale*dy;
 	}
-	public Point[] scaleDistance(Coordinate p[]) {
+	public Point scaleDistance(Coordinate p,boolean signed) {
+		return new Point((int)(p.x*xscale),(int)(signed ?  -p.y*yscale : p.y*yscale));
+	}
+	public Point[] scaleDistance(Coordinate p[],boolean signed) {
 		Point results[] = new Point[p.length];
-		for(int i=0;i<p.length;i++) results[i] = scaleDistance(p[i]);
+		for(int i=0;i<p.length;i++) results[i] = scaleDistance(p[i],signed);
 		return results;
 	}
 

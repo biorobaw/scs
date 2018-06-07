@@ -8,6 +8,8 @@ import java.awt.Point;
 import java.awt.Stroke;
 import java.util.LinkedList;
 
+import edu.usf.experiment.universe.BoundedUniverse;
+import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.universe.wall.Wall;
 import edu.usf.experiment.universe.wall.WallUniverse;
 
@@ -15,6 +17,7 @@ public class WallDrawer extends Drawer {
 	
 	private WallUniverse u;
 	private LinkedList<Wall> wallCopies = new LinkedList<>();
+	Color color = Color.BLACK;
 	
 	final static int DEFAULT_WALL_THICKNESS = 2;
 	int wallThickness;
@@ -29,9 +32,14 @@ public class WallDrawer extends Drawer {
 	}
 
 	@Override
-	public void draw(Graphics g, Scaler s) {
+	public void draw(Graphics g, java.awt.geom.Rectangle2D.Float panelCoordinates) {
 		if(!doDraw) return;
-		g.setColor(Color.BLACK);
+		
+		BoundedUniverse bu = (BoundedUniverse)UniverseLoader.getUniverse();
+		if(bu==null) return;
+		Scaler s = new Scaler(bu.getBoundingRect(), panelCoordinates, true);
+		
+		g.setColor(color);
 		Graphics2D g2d = (Graphics2D)g;
 		Stroke oldStroke = g2d.getStroke();
 		g2d.setStroke(new BasicStroke(wallThickness));
@@ -51,7 +59,7 @@ public class WallDrawer extends Drawer {
 	}
 
 	@Override
-	public void updateData() {
+	public synchronized void updateData() {
 		// TODO Auto-generated method stub
 		wallCopies.clear();
 		for (Wall w : u.getWalls()){
@@ -61,6 +69,10 @@ public class WallDrawer extends Drawer {
 									(float)w.s.p1.y));
 		}
 		
+	}
+	
+	public void setColor(Color c){
+		color = c;
 	}
 
 }

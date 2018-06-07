@@ -8,7 +8,7 @@ import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 public class SubjectFoundFood extends Module {
 
 	private FeederRobot robot;
-	private Bool0dPort outPort;
+	public Bool0dPort outPort;
 
 	public SubjectFoundFood(String name, Robot robot) {
 		super(name);

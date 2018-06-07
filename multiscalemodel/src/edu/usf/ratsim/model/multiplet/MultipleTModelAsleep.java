@@ -36,13 +36,14 @@ import edu.usf.ratsim.nsl.modules.multipleT.NextPositionModule;
 import edu.usf.ratsim.nsl.modules.rl.ActorCriticDeltaError;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
 import edu.usf.ratsim.nsl.modules.rl.UpdateQModuleAC;
+import edu.usf.vlwsim.robot.VirtualRobot;
 import edu.usf.vlwsim.universe.VirtUniverse;
 
 public class MultipleTModelAsleep extends Model {
 
 	private int numActions;
 	private int numPC;
-	private TmazeRandomPlaceCellLayer placeCells;
+	public TmazeRandomPlaceCellLayer placeCells;
 	public ProportionalVotes currentStateQ;
 	private ProportionalValue currentValue;
 	public NextActiveModule nextActiveModule;
@@ -55,6 +56,11 @@ public class MultipleTModelAsleep extends Model {
 	public boolean[] visitedNodes;
 	
 	private Robot robot;
+	private ActorCriticDeltaError deltaError;
+	private UpdateQModuleAC updateQV;
+	
+	public boolean doneReplaying = false;
+	private SubjectFoundFood subFoundFood;
 	
 	public MultipleTModelAsleep() {
 	}
@@ -68,6 +74,7 @@ public class MultipleTModelAsleep extends Model {
 		float discountFactor	= params.getChildFloat("discountFactor");
 		float learningRate		= params.getChildFloat("learningRate");
 		float foodReward		= params.getChildFloat("foodReward");
+		float propagationThreshold = params.getChildFloat("replayThres");
 		
 				
 		this.numActions = numActions;
@@ -137,7 +144,7 @@ public class MultipleTModelAsleep extends Model {
 		addModule(pos);
 		
 		
-		SubjectFoundFood subFoundFood = new SubjectFoundFood("Subject Found Food", robot);
+		subFoundFood = new SubjectFoundFood("Subject Found Food", robot);
 		addModule(subFoundFood);
 	
 		//Create reward module
@@ -162,7 +169,7 @@ public class MultipleTModelAsleep extends Model {
 //		copyQ.addInPort("toCopy", currentStateQ.getOutPort("votes"),true);
 //		addModule(copyQ);
 		
-		nextActiveModule = new NextActiveModule("nextActive");
+		nextActiveModule = new NextActiveModule("nextActive",propagationThreshold);
 		nextActiveModule.addInPort("W", WTable);
 		addModule(nextActiveModule);
 		
@@ -188,14 +195,14 @@ public class MultipleTModelAsleep extends Model {
 		
 		
 		//Create deltaSignal module
-		Module deltaError = new ActorCriticDeltaError("error", discountFactor, numActions);
+		deltaError = new ActorCriticDeltaError("error", discountFactor, numActions);
 		deltaError.addInPort("reward", r.getOutPort("reward"));
 		deltaError.addInPort("value", currentValue.getOutPort("value"));
 		addModule(deltaError);
 
 		
 		//Create update Q module		
-		Module updateQV = new UpdateQModuleAC("updateQ", learningRate);
+		updateQV = new UpdateQModuleAC("updateQ", learningRate);
 		updateQV.addInPort("delta", deltaError.getOutPort("delta"));
 		updateQV.addInPort("action", actionSelection.getOutPort("action"));
 		updateQV.addInPort("Q", QTable);
@@ -221,22 +228,7 @@ public class MultipleTModelAsleep extends Model {
 		
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		//Add drawing utilities:
-//		VirtUniverse universe = VirtUniverse.getInstance();
-//		universe.addDrawingFunction(new DrawPolarGraph("Q softmax",50, 50, 50, softmax.probabilities,true));
-//		
-//		universe.addDrawingFunction(new DrawPolarGraph("gated probs",50, 170, 50, actionGating.probabilities,true));
-//		universe.addDrawingFunction(new DrawPolarGraph("biased probs",50, 290, 50, biasModule.probabilities,true));
+
 		
 		
 				
@@ -252,12 +244,9 @@ public class MultipleTModelAsleep extends Model {
 
 	public void newEpisode() {
 		// TODO Auto-generated method stub
-		
+		super.newEpisode();
 		visitedNodes = new boolean[numPC];
-		Globals.getInstance().put("loopInReactivationPath", false);
-		
-//		getModule("PCLayer").getOutPort("activation").clear();
-		//by doing this deltaQ(s_i,a_i) = nu*delta*State(s_i)*<a_i,a> = 0
+		doneReplaying = false;
 				
 		//set random placecell active and move robot to that position:
 		int startingPlaceCell = RandomSingleton.getInstance().nextInt(numPC);
@@ -267,6 +256,8 @@ public class MultipleTModelAsleep extends Model {
 		((Int0dPort)nextActiveModule.getOutPort("nextActive")).set(startingPlaceCell);
 		Coordinate initPos = getPlaceCells().get(startingPlaceCell).getPreferredLocation();
 		VirtUniverse.getInstance().setRobotPosition(initPos);
+		
+
 		
 	}
 
@@ -281,10 +272,15 @@ public class MultipleTModelAsleep extends Model {
 		return ((Float0dPort)nextActiveModule.getOutPort("maxActivation")).get();
 	}
 
-	public boolean loopInReactivationPath(){
-		return (boolean)Globals.getInstance().get("loopInReactivationPath");
+	public boolean doneReplaying(){
+//		if(subFoundFood.outPort.get()) System.out.println("replay finished finding food");
+//		else if (!nextActiveModule.propagate) System.out.println("replay finished - unable to propagate");
+		return subFoundFood.outPort.get() || !nextActiveModule.propagate;
 	}
 	
+	
+	
+	Coordinate nextPos = null;
 	
 	@Override
 	public void finalTask() {
@@ -292,10 +288,14 @@ public class MultipleTModelAsleep extends Model {
 		super.finalTask();
 
 		
-		Coordinate nextPos = ((PointPort)nextPosModule.getOutPort("nextPosition")).get();
+		nextPos = ((PointPort)nextPosModule.getOutPort("nextPosition")).get();
+		
+
+		
+	}
+	
+	public void move(){
 		((TeleportRobot)robot).setPosition(nextPos);
-		
-		
 	}
 
 }

@@ -45,8 +45,11 @@ public class FeederUniverseUtilities {
 	// Involving position and food
 	public static boolean hasRobotFoundFood(List<Feeder> feeders, Coordinate robotPos, float close_thrs) {
 		for (Feeder f : feeders) {
-			if (f.isActive() && f.hasFood() && robotPos.distance(f.getPosition()) < close_thrs)
+			if (f.isActive() && f.hasFood() && robotPos.distance(f.getPosition()) < close_thrs){
+//				System.out.println("Found food, distance: " + robotPos.distance(f.getPosition()));
+//				System.out.println(robotPos.x+ " " + robotPos.y+ " " + f.getPosition().x + " " + f.getPosition().y +" " + close_thrs);
 				return true;
+			}
 		}
 
 		return false;

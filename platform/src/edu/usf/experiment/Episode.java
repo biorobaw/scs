@@ -58,7 +58,7 @@ public class Episode {
 	static private boolean paused = false;
 	
 	public float timeStep;
-	private int[] sleepValues = new int[] {5000,3000,2000,1000,500,400,300,100,30,0};
+	private static int[] sleepValues = new int[] {5000,3000,2000,1000,500,400,300,100,30,0};
 	private NSLSimulation nslSim;
 
 	public Episode(ElementWrapper episodeNode, String parentLogPath, Trial trial, int episodeNumber, boolean makePlots) {
@@ -141,15 +141,16 @@ public class Episode {
 			getSubject().getModel().run();
 			
 			
+			long stamp = Debug.tic();
 			display.updateData();
 			display.repaint();
 			display.waitUntilDoneRendering();
+			//System.out.println("Time rendering: " + Debug.toc(stamp));
 			
-			waitOnPause(); //the pause is here so that the model state can be observed before performing the actions
+			if(!finished) waitNextFrame(); //the pause is here so that the model state can be observed before performing the actions
 			
 			// Evaluate stop conditions
-			for (Condition sc : stopConds) finished = finished || sc.holds(this);
-			if (finished) break;
+			for (Condition sc : stopConds) if(finished = finished || sc.holds(this)) break;
 			
 			getUniverse().step();
 			
@@ -176,14 +177,8 @@ public class Episode {
 			if (cycle % 5000 == 0)
 				System.out.println("");
 
-			int sleep = sleepValues[(int)g.get("simulationSpeed")];
-			if (sleep != 0 && !finished )
-				try {
-					Thread.sleep(sleep);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			
+			
 
 		}
 
@@ -228,7 +223,7 @@ public class Episode {
 		return trial.getUniverse();
 	}
 	
-	static public void waitOnPause() {
+	static public void waitNextFrame() {
 		try {
 			accessMutex.acquire();
             if(paused){   
@@ -238,8 +233,14 @@ public class Episode {
             		pauseSemaphore.acquire();
             	}else accessMutex.release();
 
-            } else accessMutex.release();
+            } else {
+            	accessMutex.release();
+            	int sleep = sleepValues[(int)Globals.getInstance().get("simulationSpeed")];
+        		if (sleep != 0  ) Thread.sleep(sleep);
+            	
+            }
         } catch (InterruptedException ex) {
+        	ex.printStackTrace();
         }
 		
 	}
@@ -274,6 +275,8 @@ public class Episode {
         } catch (InterruptedException ex) {
         }
 	}
+	
+
 	
 
 }

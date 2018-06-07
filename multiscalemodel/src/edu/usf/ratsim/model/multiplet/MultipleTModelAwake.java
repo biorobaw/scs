@@ -9,6 +9,7 @@ import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.drawer.simulation.CycleDataDrawer;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.robot.affordance.AbsoluteAngleAffordance;
 import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.experiment.robot.affordance.EatAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -18,7 +19,9 @@ import edu.usf.micronsl.module.copy.Int0dCopyModule;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
-import edu.usf.platform.drawers.micronsl.float1d.PolarDataDrawer;
+import edu.usf.platform.drawers.PolarDataDrawer;
+import edu.usf.ratsim.model.multiplet.submodules.DistanceAffordanceGatingModule;
+import edu.usf.ratsim.model.multiplet.submodules.DistancesInputModule;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromProbabilities;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalValue;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
@@ -35,6 +38,7 @@ import edu.usf.ratsim.nsl.modules.rl.ActorCriticDeltaError;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
 import edu.usf.ratsim.nsl.modules.rl.UpdateQModuleAC;
 import edu.usf.ratsim.support.NotImplementedException;
+import edu.usf.vlwsim.robot.VirtualRobot;
 //import edu.usf.vlwsim.display.drawingUtilities.DrawPolarGraph;
 import edu.usf.vlwsim.universe.VirtUniverse;
 
@@ -52,6 +56,13 @@ public class MultipleTModelAwake extends Model {
 	private Module actionSelection;
 	private AffordanceRobot affRobot;
 
+	public Softmax softmax;
+
+	public Last2ActionsActionGating twoActionsGateModule;
+	public DistanceAffordanceGatingModule affordanceGateModule;
+
+	private DistancesInputModule inputDisntaceModule;
+
 	public MultipleTModelAwake() {
 	}
 
@@ -66,6 +77,7 @@ public class MultipleTModelAwake extends Model {
 		float learningRate 	 = params.getChildFloat("learningRate");
 		float wTransitionLR  = params.getChildFloat("wTransitionLR");
 		float foodReward 	 = params.getChildFloat("foodReward");
+		float minDistance	 = params.getChildFloat("step");
 
 		float sameActionBias = params.getChildFloat("sameActionBias");
 		//float maxDistanceSensorDistnace = params.getChildFloat("maxDistanceSensorDistance");
@@ -124,6 +136,12 @@ public class MultipleTModelAwake extends Model {
 		addModule(r);																			// must
 					
 
+		//Create distance sensing module:
+		float maxDistanceSensorDistance = 2f;
+		inputDisntaceModule = new DistancesInputModule("distance input", (VirtualRobot)robot, numActions, maxDistanceSensorDistance);
+		addModule(inputDisntaceModule);
+		
+		
 		// Create Place Cells module
 		placeCells = new TmazeRandomPlaceCellLayer("PCLayer", PCRadius, numPC, placeCellType);
 		placeCells.addInPort("position", pos.getOutPort("position"));
@@ -141,7 +159,7 @@ public class MultipleTModelAwake extends Model {
 		addModule(currentValue);
 
 		// Create SoftMax module
-		Softmax softmax = new Softmax("softmax", numActions);
+		softmax = new Softmax("softmax", numActions);
 		softmax.addInPort("input", currentStateQ.getOutPort("votes")); 
 		addModule(softmax);
 
@@ -159,26 +177,27 @@ public class MultipleTModelAwake extends Model {
 
 		// Create ActionGatingModule -- sets the probabilities of impossible
 		// actions to 0 and then normalizes them
-		ActionGatingModule actionGating = new ActionGatingModule("actionGating", robot,numActions);
-		actionGating.addInPort("input", softmax.getOutPort("probabilities"));
-		addModule(actionGating);
+		affordanceGateModule = new DistanceAffordanceGatingModule("actionGating",numActions,minDistance);
+		affordanceGateModule.addInPort("input", softmax.getOutPort("probabilities"));
+		affordanceGateModule.addInPort("distances", inputDisntaceModule.getOutPort("distances"));
+		addModule(affordanceGateModule);
 
 		// Add bias module to probabilities
 		// DontGoBackBiasModule biasModule = new DontGoBackBiasModule("bias",
 		// numActions, 7, 0.01f);
-		Last2ActionsActionGating biasModule = new Last2ActionsActionGating("bias", numActions, 1.5f, 0.001f);
-		biasModule.addInPort("input", actionGating.getOutPort("probabilities"));
-		addModule(biasModule);
+		twoActionsGateModule = new Last2ActionsActionGating("bias", numActions, 1.5f, 0.001f);
+		twoActionsGateModule.addInPort("input", affordanceGateModule.getOutPort("probabilities"));
+		addModule(twoActionsGateModule);
 
 		// Create action selection module -- choose action according to
 		// probability distribution
 		actionSelection = new ActionFromProbabilities("actionFromProbabilities");
-		actionSelection.addInPort("probabilities", biasModule.getOutPort("probabilities"));
+		actionSelection.addInPort("probabilities", twoActionsGateModule.getOutPort("probabilities"));
 		addModule(actionSelection);
 
 
 		// Add extra input to bias Module
-		biasModule.addInPort("action", actionSelection.getOutPort("action"),true);
+		twoActionsGateModule.addInPort("action", actionSelection.getOutPort("action"),true);
 
 		
 		// Create deltaSignal module
@@ -217,9 +236,7 @@ public class MultipleTModelAwake extends Model {
 //		universe.addDrawingFunction(new DrawPolarGraph("biased probs", 50, 290, 50, biasModule.probabilities, true));
 //
 //		universe.addDrawingFunction(new DrawPolarGraph("bias ring", 50, 410, 50, biasModule.chosenRing, true));
-		Display d = DisplaySingleton.getDisplay();
-		d.addDrawer("universe", "cycle info", new CycleDataDrawer());
-		d.addDrawer("universe", "softmax", new PolarDataDrawer("Q softmax",softmax.probabilities));
+		
 
 	}
 
@@ -256,12 +273,15 @@ public class MultipleTModelAwake extends Model {
 		super.newEpisode();
 	}
 	
+	
+	public int chosenAction = -1;
 	@Override
 	public void finalTask() {
 		// TODO Auto-generated method stub
 		super.finalTask();
-		int action = ((Int0dPort)actionSelection.getOutPort("action")).get();
-		affRobot.executeAffordance(affRobot.getPossibleAffordances().get(action));
+		chosenAction = ((Int0dPort)actionSelection.getOutPort("action")).get();
+		AbsoluteAngleAffordance aff = (AbsoluteAngleAffordance)affRobot.getPossibleAffordances().get(chosenAction);
+		affRobot.executeAffordance(aff);
 		affRobot.executeAffordance(new EatAffordance());
 		
 		

@@ -18,13 +18,17 @@ public class NextActiveModule extends Module {
 	Int0dPort nextActivePort = new Int0dPort(this);
 	Int0dPort activePort	 = new Int0dPort(this);
 	Float0dPort maxActivation = new Float0dPort(this);
+	float propagationThreshold = 0;
 	boolean[] visited;
 	
-	public NextActiveModule(String name) {
+	public boolean propagate;
+	
+	public NextActiveModule(String name,float threshold) {
 		super(name);		
 		this.addOutPort("nextActive", nextActivePort);
 		this.addOutPort("active",activePort);
 		this.addOutPort("maxActivation", maxActivation);
+		this.propagationThreshold = Math.max(threshold,0);
 
 	}
 
@@ -46,15 +50,13 @@ public class NextActiveModule extends Module {
 					maxId = e.j;
 				}
 
-		nextActivePort.set(maxId);
-		if(visited[maxId]){
-			Globals.getInstance().put("loopInReactivationPath", true);
-			maxActivation.set(-Float.MAX_VALUE);
-		} else {
-			visited[maxId] = true;
-			maxActivation.set(maxVal);
-		}
 		
+		maxActivation.set(maxVal);
+		nextActivePort.set(maxId);
+		
+		propagate = propagationThreshold < maxVal && !visited[maxId];
+		visited[maxId] = true;
+
 		
 	}
 	
@@ -66,5 +68,10 @@ public class NextActiveModule extends Module {
 	@Override
 	public boolean usesRandom() {
 		return false;
+	}
+	
+	@Override
+	public void newEpisode(){
+		propagate = false;
 	}
 }

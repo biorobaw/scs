@@ -1,21 +1,13 @@
 package edu.usf.experiment.display;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D.Float;
 import java.util.ArrayList;
 
-import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 import edu.usf.experiment.display.drawer.Drawer;
-import edu.usf.experiment.display.drawer.Scaler;
-import edu.usf.experiment.universe.BoundedUniverse;
-import edu.usf.experiment.universe.Universe;
-import edu.usf.experiment.utils.RandomSingleton;
 
 public class DrawPanel extends JPanel{
 	
@@ -30,14 +22,15 @@ public class DrawPanel extends JPanel{
 	String panelName = "";
 	Display parent = null;
 	
-	int renderCycle = -10;
+	long renderCycle = -10;
 	
 	
 	//by default world coordinates for a plot are between -1 and 1 for both x and y coordinates
 	private Float coordinateFrame = new Float(-1, -1, 2, 2);
 	
 	
-	public DrawPanel() {
+	public DrawPanel(int sizeX, int sizeY) {
+		setMinimumSize(new Dimension(sizeX, sizeY));
 	}
 	
 	@Override
@@ -47,26 +40,23 @@ public class DrawPanel extends JPanel{
 		
 		super.paint(g);
 		
+		long copyRenderCycle = getRenderCycle();
+		
 		// Define scaling factors
-		Float worldCoordinates = getCoordinateFrame();
 		Dimension panelRect = getSize();
 		Float panelCoordinates = new Float(XMARGIN,YMARGIN,panelRect.width-2*XMARGIN,panelRect.height-2*YMARGIN);
 
-		Scaler s = new Scaler(worldCoordinates,panelCoordinates,true);		
 
 		
 		// Draw all layers
-//		g.setColor(Color.RED);
-//		g.drawRect(0, 0, panelRect.width-1, panelRect.height-1);
 		for (Drawer d : drawers){
 			//if (cBoxes.get(d).isSelected())
 			if(executeDrawer(d)) {
-				d.setCoordinateSystems(worldCoordinates,panelCoordinates);
-				d.draw(g, s);
+				d.draw(g, panelCoordinates);
 			}
 		}
 		
-		if(parent!=null) parent.sync(renderCycle);
+		if(parent!=null) parent.sync(copyRenderCycle);
 		
 	}
 	
@@ -107,8 +97,12 @@ public class DrawPanel extends JPanel{
 	public void setParent(Display parent) {
 		this.parent = parent;
 	}
-	public void setRenderCycle(int cycle) {
+	public synchronized void setRenderCycle(int cycle) {
 		renderCycle = cycle;
+	}
+	
+	public synchronized long getRenderCycle(){
+		return renderCycle;
 	}
 
 	

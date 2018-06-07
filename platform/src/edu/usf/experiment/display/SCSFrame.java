@@ -16,6 +16,7 @@ import java.awt.event.KeyListener;
 import java.awt.geom.Rectangle2D.Float;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -32,6 +33,7 @@ import edu.usf.experiment.Globals;
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.universe.BoundedUniverse;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.utils.Debug;
 
 /**
  * A Java Swing frame to display the SCS data.
@@ -63,6 +65,8 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 	
 	int renderCycle = -2; // cycle being redered
 	int remainingPanels = -1;
+	private boolean waiting ;
+	
 
 	public SCSFrame(){
 		//create a synchronizable content pane
@@ -95,11 +99,9 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		add(plotsPanel, cs);
 		
 		// create and add universePanel
-		uPanel = new DrawPanel();
+		uPanel = new DrawPanel(600,600);
 		uPanel.setParent(this);
 		drawPanels.put("universe", uPanel);
-		uPanel.setMinimumSize(new Dimension(600,600));
-		uPanel.setPreferredSize(new Dimension(600,600));
 		GridBagConstraints uPanelCons = getConstraints(1,1);
 		uPanelCons.weighty = 100;
 		add(uPanel, uPanelCons);
@@ -113,9 +115,15 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		initKeyListener();
 		
 		
+		//set synchronization:
+		System.out.println("Synchronizing display: " +( Globals.getInstance().get("syncDisplay")!=null));
+		synchronizeDisplay.set(Globals.getInstance().get("syncDisplay")!=null);
+		
+		
 		//pack and set visibility
 		pack();
 		setVisible(true);
+		setSize(800,800 );
 		repaint();
 
 		
@@ -159,9 +167,16 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		plotsPanel.add(panel, gridBagConstraints);
 		drawPanels.put(id, panel);
 		
-		pack();
+		repack();
+		
+		
 	}
 	
+	void repack(){
+		setMinimumSize(getSize());
+		pack();
+		setMinimumSize(null);
+	}
 	
 	private void addCheckbox(Drawer d) {
 		JCheckBox cb = new JCheckBox(d.getClass().getSimpleName(), true);
@@ -178,6 +193,7 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		
 		cbPanel.add(cb);
 		cBoxes.put(d, cb);
+		repack();
 	}
 	
 	@Override
@@ -186,7 +202,7 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		panel.addDrawer(d);		
 		drawers.put(drawerID, d);	
 		addCheckbox(d);
-		pack();
+		
 	}
 	
 	@Override
@@ -195,7 +211,7 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		panel.addDrawer(d,pos);
 		drawers.put(drawerID, d);	
 		addCheckbox(d);
-		pack();
+		repack();
 	}
 	
 
@@ -347,6 +363,17 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 			}
 		});
 		
+		keyActions.put(KeyEvent.VK_K, new Runnable(){
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				toggleSync();
+			}
+			
+		});
+		
+		
 		
 	}
 	
@@ -354,12 +381,62 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 	@Override
 	public synchronized void  updateData() {
 		// TODO Auto-generated method stub
+		renderCycle++;
 		for(Drawer d : drawers.values()) d.updateData();
-		renderCycle = (int)Globals.getInstance().get("cycle");
 		remainingPanels = drawPanels.size();
 		for(DrawPanel p :drawPanels.values()) p.setRenderCycle(renderCycle);
 		
 	}
+	
+
+	@Override
+	public void waitUntilDoneRendering() {
+		// TODO Auto-generated method stub
+		if(checkIfWaitingIsNecessary()) {
+			//wait until drawers have drawn this cycle
+			try {
+//				System.out.println("waiting till render is done: " + renderCycle);
+				long stamp = Debug.tic();
+				doneRenderLock.acquire();
+//				System.out.println("Time syncing: " + Debug.toc(stamp));
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public synchronized void sync(long cycle) {
+		if(synchronizeDisplay.get() && cycle==renderCycle) { 
+			remainingPanels = Math.max(--remainingPanels, -1);
+			if(remainingPanels==0 && waiting) {
+				waiting = false;
+				doneRenderLock.release();
+				
+			}
+		}
+	}
+	
+	public synchronized void toggleSync(){
+		boolean sync = !synchronizeDisplay.get();
+		synchronizeDisplay.set(sync);
+		if(!sync)
+		{
+			remainingPanels = -1;
+			if(waiting){
+				waiting = false;
+				doneRenderLock.release();
+			}
+			
+		}
+		
+	}
+	
+	public synchronized boolean checkIfWaitingIsNecessary(){
+		waiting = synchronizeDisplay.get();
+		return waiting;
+	}
+	
 	
 	
 	class DrawableContentPane extends JPanel {
@@ -376,29 +453,7 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 
 	}
 	
-	
-	public synchronized void sync(int cycle) {
-		if(Globals.getInstance().get("syncDisplay")!=null && cycle==renderCycle) { 
-			remainingPanels--;
-			if(remainingPanels==0) doneRenderLock.release();
-		}
-	}
 
-	@Override
-	public void waitUntilDoneRendering() {
-		// TODO Auto-generated method stub
-		if(Globals.getInstance().get("syncDisplay")!=null) {
-			//wait until drawers have drawn this cycle
-			try {
-//				System.out.println("waiting till render is done: " + renderCycle);
-				doneRenderLock.acquire();
-//				System.out.println("done rendering");
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
 
 	
 	

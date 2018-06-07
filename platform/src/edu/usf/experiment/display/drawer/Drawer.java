@@ -11,15 +11,14 @@ import java.awt.geom.Rectangle2D.Float;
 public abstract class Drawer {
 	
 	public boolean doDraw = true;
-	public Float worldCoordinates;
-	public Float panelCoordinates;
+//	public Float defaultWorldCoordinates;
 
 	/**
 	 * Draw the relevant information in the specified graphics.
 	 * @param g The graphics element to paint with
 	 * @param s The scaling object. It maps the universe coordinates and dimensions to the container coordinate frame.
 	 */
-	abstract public void  draw(Graphics g, Scaler s);
+	abstract public void  draw(Graphics g, Float panelCoordinates);
 
 	/**
 	 * Tells the drawer to clear potential stateful information, such as the path of the robot so far.
@@ -42,9 +41,8 @@ public abstract class Drawer {
 	/**
 	 * set world and panel coordinates
 	 */
-	public void setCoordinateSystems(Float worldCoordinates, Float panelCoordinates) {
-		this.worldCoordinates = worldCoordinates;
-		this.panelCoordinates = panelCoordinates;
-	}
+//	public void setDefaultCoordinates(Float defaultCoordinates) {
+//		this.defaultWorldCoordinates = defaultCoordinates;
+//	}
 
 }

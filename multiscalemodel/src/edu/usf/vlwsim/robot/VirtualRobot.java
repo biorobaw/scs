@@ -298,6 +298,10 @@ public class VirtualRobot
 	public void setPosition(Coordinate pos) {
 		universe.setRobotPosition(new Coordinate(pos.x, pos.y));
 	}
+	
+	public float getAbsoluteDistance(float angle,float maxDistance){
+		return WallUniverseUtilities.distanceToNearestWall(universe.getWalls(), universe.getRobotPosition(), angle, maxDistance);
+	}
 
 
 }

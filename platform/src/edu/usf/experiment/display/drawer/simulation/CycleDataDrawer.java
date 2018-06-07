@@ -8,6 +8,9 @@ import com.vividsolutions.jts.geom.Coordinate;
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
+import edu.usf.experiment.universe.BoundedUniverse;
+import edu.usf.experiment.universe.UniverseLoader;
+
 import java.awt.geom.Rectangle2D.Float;
 
 public class CycleDataDrawer extends Drawer {
@@ -43,11 +46,10 @@ public class CycleDataDrawer extends Drawer {
 	}
 
 	@Override
-	public void draw(Graphics g, Scaler s) {
+	public void draw(Graphics g, java.awt.geom.Rectangle2D.Float panelCoordinates) {
 		if(!doDraw) return;
 		
-		
-		s = new Scaler(localCoordinates,panelCoordinates,false);
+		Scaler s = new Scaler(localCoordinates,panelCoordinates,false);
 		
 		Point upperLeftCorner = s.scale(relativePosition);
 		int x = (int)upperLeftCorner.x;

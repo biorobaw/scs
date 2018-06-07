@@ -10,6 +10,8 @@ import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.SonarRobot;
+import edu.usf.experiment.universe.BoundedUniverse;
+import edu.usf.experiment.universe.UniverseLoader;
 
 public class SonarReadingsDrawer extends Drawer {
 
@@ -27,7 +29,11 @@ public class SonarReadingsDrawer extends Drawer {
 	}
 
 	@Override
-	public void draw(Graphics g, Scaler s) {
+	public void draw(Graphics g, java.awt.geom.Rectangle2D.Float panelCoordinates) {
+		if(!doDraw) return;
+		
+		BoundedUniverse bu = (BoundedUniverse)UniverseLoader.getUniverse();
+		Scaler s = new Scaler(bu.getBoundingRect(), panelCoordinates, true);
 
 		
 

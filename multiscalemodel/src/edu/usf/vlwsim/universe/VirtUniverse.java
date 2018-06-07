@@ -57,7 +57,7 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	/**
 	 * How close has food to be to consider it available to the agent
 	 */
-	private final float CLOSE_TO_FOOD_THRS;
+	private  float CLOSE_TO_FOOD_THRS;
 	/**
 	 * How far one end of a wall hast to be to consider it an open end (not part
 	 * of a biger wall)
@@ -247,6 +247,10 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	@Override
 	public float getCloseThrs() {
 		return CLOSE_TO_FOOD_THRS;
+	}
+	
+	public void setCloseThrs(float thres){
+		CLOSE_TO_FOOD_THRS = thres;
 	}
 
 	// Simulation methods

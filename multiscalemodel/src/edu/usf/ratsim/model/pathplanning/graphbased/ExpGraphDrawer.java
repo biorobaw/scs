@@ -13,6 +13,8 @@ import com.vividsolutions.jts.geom.Coordinate;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
+import edu.usf.experiment.universe.BoundedUniverse;
+import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.ratsim.nsl.modules.pathplanning.Edge;
 import edu.usf.ratsim.nsl.modules.pathplanning.ExperienceRoadMap;
 import edu.usf.ratsim.nsl.modules.pathplanning.PointNode;
@@ -29,7 +31,12 @@ public class ExpGraphDrawer extends Drawer {
 	}
 
 	@Override
-	public void draw(Graphics g, Scaler s) {
+	public void draw(Graphics g, java.awt.geom.Rectangle2D.Float panelCoordinates) {
+		if(!doDraw) return;
+		
+		BoundedUniverse bu = (BoundedUniverse)UniverseLoader.getUniverse();
+		Scaler s = new Scaler(bu.getBoundingRect(), panelCoordinates, true);
+		
 		UndirectedGraph<PointNode, Edge> graph = erm.getGraph();
 		
 		if (graph != null){

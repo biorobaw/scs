@@ -14,6 +14,8 @@ import edu.usf.experiment.model.PolicyModel;
 import edu.usf.experiment.robot.affordance.AbsoluteAngleDiscreteAffordance;
 import edu.usf.experiment.robot.affordance.Affordance;
 import edu.usf.experiment.robot.affordance.AffordanceRobot;
+import edu.usf.experiment.universe.BoundedUniverse;
+import edu.usf.experiment.universe.UniverseLoader;
 
 public class QPolicyDrawer extends Drawer {
 
@@ -35,7 +37,11 @@ public class QPolicyDrawer extends Drawer {
 	}
 
 	@Override
-	public void draw(Graphics g, Scaler s) {
+	public void draw(Graphics g, java.awt.geom.Rectangle2D.Float panelCoordinates) {
+		if(!doDraw) return;
+		
+		BoundedUniverse bu = (BoundedUniverse)UniverseLoader.getUniverse();
+		Scaler s = new Scaler(bu.getBoundingRect(), panelCoordinates, true);
 		Map<Coordinate, Integer> vps = model.getPolicyPoints();
 
 		for (Coordinate p : vps.keySet()) {

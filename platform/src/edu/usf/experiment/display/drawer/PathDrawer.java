@@ -9,36 +9,56 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.universe.BoundedUniverse;
+import edu.usf.experiment.universe.UniverseLoader;
 
 public class PathDrawer extends Drawer {
 
 	private LocalizableRobot robot;
 	private LinkedList<Coordinate> poses;
+	public LinkedList<LinkedList<Coordinate>> oldPaths = new LinkedList<>();
+	
+	Color pathColor = Color.DARK_GRAY;
+	
+	public boolean drawOldPaths = false;
 
 	public PathDrawer(LocalizableRobot robot){
 		this.robot = robot;
 		
-		poses = new LinkedList<Coordinate>();
+		poses = new LinkedList<>();
 	}
 
 	@Override
-	public void draw(Graphics g, Scaler s) {
+	public void draw(Graphics g, java.awt.geom.Rectangle2D.Float panelCoordinates) {
 		if(!doDraw) return;
 		
+		BoundedUniverse bu = (BoundedUniverse)UniverseLoader.getUniverse();
+		Scaler s = new Scaler(bu.getBoundingRect(), panelCoordinates, true);
+		
 
-		g.setColor(Color.DARK_GRAY);
-		Point start = s.scale(poses.get(0));
-		for (int i = 1; i < poses.size(); i++){
-			Point end = s.scale(poses.get(i));
-			g.drawLine(start.x, start.y, end.x, end.y);
-			start = end;
+		g.setColor(pathColor);
+		if(drawOldPaths)
+			for(LinkedList<Coordinate> l : oldPaths) {
+				int[][] path = s.scale(l);
+				if(l.size()==1){
+					g.drawOval(path[0][0]-2, path[1][0]-2, 4, 4);
+				}else g.drawPolyline(path[0], path[1], l.size());
+			}
+		else{
+			int[][] path = s.scale(poses);
+			if(poses.size()==1){
+				g.drawOval(path[0][0]-2, path[1][0]-2, 4, 4);
+			}else g.drawPolyline(path[0], path[1], poses.size());
 		}
+		
 			
 	}
 	
 	@Override
 	public void clearState() {
-		poses.clear();
+		poses = new LinkedList<>();
+		if(drawOldPaths) oldPaths.add(poses);
+		
 	}
 
 	@Override
@@ -48,5 +68,10 @@ public class PathDrawer extends Drawer {
 		poses.add(pos);
 		
 	}
+	
+	public void setColor(Color c){
+		pathColor = c;
+	}
+
 
 }

@@ -9,6 +9,8 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
+import edu.usf.experiment.universe.BoundedUniverse;
+import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.universe.platform.Platform;
 import edu.usf.experiment.universe.platform.PlatformUniverse;
 
@@ -24,7 +26,12 @@ public class DiscretePlatformDrawer extends Drawer {
 	}
 
 	@Override
-	public void draw(Graphics g, Scaler s) {
+	public void draw(Graphics g, java.awt.geom.Rectangle2D.Float panelCoordinates) {
+		if(!doDraw) return;
+		
+		BoundedUniverse bu = (BoundedUniverse)UniverseLoader.getUniverse();
+		Scaler s = new Scaler(bu.getBoundingRect(), panelCoordinates, true);
+		
 		for (int i=0;i<coordinates.size();i++) {
 			Coordinate pos = coordinates.get(i);
 			g.setColor(colors.get(i));

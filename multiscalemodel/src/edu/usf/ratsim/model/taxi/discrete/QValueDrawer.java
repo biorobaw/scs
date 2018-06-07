@@ -10,6 +10,8 @@ import com.vividsolutions.jts.geom.Coordinate;
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
 import edu.usf.experiment.model.ValueModel;
+import edu.usf.experiment.universe.BoundedUniverse;
+import edu.usf.experiment.universe.UniverseLoader;
 
 public class QValueDrawer extends Drawer {
 
@@ -20,7 +22,13 @@ public class QValueDrawer extends Drawer {
 	}
 
 	@Override
-	public void draw(Graphics g, Scaler s) {
+	public void draw(Graphics g, java.awt.geom.Rectangle2D.Float panelCoordinates) {
+		if(!doDraw) return;
+		
+		BoundedUniverse bu = (BoundedUniverse)UniverseLoader.getUniverse();
+		Scaler s = new Scaler(bu.getBoundingRect(), panelCoordinates, true);
+		
+		
 		Map<Coordinate, Float> vps = model.getValuePoints();
 		
 		float maxPos = -Float.MAX_VALUE;

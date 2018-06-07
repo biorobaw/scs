@@ -25,8 +25,8 @@ public class PDFDisplay implements Display {
 	private static final String FRAMES_FOLDER = "frames";
 	private int image;
 	private List<Drawer> drawers;
-	private Scaler s;
 	private File frameDir;
+	private Float panelCoordinates;
 
 	public PDFDisplay() {
 		this(Globals.getInstance().get("logPath") + File.separator + FRAMES_FOLDER);
@@ -54,7 +54,7 @@ public class PDFDisplay implements Display {
 		PDFGraphics2D g = new PDFGraphics2D(0.0, 0.0, WIDTH, HEIGHT);
 
 		for (Drawer d : drawers)
-			d.draw(g, s);
+			d.draw(g, panelCoordinates);
 
 		// Write the PDF output to a file
 		FileOutputStream file;
@@ -74,9 +74,7 @@ public class PDFDisplay implements Display {
 
 	@Override
 	public void setupUniversePanel(BoundedUniverse bu) {
-		Float worldCoordiantes = bu.getBoundingRect();
-		Float panelCoordinates = new Float(XMARGIN, YMARGIN, (float)(WIDTH-2*XMARGIN), (float)(HEIGHT-2*YMARGIN));
-		s = new Scaler(worldCoordiantes,panelCoordinates,true);
+		panelCoordinates = new Float(XMARGIN, YMARGIN, (float)(WIDTH-2*XMARGIN), (float)(HEIGHT-2*YMARGIN));
 	}
 
 	@Override
@@ -108,7 +106,7 @@ public class PDFDisplay implements Display {
 	}
 
 	@Override
-	public void sync(int cycle) {
+	public void sync(long cycle) {
 		// TODO Auto-generated method stub
 		
 	}

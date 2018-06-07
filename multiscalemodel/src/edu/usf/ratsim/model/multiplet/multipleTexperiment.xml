@@ -19,7 +19,7 @@
 	</variables>
 	
 	<simulationControls>
-		<simulationSpeed>9</simulationSpeed>
+		<simulationSpeed>9</simulationSpeed> <!--speed reference: 5000,3000,2000,1000,500,400,300,100,30,0-->
 		<display>true</display>
 		<seed>3365448354185182426</seed>
 		<syncDisplay>true</syncDisplay>
@@ -103,8 +103,8 @@
 			
 			<maxDistanceSensorDistance>2</maxDistanceSensorDistance>
 			
-			<awakeFoodDistanceThreshold>0.1</awakeFoodDistanceThreshold>
-			<asleepFoodDistanceThreshold>0.4</asleepFoodDistanceThreshold>
+			<awakeFoodDistanceThreshold>0.08</awakeFoodDistanceThreshold>
+			<asleepFoodDistanceThreshold>0.08</asleepFoodDistanceThreshold>
 
 			<!-- Order in which feeders are visited -->
 			<!--  <feederOrder>$(feederOrder)</feederOrder> -->

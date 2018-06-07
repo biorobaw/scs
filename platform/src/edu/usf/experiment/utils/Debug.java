@@ -37,4 +37,12 @@ public class Debug {
 	public static boolean printMaps = print && false;
 	public static boolean printMorseErr = print && false;	
 	
+	public static long tic(){
+		return System.nanoTime();
+	}
+	
+	public static long toc(long stamp){
+		return (System.nanoTime()-stamp)/(long)1e6;
+	}
+	
 }

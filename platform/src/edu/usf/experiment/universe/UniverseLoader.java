@@ -14,6 +14,7 @@ import edu.usf.experiment.utils.ElementWrapper;
 public class UniverseLoader {
 
 	private static UniverseLoader instance;
+	private static Universe universe = null;
 
 	public static UniverseLoader getInstance() {
 		if (instance == null)
@@ -42,7 +43,7 @@ public class UniverseLoader {
 			constructor = Class.forName(
 					universeNode.getChildText("name")).getConstructor(
 					ElementWrapper.class, String.class);
-			Universe universe = (Universe) constructor.newInstance(universeNode.getChild("params"), logPath);
+			universe = (Universe) constructor.newInstance(universeNode.getChild("params"), logPath);
 			return universe;
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
@@ -59,6 +60,10 @@ public class UniverseLoader {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static Universe getUniverse(){
+		return universe;
 	}
 
 }

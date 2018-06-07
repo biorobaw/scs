@@ -8,29 +8,38 @@ import java.util.LinkedList;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
+import edu.usf.experiment.display.GuiUtils;
+import edu.usf.experiment.universe.BoundedUniverse;
+import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.universe.feeder.Feeder;
 import edu.usf.experiment.universe.feeder.FeederUniverse;
 
 public class FeederDrawer extends Drawer {
 
-	private static final float RADIUS = 0.02f;
+	private static final int RADIUS = 4;
 	private FeederUniverse u;
 	
 	ArrayList<Coordinate> feederPos = new ArrayList<>();
+	
+	Color color = GuiUtils.getHSBAColor(0.33f, 0.8f, 0.6f, 1f);
+	
 	
 	public FeederDrawer(FeederUniverse fu){
 		u = fu;
 	}
 
 	@Override
-	public void draw(Graphics g, Scaler s) {
+	public void draw(Graphics g, java.awt.geom.Rectangle2D.Float panelCoordinates) {
 		if(!doDraw) return;
+		
+		BoundedUniverse bu = (BoundedUniverse)UniverseLoader.getUniverse();
+		if(bu==null) return;
+		Scaler s = new Scaler(bu.getBoundingRect(), panelCoordinates, true);
 		
 		for (int i=0; i<feederPos.size();i++){
 			Point pos = s.scale(feederPos.get(i));
-			g.setColor(Color.GRAY);
-			g.fillOval(pos.x - (int) (RADIUS * s.xscale), pos.y - (int) (RADIUS * s.yscale),
-					(int) (RADIUS * s.xscale * 2), (int) (RADIUS * s.yscale * 2));
+			g.setColor(color);
+			g.fillOval(pos.x - RADIUS, pos.y - RADIUS,2*RADIUS,2*RADIUS);
 		}
 
 		
@@ -49,6 +58,8 @@ public class FeederDrawer extends Drawer {
 			feederPos.add(f.getPosition());
 	}
 
-
+	public void setColor(Color c){
+		color = c;
+	}
 
 }

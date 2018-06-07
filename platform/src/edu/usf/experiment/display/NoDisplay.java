@@ -55,7 +55,7 @@ public class NoDisplay implements Display {
 	}
 
 	@Override
-	public void sync(int cycle) {
+	public void sync(long cycle) {
 		// TODO Auto-generated method stub
 		
 	}

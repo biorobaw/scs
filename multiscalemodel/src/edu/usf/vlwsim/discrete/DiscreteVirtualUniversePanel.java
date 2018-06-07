@@ -60,10 +60,8 @@ public class DiscreteVirtualUniversePanel extends JPanel {
 		Float panelCoordinates = new Float(XMARGIN,YMARGIN,panelRect.width-2*XMARGIN,panelRect.height-2*YMARGIN);
 
 
-		Scaler s = new Scaler(worldCoordinates,panelCoordinates,true);
-
 		for (Drawer d : drawers)
-			d.draw(g, s);
+			d.draw(g, panelCoordinates);
 
 	}
 

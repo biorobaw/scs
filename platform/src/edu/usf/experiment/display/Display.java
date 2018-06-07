@@ -1,5 +1,7 @@
 package edu.usf.experiment.display;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.swing.JComponent;
 
 import edu.usf.experiment.display.drawer.Drawer;
@@ -12,6 +14,11 @@ import edu.usf.experiment.universe.BoundedUniverse;
  */
 public interface Display {
 
+	/**
+	 * specifies whether the display needs to be synchronized with simulation
+	 */
+	public final static AtomicBoolean synchronizeDisplay = new AtomicBoolean(false);
+	
 	/**
 	 * Add a component (e.g. a panel) to display information or include controls.
 	 * @param panel The JPanel to display
@@ -77,6 +84,6 @@ public interface Display {
 	 */
 	public void addKeyAction(int key,Runnable action);
 	
-	public void sync(int cycle);//function to be called by draw panels when they are done rendering for synchronization
+	public void sync(long cycle);//function to be called by draw panels when they are done rendering for synchronization
 	public void waitUntilDoneRendering();
 }
