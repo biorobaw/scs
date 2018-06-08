@@ -115,7 +115,7 @@ public class ActorCriticModel extends Model implements ValueModel {
 		float ymax = params.getChildFloat("ymax");
 
 		AffordanceRobot aRobot = (AffordanceRobot) robot;
-		FeederRobot fRobot = (FeederRobot) robot;
+		//FeederRobot fRobot = (FeederRobot) robot; //not used
 		LocalizableRobot lRobot = (LocalizableRobot) robot;
 
 		numActions = aRobot.getPossibleAffordances().size();
