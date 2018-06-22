@@ -15,6 +15,7 @@ import org.w3c.dom.Document;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.drawer.FeederDrawer;
 import edu.usf.experiment.display.drawer.PlatformDrawer;
@@ -403,11 +404,11 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 	 */
 	@Override
 	public void step() {
+		stepMotion();
 		if (robotWantsToEat) {
 			robotEat();
-		} else {
-			stepMotion();
 		}
+			
 	}
 
 	/**
@@ -431,12 +432,14 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		Coordinate to = toT.getTranslation();
 
 		// Check for walls in the way
-		LineSegment toTravel = new LineSegment(new Coordinate(from.x, from.y), new Coordinate(to.x, to.y));
 		boolean tooClose = false;
-		for (Wall w : getWalls()) {
-			tooClose |= toTravel.distance(w.s) < MIN_DISTANCE_TO_WALLS;
-			if (tooClose) {
-				break;
+		if((Boolean)Globals.getInstance().get("collisionDetection")==true){
+			LineSegment toTravel = new LineSegment(new Coordinate(from.x, from.y), new Coordinate(to.x, to.y));
+			for (Wall w : getWalls()) {
+				tooClose |= toTravel.distance(w.s) < MIN_DISTANCE_TO_WALLS;
+				if (tooClose) {
+					break;
+				}
 			}
 		}
 

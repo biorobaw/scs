@@ -1,4 +1,4 @@
-package edu.usf.ratsim.model.multiplet;
+package edu.usf.ratsim.model.morris_replay;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -36,12 +36,12 @@ import edu.usf.vlwsim.robot.VirtualRobot;
 import edu.usf.vlwsim.universe.VirtUniverse;
 
 //TODO: some trials are starting from a different place 
-public class MultipleTModel extends Model implements SaveModel {
+public class MorrisReplayModle extends Model implements SaveModel {
 
 	public float step;
 
-	private MultipleTModelAsleep modelAsleep;
-	private MultipleTModelAwake modelAwake;
+	private ModelAsleep modelAsleep;
+	private ModelAwake modelAwake;
 
 	public Float2dSparsePort QTable;
 	public Float2dSparsePort WTable;
@@ -59,7 +59,7 @@ public class MultipleTModel extends Model implements SaveModel {
 
 	private FeederRobot fRobot;
 
-	public MultipleTModel(ElementWrapper params, Robot robot) {
+	public MorrisReplayModle(ElementWrapper params, Robot robot) {
 
 		Globals g = Globals.getInstance();
 
@@ -88,12 +88,12 @@ public class MultipleTModel extends Model implements SaveModel {
 		if (loadEpisode != null) {
 			load();
 		} else {
-			modelAwake = new MultipleTModelAwake(params, robot, numActions, numPC, QTable, VTable, WTable, step);
+			modelAwake = new ModelAwake(params, robot, numActions, numPC, QTable, VTable, WTable, step);
 			// QTable = new SparseMatrix<Float>(numPC,numActions);
 			// WTable = new SparseMatrix<Float>(numPC,numPC);
 		}
 
-		modelAsleep = new MultipleTModelAsleep(params, robot, numActions, numPC,
+		modelAsleep = new ModelAsleep(params, robot, numActions, numPC,
 				(LinkedList<PlaceCell>) modelAwake.placeCells.getCells(), QTable, VTable, WTable, step);
 
 		setDisplay();

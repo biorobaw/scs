@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="us-ascii"?>
+
+<world>
+	
+	<!--OLD INFO - NOT ANY MORE - BUT MAY GIVE IDEA 
+		bound box minX = -(l+w)/2 
+	     bound box maxX = l/2+l/2+l/2+w/2 = (3*l+w)/2 
+	     bound box minY = 0
+	     bound box maxY = (l+w)*4
+	     start pos = (0,w/2)
+	     food pos = (l/2+l/2-l/2+l/2,w/2+4*l) = (l,4*l+w/2)
+	     boundbox = (-0.4,0),(1.1,3.2)
+	     center = (0.35,1.6)
+	     radius = (0.75,1.6)
+	 -->
+	 
+	<mazeElement>
+		<name>MultipleT</name>
+		<params>
+			<x>-0.1</x>
+			<y>0</y>
+			<width>0.2</width>
+			<length>2.6</length>
+			<tSide>1.8</tSide>
+			
+			<bufferedWalls>
+				<buffereRadius>0.19</buffereRadius> <!-- small=0.19, big=0.6 -->
+				<showWalls>true</showWalls>
+			</bufferedWalls>
+			
+			<right>
+				<right>
+					<left>
+					</left>
+				</right>
+			</right>
+		</params>
+	</mazeElement>
+	
+	
+	<boundingRect>
+		<!-- <x>-1.9</x>
+		<y>0</y>
+		<w>7.4</w>
+		<h>10.6</h> -->
+	</boundingRect>
+	
+	
+	<floor>
+		<r>20</r>
+		<h>0</h>
+		<cr>0</cr>
+		<cg>0</cg>
+		<cb>0</cb>
+		<x>0</x>
+		<y>0</y>
+		<z>-.075</z>
+	</floor>
+
+
+
+
+
+	
+	<!-- Views -->
+	<topview>
+		<x>1.8</x>
+		<y>5</y>
+		<r>8</r>
+		<z>15</z> 
+		<!-- <x>0</x>
+		<y>1.3</y>
+		<z>15</z>
+		<r>2</r> -->
+	</topview>
+	<thirdview>
+		<x>2.1</x>
+		<y>2.5</y>
+		<z>2.1</z>
+	</thirdview>
+	<robotview>
+		<x>1</x>
+		<y>.1</y>
+		<z>0</z>
+		<theta>1.57</theta>
+	</robotview>
+	
+</world>
+

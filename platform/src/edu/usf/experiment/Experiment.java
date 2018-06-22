@@ -432,6 +432,7 @@ public class Experiment implements Runnable {
 		if(controls.hasChild("simulationSpeed")) g.put("simulationSpeed",controls.getChildInt("simulationSpeed") );
 		if(controls.hasChild("seed")) g.put("seed",controls.getChildLong("seed") );
 		g.put("syncDisplay", !controls.hasChild("syncDisplay") || controls.getChildBoolean("syncDisplay"));
+		g.put("collisionDetection", controls.getChildBoolean("collisionDetection"));
 				
 	}
 }
