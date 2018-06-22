@@ -54,7 +54,9 @@ public class ModelLoader {
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
+		System.out.println("Model did not load correctly");
+		System.exit(-1);
 		return null;
 	}
 

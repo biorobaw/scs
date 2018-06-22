@@ -13,6 +13,7 @@ import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceCell;
+import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceCellForMultipleT;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.nsl.modules.cell.ProportionalPlaceCell;
 
@@ -92,6 +93,8 @@ public class TesselatedPlaceCellLayer extends Module {
 					cells.add(new ProportionalPlaceCell(new Coordinate(x, y), radius));
 				else if (placeCellType.equals("exponential"))
 					cells.add(new ExponentialPlaceCell(new Coordinate(x, y), radius));
+				else if(placeCellType.equals("exponentialMultipleT"))
+						cells.add(new ExponentialPlaceCellForMultipleT(new Coordinate(x, y),radius));
 				else
 					throw new RuntimeException("Place cell type not implemented");
 			}
@@ -102,6 +105,27 @@ public class TesselatedPlaceCellLayer extends Module {
 
 		this.lRobot = (LocalizableRobot) robot;
 		this.wRobot = (WallRobot) robot;
+	}
+	
+	
+	/**
+	 * Creates pc layer using the given cells
+	 * @param name
+	 * @param relativeRadius
+	 * @param numCells
+	 * @param placeCellType
+	 */
+	public TesselatedPlaceCellLayer(String name, LinkedList<PlaceCell> cells,Robot robot) {
+		super(name);
+
+		active = true;
+
+		this.cells = cells;		
+		this.lRobot = (LocalizableRobot) robot;
+
+		activationPort = new Float1dSparsePortMap(this, cells.size(), 1f/8);
+		addOutPort("activation", activationPort);
+
 	}
 	
 	/**
@@ -172,6 +196,10 @@ public class TesselatedPlaceCellLayer extends Module {
 
 	public void clear() {
 		((Float1dPortArray) getOutPort("activation")).clear();
+	}
+	
+	public Float1dSparsePortMap getActivationPort(){
+		return activationPort;
 	}
 
 }

@@ -26,6 +26,7 @@ import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalValue;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
+import edu.usf.ratsim.nsl.modules.celllayer.TesselatedPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.celllayer.TmazeRandomPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.input.Position;
 import edu.usf.ratsim.nsl.modules.input.SubjectFoundFood;
@@ -43,7 +44,8 @@ public class ModelAsleep extends Model {
 
 	private int numActions;
 	private int numPC;
-	public TmazeRandomPlaceCellLayer placeCells;
+//	public TmazeRandomPlaceCellLayer placeCells;
+	public TesselatedPlaceCellLayer placeCells;
 	public ProportionalVotes currentStateQ;
 	private ProportionalValue currentValue;
 	public NextActiveModule nextActiveModule;
@@ -154,7 +156,8 @@ public class ModelAsleep extends Model {
 		addModule(r);
 		
 		//Create Place Cells module
-		placeCells = new TmazeRandomPlaceCellLayer("PCLayer",pcList);
+//		placeCells = new TmazeRandomPlaceCellLayer("PCLayer",pcList);
+		placeCells = new TesselatedPlaceCellLayer("PCLayer", pcList,robot);
 		placeCells.addInPort("position", pos.getOutPort("position"));
 		addModule(placeCells);
 		

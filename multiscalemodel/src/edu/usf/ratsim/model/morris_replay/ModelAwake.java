@@ -27,6 +27,7 @@ import edu.usf.ratsim.nsl.modules.actionselection.ProportionalValue;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.actionselection.Softmax;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
+import edu.usf.ratsim.nsl.modules.celllayer.TesselatedPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.celllayer.TmazeRandomPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.input.Position;
 import edu.usf.ratsim.nsl.modules.input.SubjectAte;
@@ -44,7 +45,8 @@ import edu.usf.vlwsim.universe.VirtUniverse;
 
 public class ModelAwake extends Model {
 
-	public TmazeRandomPlaceCellLayer placeCells;
+//	public TmazeRandomPlaceCellLayer placeCells;
+	public TesselatedPlaceCellLayer placeCells;
 
 	public ProportionalVotes currentStateQ;
 	private ProportionalValue currentValue;
@@ -143,7 +145,8 @@ public class ModelAwake extends Model {
 		
 		
 		// Create Place Cells module
-		placeCells = new TmazeRandomPlaceCellLayer("PCLayer", PCRadius, numPC, placeCellType);
+//		placeCells = new TmazeRandomPlaceCellLayer("PCLayer", PCRadius, numPC, placeCellType);
+		placeCells = new TesselatedPlaceCellLayer("PCLayer", robot, PCRadius, (int)Math.sqrt(numPC), placeCellType, -1f, -1f, 1f, 1f);
 		placeCells.addInPort("position", pos.getOutPort("position"));
 		addModule(placeCells);
 

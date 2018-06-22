@@ -36,7 +36,7 @@ import edu.usf.vlwsim.robot.VirtualRobot;
 import edu.usf.vlwsim.universe.VirtUniverse;
 
 //TODO: some trials are starting from a different place 
-public class MorrisReplayModle extends Model implements SaveModel {
+public class MorrisReplayModel extends Model implements SaveModel {
 
 	public float step;
 
@@ -48,6 +48,7 @@ public class MorrisReplayModle extends Model implements SaveModel {
 	public Float2dSparsePort VTable;
 
 	int numActions;
+	int numPCPerSide;
 	int numPC;
 
 	int cantReplay;
@@ -59,7 +60,7 @@ public class MorrisReplayModle extends Model implements SaveModel {
 
 	private FeederRobot fRobot;
 
-	public MorrisReplayModle(ElementWrapper params, Robot robot) {
+	public MorrisReplayModel(ElementWrapper params, Robot robot) {
 
 		Globals g = Globals.getInstance();
 
@@ -71,7 +72,8 @@ public class MorrisReplayModle extends Model implements SaveModel {
 		// load parametrs:
 		step = params.getChildFloat("step");
 
-		numPC = params.getChildInt("numPC");
+		numPCPerSide =  params.getChildInt("numPCPerSide");
+		numPC = numPCPerSide*numPCPerSide;
 		numActions = params.getChildInt("numActions");
 
 		cantReplay = params.getChildInt("cantReplay");
@@ -80,7 +82,7 @@ public class MorrisReplayModle extends Model implements SaveModel {
 		asleepFoodDistanceThreshold = params.getChildFloat("asleepFoodDistanceThreshold");
 
 		// Num actions + 1 for value
-		QTable = new Float2dSparsePortMatrix(null, numPC, numActions);
+		QTable = new Float2dSparsePortMatrix(null, numPC , numActions);
 		VTable = new Float2dSparsePortMatrix(null, numPC, 1);
 		WTable = new Float2dSparsePortMatrix(null, numPC, numPC);
 
