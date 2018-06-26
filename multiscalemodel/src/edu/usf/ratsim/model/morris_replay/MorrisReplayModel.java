@@ -2,9 +2,12 @@ package edu.usf.ratsim.model.morris_replay;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Globals;
@@ -14,17 +17,21 @@ import edu.usf.experiment.display.DrawPanel;
 import edu.usf.experiment.display.GuiUtils;
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.PathDrawer;
+import edu.usf.experiment.display.drawer.RobotDrawer;
 import edu.usf.experiment.display.drawer.WallDrawer;
 import edu.usf.experiment.display.drawer.simulation.CycleDataDrawer;
-import edu.usf.experiment.model.SaveModel;
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.TeleportRobot;
+import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.UniverseLoader;
+import edu.usf.experiment.utils.BinaryFile;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
+import edu.usf.micronsl.port.twodimensional.sparse.Entry;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePortMatrix;
 import edu.usf.platform.drawers.PCDrawer;
@@ -36,7 +43,7 @@ import edu.usf.vlwsim.robot.VirtualRobot;
 import edu.usf.vlwsim.universe.VirtUniverse;
 
 //TODO: some trials are starting from a different place 
-public class MorrisReplayModel extends Model implements SaveModel {
+public class MorrisReplayModel extends Model  {
 
 	public float step;
 
@@ -86,17 +93,11 @@ public class MorrisReplayModel extends Model implements SaveModel {
 		VTable = new Float2dSparsePortMatrix(null, numPC, 1);
 		WTable = new Float2dSparsePortMatrix(null, numPC, numPC);
 
-		Integer loadEpisode = (Integer) g.get("loadEpisode");
-		if (loadEpisode != null) {
-			load();
-		} else {
-			modelAwake = new ModelAwake(params, robot, numActions, numPC, QTable, VTable, WTable, step);
-			// QTable = new SparseMatrix<Float>(numPC,numActions);
-			// WTable = new SparseMatrix<Float>(numPC,numPC);
-		}
 
+		modelAwake = new ModelAwake(params, robot, numActions, numPC, QTable, VTable, WTable, step);
 		modelAsleep = new ModelAsleep(params, robot, numActions, numPC,
-				(LinkedList<PlaceCell>) modelAwake.placeCells.getCells(), QTable, VTable, WTable, step);
+				(ArrayList<PlaceCell>) modelAwake.placeCells.getCells(), QTable, VTable, WTable, step);
+		
 
 		setDisplay();
 
@@ -111,6 +112,9 @@ public class MorrisReplayModel extends Model implements SaveModel {
 
 	@Override
 	public void newEpisode() {
+		
+		save();
+		
 		modelAwake.newEpisode();
 	}
 
@@ -176,72 +180,85 @@ public class MorrisReplayModel extends Model implements SaveModel {
 		return modelAwake.getCellActivation();
 	}
 
-	void load() {
-		// String loadPath = (String) g.get("logPath") + "/" + (String)
-		// g.get("loadTrial") + "/" + loadEpisode + "/"
-		// + (String) g.get("groupName") + "/" + g.get("subName") + "/";
-		//
-		// if (g.get("loadType").equals("bin")) {
-		// QTable = BinaryFile.loadMatrix(loadPath + "QTable.bin");
-		// WTable = BinaryFile.loadSparseMatrix(loadPath + "WTable.bin");
-		//
-		// } else {
-		//
-		// String[][] qStringValues = CSVReader.loadCSV(loadPath + "QTable.txt",
-		// ";");
-		// String[][] wStringValues = CSVReader.loadCSV(loadPath + "WTable.txt",
-		// ";");
-		//
-		// for (int i = 0; i < numPC; i++) {
-		// for (int j = 0; j < numActions; j++)
-		// QTable[i][j] = Float.parseFloat(qStringValues[i][j]);
-		// for (int j = 0; j < numPC; j++)
-		// WTable[i][j] = Float.parseFloat(wStringValues[i][j]);
-		// }
-		//
-		// }
-		//
-		//// QTable = new SparseMatrix<Float>(QTableCopy);
-		//// WTable = new SparseMatrix<Float>(WTableCopy);
-		//
-		// System.out.println("loadpath: " + loadPath);
-		//
-		// modelAwake = new MultipleTModelAwake(params, this, lRobot,
-		// numActions, numPC);
+	@Override
+	public void load() {
+		String loadPath = Globals.getInstance().get("loadPath").toString();
+		String snapshot = Globals.getInstance().get("loadSnapshot").toString();
+		
+		RandomSingleton.load(snapshot);
+		float[][] c = BinaryFile.loadMatrix(loadPath+"/pcCenters.bin");
+		Map<Entry,Float> w = BinaryFile.loadSparseMatrix(snapshot+"WTable.bin");
+		float[][] q = BinaryFile.loadMatrix(snapshot+"QTable.bin");
+		float[][] v = BinaryFile.loadMatrix(snapshot+"VTable.bin");
+		
+		//replace pcs with loaded ones
+		modelAsleep.setPCcenters(c);
+		modelAwake.setPCcenters(c);
+		
+		//restore w
+		WTable.clear();
+		for(Entry e : w.keySet())
+			WTable.set(e.i, e.j, w.get(e));
+		
+		//restore v
+		VTable.clear();
+		for(int i=0;i<numPC;i++) VTable.set(i, 0, v[i][0]);
+		
+		//restore q
+		QTable.clear();
+		for(int i=0;i<numPC;i++)
+			for(int j=0;j<numActions;j++) QTable.set(i, j, q[i][j]);
+		
 
 	}
 
+	static boolean savedOnce = false;
+	@Override
 	public void save() {
-		// Globals g = Globals.getInstance();
-		// String logPath = (String) g.get("episodeLogPath");
-		//
-		// // WTable.getDataAsArray(WTableCopy);
-		// // QTable.getDataAsArray(QTableCopy);
-		//
-		// PrintWriter writer;
-		// try {
-		// // Save transition table
-		// String filename = logPath + "WTable.bin";
-		// BinaryFile.saveSparseBinaryMatrix(WTable, filename);
-		//
-		// // save QTable
-		// filename = logPath + "QTable.bin";
-		// BinaryFile.saveBinaryMatrix(QTable, filename);
-		//
-		// // save cells
-		// writer = new PrintWriter(logPath + "cellCenters.txt", "UTF-8");
-		// for (PlaceCell pc : getPlaceCells()) {
-		// Point3f p = pc.getPreferredLocation();
-		// writer.println("" + p.x + ";" + p.y + ";");
-		// }
-		// writer.close();
-		//
-		// System.out.println("SAVED SUBJECT");
-		//
-		// } catch (FileNotFoundException | UnsupportedEncodingException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
+		
+		
+		
+		//save list of PCs (if necessary)
+		//save random state
+		//save W matrix - as sparse binary matrix
+		//save Q matrix - as binary matrix
+		//save V matrix - as binary matrix
+		Globals g = Globals.getInstance();
+		String savePath = g.get("savePath").toString();
+		String snapshotPath = g.get("saveSnapshotPath").toString();
+		
+		 File directory = new File(snapshotPath);
+	    if (! directory.exists()){
+	        directory.mkdirs();
+	    }
+		
+		
+		//save model invariants
+		//save place cell centers
+		if(!savedOnce){
+			
+			List<PlaceCell> pcs = getPlaceCells();
+			float pcCenters[][] = new float[pcs.size()][2];
+			for(int i=0;i<pcs.size();i++) {
+				pcCenters[i][0] = (float)pcs.get(i).getPreferredLocation().x;
+				pcCenters[i][1] = (float)pcs.get(i).getPreferredLocation().y;
+			}
+			BinaryFile.saveBinaryMatrix(pcCenters, pcs.size(), 2, savePath + "pcCenters.bin");
+			savedOnce=true;
+		}
+		
+		
+		//save variables of the model
+		
+		
+		//save Random state
+		RandomSingleton.save(snapshotPath);
+		//save W, V and Q
+		BinaryFile.saveSparseBinaryMatrix(WTable.getNonZero(), WTable.getNRows(), WTable.getNCols(), snapshotPath+"WTable.bin");
+		BinaryFile.saveBinaryMatrix(QTable.getNonZero(), QTable.getNRows(), QTable.getNCols(), snapshotPath+"QTable.bin");//this should not be sparse
+		BinaryFile.saveBinaryMatrix(VTable.getNonZero(), VTable.getNRows(), VTable.getNCols(), snapshotPath+"VTable.bin");//this should not be sparse
+		
+		
 
 	}
 
@@ -278,12 +295,16 @@ public class MorrisReplayModel extends Model implements SaveModel {
 		PolarDataDrawer affordances = new PolarDataDrawer("Affordances", modelAwake.affordanceGateModule.gates);
 		PolarDataDrawer actionGating = new PolarDataDrawer("2 Actions Gate", modelAwake.twoActionsGateModule.gates);
 		resultProbabilities = new PolarDataDrawer("Resulting Probs", modelAwake.twoActionsGateModule.probabilities);
+		
+		RobotDrawer rDrawer = new RobotDrawer((GlobalCameraUniverse)UniverseLoader.getUniverse());
+		
 		PCDrawer pcDrawer = new PCDrawer(modelAwake.placeCells.getCells(), modelAwake.placeCells.getActivationPort());
 		PCDrawer pcDrawerAsleep = new PCDrawer(modelAwake.getPlaceCells(), modelAsleep.placeCells.getActivationPort());
+		
 		pathDrawer = new PathDrawer((LocalizableRobot) lRobot);
 		pathDrawer.setColor(Color.red);
 		WallDrawer wallDrawer = new WallDrawer(VirtUniverse.getInstance(), 1);
-		wallDrawer.setColor(GuiUtils.getHSBAColor(0f, 0f, 0.7f, 1));
+		wallDrawer.setColor(GuiUtils.getHSBAColor(0f, 0f, 0f, 1));
 
 		VDrawer vdrawer = new VDrawer(modelAwake.getPlaceCells(), VTable);
 
@@ -297,9 +318,7 @@ public class MorrisReplayModel extends Model implements SaveModel {
 
 		// asleep plots
 		d.addDrawer("universe", "cycle info", new CycleDataDrawer());
-		d.addDrawer("universe", "pcsAwake", pcDrawer, 1);
-		d.addDrawer("universe", "paths", pathDrawer, 2);
-		d.addDrawer("universe", "pcsAsleep", pcDrawerAsleep, 1);
+		
 
 		// awake plots
 		d.addDrawer("panel1", "softmax", qSoftMax);
@@ -310,8 +329,18 @@ public class MorrisReplayModel extends Model implements SaveModel {
 		// always plots
 		d.addDrawer("panel5", "wallsPanel5", wallDrawer);
 		d.addDrawer("panel5", "ValueF", vdrawer);
+		
+		
+		
+		d.addDrawer("panel6", "pcsAwake" , pcDrawer);
+		d.addDrawer("panel6", "pcsAsleep", pcDrawerAsleep);
 		d.addDrawer("panel6", "wallsPanel6", wallDrawer);
-
+		d.addDrawer("panel6", "paths", pathDrawer, 2);
+		
+		d.addDrawer("panel6", "p6 robot", rDrawer);
+		
+		
+		
 		// mapa con paredes + Q plot
 		// mapa con paredes + W plot
 

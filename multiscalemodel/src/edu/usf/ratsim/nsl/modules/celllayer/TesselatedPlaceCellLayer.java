@@ -1,5 +1,6 @@
 package edu.usf.ratsim.nsl.modules.celllayer;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import edu.usf.experiment.robot.WallRobot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
+import edu.usf.micronsl.port.onedimensional.vector.PointPort;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceCell;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceCellForMultipleT;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
@@ -29,7 +31,7 @@ public class TesselatedPlaceCellLayer extends Module {
 	/**
 	 * The list of all place cells
 	 */
-	private LinkedList<PlaceCell> cells;
+	private ArrayList<PlaceCell> cells;
 
 	/**
 	 * Whether the layer is active or not
@@ -37,16 +39,13 @@ public class TesselatedPlaceCellLayer extends Module {
 	private boolean active;
 
 	/**
-	 * A robot to provide localization information
-	 */
-	private LocalizableRobot lRobot;
-
-	/**
 	 * The activation output port. A sparse port is used for efficiency.
 	 */
 	private Float1dSparsePortMap activationPort;
 
-	private WallRobot wRobot;
+	private String placeCellType;
+
+	private float radius;
 
 	/**
 	 * Creates all the place cells and locates them in a tesselated grid laid
@@ -76,13 +75,13 @@ public class TesselatedPlaceCellLayer extends Module {
 	 *            The maximum y value of the box in which place cells are
 	 *            located
 	 */
-	public TesselatedPlaceCellLayer(String name, Robot robot, float radius, int numCellsPerSide,
+	public TesselatedPlaceCellLayer(String name, float radius, int numCellsPerSide,
 			String placeCellType, float xmin, float ymin, float xmax, float ymax) {
 		super(name);
 
 		active = true;
 
-		cells = new LinkedList<PlaceCell>();
+		cells = new ArrayList<PlaceCell>();
 
 		for (int i = 0; i < numCellsPerSide; i++) {
 			float x = xmin + i * (xmax - xmin) / (numCellsPerSide - 1);
@@ -102,9 +101,11 @@ public class TesselatedPlaceCellLayer extends Module {
 
 		activationPort = new Float1dSparsePortMap(this, cells.size(), 4000);
 		addOutPort("activation", activationPort);
+		
+		this.placeCellType = placeCellType;
+		this.radius = radius;
 
-		this.lRobot = (LocalizableRobot) robot;
-		this.wRobot = (WallRobot) robot;
+
 	}
 	
 	
@@ -115,16 +116,17 @@ public class TesselatedPlaceCellLayer extends Module {
 	 * @param numCells
 	 * @param placeCellType
 	 */
-	public TesselatedPlaceCellLayer(String name, LinkedList<PlaceCell> cells,Robot robot) {
+	public TesselatedPlaceCellLayer(String name, ArrayList<PlaceCell> cells,String placeCellType) {
 		super(name);
 
 		active = true;
 
 		this.cells = cells;		
-		this.lRobot = (LocalizableRobot) robot;
 
 		activationPort = new Float1dSparsePortMap(this, cells.size(), 1f/8);
 		addOutPort("activation", activationPort);
+		
+		this.placeCellType = placeCellType;
 
 	}
 	
@@ -132,7 +134,7 @@ public class TesselatedPlaceCellLayer extends Module {
 	 * Computes the current activation of all cells
 	 */
 	public void run() {
-		run(lRobot.getPosition(), wRobot.getDistanceToClosestWall());
+		run(((PointPort)getInPort("position")).get(), 0); 
 	}
 	
 	/**
@@ -171,7 +173,7 @@ public class TesselatedPlaceCellLayer extends Module {
 	 * @return An array of the activation values
 	 */
 	public float[] getActivationValues(Coordinate pos) {
-		float distanceToClosestWall = wRobot.getDistanceToClosestWall();
+		float distanceToClosestWall = 0; //value not used
 		float[] res = new float[cells.size()];
 
 		for (int i = 0; i < cells.size(); i++) {
@@ -200,6 +202,22 @@ public class TesselatedPlaceCellLayer extends Module {
 	
 	public Float1dSparsePortMap getActivationPort(){
 		return activationPort;
+	}
+	
+	public void setPCs(float[][] centers){
+		cells.clear();
+		for(float[] c : centers) {
+			float x = c[0];
+			float y = c[1];
+			if (placeCellType.equals("proportional"))
+				cells.add(new ProportionalPlaceCell(new Coordinate(x, y), radius));
+			else if (placeCellType.equals("exponential"))
+				cells.add(new ExponentialPlaceCell(new Coordinate(x, y), radius));
+			else if(placeCellType.equals("exponentialMultipleT"))
+					cells.add(new ExponentialPlaceCellForMultipleT(new Coordinate(x, y),radius));
+			else
+				throw new RuntimeException("Place cell type not implemented");
+		}
 	}
 
 }

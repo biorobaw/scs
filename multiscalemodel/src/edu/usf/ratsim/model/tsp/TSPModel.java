@@ -46,11 +46,11 @@ public class TSPModel extends Model {
 		
 		numActions = aRobot.getPossibleAffordances().size();
 
-		// Create the layers
-		placeCells = new TesselatedPlaceCellLayer(
-				"PCLayer", robot, PCRadius, numCCCellsPerSide, placeCellType,
-				xmin, ymin, xmax, ymax);
-		addModule(placeCells);
+		// Create the layers - Model broken, Tesselated PC laer updated
+//		placeCells = new TesselatedPlaceCellLayer(
+//				"PCLayer", robot, PCRadius, numCCCellsPerSide, placeCellType,
+//				xmin, ymin, xmax, ymax);
+//		addModule(placeCells);
 		
 		// Module that navigates the feeders
 		feederTraveler = new FeederTraveler("Traveler", order, robot);

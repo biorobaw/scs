@@ -82,6 +82,7 @@ public class Episode {
 				+ episodeNumber + "/"
 				+ getSubject().getGroup() + "/"
 				+ getSubject().getName() + "/";
+		
 
 		File file = new File(logPath);
 		file.mkdirs();
@@ -112,6 +113,9 @@ public class Episode {
 		g.put("episodeLogPath", logPath);
 		g.put("episode",episodeNumber);
 		g.put("cycle",-1);
+		g.put("saveSnapshotPath", "" + g.get("savePath") +"g" + g.get("group")+"-s"+g.get("subName")+"-t"+g.get("trial") + "-e" + g.get("episode") + "-");
+		
+		
 		
 
 		System.out.println("[+] Episode " + trial.getName() + " "

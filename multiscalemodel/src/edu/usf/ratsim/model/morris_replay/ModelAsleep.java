@@ -1,5 +1,6 @@
 package edu.usf.ratsim.model.morris_replay;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -68,7 +69,7 @@ public class ModelAsleep extends Model {
 	}
 
 	public ModelAsleep(ElementWrapper params,
-			Robot robot, int numActions,int numPC,LinkedList<PlaceCell> pcList, Float2dSparsePort QTable, Float2dSparsePort VTable,
+			Robot robot, int numActions,int numPC,ArrayList<PlaceCell> pcList, Float2dSparsePort QTable, Float2dSparsePort VTable,
 			Float2dSparsePort WTable, float step) {
 		
 		//Get parameters frorm xml file
@@ -77,6 +78,7 @@ public class ModelAsleep extends Model {
 		float learningRate		= params.getChildFloat("learningRate");
 		float foodReward		= params.getChildFloat("foodReward");
 		float propagationThreshold = params.getChildFloat("replayThres");
+		String pcType 			   = params.getChildText("placeCells");
 		
 				
 		this.numActions = numActions;
@@ -157,7 +159,7 @@ public class ModelAsleep extends Model {
 		
 		//Create Place Cells module
 //		placeCells = new TmazeRandomPlaceCellLayer("PCLayer",pcList);
-		placeCells = new TesselatedPlaceCellLayer("PCLayer", pcList,robot);
+		placeCells = new TesselatedPlaceCellLayer("PCLayer", pcList,pcType);
 		placeCells.addInPort("position", pos.getOutPort("position"));
 		addModule(placeCells);
 		
@@ -301,4 +303,9 @@ public class ModelAsleep extends Model {
 		((TeleportRobot)robot).setPosition(nextPos);
 	}
 
+	public void setPCcenters(float centers[][]){
+		nextPosModule.setPositions(centers);
+		placeCells.setPCs(centers);
+	}
+	
 }

@@ -108,7 +108,6 @@ public class Experiment implements Runnable {
 //		logPath = logPath ;
 
 		
-		
 		//Load display
 		loadDisplay();
 
@@ -144,7 +143,9 @@ public class Experiment implements Runnable {
 		loadTasks(root);
 		
 		//Load episode (if loading)
-		loadEpisode(root);
+		loadEpisode();
+		
+		
 	}
 	
 
@@ -364,33 +365,28 @@ public class Experiment implements Runnable {
 		
 	}
 
-	void loadEpisode(ElementWrapper root) {
+	void loadEpisode() {
 		
-		ElementWrapper load = root.getChild("load");
-		if(load==null) return;
-		
-		//Store globals
 		Globals g = Globals.getInstance();
-//		g.put("loadEpisode", load.getChildInt("episode"));
-//		g.put("loadTrial", load.getChildText("trial"));
-//		g.put("loadType",load.getChildText("type"));
-		
-		
-		String t = load.getChildText("trial");
-		Integer e = load.getChildInt("episode");
+		if(g.get("loadPath")==null) return;
+				
+		String t = g.get("loadTrial").toString();
+		Integer e = Integer.parseInt(g.get("loadEpisode").toString());
 
-		if(t!=null){
-			//Pop trials until we get the 
-			for(int i =0;;i++){
-				if(trials.get(0).getName().equals(t)) break;
-				else trials.remove(0);
-			}
-			
-			//pop episodes from the trial until we reach the episode being loaded (remove that episode to since we have already executed that one)
-			for(int i=0;i<=e;i++)
-				trials.get(0).episodes.remove(0);
-			g.put("episode",e+1);
+		//Pop trials until we get the trial we want
+		for(int i =0;;i++){
+			System.out.println(trials.get(0).getName() + " "  + t);
+			if(trials.get(0).getName().equals(t)) break;
+			else trials.remove(0);
 		}
+		
+		//pop episodes from the trial until we reach the episode being loaded
+		for(int i=0;i<e;i++)
+			trials.get(0).episodes.remove(0);
+		g.put("episode",e);
+		
+		subject.getModel().load();
+		
 	}
 	
 	void loadDisplay() {
@@ -433,6 +429,22 @@ public class Experiment implements Runnable {
 		if(controls.hasChild("seed")) g.put("seed",controls.getChildLong("seed") );
 		g.put("syncDisplay", !controls.hasChild("syncDisplay") || controls.getChildBoolean("syncDisplay"));
 		g.put("collisionDetection", controls.getChildBoolean("collisionDetection"));
+		
+		if(controls.hasChild("load")){
+			ElementWrapper load = controls.getChild("load");
+			String p = load.getChildText("path");
+			if (!p.endsWith("/")) p+="/";
+			String e = load.getChildText("episode");
+			String t = load.getChildText("trial");
+						
+			g.put("loadPath", p);
+			g.put("loadEpisode",e );
+			g.put("loadTrial", t);
+			g.put("loadSnapshot", p+"g"+g.get("group")+"-s"+g.get("subName")+"-t"+t+"-e"+e+"-");
+			
+		}
+		
+		g.put("savePath",g.get("logPath") + "/snapshots/" + (controls.hasChild("saveFile") ? controls.getChildText("saveFile") : "default") + "/");
 				
 	}
 }

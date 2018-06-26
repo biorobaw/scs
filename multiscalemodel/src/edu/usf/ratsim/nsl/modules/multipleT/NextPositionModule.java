@@ -39,4 +39,11 @@ public class NextPositionModule extends Module {
 	public boolean usesRandom() {
 		return false;
 	}
+	
+	public void setPositions(float pos[][]){
+		for(int i=0;i<pcCenters.size();i++){
+			pcCenters.get(i).x=pos[i][0];
+			pcCenters.get(i).y=pos[i][1];
+		}
+	}
 }

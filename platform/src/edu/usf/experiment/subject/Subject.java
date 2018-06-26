@@ -48,5 +48,12 @@ public class Subject {
 	public void setName(String subjectName) {
 		this.name = subjectName;
 	}
+	
+	public void load(){
+		
+	}
+	public void save(){
+		
+	}
 
 }

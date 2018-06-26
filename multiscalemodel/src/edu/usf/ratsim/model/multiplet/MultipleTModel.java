@@ -16,7 +16,6 @@ import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.PathDrawer;
 import edu.usf.experiment.display.drawer.WallDrawer;
 import edu.usf.experiment.display.drawer.simulation.CycleDataDrawer;
-import edu.usf.experiment.model.SaveModel;
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
@@ -36,7 +35,7 @@ import edu.usf.vlwsim.robot.VirtualRobot;
 import edu.usf.vlwsim.universe.VirtUniverse;
 
 //TODO: some trials are starting from a different place 
-public class MultipleTModel extends Model implements SaveModel {
+public class MultipleTModel extends Model  {
 
 	public float step;
 
@@ -174,7 +173,8 @@ public class MultipleTModel extends Model implements SaveModel {
 		return modelAwake.getCellActivation();
 	}
 
-	void load() {
+	@Override
+	public void load() {
 		// String loadPath = (String) g.get("logPath") + "/" + (String)
 		// g.get("loadTrial") + "/" + loadEpisode + "/"
 		// + (String) g.get("groupName") + "/" + g.get("subName") + "/";

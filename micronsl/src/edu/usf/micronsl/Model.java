@@ -87,4 +87,12 @@ public class Model {
 		}
 		
 	}
+	
+	public void save(){
+		
+	}
+	
+	public void load(){
+		
+	}
 }

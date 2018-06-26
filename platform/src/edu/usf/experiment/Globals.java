@@ -28,8 +28,12 @@ public class Globals {
 	 *The next 3 are used for loading a particular episode - define in xml or command line
 	 *Integer loadEpisode
 	 *String  loadTrial
-	 *String  loadType			indicates file types (Example bin) -- should we keep it??
+	 *String  loadPath	
+	 *String  loadSnapshot         = loadEpisode + "snapshots/" +"g"+group+"-s"+subName+"-t"+trial + "-e" + episode  // snapshot load path
 	 *
+	 *
+	 *String  savePath         snapshot savepath = logPath + "/snapshots/" +saveFile + "/"
+	 *String  saveSnapshotPath = savePath + "g" + grou + "-s" + subName + "-t"+trial + "-e" + episode + "-"  //string indicating where to save snapshots, append file names to this variable 
 	 */
 	
 	

@@ -1,0 +1,14 @@
+Morris Replay Model Log file
+
+
+6/26/2018
+-Modified TesselatedPlaceCEllLayer
+   -Class no longer has access to robot
+   -Position is no longer taken from the robot but given as an input to the module
+-Restoring snapshots
+   -modified format in which binary files are saved
+   -deleted ModelSave interface, added save and load functions to class Model
+   -modified xml file, experiment and episode to load model if defined in control variables on xml file
+   -RESTORED
+   
+  

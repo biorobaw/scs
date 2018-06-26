@@ -24,6 +24,14 @@
 		<seed>3365448354185182426</seed>
 		<syncDisplay>true</syncDisplay>
 		<collisionDetection>false</collisionDetection>
+		
+		<saveFile>saveTest</saveFile>
+		<load>
+			<path>logs/v21/test/multiplet/snapshots/saveTest</path>
+			<episode>3</episode>
+			<trial>Learning</trial>
+		</load>
+		
 	</simulationControls>
 	
 	<universe>
@@ -222,9 +230,7 @@
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
-				<task>
-					<name>edu.usf.experiment.task.model.SaveModel</name>
-				</task>
+
 			</afterEpisodeTasks>
 			<!-- Conditions upon which the episode ends -->
 			<stopConditions>
@@ -362,9 +368,7 @@
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
-				<task>
-					<name>edu.usf.experiment.task.model.SaveModel</name>
-				</task>
+				
 			</afterEpisodeTasks>
 			<!-- Conditions upon which the episode ends -->
 			<stopConditions>

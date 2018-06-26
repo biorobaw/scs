@@ -10,6 +10,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
+
+import edu.usf.micronsl.port.twodimensional.sparse.Entry;
 
 public class BinaryFile {	
 	
@@ -58,9 +62,7 @@ public class BinaryFile {
 	}
 	
 	
-	public static void saveBinaryMatrix(float[][] matrix,String filename){
-		int rows= matrix.length;
-		int cols= matrix[0].length;
+	public static void saveBinaryMatrix(float[][] matrix,int rows,int cols,String filename){
 		int totalSize =  2*Integer.SIZE + rows*cols*Float.SIZE; //in bits
 		totalSize/=8;
 		
@@ -79,48 +81,27 @@ public class BinaryFile {
 		
 	}
 	
-//	static int it = 0;
-	public static void  saveSparseBinaryMatrix(float[][] matrix,String filename){
-		int rows= matrix.length;
-		int cols= matrix[0].length;
+	public static void saveBinaryMatrix(Map<Entry,Float> matrix,int rows,int cols,String filename){
+		int totalSize =  2*Integer.SIZE + rows*cols*Float.SIZE; //in bits
+		totalSize/=8;
 		
 		
-		
-		OutputStream out = openFileToWrite(filename);
-		ByteBuffer data = ByteBuffer.allocate(2*Integer.SIZE/8);
+		ByteBuffer data = ByteBuffer.allocate(totalSize);
 		data.putInt(rows);
 		data.putInt(cols);
-		write(out, data.array());
-		
-		
-		int size = (2*Integer.SIZE+Float.SIZE)/8;
-		
-//		int cant = 0;
 		for(int i=0;i<rows;i++)
 			for(int j=0;j<cols;j++){
-				if(matrix[i][j]!=0){
-					data = ByteBuffer.allocate(size);
-					data.putInt(i);
-					data.putInt(j);
-					data.putFloat(matrix[i][j]);
-					write(out,data.array());
-//					cant++;
-				}
-				
+				Float v = matrix.get(new Entry(i, j));
+				data.putFloat(v==null ? 0 : v);
 			}
 		
-//		if(it==60){
-//			System.out.println("float size: "+Float.SIZE);
-//			System.out.println("int size:   "+Integer.SIZE);
-//			System.out.println("cant:       "+cant);
-//		}
-		
-		
+		OutputStream out = openFileToWrite(filename);
+		write(out, data.array());
 		close(out);
-//		it++;
 		
 		
 	}
+	
 	
 	public static float[][] loadMatrix(String filename){
 		DataInputStream in = read( filename);
@@ -140,35 +121,100 @@ public class BinaryFile {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println("Unable to load file: "+filename);
+			System.exit(-1);
 		}
 		
 		
 		
 		return null;
 	}
+
 	
-	public static float[][] loadSparseMatrix(String filename){
+	
+	
+	public static void  saveSparseBinaryMatrix(float[][] matrix,int rows,int cols,String filename){
+		
+		OutputStream out = openFileToWrite(filename);		
+		int intSize   = Integer.SIZE/8;
+		int floatSize = Float.SIZE/8;
+		int elements  = rows*cols;
+		int fileSize  = (2*intSize+floatSize)*elements + 2*intSize; //Format: rows,cols, all i indexes, all j indexes, all floats
+		ByteBuffer data = ByteBuffer.allocate(fileSize);
+		
+		
+		data.putInt(rows);
+		data.putInt(cols);
+		int i=0;//element index
+		for(int r=0;r<rows;r++)
+			for(int c=0;c<cols;c++){
+				if(matrix[r][c]!=0){
+					data.putInt(         2*intSize        + i*intSize,r);
+					data.putInt(    (elements+2)*intSize  + i*intSize,c);
+					data.putFloat( (2*elements+2)*intSize + i*floatSize,matrix[r][c]);
+				}
+			}
+
+		write(out,data.array());
+		close(out);
+		
+	}
+	
+	public static void saveSparseBinaryMatrix(Map<Entry,Float> matrix,int rows,int cols,String filename){
+
+		OutputStream out = openFileToWrite(filename);		
+		int intSize   = Integer.SIZE/8;
+		int floatSize = Float.SIZE/8;
+		int elements  = matrix.size();
+		int fileSize  = (2*intSize+floatSize)*elements + 2*intSize; //Format: rows,cols, all i indexes, all j indexes, all floats
+		ByteBuffer data = ByteBuffer.allocate(fileSize);
+		
+		data.putInt(rows);
+		data.putInt(cols);
+		int i=0;
+		for(Entry e : matrix.keySet()){
+			data.putInt(         2*intSize        + i*intSize,e.i);
+			data.putInt(    (elements+2)*intSize  + i*intSize,e.j);
+			data.putFloat( (2*elements+2)*intSize + i*floatSize,matrix.get(e));
+			i++;
+		}
+		write(out,data.array());
+		
+		close(out);
+		
+	}
+
+	
+	public static Map<Entry,Float>  loadSparseMatrix(String filename){
 		DataInputStream in = read( filename);
 		
+		int intSize   = Integer.SIZE/8;
+		int floatSize = Float.SIZE/8;
+		int elements  = ((int)new File(filename).length() -2*intSize  )/(2*intSize+floatSize);//Format: rows,cols, all i indexes, all j indexes, all floats
+		
 		try {
-			int rows = in.readInt();
-			int cols = in.readInt();
-//			System.out.println("r,c "+rows+" "+ cols);
 			
-			float[][] matrix = new float[rows][cols];
+			in.readInt(); //discard number of rows
+			in.readInt(); //discard number of cols
 			
-			while(in.available()!=0){
-				int i = in.readInt();
-				int j = in.readInt();
-//				System.out.println("i,j: "+i+" "+j);
-				matrix[i][j] = in.readFloat();
-			}
+			int[] rows = new int[elements];
+			int[] cols = new int[elements];
+			float[] vals = new float[elements];
+			HashMap<Entry, Float> matrix = new HashMap<>();
+			
+			for(int i=0;i<elements;i++) rows[i]=in.readInt();
+			for(int i=0;i<elements;i++) cols[i]=in.readInt();
+			for(int i=0;i<elements;i++) vals[i]=in.readFloat();
+			for(int i=0;i<elements;i++) matrix.put(new Entry(rows[i], cols[i]), vals[i]);
+			
 			
 			return matrix;
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println("Unable to load file: "+filename);
+			System.exit(-1);
 		}
 		
 		

@@ -1,5 +1,6 @@
 package edu.usf.ratsim.model.morris_replay;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,7 @@ public class ModelAwake extends Model {
 //	public TmazeRandomPlaceCellLayer placeCells;
 	public TesselatedPlaceCellLayer placeCells;
 
+
 	public ProportionalVotes currentStateQ;
 	private ProportionalValue currentValue;
 
@@ -65,6 +67,9 @@ public class ModelAwake extends Model {
 
 	private DistancesInputModule inputDisntaceModule;
 
+
+	private String placeCellType;
+
 	public ModelAwake() {
 	}
 
@@ -73,7 +78,7 @@ public class ModelAwake extends Model {
 
 		// Get parameters frorm xml file
 		float PCRadius 		 = params.getChildFloat("PCRadius");
-		String placeCellType = params.getChildText("placeCells");
+		placeCellType = params.getChildText("placeCells");
 
 		float discountFactor = params.getChildFloat("discountFactor");
 		float learningRate 	 = params.getChildFloat("learningRate");
@@ -146,7 +151,7 @@ public class ModelAwake extends Model {
 		
 		// Create Place Cells module
 //		placeCells = new TmazeRandomPlaceCellLayer("PCLayer", PCRadius, numPC, placeCellType);
-		placeCells = new TesselatedPlaceCellLayer("PCLayer", robot, PCRadius, (int)Math.sqrt(numPC), placeCellType, -1f, -1f, 1f, 1f);
+		placeCells = new TesselatedPlaceCellLayer("PCLayer", PCRadius, (int)Math.sqrt(numPC), placeCellType, -1f, -1f, 1f, 1f);
 		placeCells.addInPort("position", pos.getOutPort("position"));
 		addModule(placeCells);
 
@@ -287,6 +292,12 @@ public class ModelAwake extends Model {
 		affRobot.executeAffordance(aff);
 		affRobot.executeAffordance(new EatAffordance());
 		
+		
+	}
+
+	public void setPCcenters(float[][] c) {
+		// TODO Auto-generated method stub
+		placeCells.setPCs(c);
 		
 	}
 
