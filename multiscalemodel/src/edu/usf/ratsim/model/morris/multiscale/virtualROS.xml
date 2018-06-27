@@ -94,9 +94,6 @@
 		<params>
 		</params>
 		<tasks>
-			<task>
-				<name>edu.usf.experiment.task.platform.PublishPlatformPosition</name>
-			</task>
 		</tasks>
 	</group>
 	
@@ -106,9 +103,6 @@
 		<params>
 		</params>
 		<tasks>
-			<task>
-				<name>edu.usf.experiment.task.platform.PublishPlatformPosition</name>
-			</task>
 		</tasks>
 	</group>
 	
@@ -160,8 +154,8 @@
 					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<point>
-							<x>-.5</x>
-							<y>-.5</y>
+							<x>.2</x>
+							<y>.2</y>
 							<theta>3.14</theta>
 						</point>
 					</params>

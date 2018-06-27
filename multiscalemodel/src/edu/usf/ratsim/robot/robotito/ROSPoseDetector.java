@@ -65,8 +65,10 @@ public class ROSPoseDetector implements NodeMain {
 			public void onNewMessage(geometry_msgs.Pose2D p) {
 				x = (float) p.getX();
 				y = (float) p.getY();
-				theta = (float) p.getTheta();
+				theta = (float) p.getTheta() + 1.57f; //TODO:Marker is not oriented with robot. Confirm adjustment accuracy
 				lastPoseReceived = System.currentTimeMillis();
+				//System.out.println("Received Pose: " + x + " " + y);
+					
 			}
 		});
 	}

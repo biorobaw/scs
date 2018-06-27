@@ -41,7 +41,7 @@ import edu.usf.experiment.utils.RigidTransformation;
 
 public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, LocalizableRobot, PlatformRobot, LocalActionAffordanceRobot, WallRobot, Runnable  {
 
-    private static final String PORT = "/dev/ttyUSB0";
+    private static final String PORT = "/dev/ttyUSB1";
     private static final int BAUD_RATE = 57600;
     
     // Shared constants with the arduino code
@@ -63,7 +63,9 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 	private static final boolean WAIT_FOR_LOCATION = false;
 	private static final double FOUND_PLAT_THRS = .1f;
 	private static final float MIN_DISTANCE_TO_WALLS = 0.15f;
-
+	private static final float FORWARD_SPEED = 0.04f;
+	private static final float ROTATE_SPEED = 0.64f;
+	
 	private XBee xbee;
 	private XBeeAddress16 remoteAddress;
     
@@ -89,17 +91,22 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 	private float closeThrs;
 	private ROSUniverse universe;
 	
+	
+	
+	private static final boolean ROBOT_DEBUG = true;
+	
 	public Robotito(ElementWrapper params, Universe u) {
 		
-		//affordance hack
-		step = params.getChildFloat("step");
-		leftAngle = params.getChildFloat("leftAngle");
-		rightAngle = params.getChildFloat("rightAngle");
-		lookaheadSteps = params.getChildFloat("lookaheadSteps");
-		halfFieldOfView = params.getChildFloat("halfFieldOfView");
-		visionDist = params.getChildFloat("visionDist");
-		closeThrs = params.getChildFloat("closeThrs");
-		universe = (ROSUniverse) u;
+		if(!ROBOT_DEBUG) {
+			step = params.getChildFloat("step");
+			leftAngle = params.getChildFloat("leftAngle");
+			rightAngle = params.getChildFloat("rightAngle");
+			lookaheadSteps = params.getChildFloat("lookaheadSteps");
+			halfFieldOfView = params.getChildFloat("halfFieldOfView");
+			visionDist = params.getChildFloat("visionDist");
+			closeThrs = params.getChildFloat("closeThrs");
+			universe = (ROSUniverse) u;
+		}
 		
 		xbee = new XBee();
 		try {
@@ -144,6 +151,98 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 		runner.start();
 		Logger xbeeLogger = Logger.getLogger("com.digi.xbee.api.connection.DataReader");
 		xbeeLogger.setLevel(Level.OFF);
+	}
+	
+	//main method used to test robot and universe functionality.
+	//note that you must set "ROBOT_DEBUG" above to true to avoid nullPointerExcetpions
+	public static void main(String[] args){
+		Robotito r = new Robotito(null, null);
+//		r.releaseMotors();
+
+//		r.calibrateSonars();
+		
+		
+		/*//x and y motion tests
+		//r.xVel = 0.04f; 
+		r.yVel = -0.04f; 
+		
+		r.setAngularVel((float) (0));
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		//r.xVel = -0.04f;
+		r.yVel = 0.04f;
+		
+		r.setAngularVel((float) (0));
+		try {
+			Thread.sleep(4000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		//r.xVel = 0.04f; 
+		r.yVel = -0.04f; 
+		
+		r.setAngularVel((float) (0));
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} */
+		
+		/*//theta motion test
+		r.tVel = 1.28f;
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		r.tVel = -1.28f;
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} */
+		
+		//forward motion test
+		//r.forward(.05f);
+		
+		//rotation motion test
+		
+		
+		r.rotate(3.14f);
+		
+		try {
+			Thread.sleep(4000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		r.rotate(3.14f);
+		
+		try {
+			Thread.sleep(4000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		r.rotate(1.67f);
+		
+//		r.setLinearVel(0);
+//		r.setAngularVel(0f);
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+		System.exit(0);
+		
 	}
 
 	private void sendKs() {
@@ -196,7 +295,8 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 			tVelShort = (short) Math.max(0, Math.min(tVelShort, 255));
 			int[] dataToSend = {(byte)'v', (byte) Math.abs(xVelShort), (byte) Math.abs(yVelShort), (byte) Math.abs(tVelShort)};
 			
-			System.out.println("Sending vels: " + xVelShort + " " + yVelShort + " " + tVelShort);
+			//System.out.println("Sending vels: " + xVelShort + " " + yVelShort + " " + tVelShort);
+
 			try {
 				TxRequest16 rq = new TxRequest16(remoteAddress, dataToSend);
 				// Disable ACKs
@@ -249,14 +349,11 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 
 	@Override
 	public boolean hasFoundPlatform() {
-		System.out.println(1);
 		String posStr = PropertyHolder.getInstance().getProperty("platformPosition");
-		//the above line sets posStr to be null - presumably the position isn't
-		//getting published
+		//Note: above line causes Null pointer errors if a platform isn't published
 		String[] fields = posStr.split(",");
 		float x = Float.parseFloat(fields[0]);
 		float y = Float.parseFloat(fields[1]);
-		System.out.println(3);
 		return new Coordinate(x,y).distance(getPosition()) < FOUND_PLAT_THRS;
 	}
 
@@ -318,30 +415,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 		return ROBOT_RADIUS;
 	}
 	
-	public static void main(String[] args){
-		Robotito r = new Robotito(null, null);
-//		r.releaseMotors();
-
-//		r.calibrateSonars();
-		
-		r.setLinearVel(.0f);
-		r.yVel = -3f;
-		r.setAngularVel((float) (0));
-		try {
-			Thread.sleep(500000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-//		r.setLinearVel(0);
-//		r.setAngularVel(0f);
-//		try {
-//			Thread.sleep(1000);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-		System.exit(0);
-		
-	}
+	
 
 	@Override
 	public void setVels(float x, float y, float t) {
@@ -349,11 +423,6 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 		yVel = y;
 		tVel = t;
 	}
-	
-	
-	
-	
-	
 	
 	//Affordance hack
 	//Below methods were added by David Ehrenhaft
@@ -372,8 +441,10 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 			List<Affordance> forward = new LinkedList<Affordance>();
 			forward.add(new ForwardAffordance(ta.getDistance()));
 			rotate(ta.getAngle());
+			System.out.println("Turn affordance: " + ta.getAngle());
 		} else if (af instanceof ForwardAffordance) {
 			forward(((ForwardAffordance) af).getDistance());
+			System.out.println("Forward affordance: " + ((ForwardAffordance) af).getDistance());
 		} else if (af instanceof EatAffordance) {
 			// Updates food in universe
 				eat(); // TODO: should the robot check for feeder close or just
@@ -401,9 +472,11 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 			// other angle is not an option
 			realizable =  !canRobotMove(0, getRadius() * lookaheadSteps) 
 					      || canRobotMove(ta.getAngle(), getRadius() * lookaheadSteps);
-		} else if (af instanceof ForwardAffordance)
+			//System.out.println("Turn affordance realizable? " + realizable);
+		} else if (af instanceof ForwardAffordance) {
 			realizable =  canRobotMove(0, getRadius() * lookaheadSteps);
-		else if (af instanceof EatAffordance) {
+			//System.out.println("Forward affordance realizable? " + realizable);
+		} else if (af instanceof EatAffordance) {
 			if (getClosestPlatform(getVisiblePlatforms()) != null)
 				realizable = getClosestPlatform(getVisiblePlatforms()).getPosition()
 						.distance(new Coordinate()) < closeThrs;
@@ -506,7 +579,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 	}
 	
 	
-	//Even more hacky than the above
+	//Even more hack-y than the above
 	public List<Platform> getVisiblePlatforms() {
 		List<Platform> res = new LinkedList<Platform>();
 		for (Platform p : universe.getPlatforms()) {
@@ -564,27 +637,89 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 		return closest;
 	}
 	
-	//TODO: possible that this may go in a random direction.
+	//Below is an estimate approach. If the motion is noisy, the robot will not have
+	//any sort of external checker.
 	private void forward(float distance) {
+		System.out.println("Moving forward");
+		setLinearVel(FORWARD_SPEED);
+		if(ROBOT_DEBUG) 
+			System.out.println("Est. Time: " + (long)(distance/(5*FORWARD_SPEED) * 1000));
+		try {
+			Thread.sleep((long)(distance/(5*FORWARD_SPEED) * 1000));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		setLinearVel(0f);
+		System.out.println("Completed forward motion");
+	}
+
+	//Below uses the camera system to control distance.
+	//Though this should be more accurate, since the cameras are noisy and don't
+	//provide new poses quickly enough, the distance will often be wildly inaccurate,
+	//significantly more so than the estimate approach.
+	private void cameraForward(float distance) {
+		System.out.println("Moving forward");
 		Coordinate start = getPosition();
+		System.out.println(start);
+		setLinearVel(FORWARD_SPEED);
 		while(start.distance(getPosition()) < distance) {
-			setLinearVel(.4f); //TODO: temporarily using random speed
+			System.out.println(start.distance(getPosition()));
 		}
-		setLinearVel(.0f);
-		yVel = -3f;
+		setLinearVel(0f);
+		System.out.println("Completed forward motion");
+	}
+
+	
+	//camera continous apprach (not functional)
+	private void CameraRotate(float angle) {
+		System.out.println("Starting rotation");
+		setVels(.0f, .0f, GeomUtils.relativeAngle(angle, getOrientationAngle()) > 0 ? ROTATE_SPEED : -1 * ROTATE_SPEED); 
+		while(Math.abs(GeomUtils.relativeAngle(angle, getOrientationAngle())) > 0.25) { //TODO: 0.05 angular allowance
+		}
+		setVels(.0f, .0f, .0f);
+		System.out.println("Completed rotation");
 	}
 	
+	//incremental step approach
+	//TODO: one-directional implementation
+	//current design makes roughly 13 degree step turns.
 	private void rotate(float angle) {
-		while(getOrientationAngle()  - 0.1f < angle &&
-			  getOrientationAngle()  + 0.05f > angle) { //TODO: 0.05 angular allowance
-			setAngularVel(0.1f); //TODO: temporarily using random speed
+		System.out.println("Starting rotation");
+		float goalAngle = GeomUtils.standardAngle(getOrientationAngle() + angle);
+		System.out.println(goalAngle);
+		
+		while(Math.abs(GeomUtils.relativeAngle(goalAngle, getOrientationAngle())) > 0.15) { // for 20 degree slices
+			System.out.println(getOrientationAngle());
+			
+			setAngularVel(ROTATE_SPEED);
+			try { //spin 10 degrees
+				Thread.sleep(125); //TODO: currently using tested value, not algorithmic one.
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			setAngularVel(0f);
+			
+			//sleep to wait for orientation to update
+			try {
+				Thread.sleep(400); //TODO: currently using tested value, not algorithmic one.
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		setAngularVel((float) (0));
+		System.out.println("Completed rotation");
 	}
-	
-	
 	
 	//TODO: If feeders needed, this will be necessary
 	public void eat() {
+		System.out.println("\n\n\nRobotito tried to eat!\n\n");
+	}
+	
+	
+	@Override
+	protected void finalize() throws Throwable {
+		// TODO Auto-generated method stub
+		this.releaseMotors();
+		super.finalize();
+		
 	}
 }
