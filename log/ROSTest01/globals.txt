@@ -1,3 +1,0 @@
-logPath log/ROSTest01
-groupName Learning
-subName 0
