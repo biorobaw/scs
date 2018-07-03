@@ -22,8 +22,9 @@ public class ROSWallDetector implements NodeMain {
 
 	private static final String HOST = "cmac1";
 
-	protected static final double HALF_WALL = .35f;
-
+	//protected static final double HALF_WALL = .35f;
+	protected static final double HALF_WALL = 1f;
+	
 	private static ROSWallDetector instance = null;
 
 	private Map<Integer, Wall> walls;
@@ -64,14 +65,16 @@ public class ROSWallDetector implements NodeMain {
 		subscriber.addMessageListener(new MessageListener<geometry_msgs.PoseStamped>() {
 			@Override
 			public void onNewMessage(geometry_msgs.PoseStamped p) {
-				float x = (float) p.getPose().getPosition().getX();
-				float y = (float) p.getPose().getPosition().getY();
-				// Hack - the orientation is not really a quaternion, it encodes theta on the w component directly
-				float t = (float) p.getPose().getOrientation().getW();
-				Wall wall = new Wall((float) (-Math.cos(t) * HALF_WALL + x), (float) (-Math.sin(t) * HALF_WALL + y),
-						(float) (Math.cos(t) * HALF_WALL + x), (float) (Math.sin(t) * HALF_WALL + y));
-				int id = Integer.parseInt(p.getHeader().getFrameId());
-				walls.put(id, wall);
+				synchronized (ROSWallDetector.this) {
+					float x = (float) p.getPose().getPosition().getX();
+					float y = (float) p.getPose().getPosition().getY();
+					// Hack - the orientation is not really a quaternion, it encodes theta on the w component directly
+					float t = (float) p.getPose().getOrientation().getW();
+					Wall wall = new Wall((float) (-Math.cos(t) * HALF_WALL + x), (float) (-Math.sin(t) * HALF_WALL + y),
+							(float) (Math.cos(t) * HALF_WALL + x), (float) (Math.sin(t) * HALF_WALL + y));
+					int id = Integer.parseInt(p.getHeader().getFrameId());
+					walls.put(id, wall);
+				}
 			}
 		});
 	}
@@ -92,7 +95,7 @@ public class ROSWallDetector implements NodeMain {
 		new ROSWallDetector();
 	}
 
-	public Collection<Wall> getWalls(){
+	public synchronized Collection<Wall> getWalls(){
 		return walls.values();
 	}
 }

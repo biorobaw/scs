@@ -14,6 +14,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
 import edu.usf.experiment.PropertyHolder;
+import edu.usf.experiment.robot.CalibratableRobot;
 import edu.usf.experiment.robot.DifferentialRobot;
 import edu.usf.experiment.robot.HolonomicRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
@@ -39,9 +40,12 @@ import edu.usf.experiment.universe.platform.PlatformUniverse;
 import edu.usf.experiment.utils.RigidTransformation;
 
 
-public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, LocalizableRobot, PlatformRobot, LocalActionAffordanceRobot, WallRobot, Runnable  {
+public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
+								 LocalizableRobot, PlatformRobot, 
+								 LocalActionAffordanceRobot, WallRobot, 
+								 CalibratableRobot, Runnable  {
 
-    private static final String PORT = "/dev/ttyUSB1";
+    private static final String PORT = "/dev/ttyUSB2";
     private static final int BAUD_RATE = 57600;
     
     // Shared constants with the arduino code
@@ -63,8 +67,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 	private static final boolean WAIT_FOR_LOCATION = false;
 	private static final double FOUND_PLAT_THRS = .1f;
 	private static final float MIN_DISTANCE_TO_WALLS = 0.15f;
-	private static final float FORWARD_SPEED = 0.04f;
-	private static final float ROTATE_SPEED = 0.64f;
+	private static final float FORWARD_SPEED = 0.03f;
 	
 	private XBee xbee;
 	private XBeeAddress16 remoteAddress;
@@ -90,10 +93,10 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 	private float visionDist;
 	private float closeThrs;
 	private ROSUniverse universe;
-	
-	
+	private float stepCorrectionRatio = 1f; //more accurate value determined by calibrateStep()
 	
 	private static final boolean ROBOT_DEBUG = true;
+	//TODO: add a MOTION_DEBUG for various motion print statements.
 	
 	public Robotito(ElementWrapper params, Universe u) {
 		
@@ -193,6 +196,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 			e.printStackTrace();
 		} */
 		
+		
 		/*//theta motion test
 		r.tVel = 1.28f;
 		
@@ -208,31 +212,60 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		} 
+		
+		r.tVel = 0f;
+		
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		} */
 		
-		//forward motion test
-		//r.forward(.05f);
-		
-		//rotation motion test
 		
 		
-		r.rotate(3.14f);
-		
+		//TODO: marker for top of the actual code
 		try {
-			Thread.sleep(4000);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		
-		r.rotate(3.14f);
+		r.step = 0.05f;
+		
+		r.calibrateStep();
 		
 		try {
-			Thread.sleep(4000);
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		for(int m = 0; m < 5; m++) {
+			r.forward(0.05f);
+			
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		} 
+		
+		/*
+		r.rotate(-3.14f);
+		
+		try {
+			Thread.sleep(3000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		
-		r.rotate(1.67f);
+		r.rotate(1.57f);
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} */
 		
 //		r.setLinearVel(0);
 //		r.setAngularVel(0f);
@@ -241,6 +274,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 //		} catch (InterruptedException e) {
 //			e.printStackTrace();
 //		}
+		
 		System.exit(0);
 		
 	}
@@ -268,17 +302,27 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 	}
 
 	@Override
-	public void setLinearVel(float linearVel) {
-		xVel = linearVel;
+	public synchronized void setLinearVel(float linearVel) {
+		asyncSetLinearVel(linearVel);
 	}
 
 	@Override
-	public void setAngularVel(float angularVel) {
+	public synchronized void setAngularVel(float angularVel) {
+		asyncSetAngularVel(angularVel);
+	}
+	
+	//resolves synchonization errors. Don't make public.
+	private void asyncSetLinearVel(float linearVel) {
+		xVel = linearVel;
+	}
+	
+	//resolves synchonization errors. Don't make public.
+	private void asyncSetAngularVel(float angularVel) {
 		tVel = angularVel;
 	}
 
 	@Override
-	public void moveContinous(float lVel, float angVel) {
+	public synchronized void moveContinous(float lVel, float angVel) {
 		xVel = lVel;
 		tVel = angVel;
 	}
@@ -286,18 +330,22 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 	@Override
 	public void run() {
 		while (true){
-//			System.out.println(xVel + " " + tVel);
-			short xVelShort = (short) (xVel * XVEL_CONV + LINEAR_INERTIA * Math.signum(xVel) + ZERO_VEL);
-			xVelShort = (short) Math.max(0, Math.min(xVelShort, 255));
-			short yVelShort = (short) (yVel * XVEL_CONV + LINEAR_INERTIA * Math.signum(yVel) + ZERO_VEL);
-			yVelShort = (short) Math.max(0, Math.min(yVelShort, 255));
-			short tVelShort = (short) (tVel * TVEL_CONV + ANGULAR_INERTIA * Math.signum(tVel) + ZERO_VEL);
-			tVelShort = (short) Math.max(0, Math.min(tVelShort, 255));
-			int[] dataToSend = {(byte)'v', (byte) Math.abs(xVelShort), (byte) Math.abs(yVelShort), (byte) Math.abs(tVelShort)};
+			int[] dataToSend;
 			
-			//System.out.println("Sending vels: " + xVelShort + " " + yVelShort + " " + tVelShort);
+			synchronized(this) {
+		//		System.out.println(xVel + " " + tVel);
+				short xVelShort = (short) (xVel * XVEL_CONV + LINEAR_INERTIA * Math.signum(xVel) + ZERO_VEL);
+				xVelShort = (short) Math.max(0, Math.min(xVelShort, 255));
+				short yVelShort = (short) (yVel * XVEL_CONV + LINEAR_INERTIA * Math.signum(yVel) + ZERO_VEL);
+				yVelShort = (short) Math.max(0, Math.min(yVelShort, 255));
+				short tVelShort = (short) (tVel * TVEL_CONV + ANGULAR_INERTIA * Math.signum(tVel) + ZERO_VEL);
+				tVelShort = (short) Math.max(0, Math.min(tVelShort, 255));
+				dataToSend = new int[]{(byte)'v', (byte) Math.abs(xVelShort), (byte) Math.abs(yVelShort), (byte) Math.abs(tVelShort)};
+				//System.out.println("Sending vels: " + xVelShort + " " + yVelShort + " " + tVelShort);
+			}
 
 			try {
+				//System.out.println(dataToSend[0]);
 				TxRequest16 rq = new TxRequest16(remoteAddress, dataToSend);
 				// Disable ACKs
 				rq.setFrameId(0);
@@ -338,12 +386,17 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 	}
 
 	@Override
-	public Coordinate getPosition() {
+	public  Coordinate getPosition() {
 		return poseDetector.getPosition();
+	}
+	
+	//returns a position filtered to minimize spikes. Not accurate during motion.
+	private Coordinate getFilteredPosition() {
+		return poseDetector.getFilteredPosition();
 	}
 
 	@Override
-	public float getOrientationAngle() {
+	public  float getOrientationAngle() {
 		return poseDetector.getAngle();
 	}
 
@@ -638,77 +691,144 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 	}
 	
 	//Below is an estimate approach. If the motion is noisy, the robot will not have
-	//any sort of external checker.
+	//any sort of external checker. As the camera approach is highly inaccurate (as is), 
+	//for now I'll use this approach.
 	private void forward(float distance) {
 		System.out.println("Moving forward");
 		setLinearVel(FORWARD_SPEED);
 		if(ROBOT_DEBUG) 
-			System.out.println("Est. Time: " + (long)(distance/(5*FORWARD_SPEED) * 1000));
+			System.out.println("Est. Time: " + (long)((distance/(5*FORWARD_SPEED) * 1000)/stepCorrectionRatio));
 		try {
-			Thread.sleep((long)(distance/(5*FORWARD_SPEED) * 1000));
+			Thread.sleep((long)((distance/(5*FORWARD_SPEED) * 1000)/stepCorrectionRatio));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		setLinearVel(0f);
 		System.out.println("Completed forward motion");
 	}
+	
+	//sets the stepCorrectionRatio value, to be used in forward. 
+	//Ensures the distance moved is appropriate, based on MOVING_SPEED and stepLength.
+	public void calibrateStep() {
+		int numMoves = 10;
+		System.out.println("Began step calibration: \n\tMoving speed = " + FORWARD_SPEED * 5 + 
+							"\n\tStep length: " + step);
+		Coordinate start = getFilteredPosition();
+		for(int i = 0; i < numMoves; i++) {
+			setLinearVel(FORWARD_SPEED);
+			try {
+				Thread.sleep((long)((step/(5*FORWARD_SPEED) * 1000)));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			setLinearVel(0f);
+			
+			//let wheels and motors settle
+			try {
+				Thread.sleep(150); 
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		//guarantees that new pose information comes in before camera check
+		try {
+			Thread.sleep(500); 
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		stepCorrectionRatio = ((float)start.distance(getFilteredPosition()))/(step * numMoves);
+		System.out.println("Distance travelled: " + start.distance(getFilteredPosition()) + 
+				"\n\tDistance expected: " + step * numMoves + "\n\tError Ratio: " + stepCorrectionRatio);
+	}
 
+	//helper method to determine direction of intended motion. May be helpful for future
+	//work on forward().
+	private int signOfDistance(Coordinate c1, Coordinate goal,float orientation) {
+		//dv = c1 - origin
+		float a = (float)Math.atan2(goal.y - c1.y, goal.x - c1.x);
+		float rAngle = GeomUtils.relativeAngle(a, orientation);
+		
+		if(Math.abs(rAngle) < Math.toRadians(90)) //1 in front of me, -1 behind me	
+			return 1;
+		else 
+			return -1;
+	}
+	
 	//Below uses the camera system to control distance.
 	//Though this should be more accurate, since the cameras are noisy and don't
 	//provide new poses quickly enough, the distance will often be wildly inaccurate,
 	//significantly more so than the estimate approach.
-	private void cameraForward(float distance) {
+	private void cameraForward(float goalDistance) {
 		System.out.println("Moving forward");
 		Coordinate start = getPosition();
-		System.out.println(start);
-		setLinearVel(FORWARD_SPEED);
-		while(start.distance(getPosition()) < distance) {
-			System.out.println(start.distance(getPosition()));
-		}
-		setLinearVel(0f);
-		System.out.println("Completed forward motion");
-	}
-
+		float error = goalDistance;
+		System.out.println("Start: " +  start.x + "," + start.y);
 	
-	//camera continous apprach (not functional)
-	private void CameraRotate(float angle) {
-		System.out.println("Starting rotation");
-		setVels(.0f, .0f, GeomUtils.relativeAngle(angle, getOrientationAngle()) > 0 ? ROTATE_SPEED : -1 * ROTATE_SPEED); 
-		while(Math.abs(GeomUtils.relativeAngle(angle, getOrientationAngle())) > 0.25) { //TODO: 0.05 angular allowance
+		while(Math.abs(error = goalDistance - (float)start.distance(getPosition())) > .05f) {
+			error = boundError(1.5f * error, -.04f, .04f);
+			asyncSetLinearVel(error);
+			System.out.println("Speed: " + error);
+			try {
+				Thread.sleep(100); 
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-		setVels(.0f, .0f, .0f);
-		System.out.println("Completed rotation");
+		asyncSetLinearVel(0f);
+		System.out.println("Completed forward motion");
 	}
 	
 	//incremental step approach
-	//TODO: one-directional implementation
 	//current design makes roughly 13 degree step turns.
 	private void rotate(float angle) {
 		System.out.println("Starting rotation");
 		float goalAngle = GeomUtils.standardAngle(getOrientationAngle() + angle);
-		System.out.println(goalAngle);
+		//System.out.println(goalAngle);
+//		float diffAngle, lastDiffAngle = 100f;
 		
-		while(Math.abs(GeomUtils.relativeAngle(goalAngle, getOrientationAngle())) > 0.15) { // for 20 degree slices
-			System.out.println(getOrientationAngle());
+		System.out.println(GeomUtils.standardAngle(getOrientationAngle()));
+		
+		while((Math.abs(GeomUtils.relativeAngle(goalAngle, getOrientationAngle()))) > 0.1) { // for 20 degree slices
+			float error = GeomUtils.relativeAngle(goalAngle, getOrientationAngle());
+			float be = boundError(error, (float)(40f * Math.PI / 180), (float)(40f * Math.PI / 180));
 			
-			setAngularVel(ROTATE_SPEED);
+//			if(lastDiffAngle != 100f && diffAngle > lastDiffAngle) {
+//				sign *= -1;
+//			}
+			
+			//System.out.println(getOrientationAngle());
+			
+//			setAngularVel(sign * ROTATE_SPEED);
+			setAngularVel(be * 1f);
 			try { //spin 10 degrees
-				Thread.sleep(125); //TODO: currently using tested value, not algorithmic one.
+				Thread.sleep(100); //TODO: currently using tested value, not algorithmic one.
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			setAngularVel(0f);
-			
-			//sleep to wait for orientation to update
-			try {
-				Thread.sleep(400); //TODO: currently using tested value, not algorithmic one.
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+//			setAngularVel(0f);
+//			
+//			//sleep to wait for orientation to update
+//			try {
+//				Thread.sleep(100); //TODO: currently using tested value, not algorithmic one.
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 		}
+		setAngularVel(0f);
 		System.out.println("Completed rotation");
+		System.out.println(GeomUtils.standardAngle(getOrientationAngle()));
 	}
 	
+	private float boundError(float error, float lowerBound, float upperBound) {
+		if(error > upperBound) 
+			return upperBound;
+		if(error < lowerBound) 
+			return lowerBound;
+		return error;
+	}
+
 	//TODO: If feeders needed, this will be necessary
 	public void eat() {
 		System.out.println("\n\n\nRobotito tried to eat!\n\n");
@@ -717,9 +837,13 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 	
 	@Override
 	protected void finalize() throws Throwable {
-		// TODO Auto-generated method stub
 		this.releaseMotors();
 		super.finalize();
 		
+	}
+
+	@Override
+	public void calibrate() {
+		calibrateStep();
 	}
 }
