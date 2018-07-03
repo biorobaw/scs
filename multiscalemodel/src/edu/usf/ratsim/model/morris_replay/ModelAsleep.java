@@ -24,6 +24,8 @@ import edu.usf.micronsl.port.onedimensional.vector.PointPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
+import edu.usf.ratsim.model.morris_replay.submodules.AreEqualModule;
+import edu.usf.ratsim.model.morris_replay.submodules.MaxModule;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalValue;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
@@ -169,6 +171,13 @@ public class ModelAsleep extends Model {
 		currentValue.addInPort("value", VTable);
 		addModule(currentValue);
 		
+		
+		currentStateQ = new ProportionalVotes("currentStateQ", numActions, 10000);
+		currentStateQ.addInPort("states", placeCells.getActivationPort());
+		currentStateQ.addInPort("qValues", QTable);
+		addModule(currentStateQ);
+		
+		
 		//Create copy Q module
 //		Module copyQ = new Float1dCopyModule("copyQ");
 //		copyQ.addInPort("toCopy", currentStateQ.getOutPort("votes"),true);
@@ -199,10 +208,26 @@ public class ModelAsleep extends Model {
 		addModule(actionSelection);
 		
 		
+		
+		//Check weather action selection is optimal value:
+		MaxModule maxModule =  new MaxModule("maxModule");
+		maxModule.addInPort("values", currentStateQ.getOutPort("votes"));
+		addModule(maxModule);
+		
+		AreEqualModule areEqualModule = new AreEqualModule("areEqual", 0.00001f);
+		areEqualModule.addInPort("values", currentStateQ.getOutPort("votes"));
+		areEqualModule.addInPort("input1", maxModule.maxVal);
+		areEqualModule.addInPort("input2", actionSelection.getOutPort("action"));
+		addModule(areEqualModule);
+		
+		
+		
+		
 		//Create deltaSignal module
 		deltaError = new ActorCriticDeltaError("error", discountFactor, numActions);
 		deltaError.addInPort("reward", r.getOutPort("reward"));
 		deltaError.addInPort("value", currentValue.getOutPort("value"));
+		deltaError.addInPort("isNextActionOptimal", areEqualModule.areEqual);
 		addModule(deltaError);
 
 		

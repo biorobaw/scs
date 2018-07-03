@@ -307,6 +307,7 @@ public class MorrisReplayModel extends Model  {
 		wallDrawer.setColor(GuiUtils.getHSBAColor(0f, 0f, 0f, 1));
 
 		VDrawer vdrawer = new VDrawer(modelAwake.getPlaceCells(), VTable);
+//		vdrawer.setRadius(10);
 
 		awakePlots.add(qSoftMax);
 		awakePlots.add(affordances);

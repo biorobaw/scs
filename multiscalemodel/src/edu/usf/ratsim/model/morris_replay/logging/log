@@ -1,0 +1,24 @@
+Morris Replay Model Log file
+
+
+6/26/2018
+-Modified TesselatedPlaceCEllLayer
+   -Class no longer has access to robot
+   -Position is no longer taken from the robot but given as an input to the module
+-Restoring snapshots
+   -modified format in which binary files are saved
+   -deleted ModelSave interface, added save and load functions to class Model
+   -modified xml file, experiment and episode to load model if defined in control variables on xml file
+   -RESTORED
+   
+  07/02/82018
+  -Changing how V and Q are updated
+      before: always update V and Q
+      now:    update only if action taken was optimal action according to policy or if error > 0
+      *Done: created "MaxModule" and "AreEqual" module, also added extra input to the calculation of deltaError
+      Result: Policy "somewhat" learns the path but rapidly converges to trajectories that get stuck in a loop ("circle")
+      Currently studying reasons: need to improve debugging tools to observe how the system evolves
+      next steps: improve V drawers, create Q drawer, create W drawer, also should reward similar actions as well since it is open maze
+      	* V drawer improved a bit
+      	Issues found: State generalization may rewarding/penalize actions which may not make sense, view image StateGeneralizationError1.png
+  

@@ -21,6 +21,8 @@ import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.platform.drawers.PolarDataDrawer;
+import edu.usf.ratsim.model.morris_replay.submodules.AreEqualModule;
+import edu.usf.ratsim.model.morris_replay.submodules.MaxModule;
 import edu.usf.ratsim.model.multiplet.submodules.DistanceAffordanceGatingModule;
 import edu.usf.ratsim.model.multiplet.submodules.DistancesInputModule;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromProbabilities;
@@ -206,12 +208,26 @@ public class ModelAwake extends Model {
 
 		// Add extra input to bias Module
 		twoActionsGateModule.addInPort("action", actionSelection.getOutPort("action"),true);
+		
+		
+		
+		//Check weather action selection is optimal value:
+		MaxModule maxModule =  new MaxModule("maxModule");
+		maxModule.addInPort("values", currentStateQ.getOutPort("votes"));
+		addModule(maxModule);
+		
+		AreEqualModule areEqualModule = new AreEqualModule("areEqual", 0.00001f);
+		areEqualModule.addInPort("values", currentStateQ.getOutPort("votes"));
+		areEqualModule.addInPort("input1", maxModule.maxVal);
+		areEqualModule.addInPort("input2", actionSelection.getOutPort("action"));
+		addModule(areEqualModule);
 
 		
 		// Create deltaSignal module
 		Module deltaError = new ActorCriticDeltaError("error", discountFactor, numActions);
 		deltaError.addInPort("reward", r.getOutPort("reward"));
 		deltaError.addInPort("value", currentValue.getOutPort("value"));
+		deltaError.addInPort("isNextActionOptimal", areEqualModule.areEqual);
 		addModule(deltaError);
 		
 		

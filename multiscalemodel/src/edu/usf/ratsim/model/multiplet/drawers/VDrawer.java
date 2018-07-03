@@ -12,6 +12,7 @@ import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
 import edu.usf.experiment.universe.BoundedUniverse;
 import edu.usf.experiment.universe.UniverseLoader;
+import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.twodimensional.sparse.Entry;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
@@ -21,8 +22,9 @@ public class VDrawer extends Drawer {
 
 	Coordinate[] centers;
 	Float2dSparsePort stateValues;
+	int distanceOption = 1; //0 to use radius and diam, 1 to use minDist and choose automatically
+	float minDist = Float.POSITIVE_INFINITY;
 	int radius = 2;
-	int diameter= 4;
 	
 	HashMap<Entry,Float> nonZero = new HashMap<>();
 	
@@ -33,16 +35,32 @@ public class VDrawer extends Drawer {
 			centers[i]= pcs.get(i).getPreferredLocation();
 		}
 		stateValues = stateValuePort;
+		
+		for(int i=0;i<pcs.size();i++)
+			for(int j=i+1;j<pcs.size();j++){
+				double dx = centers[i].x-centers[j].x;
+				double dy = centers[i].y-centers[j].y;
+				minDist = (float)Math.min(minDist, dx*dx+dy*dy);
+			}
+		minDist = (float)Math.sqrt(minDist)/2;
+		
 	}
 
 	@Override
 	public void draw(Graphics g, java.awt.geom.Rectangle2D.Float panelCoordinates) {
 		if(!doDraw) return;
 		
+		
+		
+		
 		BoundedUniverse bu = (BoundedUniverse)UniverseLoader.getUniverse();
 		Scaler s = new Scaler(bu.getBoundingRect(), panelCoordinates, true);
 		
 		int coords[][] = s.scale(centers);
+		
+		int r = radius;
+		if(distanceOption==1) r = s.scaleDistanceX(minDist);
+		int d = 2*r;
 
 		
 		float maxValue = GuiUtils.findMaxInMap(nonZero);
@@ -53,7 +71,7 @@ public class VDrawer extends Drawer {
 			if(value==null) value = 0f;
 			
 			g.setColor(getColor(value,maxValue));
-			g.fillOval(coords[0][i]-radius, coords[1][i]-radius, diameter, diameter);
+			g.fillOval(coords[0][i]-r, coords[1][i]-r, d, d);
 			
 		}
 		
@@ -87,4 +105,8 @@ public class VDrawer extends Drawer {
 		return  GuiUtils.getHSBAColor(h,s,b,alpha);
 	}
 	
+	
+	public void setRadius(int r){
+		radius = r;
+	}
 }
