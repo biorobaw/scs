@@ -11,7 +11,7 @@ Morris Replay Model Log file
    -modified xml file, experiment and episode to load model if defined in control variables on xml file
    -RESTORED
    
-  07/02/82018
+  07/02/2018
   -Changing how V and Q are updated
       before: always update V and Q
       now:    update only if action taken was optimal action according to policy or if error > 0
@@ -20,5 +20,14 @@ Morris Replay Model Log file
       Currently studying reasons: need to improve debugging tools to observe how the system evolves
       next steps: improve V drawers, create Q drawer, create W drawer, also should reward similar actions as well since it is open maze
       	* V drawer improved a bit
-      	Issues found: State generalization may rewarding/penalize actions which may not make sense, view image StateGeneralizationError1.png
-  
+      	Issues found: State generalization may rewarding/penalize actions which may not make sense, view image on "issue1" of issues.pptx
+      	
+  07/03/2018
+  	-Analyzing issues 1 and 2 found on 07/02/2018: is the problem how V and Q are updated?
+  	-Math analysis shows implemented equations have a tendency to either keep increasing or keep decreasing V, see equations in issue3 in  "issues.pptx" 
+  	-Making changes specified in "issues.pptx : Issue 3 – modifying the model to solve issue"
+  	     *Updated Awake and Asleep models
+  	     *Modified ActorCriticDeltaError so that it now receives two inputs instead of using memory (which it was not ok)
+  	     *Note: before update: module updateVQ executed before choosing an action, now they are inverted, thus the dependency was also inverted to update old action
+  	     *Done with modification, error solved, must check whether learning correctly now.
+  	

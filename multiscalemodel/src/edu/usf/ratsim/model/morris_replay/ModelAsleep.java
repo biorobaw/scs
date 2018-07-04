@@ -50,7 +50,7 @@ public class ModelAsleep extends Model {
 //	public TmazeRandomPlaceCellLayer placeCells;
 	public TesselatedPlaceCellLayer placeCells;
 	public ProportionalVotes currentStateQ;
-	private ProportionalValue currentValue;
+	private ProportionalValue newStateValue;
 	public NextActiveModule nextActiveModule;
 	private NextPositionModule nextPosModule;
 	
@@ -61,11 +61,12 @@ public class ModelAsleep extends Model {
 	public boolean[] visitedNodes;
 	
 	private Robot robot;
-	private ActorCriticDeltaError deltaError;
+	private ActorCriticDeltaError error;
 	private UpdateQModuleAC updateQV;
 	
 	public boolean doneReplaying = false;
 	private SubjectFoundFood subFoundFood;
+	private Module oldStateValue;
 	
 	public ModelAsleep() {
 	}
@@ -139,12 +140,15 @@ public class ModelAsleep extends Model {
 		 */
 		
 		
+		//======= VARIABLES ================================================
+		
 		//Create Variables Q,W, note sleepState has already been initialized.
 		this.QTable = QTable;
 		this.VTable = VTable;
-		
 		this.WTable = WTable;
 		
+		
+		//======= INPUT MODULES =============================================
 		//Create pos module 
 		Position pos = new Position("position", lRobot);
 		addModule(pos);
@@ -153,11 +157,8 @@ public class ModelAsleep extends Model {
 		subFoundFood = new SubjectFoundFood("Subject Found Food", robot);
 		addModule(subFoundFood);
 	
-		//Create reward module
-		float nonFoodReward = 0;
-		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
-		r.addInPort("rewardingEvent", subFoundFood.getOutPort("subFoundFood")); 
-		addModule(r);
+		
+		//======= CURRENT STATE ==============================================
 		
 		//Create Place Cells module
 //		placeCells = new TmazeRandomPlaceCellLayer("PCLayer",pcList);
@@ -166,42 +167,77 @@ public class ModelAsleep extends Model {
 		addModule(placeCells);
 		
 		
-		currentValue = new ProportionalValue("currentValueV", 10000);
-		currentValue.addInPort("states", placeCells.getActivationPort());
-		currentValue.addInPort("value", VTable);
-		addModule(currentValue);
+		//======= LEARNING MODULES ===========================================
+
+		//Calculate the value of s_t using \{v^{t-1}_i\}
+		newStateValue = new ProportionalValue("newStateValue", 10000);
+		newStateValue.addInPort("states", placeCells.getActivationPort());
+		newStateValue.addInPort("value", VTable);
+		addModule(newStateValue);
+		
+		//Create reward module
+		float nonFoodReward = 0;
+		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
+		r.addInPort("rewardingEvent", subFoundFood.getOutPort("subFoundFood")); 
+		addModule(r);
+		
+		//Create deltaSignal module
+		error = new ActorCriticDeltaError("error", discountFactor, numActions);
+		error.addInPort("reward", r.getOutPort("reward"));
+		error.addInPort("newStateValue", newStateValue.getOutPort("value"));
+		addModule(error);
 		
 		
+		//Create update Q module		
+		updateQV = new UpdateQModuleAC("updateQ", learningRate);
+		updateQV.addInPort("delta", error.getOutPort("delta"));
+		updateQV.addInPort("Q", QTable);
+		updateQV.addInPort("V", VTable);
+		updateQV.addInPort("actionPlaceCells", placeCells.getActivationPort() );
+		updateQV.addInPort("valuePlaceCells", placeCells.getActivationPort() );
+		addModule(updateQV);
+		
+		//======= RECALCULATION OF V AND Q AFTER UPDATE ======================		
+		
+		// Create currentStateQ Q module
 		currentStateQ = new ProportionalVotes("currentStateQ", numActions, 10000);
 		currentStateQ.addInPort("states", placeCells.getActivationPort());
 		currentStateQ.addInPort("qValues", QTable);
+		currentStateQ.addPreReq(updateQV);
 		addModule(currentStateQ);
 		
 		
-		//Create copy Q module
-//		Module copyQ = new Float1dCopyModule("copyQ");
-//		copyQ.addInPort("toCopy", currentStateQ.getOutPort("votes"),true);
-//		addModule(copyQ);
+		//calculate next iteration "oldStateValue"
+		oldStateValue = new ProportionalValue("oldStateValue", 10000);
+		oldStateValue.addInPort("states", placeCells.getActivationPort());
+		oldStateValue.addInPort("value", VTable);
+		oldStateValue.addPreReq(updateQV);
+		addModule(oldStateValue);
 		
+		
+		//======= ACTION SELECTION MODULES ===================================
+		
+		//Given W, find out next active PC
 		nextActiveModule = new NextActiveModule("nextActive",propagationThreshold);
 		nextActiveModule.addInPort("W", WTable);
 		addModule(nextActiveModule);
 		
 
-		
-		//Create nextPosModule:
+		//Create module that associates PCs to locations
 		//first get place cells center positions:
 		LinkedList<Coordinate> pcCenters = new LinkedList<Coordinate>();
 		for(PlaceCell pc : pcList){
 			pcCenters.add(pc.getPreferredLocation());
 		}
-		
+
+		//then create the module
 		nextPosModule = new NextPositionModule("nextPos",pcCenters);
 		nextPosModule.addInPort("nextActive", nextActiveModule.getOutPort("nextActive"));
 		addModule(nextPosModule);
 		
 		
-		//Create action selection module -- choose action according to probability distribution
+		//Create action selection module:
+		//choose closest action that takes rat from current pos to next
 		Module actionSelection = new ClosestActionSelection("actionFromProbabilities",numActions);
 		actionSelection.addInPort("position", pos.getOutPort("position"));
 		actionSelection.addInPort("nextPosition", nextPosModule.getOutPort("nextPosition"));
@@ -210,10 +246,12 @@ public class ModelAsleep extends Model {
 		
 		
 		//Check weather action selection is optimal value:
+		//first find value of max action
 		MaxModule maxModule =  new MaxModule("maxModule");
 		maxModule.addInPort("values", currentStateQ.getOutPort("votes"));
 		addModule(maxModule);
-		
+
+		//then check if value of selected action is equal to value of max action		
 		AreEqualModule areEqualModule = new AreEqualModule("areEqual", 0.00001f);
 		areEqualModule.addInPort("values", currentStateQ.getOutPort("votes"));
 		areEqualModule.addInPort("input1", maxModule.maxVal);
@@ -223,39 +261,15 @@ public class ModelAsleep extends Model {
 		
 		
 		
-		//Create deltaSignal module
-		deltaError = new ActorCriticDeltaError("error", discountFactor, numActions);
-		deltaError.addInPort("reward", r.getOutPort("reward"));
-		deltaError.addInPort("value", currentValue.getOutPort("value"));
-		deltaError.addInPort("isNextActionOptimal", areEqualModule.areEqual);
-		addModule(deltaError);
-
+		//======= ADD ALL BACKWARD DEPENDENCIES ==============================
 		
-		//Create update Q module		
-		updateQV = new UpdateQModuleAC("updateQ", learningRate);
-		updateQV.addInPort("delta", deltaError.getOutPort("delta"));
-		updateQV.addInPort("action", actionSelection.getOutPort("action"));
-		updateQV.addInPort("Q", QTable);
-		updateQV.addInPort("V", VTable);
-		updateQV.addInPort("actionPlaceCells", placeCells.getActivationPort() );
-		updateQV.addInPort("valuePlaceCells", placeCells.getActivationPort() );
-		addModule(updateQV);
-		
-		
-		
-//		Module actionPerformer = new MoveFromToActionPerformer("actionPerformer", robot);
-//		actionPerformer.addInPort("position", pos.getOutPort("position"));
-//		actionPerformer.addInPort("nextPosition", nextPosModule.getOutPort("nextPosition"));
-//		addModule(actionPerformer);
-		
-//		placeCells.addPreReq(actionPerformer);
-		//actionPerformer.addPreReq(placeCells);
-		
-		//create subAte module
-//		SubjectAte subAte = new SubjectAte("Subject Ate",robot);
-//		addModule(subAte);
-//		subAte.addPreReq(actionPerformer);
-		
+		//indicate to the error function whether the previous action was optimal
+		error.addInPort("wasActionOptimal", areEqualModule.areEqual,true);
+		//provide old stateValue to error signal
+		error.addInPort("oldStateValue", oldStateValue.getOutPort("value"),true);
+				
+		//add action to module that updates Q:
+		updateQV.addInPort("action", actionSelection.getOutPort("action"),true);
 		
 		
 

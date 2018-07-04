@@ -64,10 +64,11 @@ public class UpdateQModuleAC extends Module {
 		oldValuePCs = null;
 	}
 
-	public void savePCs() {
-		Float1dSparsePort actionPCs = (Float1dSparsePort) getInPort("actionPlaceCells");
-		oldActionPCs = new HashMap<Integer, Float>(actionPCs.getNonZero());
-		Float1dSparsePort valuePCs = (Float1dSparsePort) getInPort("valuePlaceCells");
-		oldValuePCs = new HashMap<Integer, Float>(valuePCs.getNonZero());
-	}
+	//what is this function for?
+//	public void savePCs() {
+//		Float1dSparsePort actionPCs = (Float1dSparsePort) getInPort("actionPlaceCells");
+//		oldActionPCs = new HashMap<Integer, Float>(actionPCs.getNonZero());
+//		Float1dSparsePort valuePCs = (Float1dSparsePort) getInPort("valuePlaceCells");
+//		oldValuePCs = new HashMap<Integer, Float>(valuePCs.getNonZero());
+//	}
 }

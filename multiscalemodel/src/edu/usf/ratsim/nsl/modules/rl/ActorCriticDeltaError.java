@@ -16,11 +16,9 @@ public class ActorCriticDeltaError extends Module {
 	
 	float gamma; //discountFactor	
 	
-	float oldValue;
-	boolean validOldValue;
+	boolean skipFirstUpdate;
 
 	private float foodReward;
-	boolean lastActionWasOptimal = false;
 
 	public ActorCriticDeltaError(String name,float discountFactor, float foodReward) {
 		super(name);
@@ -29,31 +27,30 @@ public class ActorCriticDeltaError extends Module {
 		
 		this.foodReward = foodReward;
 		
-		oldValue = 0;
-		validOldValue = false;
+		skipFirstUpdate = false;
 	}
 
 	
 	public void run() {
 		float r = ((Float0dPort)getInPort("reward")).get();
-		float value = ((Float0dPort)getInPort("value")).get();
+		float newStateValue = ((Float0dPort)getInPort("newStateValue")).get();
+		float oldStateValue = ((Float0dPort)getInPort("oldStateValue")).get();
+		boolean wasActionOptimal = ((Bool0dPort)getInPort("wasActionOptimal")).get();
 		
 		
-		if (validOldValue){
+		if (skipFirstUpdate){
+			delta.set(0);
+		} else {
 			// Maximum obtained is capped by food reward
-			float obtained = Math.min(r + gamma*value, foodReward);
-			float d = obtained - oldValue;
+			float obtained = Math.min(r + gamma*newStateValue, foodReward);
+			float d = obtained - oldStateValue;
 			
 			//if last action was not optimal, do not update unless the new state is better than the old state
-			delta.set( (d > 0 || lastActionWasOptimal) ? d : 0);
-		} else {
-			delta.set(0);
+			delta.set( (d > 0 || wasActionOptimal) ? d : 0f);
 		}
 			
 		// Assumes Q is always the same size
-		oldValue = value;
-		validOldValue = true;
-		lastActionWasOptimal = ((Bool0dPort)getInPort("isNextActionOptimal")).get();
+		skipFirstUpdate = false;
 		
 	}
 
@@ -64,15 +61,13 @@ public class ActorCriticDeltaError extends Module {
 	}
 	
 	public void newEpisode() {
-		validOldValue = false;
-		lastActionWasOptimal = false;
+		skipFirstUpdate = true;
 	}
 
 	/**
-	 * Save the current Q state. Usually called at the beginning of an episode to update from the first move.
+	 * why??? Save the current Q state. Usually called at the beginning of an episode to update from the first move.
 	 */
-	public void saveValue() {
-		oldValue = ((Float0dPort)getInPort("value")).get();
-		validOldValue = true;
-	}
+//	public void saveValue() {
+//		skipFirstUpdate = true;
+//	}
 }
