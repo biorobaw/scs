@@ -11,7 +11,7 @@ Morris Replay Model Log file
    -modified xml file, experiment and episode to load model if defined in control variables on xml file
    -RESTORED
    
-  07/02/2018
+07/02/2018
   -Changing how V and Q are updated
       before: always update V and Q
       now:    update only if action taken was optimal action according to policy or if error > 0
@@ -22,8 +22,8 @@ Morris Replay Model Log file
       	* V drawer improved a bit
       	Issues found: State generalization may rewarding/penalize actions which may not make sense, view image on "issue1" of issues.pptx
       	
-  07/03/2018
-  	-Analyzing issues 1 and 2 found on 07/02/2018: is the problem how V and Q are updated?
+07/03/2018
+	-Analyzing issues 1 and 2 found on 07/02/2018: is the problem how V and Q are updated?
   	-Math analysis shows implemented equations have a tendency to either keep increasing or keep decreasing V, see equations in issue3 in  "issues.pptx" 
   	-Making changes specified in "issues.pptx : Issue 3 – modifying the model to solve issue"
   	     *Updated Awake and Asleep models
@@ -31,3 +31,25 @@ Morris Replay Model Log file
   	     *Note: before update: module updateVQ executed before choosing an action, now they are inverted, thus the dependency was also inverted to update old action
   	     *Done with modification, error solved, must check whether learning correctly now.
   	
+07/04/2018
+	-Analysing results after changes made on 07/03/2018: does the model learn correctly now?
+	-Issue: the code is inefficient, each run takes too long -> must optimize
+	-Profiler tool shows:
+			Main              				296.008    
+			PCTransitionMatrixUpdater  		 40
+			DrawPanel.paint() 				167.239
+			    VDrawer       				109.993
+			    PCDrawer       				 49.857
+			    PathDrawer      			  2.71
+			Plotter							  4.0
+		Most time utilized by drawing all PCs and updating matrix W
+		
+		
+07/05/2018
+	-Reviewing performance issues
+		-Display: simplifying repaint mechanism, updating so that only a single synchronization point with simulation
+			-Done simplification
+		-TODO: 
+			-change tesselated place cell layer to use a reduced matrix (create that matrix)
+			-improve drawing functions
+		

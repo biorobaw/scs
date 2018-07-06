@@ -60,11 +60,7 @@ public class NoDisplay implements Display {
 		
 	}
 
-	@Override
-	public void waitUntilDoneRendering() {
-		// TODO Auto-generated method stub
-		
-	}
+
 	
 
 }

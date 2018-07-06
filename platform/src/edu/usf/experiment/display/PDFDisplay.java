@@ -111,10 +111,6 @@ public class PDFDisplay implements Display {
 		
 	}
 
-	@Override
-	public void waitUntilDoneRendering() {
-		// TODO Auto-generated method stub
-		
-	}
+
 
 }

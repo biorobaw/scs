@@ -138,10 +138,10 @@ public class MultipleTModel extends Model  {
 				modelAsleep.run();
 
 				display.updateData();
-				display.repaint();
-				display.waitUntilDoneRendering();
+//				display.repaint();
+//				display.waitUntilDoneRendering();
 
-				Episode.waitNextFrame();
+				Episode.waitNextStep();
 
 				modelAsleep.move();
 

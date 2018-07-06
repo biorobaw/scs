@@ -82,7 +82,7 @@ public class VDrawer extends Drawer {
 		float h = val < 0 ? 0.66f : 0f;
 		float s = (float)Math.abs(val)/max;
 		float b = 0.8f;
-		float alpha = 0.5f;
+		float alpha = 1f;
 
 		return  GuiUtils.getHSBAColor(h,s,b,alpha);
 	}

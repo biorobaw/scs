@@ -23,6 +23,7 @@ import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.platform.drawers.PolarDataDrawer;
 import edu.usf.ratsim.model.morris_replay.submodules.AreEqualModule;
 import edu.usf.ratsim.model.morris_replay.submodules.MaxModule;
+import edu.usf.ratsim.model.morris_replay.submodules.WUpdater;
 import edu.usf.ratsim.model.multiplet.submodules.DistanceAffordanceGatingModule;
 import edu.usf.ratsim.model.multiplet.submodules.DistancesInputModule;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromProbabilities;
@@ -274,7 +275,7 @@ public class ModelAwake extends Model {
 		//======= W RELATED MODULES ==========================================
 		
 		// Create UpdateW module
-		PlaceCellTransitionMatrixUpdater wUpdater = new PlaceCellTransitionMatrixUpdater("wUpdater", numPC,wTransitionLR);
+		WUpdater wUpdater = new WUpdater("wUpdater", numPC,wTransitionLR);
 		wUpdater.addInPort("PC", placeCells.getOutPort("activation"));
 		wUpdater.addInPort("wPort", WTable);
 		addModule(wUpdater);
@@ -301,7 +302,7 @@ public class ModelAwake extends Model {
 		getModule("PCLayer").getOutPort("activation").clear();
 		// by doing this deltaQ(s_i,a_i) = nu*delta*State(s_i)*<a_i,a> = 0
 
-		((PlaceCellTransitionMatrixUpdater) getModule("wUpdater")).newTrial();
+		((WUpdater) getModule("wUpdater")).newTrial();
 
 		// need to let the bias module know that a new episode started (do not
 		// bias on fisrt turn)

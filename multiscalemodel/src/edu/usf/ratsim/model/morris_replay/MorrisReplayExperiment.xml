@@ -26,11 +26,11 @@
 		<collisionDetection>false</collisionDetection>
 		
 		<saveFile>saveTest</saveFile>
-		<!-- <load>
+		<load>
 			<path>logs/v21/test/multiplet/snapshots/saveTest</path>
-			<episode>3</episode>
+			<episode>20</episode>
 			<trial>Learning</trial>
-		</load> -->
+		</load> 
 		
 	</simulationControls>
 	

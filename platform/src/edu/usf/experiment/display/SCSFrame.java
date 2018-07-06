@@ -63,11 +63,14 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 	private JPanel cbPanel;
 	private HashMap<Drawer,JCheckBox> cBoxes;
 	
-	int renderCycle = -2; // cycle being redered
-	int remainingPanels = -1;
-	private boolean waiting ;
+	//sync display variables
+	boolean syncDisplay = false;
+	private boolean waitingPreviousFrame ; // boolean which indicates whether a thread is waiting to finish rendering last frame
+	private boolean doneRenderingLastCycle = true; //indicates whether last cycle has been drawn
+	int renderCycle = -2; // cycle being rednered
+	int remainingPanels = -1; //panels that still need to render current cycle
 	
-
+	
 	public SCSFrame(){
 		//create a synchronizable content pane
 		setContentPane(new DrawableContentPane());
@@ -117,8 +120,10 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		
 		//set synchronization:
 		System.out.println("Synchronizing display: " +( Globals.getInstance().get("syncDisplay")!=null));
-		synchronizeDisplay.set(Globals.getInstance().get("syncDisplay")!=null);
 		
+		synchronized(this){
+			syncDisplay = Globals.getInstance().get("syncDisplay")!=null;
+		}
 		
 		//pack and set visibility
 		pack();
@@ -377,66 +382,81 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		
 	}
 	
-	
+	long renderCycleTime = 0;
 	@Override
-	public synchronized void  updateData() {
-		// TODO Auto-generated method stub
-		renderCycle++;
-		for(Drawer d : drawers.values()) d.updateData();
-		remainingPanels = drawPanels.size();
-		for(DrawPanel p :drawPanels.values()) p.setRenderCycle(renderCycle);
+	public void  updateData() {	
+		
+		if( isWaitingNecessary() ) { //checks whether waiting is necessary, if so it sets a flag before waiting
+			//wait until done rendering last cycle:
+			long stamp = Debug.tic();
+			try {
+				doneRenderLock.acquire();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}	
+			System.out.println("Waiting time: " + Debug.toc(stamp));
+		} 
+		
+		boolean signalRepaint = false;
+		synchronized(SCSFrame.this){
+			if (doneRenderingLastCycle ){
+				
+				renderCycleTime = Debug.tic();
+				
+				renderCycle++;
+				doneRenderingLastCycle = false;
+				for(Drawer d : drawers.values()) d.updateData();
+				remainingPanels = drawPanels.size();
+				for(DrawPanel p :drawPanels.values()) p.setRenderCycle(renderCycle);
+				signalRepaint = true;
+			}	
+		}
+		if(signalRepaint) repaint();
+		
 		
 	}
 	
-
-	@Override
-	public void waitUntilDoneRendering() {
-		// TODO Auto-generated method stub
-		if(checkIfWaitingIsNecessary()) {
-			//wait until drawers have drawn this cycle
-			try {
-//				System.out.println("waiting till render is done: " + renderCycle);
-				long stamp = Debug.tic();
-				doneRenderLock.acquire();
-//				System.out.println("Time syncing: " + Debug.toc(stamp));
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+	public synchronized boolean isWaitingNecessary(){
+		waitingPreviousFrame = syncDisplay && !doneRenderingLastCycle;
+		return waitingPreviousFrame;
 	}
 	
+
+	
+
+
+	
 	public synchronized void sync(long cycle) {
-		if(synchronizeDisplay.get() && cycle==renderCycle) { 
+		if(cycle==renderCycle) { 
 			remainingPanels = Math.max(--remainingPanels, -1);
-			if(remainingPanels==0 && waiting) {
-				waiting = false;
-				doneRenderLock.release();
+			if(remainingPanels==0){
+				System.out.println("Render cycle time: " + Debug.toc(renderCycleTime));
+				doneRenderingLastCycle = true;
+				
+				if( waitingPreviousFrame) {
+					waitingPreviousFrame = false;
+					doneRenderLock.release();
+				}
+				
 				
 			}
 		}
 	}
 	
+	
 	public synchronized void toggleSync(){
-		boolean sync = !synchronizeDisplay.get();
-		synchronizeDisplay.set(sync);
-		if(!sync)
+		syncDisplay = !syncDisplay;
+		if(!syncDisplay)
 		{
-			remainingPanels = -1;
-			if(waiting){
-				waiting = false;
+				
+			if(waitingPreviousFrame){
+				waitingPreviousFrame = false;
 				doneRenderLock.release();
 			}
 			
 		}
 		
 	}
-	
-	public synchronized boolean checkIfWaitingIsNecessary(){
-		waiting = synchronizeDisplay.get();
-		return waiting;
-	}
-	
 	
 	
 	class DrawableContentPane extends JPanel {
@@ -453,7 +473,6 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 
 	}
 	
-
 
 	
 	

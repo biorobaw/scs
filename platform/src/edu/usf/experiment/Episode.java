@@ -142,16 +142,15 @@ public class Episode {
 			for (Logger l : beforeCycleLoggers) l.log(this);
 			for (Task t : beforeCycleTasks) 	t.perform(this);
 
-			getSubject().getModel().run();
-			
-			
 			long stamp = Debug.tic();
-			display.updateData();
-			display.repaint();
-			display.waitUntilDoneRendering();
-			//System.out.println("Time rendering: " + Debug.toc(stamp));
+			getSubject().getModel().run();
+			System.out.println("Model time: " + Debug.toc(stamp));
 			
-			if(!finished) waitNextFrame(); //the pause is here so that the model state can be observed before performing the actions
+			
+			//update data being displayed (update is done if display is being synced or if last frame was already drawn, otherwise update is skipped)
+			display.updateData();
+
+			if(!finished) waitNextStep(); //the pause is here so that the model state can be observed before performing the actions
 			
 			// Evaluate stop conditions
 			for (Condition sc : stopConds) if(finished = finished || sc.holds(this)) break;
@@ -227,7 +226,7 @@ public class Episode {
 		return trial.getUniverse();
 	}
 	
-	static public void waitNextFrame() {
+	static public void waitNextStep() {
 		try {
 			accessMutex.acquire();
             if(paused){   

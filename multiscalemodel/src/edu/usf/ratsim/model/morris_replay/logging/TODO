@@ -1,0 +1,9 @@
+Morris Replay Model TODO file
+
+*Must improve efficiency of model: currently taking about 30 mins to execute
+
+*Change Logging System: currently, a tree is created "logFolder/group/ratId/trial/episode"
+      Instead, provide a separate logFolder for each type of log, and store all log files inside that folder, substitute tree by file name
+*Make all loggers binary file loggers
+*Add database
+http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=19836
