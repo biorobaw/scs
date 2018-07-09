@@ -14,6 +14,8 @@ import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.onedimensional.vector.PointPort;
+import edu.usf.micronsl.port.twodimensional.Float2dSingleBlockMatrixPort;
+import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceCell;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceCellForMultipleT;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
@@ -41,11 +43,19 @@ public class TesselatedPlaceCellLayer extends Module {
 	/**
 	 * The activation output port. A sparse port is used for efficiency.
 	 */
-	private Float1dSparsePortMap activationPort;
+	private Float2dSingleBlockMatrixPort activationPort;
 
 	private String placeCellType;
 
 	private float radius;
+	private float distanceXBetweenCells;
+	private float distanceYBetweenCells;
+
+	private float xmin;
+
+	private float ymin;
+
+	private int numCellsPerSide;
 
 	/**
 	 * Creates all the place cells and locates them in a tesselated grid laid
@@ -79,14 +89,22 @@ public class TesselatedPlaceCellLayer extends Module {
 			String placeCellType, float xmin, float ymin, float xmax, float ymax) {
 		super(name);
 
-		active = true;
+		this.active = true;
+		this.placeCellType = placeCellType;
+		this.radius = radius;
 
-		cells = new ArrayList<PlaceCell>();
+		this.cells = new ArrayList<PlaceCell>();
 
+		distanceYBetweenCells = (ymax - ymin) / (numCellsPerSide - 1);
+		distanceXBetweenCells = (xmax - xmin) / (numCellsPerSide - 1);
+		this.xmin = xmin;
+		this.ymin = ymin;
+		this.numCellsPerSide = numCellsPerSide;
+		
 		for (int i = 0; i < numCellsPerSide; i++) {
-			float x = xmin + i * (xmax - xmin) / (numCellsPerSide - 1);
+			float y = ymin + i *distanceYBetweenCells;
 			for (int j = 0; j < numCellsPerSide; j++) {
-				float y = ymin + j * (ymax - ymin) / (numCellsPerSide - 1);
+				float x = xmin + j *distanceXBetweenCells;
 				// Find if it intersects any wall
 				if (placeCellType.equals("proportional"))
 					cells.add(new ProportionalPlaceCell(new Coordinate(x, y), radius));
@@ -99,36 +117,18 @@ public class TesselatedPlaceCellLayer extends Module {
 			}
 		}
 
-		activationPort = new Float1dSparsePortMap(this, cells.size(), 4000);
+		
+		int maxActivePlaCellRows =  (int)(2*radius / distanceYBetweenCells) + 1;
+		int maxActivePlaCellCols =  (int)(2*radius / distanceXBetweenCells) + 1;
+		
+		//activationPort = new Float1dSparsePortMap(this, cells.size(), 4000);
+		activationPort = new Float2dSingleBlockMatrixPort(this, numCellsPerSide, numCellsPerSide,maxActivePlaCellRows,maxActivePlaCellCols,0,0);
 		addOutPort("activation", activationPort);
 		
-		this.placeCellType = placeCellType;
-		this.radius = radius;
 
 
 	}
 	
-	
-	/**
-	 * Creates pc layer using the given cells
-	 * @param name
-	 * @param relativeRadius
-	 * @param numCells
-	 * @param placeCellType
-	 */
-	public TesselatedPlaceCellLayer(String name, ArrayList<PlaceCell> cells,String placeCellType) {
-		super(name);
-
-		active = true;
-
-		this.cells = cells;		
-
-		activationPort = new Float1dSparsePortMap(this, cells.size(), 1f/8);
-		addOutPort("activation", activationPort);
-		
-		this.placeCellType = placeCellType;
-
-	}
 	
 	/**
 	 * Computes the current activation of all cells
@@ -147,25 +147,54 @@ public class TesselatedPlaceCellLayer extends Module {
 	 *            The distance to the closest wall
 	 */
 	public void run(Coordinate pos, float distanceToClosestWall) {
-		Map<Integer, Float> nonZero = activationPort.getNonZero();
-		nonZero.clear();
-		if (active) {
-			int i = 0;
-			float total = 0;
-
-			for (PlaceCell pCell : cells) {
-				float val = pCell.getActivation(pos, distanceToClosestWall);
-				if (val != 0) {
-					nonZero.put(i, val);
-					total += val;
+		
+		if(!active){
+			activationPort.clearBlock();
+		}else{
+			
+			int firstCol = Math.max( (int)Math.ceil((pos.x-radius-xmin)/distanceXBetweenCells),0);
+			int firstRow = Math.max( (int)Math.ceil((pos.y-radius-ymin)/distanceYBetweenCells),0);
+			
+			activationPort.setWindowOrigin(firstRow, firstCol);
+			
+			
+			for(int i=0;i<activationPort.getBlockRows();i++)
+				for(int j=0;j<activationPort.getBlockCols();j++){
+					
+					//System.out.println("line: "+i + " " + j + " " + firstRow + " " + firstCol );
+					activationPort.setBlock(i, j, getCell(firstRow+i,firstCol+j).getActivation(pos, distanceToClosestWall));
+					
+					
 				}
-				i++;
-			}
-
-			if (Float.isNaN(total))
-				System.out.println("Numeric error");
+			
+			
+//			activationPort
+//			Map<Integer, Float> nonZero = activationPort.getNonZero();
+//			nonZero.clear();
+//			if (active) {
+//				int i = 0;
+//				float total = 0;
+//				
+//				for (PlaceCell pCell : cells) {
+//					float val = pCell.getActivation(pos, distanceToClosestWall);
+//					if (val != 0) {
+//						nonZero.put(i, val);
+//						total += val;
+//					}
+//					i++;
+//				}
+//				
+//				if (Float.isNaN(total))
+//					System.out.println("Numeric error");
+//			}
 		}
+		
 	}
+	
+	public PlaceCell getCell(int i, int j){
+		return cells.get(i*numCellsPerSide + j);
+	}
+	
 	
 	/**
 	 * Returns the activation of all cells
@@ -200,7 +229,11 @@ public class TesselatedPlaceCellLayer extends Module {
 		((Float1dPortArray) getOutPort("activation")).clear();
 	}
 	
-	public Float1dSparsePortMap getActivationPort(){
+//	public Float1dSparsePortMap getActivationPort(){
+//		return activationPort;
+//	}
+	
+	public Float2dSingleBlockMatrixPort getActivationPort(){
 		return activationPort;
 	}
 	

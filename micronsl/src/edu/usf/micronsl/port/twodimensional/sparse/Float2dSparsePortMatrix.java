@@ -73,14 +73,14 @@ public class Float2dSparsePortMatrix extends Float2dSparsePort {
 	}
 
 	@Override
-	public float[][] getData() {
+	public float[][] get2dData() {
 		float[][] data = new float[nrow][ncol];
-		getData(data);
+		get2dData(data);
 		return data;
 	}
 
 	@Override
-	public void getData(float[][] data) {
+	public void get2dData(float[][] data) {
 		for (Entry e : nonZero.keySet())
 			data[e.i][e.j] = nonZero.get(e);
 	}

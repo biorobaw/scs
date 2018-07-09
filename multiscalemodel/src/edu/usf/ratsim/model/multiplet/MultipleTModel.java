@@ -276,8 +276,8 @@ public class MultipleTModel extends Model  {
 		PolarDataDrawer affordances = new PolarDataDrawer("Affordances", modelAwake.affordanceGateModule.gates);
 		PolarDataDrawer actionGating = new PolarDataDrawer("2 Actions Gate", modelAwake.twoActionsGateModule.gates);
 		resultProbabilities = new PolarDataDrawer("Resulting Probs", modelAwake.twoActionsGateModule.probabilities);
-		PCDrawer pcDrawer = new PCDrawer(modelAwake.placeCells.getCells(), modelAwake.placeCells.getActivationPort());
-		PCDrawer pcDrawerAsleep = new PCDrawer(modelAwake.getPlaceCells(), modelAsleep.placeCells.getActivationPort());
+//		PCDrawer pcDrawer = new PCDrawer(modelAwake.placeCells.getCells(), modelAwake.placeCells.getActivationPort());
+//		PCDrawer pcDrawerAsleep = new PCDrawer(modelAwake.getPlaceCells(), modelAsleep.placeCells.getActivationPort());
 		pathDrawer = new PathDrawer((LocalizableRobot) lRobot);
 		pathDrawer.setColor(Color.red);
 		WallDrawer wallDrawer = new WallDrawer(VirtUniverse.getInstance(), 1);
@@ -289,15 +289,15 @@ public class MultipleTModel extends Model  {
 		awakePlots.add(affordances);
 		awakePlots.add(actionGating);
 		awakePlots.add(resultProbabilities);
-		awakePlots.add(pcDrawer);
-
-		asleepPlots.add(pcDrawerAsleep);
+//		awakePlots.add(pcDrawer);
+//
+//		asleepPlots.add(pcDrawerAsleep);
 
 		// asleep plots
 		d.addDrawer("universe", "cycle info", new CycleDataDrawer());
-		d.addDrawer("universe", "pcsAwake", pcDrawer, 1);
+//		d.addDrawer("universe", "pcsAwake", pcDrawer, 1);
 		d.addDrawer("universe", "paths", pathDrawer, 2);
-		d.addDrawer("universe", "pcsAsleep", pcDrawerAsleep, 1);
+//		d.addDrawer("universe", "pcsAsleep", pcDrawerAsleep, 1);
 
 		// awake plots
 		d.addDrawer("panel1", "softmax", qSoftMax);

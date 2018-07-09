@@ -26,6 +26,9 @@ import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.ratsim.model.morris_replay.submodules.AreEqualModule;
 import edu.usf.ratsim.model.morris_replay.submodules.MaxModule;
+import edu.usf.ratsim.model.morris_replay.submodules.ProportionalValueSingleBlockMatrix;
+import edu.usf.ratsim.model.morris_replay.submodules.ProportionalVotesSingleBlockMatrix;
+import edu.usf.ratsim.model.morris_replay.submodules.UpdateQModuleAC2;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalValue;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
@@ -49,8 +52,8 @@ public class ModelAsleep extends Model {
 	private int numPC;
 //	public TmazeRandomPlaceCellLayer placeCells;
 	public TesselatedPlaceCellLayer placeCells;
-	public ProportionalVotes currentStateQ;
-	private ProportionalValue newStateValue;
+	public ProportionalVotesSingleBlockMatrix currentStateQ;
+	private ProportionalValueSingleBlockMatrix newStateValue;
 	public NextActiveModule nextActiveModule;
 	private NextPositionModule nextPosModule;
 	
@@ -62,7 +65,7 @@ public class ModelAsleep extends Model {
 	
 	private Robot robot;
 	private ActorCriticDeltaError error;
-	private UpdateQModuleAC updateQV;
+	private UpdateQModuleAC2 updateQV;
 	
 	public boolean doneReplaying = false;
 	private SubjectFoundFood subFoundFood;
@@ -82,6 +85,7 @@ public class ModelAsleep extends Model {
 		float foodReward		= params.getChildFloat("foodReward");
 		float propagationThreshold = params.getChildFloat("replayThres");
 		String pcType 			   = params.getChildText("placeCells");
+		float PCRadius 		 	   = params.getChildFloat("PCRadius");
 		
 				
 		this.numActions = numActions;
@@ -162,7 +166,8 @@ public class ModelAsleep extends Model {
 		
 		//Create Place Cells module
 //		placeCells = new TmazeRandomPlaceCellLayer("PCLayer",pcList);
-		placeCells = new TesselatedPlaceCellLayer("PCLayer", pcList,pcType);
+		
+		placeCells = new TesselatedPlaceCellLayer("PCLayer", PCRadius, (int)Math.sqrt(numPC), pcType, -1f, -1f, 1f, 1f);
 		placeCells.addInPort("position", pos.getOutPort("position"));
 		addModule(placeCells);
 		
@@ -170,7 +175,7 @@ public class ModelAsleep extends Model {
 		//======= LEARNING MODULES ===========================================
 
 		//Calculate the value of s_t using \{v^{t-1}_i\}
-		newStateValue = new ProportionalValue("newStateValue", 10000);
+		newStateValue = new ProportionalValueSingleBlockMatrix("newStateValue");
 		newStateValue.addInPort("states", placeCells.getActivationPort());
 		newStateValue.addInPort("value", VTable);
 		addModule(newStateValue);
@@ -189,18 +194,19 @@ public class ModelAsleep extends Model {
 		
 		
 		//Create update Q module		
-		updateQV = new UpdateQModuleAC("updateQ", learningRate);
+		updateQV = new UpdateQModuleAC2("updateQ", learningRate);
 		updateQV.addInPort("delta", error.getOutPort("delta"));
 		updateQV.addInPort("Q", QTable);
 		updateQV.addInPort("V", VTable);
-		updateQV.addInPort("actionPlaceCells", placeCells.getActivationPort() );
-		updateQV.addInPort("valuePlaceCells", placeCells.getActivationPort() );
+//		updateQV.addInPort("actionPlaceCells", placeCells.getActivationPort() );
+//		updateQV.addInPort("valuePlaceCells", placeCells.getActivationPort() );
+		updateQV.addInPort("pcs", placeCells.getActivationPort() );
 		addModule(updateQV);
 		
 		//======= RECALCULATION OF V AND Q AFTER UPDATE ======================		
 		
 		// Create currentStateQ Q module
-		currentStateQ = new ProportionalVotes("currentStateQ", numActions, 10000);
+		currentStateQ = new ProportionalVotesSingleBlockMatrix("currentStateQ", numActions);
 		currentStateQ.addInPort("states", placeCells.getActivationPort());
 		currentStateQ.addInPort("qValues", QTable);
 		currentStateQ.addPreReq(updateQV);
@@ -208,7 +214,7 @@ public class ModelAsleep extends Model {
 		
 		
 		//calculate next iteration "oldStateValue"
-		oldStateValue = new ProportionalValue("oldStateValue", 10000);
+		oldStateValue = new ProportionalValueSingleBlockMatrix("oldStateValue");
 		oldStateValue.addInPort("states", placeCells.getActivationPort());
 		oldStateValue.addInPort("value", VTable);
 		oldStateValue.addPreReq(updateQV);
@@ -306,10 +312,11 @@ public class ModelAsleep extends Model {
 	}
 
 	public Map<Integer, Float> getCellActivation() {
-		Map<Integer, Float> activation = new LinkedHashMap<Integer, Float>();
-		activation.putAll(((Float1dSparsePortMap) placeCells
-					.getOutPort("activation")).getNonZero());
-		return activation;
+//		Map<Integer, Float> activation = new LinkedHashMap<Integer, Float>();
+//		activation.putAll(((Float1dSparsePortMap) placeCells
+//					.getOutPort("activation")).getNonZero());
+//		return activation;
+		return null;
 	}
 
 	public float getMaxActivation(){

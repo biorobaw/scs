@@ -298,7 +298,7 @@ public class MorrisReplayModel extends Model  {
 		
 		RobotDrawer rDrawer = new RobotDrawer((GlobalCameraUniverse)UniverseLoader.getUniverse());
 		
-		PCDrawer pcDrawer = new PCDrawer(modelAwake.placeCells.getCells(), modelAwake.placeCells.getActivationPort());
+		PCDrawer pcDrawer 		= new PCDrawer(modelAwake.placeCells.getCells(), modelAwake.placeCells.getActivationPort());
 		PCDrawer pcDrawerAsleep = new PCDrawer(modelAwake.getPlaceCells(), modelAsleep.placeCells.getActivationPort());
 		
 		pathDrawer = new PathDrawer((LocalizableRobot) lRobot);

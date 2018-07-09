@@ -23,7 +23,11 @@ import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.platform.drawers.PolarDataDrawer;
 import edu.usf.ratsim.model.morris_replay.submodules.AreEqualModule;
 import edu.usf.ratsim.model.morris_replay.submodules.MaxModule;
+import edu.usf.ratsim.model.morris_replay.submodules.ProportionalValueSingleBlockMatrix;
+import edu.usf.ratsim.model.morris_replay.submodules.ProportionalVotesSingleBlockMatrix;
+import edu.usf.ratsim.model.morris_replay.submodules.UpdateQModuleAC2;
 import edu.usf.ratsim.model.morris_replay.submodules.WUpdater;
+import edu.usf.ratsim.model.morris_replay.submodules.WUpdater2;
 import edu.usf.ratsim.model.multiplet.submodules.DistanceAffordanceGatingModule;
 import edu.usf.ratsim.model.multiplet.submodules.DistancesInputModule;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromProbabilities;
@@ -53,8 +57,9 @@ public class ModelAwake extends Model {
 	public TesselatedPlaceCellLayer placeCells;
 
 
-	public ProportionalVotes currentStateQ;
-	private ProportionalValue newStateValue;
+	public ProportionalVotesSingleBlockMatrix currentStateQ;
+	private ProportionalValueSingleBlockMatrix newStateValue;
+	private ProportionalValueSingleBlockMatrix oldStateValue;
 
 	private Float2dSparsePort QTable;
 	private Float2dSparsePort WTable;
@@ -74,7 +79,6 @@ public class ModelAwake extends Model {
 	private String placeCellType;
 
 
-	private ProportionalValue oldStateValue;
 
 	public ModelAwake() {
 	}
@@ -165,7 +169,7 @@ public class ModelAwake extends Model {
 		
 		
 		//Calculate the value of s_t using \{v^{t-1}_i\}
-		newStateValue = new ProportionalValue("newStateValue", 10000);
+		newStateValue = new ProportionalValueSingleBlockMatrix("newStateValue");
 		newStateValue.addInPort("states", placeCells.getActivationPort());
 		newStateValue.addInPort("value", VTable);
 		addModule(newStateValue);
@@ -187,12 +191,13 @@ public class ModelAwake extends Model {
 		
 		// Create update Q module
 		//Module updateQ = new UpdateQModuleAC("updateQ", numActions, learningRate)
-		Module updateQV = new UpdateQModuleAC("updateQ", learningRate);
+		Module updateQV = new UpdateQModuleAC2("updateQ", learningRate);
 		updateQV.addInPort("delta", error.getOutPort("delta"));
 		updateQV.addInPort("Q", QTable);
 		updateQV.addInPort("V", VTable);
-		updateQV.addInPort("actionPlaceCells", placeCells.getOutPort("activation"));
-		updateQV.addInPort("valuePlaceCells", placeCells.getOutPort("activation"));
+//		updateQV.addInPort("actionPlaceCells", placeCells.getOutPort("activation"));
+//		updateQV.addInPort("valuePlaceCells", placeCells.getOutPort("activation"));
+		updateQV.addInPort("pcs", placeCells.getOutPort("activation"));
 		addModule(updateQV);
 		
 		
@@ -202,7 +207,7 @@ public class ModelAwake extends Model {
 		
 		
 		// Create currentStateQ Q module
-		currentStateQ = new ProportionalVotes("currentStateQ", numActions, 10000);
+		currentStateQ = new ProportionalVotesSingleBlockMatrix("currentStateQ", numActions);
 		currentStateQ.addInPort("states", placeCells.getActivationPort());
 		currentStateQ.addInPort("qValues", QTable);
 		currentStateQ.addPreReq(updateQV);
@@ -210,7 +215,7 @@ public class ModelAwake extends Model {
 		
 		
 		//calculate next iteration "oldStateValue"
-		oldStateValue = new ProportionalValue("oldStateValue", 10000);
+		oldStateValue = new ProportionalValueSingleBlockMatrix("oldStateValue");
 		oldStateValue.addInPort("states", placeCells.getActivationPort());
 		oldStateValue.addInPort("value", VTable);
 		oldStateValue.addPreReq(updateQV);
@@ -275,7 +280,7 @@ public class ModelAwake extends Model {
 		//======= W RELATED MODULES ==========================================
 		
 		// Create UpdateW module
-		WUpdater wUpdater = new WUpdater("wUpdater", numPC,wTransitionLR);
+		WUpdater2 wUpdater = new WUpdater2("wUpdater", numPC,wTransitionLR);
 		wUpdater.addInPort("PC", placeCells.getOutPort("activation"));
 		wUpdater.addInPort("wPort", WTable);
 		addModule(wUpdater);
@@ -302,7 +307,7 @@ public class ModelAwake extends Model {
 		getModule("PCLayer").getOutPort("activation").clear();
 		// by doing this deltaQ(s_i,a_i) = nu*delta*State(s_i)*<a_i,a> = 0
 
-		((WUpdater) getModule("wUpdater")).newTrial();
+		((WUpdater2) getModule("wUpdater")).newTrial();
 
 		// need to let the bias module know that a new episode started (do not
 		// bias on fisrt turn)

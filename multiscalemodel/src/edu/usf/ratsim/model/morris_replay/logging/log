@@ -52,4 +52,15 @@ Morris Replay Model Log file
 		-TODO: 
 			-change tesselated place cell layer to use a reduced matrix (create that matrix)
 			-improve drawing functions
+			
+07/06/2018
+	-Creating SingleBlockMatrix and SingleBlockMatrixPort
+		-Done
+		-Model updated, model sped up 100x, render time sped up 2x, rendering times can only improved in screens with refresh rate of 60x
+		-Screen refresh rates in ms: 
+			30 fps = 33ms
+			60 fps = 16.6ms
+			120fps = 8.3ms
+			240fps = 
+	-Running in async mode may cause issues with some drawers which require the history of a variable (example draw paths), fixing that...
 		

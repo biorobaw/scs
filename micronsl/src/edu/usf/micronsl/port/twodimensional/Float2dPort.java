@@ -2,6 +2,7 @@ package edu.usf.micronsl.port.twodimensional;
 
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.Port;
+import edu.usf.micronsl.port.onedimensional.Float1dPort;
 
 /**
  * A port that holds float values indexables by two indices
@@ -9,7 +10,7 @@ import edu.usf.micronsl.port.Port;
  * @author Martin Llofriu
  *
  */
-public abstract class Float2dPort extends Port {
+public abstract class Float2dPort extends Float1dPort {
 
 	/**
 	 * Create a port
@@ -69,7 +70,7 @@ public abstract class Float2dPort extends Port {
 	 * @return The internal structure used to hold the data. The obtained array
 	 *         is not of exclusive access and may be modified in the future.
 	 */
-	public abstract float[][] getData();
+	public abstract float[][] get2dData();
 
 	/**
 	 * Returns the 2d array in data.
@@ -79,6 +80,37 @@ public abstract class Float2dPort extends Port {
 	 * @return The internal structure used to hold the data. The obtained array
 	 *         is a copy of the existing data.
 	 */
-	public abstract void getData(float[][] data);
+	public abstract void get2dData(float[][] data);
 
+	
+	@Override
+	public float get(int index) {
+		// TODO Auto-generated method stub
+		return get(index /getNRows(),index % getNCols());
+	}
+
+	@Override
+	public void set(int i, float x) {
+		// TODO Auto-generated method stub
+		set(i /getNRows(),i % getNCols(),x);
+	}
+
+	@Override
+	public float[] getData() {
+		// TODO Auto-generated method stub
+		new NullPointerException().printStackTrace();
+		System.out.println("Unimplemented for 2d Arrays");
+		System.exit(-1);
+		return null;
+	}
+
+	@Override
+	public void getData(float[] data) {
+		// TODO Auto-generated method stub
+		new NullPointerException().printStackTrace();
+		System.out.println("Unimplemented for 2d Arrays");
+		System.exit(-1);
+		
+	}
+	
 }

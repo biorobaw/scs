@@ -98,6 +98,18 @@ public class Scaler {
 		return results;
 	}
 	
+	public int[][][] scale(Coordinate p[][],int rows,int cols) {
+		if(p.length == 0) return null;
+		int results[][][] = new int[2][rows][cols];
+		for(int i=0;i<rows;i++)
+			for(int j=0;j<cols;j++){
+				Point point = scale(p[i][j]);
+				results[0][i][j] = point.x;
+				results[1][i][j] = point.y;
+			}
+		return results;
+	}
+	
 	public int[][] scale(List<Coordinate> positions){
 		int results[][] = new int[2][positions.size()];
 		int i=0;

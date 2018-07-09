@@ -64,12 +64,12 @@ public class FloatMatrixPort extends Float2dPort {
 	}
 
 	@Override
-	public float[][] getData() {
+	public float[][] get2dData() {
 		return data;
 	}
 
 	@Override
-	public void getData(float[][] data) {
+	public void get2dData(float[][] data) {
 		if (data.length != this.data.length || (data[0].length != this.data[0].length))
 			throw new IllegalArgumentException("The data array should be of size getNRows() by getNCols()");
 
