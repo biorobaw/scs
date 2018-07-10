@@ -7,7 +7,7 @@ import java.util.Set;
  * @author David Ehrenhaft
  *
  */
-public interface CalibratableRobot {
+public interface CalibratableRobot extends Robot{
 	
 	public void calibrate();
 

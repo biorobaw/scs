@@ -91,18 +91,19 @@ public class NoExploration extends Module {
 
 			selectedAction = possible.get(possible.size()-1);
 
-			List<Affordance> fwd = new LinkedList<Affordance>();
-			fwd.add(ar.getForwardAffordance());
-			if (selectedAction instanceof TurnAffordance) {
+//			List<Affordance> fwd = new LinkedList<Affordance>();
+//			fwd.add(ar.getForwardAffordance());
+//			if (selectedAction instanceof TurnAffordance) {
 //				do {
 					ar.executeAffordance(selectedAction);
-					ar.checkAffordances(fwd);
+//					ar.checkAffordances(fwd);
 //				} while (!fwd.get(0).isRealizable());
 				// robot.executeAffordance(new ForwardAffordance(.05f), sub);
-			} else {
-				ar.executeAffordance(selectedAction);
-			}
-		} else {
+//			} else {
+//				ar.executeAffordance(selectedAction);
+//			}
+					
+		}else {
 			List<Affordance> fwd = new LinkedList<Affordance>();
 			fwd.add(ar.getForwardAffordance());
 			ar.checkAffordances(fwd);

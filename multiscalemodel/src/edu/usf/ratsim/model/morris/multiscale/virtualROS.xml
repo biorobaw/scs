@@ -132,9 +132,6 @@
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
-			<task>
-				<name>edu.usf.experiment.task.robot.CalibrateRobot</name>
-			</task>
 		</beforeTrialTasks>
 		<!-- Episodes definition -->
 		<episodes>
@@ -272,9 +269,6 @@
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
-			<task>
-				<name>edu.usf.experiment.task.robot.CalibrateRobot</name>
-			</task>
 		</beforeTrialTasks>
 		<beforeTrialLoggers>
 		</beforeTrialLoggers>

@@ -4,7 +4,7 @@
 	
 <!--	<seed>23423423</seed-->
 	<universe>
-		<name>edu.usf.vlwsim.universe.StepRobotVirtualUniverse</name>
+		<name>edu.usf.ratsim.robot.robotito.ROSUniverse</name>
 		<params>
 			<!-- Distance from which the food is accessible according tdeltaTo the universe -->
 			<closeToFoodThrs>0.1</closeToFoodThrs>
@@ -19,7 +19,7 @@
 	
 	<robot>
 		<!-- Robot to use. Use full name of the class -->
-		<name>edu.usf.vlwsim.robot.StepVirtualRobot</name>
+		<name>edu.usf.ratsim.robot.robotito.Robotito</name>
 		<params>
 			<!-- Step length in meters -->
 			<step>0.05</step>
@@ -132,25 +132,39 @@
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
+			<task>
+				<name>edu.usf.experiment.task.robot.CalibrateRobot</name>
+			</task>
 		</beforeTrialTasks>
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
 			<number>40</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>400</sleep>
+			<sleep>100</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Place the animat in a given place -->
 				<task>
+					<name>edu.usf.experiment.task.platform.CreatePlatformROS</name>
+					<params>
+						<x>0.5</x>
+						<y>0.5</y>
+						<radius>0.1</radius>
+					</params>
+				</task>
+				<task>
 					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<point>
-							<x>-.5</x>
-							<y>-.5</y>
+							<x>.2</x>
+							<y>.2</y>
 							<theta>3.14</theta>
 						</point>
 					</params>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.platform.PublishPlatformPosition</name>
 				</task>
 			</beforeEpisodeTasks>
 			<!-- Tasks to performe before each cycle -->
@@ -258,6 +272,9 @@
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
+			<task>
+				<name>edu.usf.experiment.task.robot.CalibrateRobot</name>
+			</task>
 		</beforeTrialTasks>
 		<beforeTrialLoggers>
 		</beforeTrialLoggers>
@@ -266,7 +283,7 @@
 			<!-- Number of episodes -->
 			<number>10</number>
 			<!-- Sleep between cycles for visualization -->
-			<sleep>400</sleep>
+			<sleep>00</sleep>
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- Place the animat in a given place -->
@@ -279,6 +296,9 @@
 							<theta>3.14</theta>
 						</point>
 					</params>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.platform.PublishPlatformPosition</name>
 				</task>
 			</beforeEpisodeTasks>
 			<!-- Tasks to performe before each cycle -->

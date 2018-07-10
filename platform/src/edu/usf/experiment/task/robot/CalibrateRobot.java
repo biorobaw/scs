@@ -14,7 +14,7 @@ public class CalibrateRobot extends Task {
 	}
 
 	public void perform(Universe u, Subject s){
-		CalibratableRobot c = (CalibratableRobot) s;
+		CalibratableRobot c = (CalibratableRobot) s.getRobot();
 		c.calibrate();
 	}
 

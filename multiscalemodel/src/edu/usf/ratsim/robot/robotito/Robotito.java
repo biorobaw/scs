@@ -1,6 +1,8 @@
 package edu.usf.ratsim.robot.robotito;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -33,7 +35,6 @@ import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.experiment.utils.RigidTransformation;
-import edu.usf.vlwsim.universe.VirtUniverse;
 import edu.usf.experiment.universe.wall.Wall;
 import edu.usf.experiment.universe.platform.Platform;
 import edu.usf.experiment.universe.platform.PlatformUniverse;
@@ -45,7 +46,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 								 LocalActionAffordanceRobot, WallRobot, 
 								 CalibratableRobot, Runnable  {
 
-    private static final String PORT = "/dev/ttyUSB2";
+    private static final String PORT = "/dev/ttyUSB0";
     private static final int BAUD_RATE = 57600;
     
     // Shared constants with the arduino code
@@ -68,6 +69,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 	private static final double FOUND_PLAT_THRS = .1f;
 	private static final float MIN_DISTANCE_TO_WALLS = 0.15f;
 	private static final float FORWARD_SPEED = 0.03f;
+	private static final float ANGULAR_VEL = (float)(15f * Math.PI / 180);
 	
 	private XBee xbee;
 	private XBeeAddress16 remoteAddress;
@@ -84,7 +86,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 	private int kD = 0;
 	private SonarReceiver sonarReceiver;
 
-	//affordance hack
+	//variables pulled from xml file
 	private float step;
 	private float leftAngle;
 	private float rightAngle;
@@ -93,9 +95,12 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 	private float visionDist;
 	private float closeThrs;
 	private ROSUniverse universe;
-	private float stepCorrectionRatio = 1f; //more accurate value determined by calibrateStep()
 	
-	private static final boolean ROBOT_DEBUG = true;
+	//error correction values
+	private float stepCorrectionRatio = 1.2f; //more accurate value determined by calibrateStep()
+	private float rotCorrectionRatio = 2.7f; //learned by experimentation; currently no automatic test
+	
+	private static final boolean ROBOT_DEBUG = false;
 	//TODO: add a MOTION_DEBUG for various motion print statements.
 	
 	public Robotito(ElementWrapper params, Universe u) {
@@ -223,7 +228,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 		} */
 		
 		
-		
+		/*
 		//TODO: marker for top of the actual code
 		try {
 			Thread.sleep(1000);
@@ -249,23 +254,42 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 				e.printStackTrace();
 			}
 		} 
+		*/
 		
+		
+		for(int i = 0; i < 25; i++) { //should be a little less than a full rotation.
+			r.rotate(-.25f);
+			
+			try {
+				Thread.sleep(1500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 		/*
-		r.rotate(-3.14f);
+		r.rotate(.195f);
 		
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		
-		r.rotate(1.57f);
-
+		r.rotate(.195f);
+		
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		r.rotate(-.195f);
+		try {
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} */
+		
 		
 //		r.setLinearVel(0);
 //		r.setAngularVel(0f);
@@ -311,12 +335,12 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 		asyncSetAngularVel(angularVel);
 	}
 	
-	//resolves synchonization errors. Don't make public.
+	//resolves synchronization errors. Don't make public.
 	private void asyncSetLinearVel(float linearVel) {
 		xVel = linearVel;
 	}
 	
-	//resolves synchonization errors. Don't make public.
+	//resolves synchronization errors. Don't make public.
 	private void asyncSetAngularVel(float angularVel) {
 		tVel = angularVel;
 	}
@@ -521,15 +545,14 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 		boolean realizable;
 		if (af instanceof TurnAffordance) {
 			TurnAffordance ta = (TurnAffordance) af;
-			// Either it can move there, or it cannot move forward and the
-			// other angle is not an option
+			// The robot can afford to turn when it cannot move forward or 
+			// if it can turn and still move forward.
 			realizable =  !canRobotMove(0, getRadius() * lookaheadSteps) 
 					      || canRobotMove(ta.getAngle(), getRadius() * lookaheadSteps);
-			//System.out.println("Turn affordance realizable? " + realizable);
 		} else if (af instanceof ForwardAffordance) {
 			realizable =  canRobotMove(0, getRadius() * lookaheadSteps);
 			//System.out.println("Forward affordance realizable? " + realizable);
-		} else if (af instanceof EatAffordance) {
+		} else if (af instanceof EatAffordance) { //TODO: The code for eating may be totally unnecessary in a platform approach.
 			if (getClosestPlatform(getVisiblePlatforms()) != null)
 				realizable = getClosestPlatform(getVisiblePlatforms()).getPosition()
 						.distance(new Coordinate()) < closeThrs;
@@ -607,32 +630,70 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 		
 		return minDist;
 	}
+	
+	public float getDistanceToClosestWall(Coordinate pos) {
+		float minDist = Float.MAX_VALUE;
+		
+		LinkedList<Wall> walls = new LinkedList<Wall>(wallDetector.getWalls());
+		for(Wall w: walls) {
+			if(w.distanceTo(pos) < minDist) {
+				minDist = w.distanceTo(pos);
+			}
+		}
+		
+		return minDist;
+	}
 
 	@Override
 	public float getHalfFieldView() { 
 		return halfFieldOfView;
 	}
 	
-	//TODO: confirm code is meaningful
-	private boolean canRobotMove(float angle, float distance) {
-		//chunck below probably useless
-		RigidTransformation move = new RigidTransformation(step, 0f, angle);
-		RigidTransformation to = new RigidTransformation((float)getPosition().x, (float)getPosition().y, getOrientationAngle());
-		to.composeBefore(move);
-		// Check if crosses any wall
-		boolean intesectsWall = false;
-		LineSegment path = new LineSegment(getPosition(), 
-				                           new Coordinate(getPosition().x + distance * Math.sin(angle), 
-				        		   		                  getPosition().y + distance * Math.cos(angle)));
-		for (Wall wall : wallDetector.getWalls()) {
-			intesectsWall = intesectsWall || (path.distance(wall.s) < MIN_DISTANCE_TO_WALLS);
+	private boolean canRobotMove(float angle, float distance) {	
+//		RigidTransformation move = new RigidTransformation(step + ROBOT_RADIUS, 0f, angle);
+//		RigidTransformation cur = new RigidTransformation((float)getPosition().x, (float)getPosition().y, getOrientationAngle());
+//		RigidTransformation to = cur;
+//		to.composeBefore(move);
+//		LineSegment path = new LineSegment(getPosition(), to.getTranslation());	
+//		Coordinate destCenter = to.getTranslation();
+//		for (Wall wall : wallDetector.getWalls()) {
+//			if(wall.intersects(path)) return false;//(path.distance(wall.s) < MIN_DISTANCE_TO_WALLS);
+//		}
+		
+		//creates forward path from the center of the robot and the forward path from each flank
+		Coordinate curPos = getPosition();
+		float orientation = getOrientationAngle();
+		
+		RigidTransformation move = new RigidTransformation(step + ROBOT_RADIUS, 0f, angle);
+		
+		RigidTransformation[] to = 	   {new RigidTransformation((float)curPos.x, (float)curPos.y, orientation),
+									    new RigidTransformation((float)curPos.x, (float)curPos.y + ROBOT_RADIUS, orientation),
+									    new RigidTransformation((float)curPos.x, (float)curPos.y - ROBOT_RADIUS, orientation)};
+		
+		Coordinate[] startCoordinate = {curPos,
+										new Coordinate(curPos.x, curPos.y + ROBOT_RADIUS),
+										new Coordinate(curPos.x, curPos.y - ROBOT_RADIUS)};
+		
+		LineSegment[] paths = new LineSegment[3];
+		
+		for(int i = 0; i < 3; i++) {
+			to[i].composeBefore(move);
+			paths[i] = new LineSegment(startCoordinate[i], to[i].getTranslation());
 		}
-
-		return !intesectsWall;
+		
+		//checks that no wall intersects any path
+		for (Wall wall : wallDetector.getWalls()) {
+			for(LineSegment path : paths) {
+				if(wall.intersects(path)) return false;
+			}
+		}
+		
+		//confirms that front of robot won't touch any wall
+		if(getDistanceToClosestWall(to[0].getTranslation()) <= ROBOT_RADIUS) return false;
+		
+		return true;
 	}
 	
-	
-	//Even more hack-y than the above
 	public List<Platform> getVisiblePlatforms() {
 		List<Platform> res = new LinkedList<Platform>();
 		for (Platform p : universe.getPlatforms()) {
@@ -739,8 +800,15 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 		}
 		
 		stepCorrectionRatio = ((float)start.distance(getFilteredPosition()))/(step * numMoves);
+		
 		System.out.println("Distance travelled: " + start.distance(getFilteredPosition()) + 
 				"\n\tDistance expected: " + step * numMoves + "\n\tError Ratio: " + stepCorrectionRatio);
+		
+		if(start.distance(getFilteredPosition()) < step) {
+			System.out.println("WARNING: Robot didn't travel any signficant distance. Confirm robot and is functional in the frames."
+					+ "\n\tSetting step correction ratio to default value.");
+			stepCorrectionRatio = 1.2f;
+		}
 	}
 
 	//helper method to determine direction of intended motion. May be helpful for future
@@ -780,9 +848,43 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 		System.out.println("Completed forward motion");
 	}
 	
-	//incremental step approach
-	//current design makes roughly 13 degree step turns.
+	//This is an estimation approach
 	private void rotate(float angle) {
+		System.out.println("Starting rotation");
+		
+		//identify the direction to turn
+		float goalAngle = GeomUtils.standardAngle(getOrientationAngle() + angle);
+		float angleToTurn = GeomUtils.relativeAngle(goalAngle, getOrientationAngle());
+		long turningTime;
+		
+		if(angleToTurn > 0) {
+			setAngularVel(ANGULAR_VEL); //turn left
+			turningTime = (long)((Math.abs(angleToTurn)/(ANGULAR_VEL * rotCorrectionRatio) * 1000));
+		}
+		else {
+			setAngularVel(-ANGULAR_VEL); //turn right
+			turningTime = (long)((Math.abs(angleToTurn)/(ANGULAR_VEL * rotCorrectionRatio * 1.21) * 1000));
+		} //TODO above 1.11 constant should be combined with a separate rotCorrectionRatio, and retested.
+		
+		
+		System.out.println(turningTime);
+		
+		try {
+			Thread.sleep(turningTime);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		setAngularVel(0f);
+		System.out.println("Completed rotation");
+	}
+	
+	
+	//PID approach
+	//current design makes roughly 13 degree step turns.
+	//NOTE: currently not used - it causes constant spinning 360deg or more per rotation,
+	//and it can get stuck in a loop at corners.
+	private void PIDRotate(float angle) {
 		System.out.println("Starting rotation");
 		float goalAngle = GeomUtils.standardAngle(getOrientationAngle() + angle);
 		//System.out.println(goalAngle);
@@ -793,28 +895,13 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 		while((Math.abs(GeomUtils.relativeAngle(goalAngle, getOrientationAngle()))) > 0.1) { // for 20 degree slices
 			float error = GeomUtils.relativeAngle(goalAngle, getOrientationAngle());
 			float be = boundError(error, (float)(40f * Math.PI / 180), (float)(40f * Math.PI / 180));
-			
-//			if(lastDiffAngle != 100f && diffAngle > lastDiffAngle) {
-//				sign *= -1;
-//			}
-			
-			//System.out.println(getOrientationAngle());
-			
-//			setAngularVel(sign * ROTATE_SPEED);
+		
 			setAngularVel(be * 1f);
 			try { //spin 10 degrees
 				Thread.sleep(100); //TODO: currently using tested value, not algorithmic one.
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-//			setAngularVel(0f);
-//			
-//			//sleep to wait for orientation to update
-//			try {
-//				Thread.sleep(100); //TODO: currently using tested value, not algorithmic one.
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
 		}
 		setAngularVel(0f);
 		System.out.println("Completed rotation");

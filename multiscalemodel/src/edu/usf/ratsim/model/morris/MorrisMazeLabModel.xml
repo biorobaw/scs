@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="us-ascii"?>
+
+<world>
+	<boundingRect>
+		<x>-1</x>
+		<y>-1</y>
+		<w>2</w>
+		<h>2</h>
+	</boundingRect>
+	
+	<mazeElement>
+		<name>Pool</name>
+		<params>
+			<r>1</r>
+			<h>.025</h>
+			<cr>1</cr>
+			<cg>0</cg>
+			<cb>0</cb>
+			<x>0</x>
+			<y>0</y>
+			<z>0</z>
+		</params>
+	</mazeElement>
+
+	<floor>
+		<r>3</r>
+		<h>0</h>
+		<cr>0</cr>
+		<cg>0</cg>
+		<cb>0</cb>
+		<x>0</x>
+		<y>0</y>
+		<z>-.075</z>
+	</floor>
+
+	<platform>
+		<r>.1</r>
+		<h>0</h>
+		<cr>0</cr>
+		<cg>1</cg>
+		<cb>0</cb>
+		<x>.6</x>
+		<y>.6</y>
+		<z>0</z>
+	</platform>		
+
+	
+	<!-- Views -->
+	<topview>
+		<x>0</x>
+		<y>0</y>
+		<z>8</z>
+	</topview>
+	<thirdview>
+		<x>2.1</x>
+		<y>2.5</y>
+		<z>2.1</z>
+	</thirdview>
+	<robotview>
+		<x>1</x>
+		<y>.1</y>
+		<z>0</z>
+		<theta>1.57</theta>
+	</robotview>
+	
+</world>
+
