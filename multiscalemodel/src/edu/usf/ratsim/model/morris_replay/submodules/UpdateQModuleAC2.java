@@ -31,20 +31,21 @@ public class UpdateQModuleAC2 extends Module {
 	}
 
 	public void run() {
-		float alphaDelta = alpha * ((Float0dPort) getInPort("delta")).get();
+		float alphaDeltaV = alpha * ((Float0dPort) getInPort("deltaV")).get();
+		float alphaDeltaQ = alpha * ((Float0dPort) getInPort("deltaQ")).get();
 		int action = ((Int0dPort) getInPort("action")).get();
 		Float2dPort Q = (Float2dPort) getInPort("Q");
 		Float2dPort V = (Float2dPort) getInPort("V");
 
-		if (!skip && alphaDelta != 0) {
+		if (!skip && (alphaDeltaV != 0 || alphaDeltaQ != 0 )) {
 			
 			
 			for(int i=0;i<oldPCs.getBlockRows();i++)
 				for(int j=0;j<oldPCs.getBlockRows();j++){
 					float pc = oldPCs.getBlock(i,j);
 					int id = oldPCs.getBlockIndex(i, j);
-					Q.set(id, action, Q.get(id, action) + alphaDelta * pc);
-					V.set(id, 0, V.get(id, 0) + alphaDelta * pc);
+					Q.set(id, action, Q.get(id, action) + alphaDeltaQ * pc);
+					V.set(id, 0, V.get(id, 0) + alphaDeltaV * pc);
 				}
 			
 

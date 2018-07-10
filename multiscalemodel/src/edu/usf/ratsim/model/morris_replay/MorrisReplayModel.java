@@ -114,7 +114,7 @@ public class MorrisReplayModel extends Model  {
 	public void newEpisode() {
 		
 		save();
-		
+		WTable.clear();
 		modelAwake.newEpisode();
 	}
 

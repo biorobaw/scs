@@ -64,3 +64,18 @@ Morris Replay Model Log file
 			240fps = 
 	-Running in async mode may cause issues with some drawers which require the history of a variable (example draw paths), fixing that...
 		
+		
+07/09/2018
+	-Fixed path drawer in async mode
+	-Testing current solution computation efficiency - sufficiently good, might require		
+	
+07/10/2018
+	- Changing how Q is updating. Before we used the following formula for both V and Q:
+		error = r_t  + gamma * V(s_{t+1})  -   V(s_t)    if action was optimal or error > 0
+		else:  error = 0;
+	  After update, V uses the same error, but Q uses the following formula for the error:
+	    errorQ = r_t + gamma * V(s_{t+1}) - Q(s_t,a_t)
+	 Change finished
+	-Modified WTable so that it gets erased each episode
+		
+		

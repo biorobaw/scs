@@ -29,6 +29,7 @@ import edu.usf.ratsim.model.morris_replay.submodules.MaxModule;
 import edu.usf.ratsim.model.morris_replay.submodules.ProportionalValueSingleBlockMatrix;
 import edu.usf.ratsim.model.morris_replay.submodules.ProportionalVotesSingleBlockMatrix;
 import edu.usf.ratsim.model.morris_replay.submodules.UpdateQModuleAC2;
+import edu.usf.ratsim.model.morris_replay.submodules.VQErrorSignalModule;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalValue;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
@@ -64,7 +65,7 @@ public class ModelAsleep extends Model {
 	public boolean[] visitedNodes;
 	
 	private Robot robot;
-	private ActorCriticDeltaError error;
+	private VQErrorSignalModule error;
 	private UpdateQModuleAC2 updateQV;
 	
 	public boolean doneReplaying = false;
@@ -187,7 +188,7 @@ public class ModelAsleep extends Model {
 		addModule(r);
 		
 		//Create deltaSignal module
-		error = new ActorCriticDeltaError("error", discountFactor, numActions);
+		error = new VQErrorSignalModule("error", discountFactor);
 		error.addInPort("reward", r.getOutPort("reward"));
 		error.addInPort("newStateValue", newStateValue.getOutPort("value"));
 		addModule(error);
@@ -195,13 +196,15 @@ public class ModelAsleep extends Model {
 		
 		//Create update Q module		
 		updateQV = new UpdateQModuleAC2("updateQ", learningRate);
-		updateQV.addInPort("delta", error.getOutPort("delta"));
+		updateQV.addInPort("deltaV", error.getOutPort("deltaV"));
+		updateQV.addInPort("deltaQ", error.getOutPort("deltaQ"));
 		updateQV.addInPort("Q", QTable);
 		updateQV.addInPort("V", VTable);
-//		updateQV.addInPort("actionPlaceCells", placeCells.getActivationPort() );
-//		updateQV.addInPort("valuePlaceCells", placeCells.getActivationPort() );
 		updateQV.addInPort("pcs", placeCells.getActivationPort() );
 		addModule(updateQV);
+		
+		
+		
 		
 		//======= RECALCULATION OF V AND Q AFTER UPDATE ======================		
 		
@@ -253,26 +256,26 @@ public class ModelAsleep extends Model {
 		
 		//Check weather action selection is optimal value:
 		//first find value of max action
-		MaxModule maxModule =  new MaxModule("maxModule");
-		maxModule.addInPort("values", currentStateQ.getOutPort("votes"));
-		addModule(maxModule);
-
-		//then check if value of selected action is equal to value of max action		
-		AreEqualModule areEqualModule = new AreEqualModule("areEqual", 0.00001f);
-		areEqualModule.addInPort("values", currentStateQ.getOutPort("votes"));
-		areEqualModule.addInPort("input1", maxModule.maxVal);
-		areEqualModule.addInPort("input2", actionSelection.getOutPort("action"));
-		addModule(areEqualModule);
-		
+//		MaxModule maxModule =  new MaxModule("maxModule");
+//		maxModule.addInPort("values", currentStateQ.getOutPort("votes"));
+//		addModule(maxModule);
+//
+//		//then check if value of selected action is equal to value of max action		
+//		AreEqualModule areEqualModule = new AreEqualModule("areEqual", 0.00001f);
+//		areEqualModule.addInPort("values", currentStateQ.getOutPort("votes"));
+//		areEqualModule.addInPort("input1", maxModule.maxVal);
+//		areEqualModule.addInPort("input2", actionSelection.getOutPort("action"));
+//		addModule(areEqualModule);
+//		
 		
 		
 		
 		//======= ADD ALL BACKWARD DEPENDENCIES ==============================
 		
-		//indicate to the error function whether the previous action was optimal
-		error.addInPort("wasActionOptimal", areEqualModule.areEqual,true);
 		//provide old stateValue to error signal
 		error.addInPort("oldStateValue", oldStateValue.getOutPort("value"),true);
+		error.addInPort("oldActionValues", currentStateQ.getOutPort("votes"),true);
+		error.addInPort("action",actionSelection.getOutPort("action"),true);
 				
 		//add action to module that updates Q:
 		updateQV.addInPort("action", actionSelection.getOutPort("action"),true);

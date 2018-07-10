@@ -399,6 +399,9 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		
 		boolean signalRepaint = false;
 		synchronized(SCSFrame.this){
+			
+			for(Drawer d : drawers.values()) d.appendData();
+			
 			if (doneRenderingLastCycle ){
 				
 				renderCycleTime = Debug.tic();

@@ -21,7 +21,7 @@
 	<simulationControls>
 		<simulationSpeed>9</simulationSpeed> <!--speed reference: 5000,3000,2000,1000,500,400,300,100,30,0-->
 		<display>true</display>
-		<seed>3365448354185182426</seed>
+		<!-- <seed>3365448354185182426</seed> -->
 		<syncDisplay>true</syncDisplay>
 		<collisionDetection>false</collisionDetection>
 		
@@ -92,7 +92,7 @@
 			<wTransitionLR>1.0</wTransitionLR>
 			
 			<!-- sessions, laps, and replay -->
-			<cantReplay>200</cantReplay>
+			<cantReplay>50</cantReplay>
 			<!-- threshold to propagate PC activation during 
 			     sleep state. Should be numPC/50           -->
 			<replayThres>.001</replayThres>

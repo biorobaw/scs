@@ -27,8 +27,20 @@ public abstract class Drawer {
 	
 	/**
 	 * Updates data to be drawn in next cycle
+	 * Drawers which draw information of only one cycle should use this function
+	 * Drawers which draw info of multiple cycles should use appendData instead
 	 */
 	abstract public void updateData();
+	
+	/**
+	 * Appends data to be drawn
+	 * Add's data to the list of data that that will be drawn (Example ratpath)
+	 * useful for drawers that require full history of a variable (example ratpath)
+	 * 
+	 */
+	public void appendData(){
+		
+	}
 	
 	
 	/**
@@ -44,5 +56,7 @@ public abstract class Drawer {
 //	public void setDefaultCoordinates(Float defaultCoordinates) {
 //		this.defaultWorldCoordinates = defaultCoordinates;
 //	}
+	
+	
 
 }

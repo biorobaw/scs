@@ -1,13 +1,9 @@
 package edu.usf.ratsim.model.morris_replay;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.usf.experiment.display.Display;
-import edu.usf.experiment.display.DisplaySingleton;
-import edu.usf.experiment.display.drawer.simulation.CycleDataDrawer;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.affordance.AbsoluteAngleAffordance;
@@ -16,40 +12,29 @@ import edu.usf.experiment.robot.affordance.EatAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.module.copy.Int0dCopyModule;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
-import edu.usf.platform.drawers.PolarDataDrawer;
 import edu.usf.ratsim.model.morris_replay.submodules.AreEqualModule;
 import edu.usf.ratsim.model.morris_replay.submodules.MaxModule;
 import edu.usf.ratsim.model.morris_replay.submodules.ProportionalValueSingleBlockMatrix;
 import edu.usf.ratsim.model.morris_replay.submodules.ProportionalVotesSingleBlockMatrix;
 import edu.usf.ratsim.model.morris_replay.submodules.UpdateQModuleAC2;
-import edu.usf.ratsim.model.morris_replay.submodules.WUpdater;
+import edu.usf.ratsim.model.morris_replay.submodules.VQErrorSignalModule;
 import edu.usf.ratsim.model.morris_replay.submodules.WUpdater2;
 import edu.usf.ratsim.model.multiplet.submodules.DistanceAffordanceGatingModule;
 import edu.usf.ratsim.model.multiplet.submodules.DistancesInputModule;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromProbabilities;
-import edu.usf.ratsim.nsl.modules.actionselection.ProportionalValue;
-import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.actionselection.Softmax;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.nsl.modules.celllayer.TesselatedPlaceCellLayer;
-import edu.usf.ratsim.nsl.modules.celllayer.TmazeRandomPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.input.Position;
 import edu.usf.ratsim.nsl.modules.input.SubjectAte;
-import edu.usf.ratsim.nsl.modules.multipleT.ActionGatingModule;
 import edu.usf.ratsim.nsl.modules.multipleT.Last2ActionsActionGating;
-import edu.usf.ratsim.nsl.modules.multipleT.MultipleTActionPerformer;
-import edu.usf.ratsim.nsl.modules.multipleT.PlaceCellTransitionMatrixUpdater;
 import edu.usf.ratsim.nsl.modules.rl.ActorCriticDeltaError;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
-import edu.usf.ratsim.nsl.modules.rl.UpdateQModuleAC;
 import edu.usf.ratsim.support.NotImplementedException;
 import edu.usf.vlwsim.robot.VirtualRobot;
-//import edu.usf.vlwsim.display.drawingUtilities.DrawPolarGraph;
-import edu.usf.vlwsim.universe.VirtUniverse;
 
 public class ModelAwake extends Model {
 
@@ -182,8 +167,8 @@ public class ModelAwake extends Model {
 		addModule(r);																			// must
 		
 		
-		// Create deltaSignal module
-		Module error = new ActorCriticDeltaError("error", discountFactor, numActions);
+		// Create error signal module for V
+		Module error = new VQErrorSignalModule("error", discountFactor);
 		error.addInPort("reward", r.getOutPort("reward"));
 		error.addInPort("newStateValue", newStateValue.getOutPort("value"));
 		addModule(error);
@@ -192,11 +177,10 @@ public class ModelAwake extends Model {
 		// Create update Q module
 		//Module updateQ = new UpdateQModuleAC("updateQ", numActions, learningRate)
 		Module updateQV = new UpdateQModuleAC2("updateQ", learningRate);
-		updateQV.addInPort("delta", error.getOutPort("delta"));
+		updateQV.addInPort("deltaV", error.getOutPort("deltaV"));
+		updateQV.addInPort("deltaQ", error.getOutPort("deltaQ"));
 		updateQV.addInPort("Q", QTable);
 		updateQV.addInPort("V", VTable);
-//		updateQV.addInPort("actionPlaceCells", placeCells.getOutPort("activation"));
-//		updateQV.addInPort("valuePlaceCells", placeCells.getOutPort("activation"));
 		updateQV.addInPort("pcs", placeCells.getOutPort("activation"));
 		addModule(updateQV);
 		
@@ -265,16 +249,16 @@ public class ModelAwake extends Model {
 
 		//Check weather action selection is optimal value:
 		//first find value of max action
-		MaxModule maxModule =  new MaxModule("maxModule");
-		maxModule.addInPort("values", currentStateQ.getOutPort("votes"));
-		addModule(maxModule);
-		
-		//then check if value of selected action is equal to value of max action
-		AreEqualModule areEqualModule = new AreEqualModule("areEqual", 0.00001f);
-		areEqualModule.addInPort("values", currentStateQ.getOutPort("votes"));
-		areEqualModule.addInPort("input1", maxModule.maxVal);
-		areEqualModule.addInPort("input2", actionSelection.getOutPort("action"));
-		addModule(areEqualModule);
+//		MaxModule maxModule =  new MaxModule("maxModule");
+//		maxModule.addInPort("values", currentStateQ.getOutPort("votes"));
+//		addModule(maxModule);
+//		
+//		//then check if value of selected action is equal to value of max action
+//		AreEqualModule areEqualModule = new AreEqualModule("areEqual", 0.00001f);
+//		areEqualModule.addInPort("values", currentStateQ.getOutPort("votes"));
+//		areEqualModule.addInPort("input1", maxModule.maxVal);
+//		areEqualModule.addInPort("input2", actionSelection.getOutPort("action"));
+//		addModule(areEqualModule);
 		
 		
 		//======= W RELATED MODULES ==========================================
@@ -293,9 +277,11 @@ public class ModelAwake extends Model {
 		twoActionsGateModule.addInPort("action", actionSelection.getOutPort("action"),true);
 		
 		//indicate to the error function whether the previous action was optimal
-		error.addInPort("wasActionOptimal", areEqualModule.areEqual,true);
+		//errorV.addInPort("wasActionOptimal", areEqualModule.areEqual,true);
 		//provide old stateValue to error signal
 		error.addInPort("oldStateValue", oldStateValue.getOutPort("value"),true);
+		error.addInPort("oldActionValues", currentStateQ.getOutPort("votes"),true);
+		error.addInPort("action",actionSelection.getOutPort("action"),true);
 		
 		//add action to module that updates Q:
 		updateQV.addInPort("action", actionSelection.getOutPort("action"),true);

@@ -1,11 +1,24 @@
 Morris Replay Model TODO file
 
-*Must improve efficiency of model: currently taking about 30 mins to execute
-	*Add SingleBlockMatrix to be used with TesselatedPCLayer
-	*Improve WUpdater efficiency
-
+*Improve drawing efficiency
 *Change Logging System: currently, a tree is created "logFolder/group/ratId/trial/episode"
       Instead, provide a separate logFolder for each type of log, and store all log files inside that folder, substitute tree by file name
 *Make all loggers binary file loggers
 *Add database
-http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=19836
+
+
+
+*Add draw W matrix
+*change update equations for Q
+*change update rule to Q(s,a) so that update Q(t,s_t,a)<- Q(t,s_t,a) + delta * (r+gamma*v(t,s_t+1)-Q(t,s_t,a_t))
+*change replay method 
+	- allow moving through non max path
+	- change dynamics
+	- change data structure
+	- incorporate reward idea to replay
+	- change update method while asleep
+	- do not update negative values
+	- Weighted average vs always adding: average does not know how frequently a pair is visited, adding can go to infinity
+*Update PC equation
+*revive plotting system
+	-save frames to files 
