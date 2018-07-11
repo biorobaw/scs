@@ -94,3 +94,4 @@ Morris Replay Model Log file
 		
 07/11/2018
 	-Fixing load function - seems like random streams are not the same - fixed: random action selection was storing the random stream before being loaded
+	-When running 1000 episodes, plotting cannot keep up with model and threads start accumulating.
