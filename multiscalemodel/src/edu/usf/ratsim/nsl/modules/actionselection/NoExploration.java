@@ -8,6 +8,7 @@ import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.affordance.Affordance;
 import edu.usf.experiment.robot.affordance.LocalActionAffordanceRobot;
 import edu.usf.experiment.robot.affordance.TurnAffordance;
+import edu.usf.experiment.robot.affordance.ForwardAffordance;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
@@ -32,6 +33,7 @@ public class NoExploration extends Module {
 	 */
 	private Int0dPort takenAction;
 	private Affordance lastAction;
+	private int cyclesSinceLastFwd = 0;
 
 	/**
 	 * Create the module
@@ -82,8 +84,6 @@ public class NoExploration extends Module {
 				System.out.println("votes for aff " + action + ": " + votes.get(action));
 			}	
 		}
-		
-
 
 		if (!possible.isEmpty()) {
 
@@ -95,13 +95,23 @@ public class NoExploration extends Module {
 //			fwd.add(ar.getForwardAffordance());
 //			if (selectedAction instanceof TurnAffordance) {
 //				do {
-					ar.executeAffordance(selectedAction);
+//					ar.executeAffordance(selectedAction);
 //					ar.checkAffordances(fwd);
 //				} while (!fwd.get(0).isRealizable());
 				// robot.executeAffordance(new ForwardAffordance(.05f), sub);
 //			} else {
 //				ar.executeAffordance(selectedAction);
 //			}
+			
+			//patch to an infinite turning problem, where the robot would always vote to turn rather than move forward. 
+			//If the robot hasn't gone forward in a long time, it must have been turning or eating without 
+			//actually progressing to a goal. Thus, move when it gets the next chance
+			if (!(selectedAction instanceof ForwardAffordance) && ar.checkAffordance(ar.getForwardAffordance()) == 1 
+			&& cyclesSinceLastFwd > 50) { 
+				selectedAction = ar.getForwardAffordance();
+			}
+			
+			ar.executeAffordance(selectedAction);
 					
 		}else {
 			List<Affordance> fwd = new LinkedList<Affordance>();
@@ -129,6 +139,12 @@ public class NoExploration extends Module {
 		// Publish the taken action
 		// if (selectedAction.getValue() > 0) {
 
+		if(!(selectedAction instanceof ForwardAffordance))
+			cyclesSinceLastFwd++;
+		else
+			cyclesSinceLastFwd = 0;
+		
+		
 		lastAction = selectedAction;
 
 		// } else {

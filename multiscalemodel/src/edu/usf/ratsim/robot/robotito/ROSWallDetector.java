@@ -24,6 +24,8 @@ public class ROSWallDetector implements NodeMain {
 
 	//protected static final double HALF_WALL = .35f;
 	protected static final double HALF_WALL = 0.9144f; //size of the external walls
+	protected static final double OBS_HALF_WALL = 0.1275f;
+	protected static final double OBS_WIDTH = 0.039f;
 	
 	private static ROSWallDetector instance = null;
 
@@ -73,11 +75,27 @@ public class ROSWallDetector implements NodeMain {
 					
 					int id = Integer.parseInt(p.getHeader().getFrameId());
 					
-					//TODO:add check on the id value, > 4 needs to be a different wall size
-					Wall wall = new Wall((float) (-Math.cos(t) * HALF_WALL + x), (float) (-Math.sin(t) * HALF_WALL + y),
-							(float) (Math.cos(t) * HALF_WALL + x), (float) (Math.sin(t) * HALF_WALL + y));
+					//TODO: Block below is only able to accept line segments. Representing obstacle walls
+					//is done by creating two walls to allow depth to be considered. Note that this only works
+					//when the width of the internal walls is smaller than the robot's radius.
+					if(id <= 4) { //These are the "main walls" that enclose the arena; 1 wall is all that's needed
+						Wall wall = new Wall((float) (-Math.cos(t) * HALF_WALL + x), (float) (-Math.sin(t) * HALF_WALL + y),
+								(float) (Math.cos(t) * HALF_WALL + x), (float) (Math.sin(t) * HALF_WALL + y));
+						walls.put(id, wall);
+					} else { //these markers mark the obstacle walls, which have different dimensions
+						id = id + (2 * id - 4); //each such id needs two walls to represent the front and back.
+						
+						Wall wall1 = new Wall((float) (-Math.cos(t) * OBS_HALF_WALL + x), (float) (-Math.sin(t) * OBS_HALF_WALL + y),
+								(float) (Math.cos(t) * OBS_HALF_WALL + x), (float) (Math.sin(t) * OBS_HALF_WALL + y));
+						Wall wall2 = new Wall((float) (-Math.cos(t) * OBS_HALF_WALL + (OBS_WIDTH * -Math.sin(t) + x)), 
+											  (float) (-Math.sin(t) * OBS_HALF_WALL + (OBS_WIDTH * Math.cos(t) + y)),
+											  (float) (Math.cos(t) * OBS_HALF_WALL + (OBS_WIDTH * -Math.sin(t) + x)), 
+											  (float) (Math.sin(t) * OBS_HALF_WALL + (OBS_WIDTH * Math.cos(t) + y)));
+						walls.put(id,  wall1);
+						walls.put(id + 1, wall2);
+						
+					}
 					
-					walls.put(id, wall);
 				}
 			}
 		});

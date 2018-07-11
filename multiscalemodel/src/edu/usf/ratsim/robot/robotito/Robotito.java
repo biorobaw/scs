@@ -67,9 +67,9 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 	private static final float ROBOT_RADIUS = 0.075f;
 	private static final boolean WAIT_FOR_LOCATION = false;
 	private static final double FOUND_PLAT_THRS = .1f;
-	private static final float MIN_DISTANCE_TO_WALLS = 0.15f;
 	private static final float FORWARD_SPEED = 0.03f;
 	private static final float ANGULAR_VEL = (float)(15f * Math.PI / 180);
+	private static final float MIN_DIST_FROM_WALL = 0.035f; //wall shouldn't touch any part of the robot
 	
 	private XBee xbee;
 	private XBeeAddress16 remoteAddress;
@@ -553,13 +553,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 			realizable =  canRobotMove(0, getRadius() * lookaheadSteps);
 			//System.out.println("Forward affordance realizable? " + realizable);
 		} else if (af instanceof EatAffordance) { //TODO: The code for eating may be totally unnecessary in a platform approach.
-			if (getClosestPlatform(getVisiblePlatforms()) != null)
-				realizable = getClosestPlatform(getVisiblePlatforms()).getPosition()
-						.distance(new Coordinate()) < closeThrs;
-			// TODO: this is not good for MultiFeeders, where the robot
-			// needs to eat on empty feeders to be disapointed- Fix
-			else
-				realizable = false;
+			realizable = false; //this needs to be changed if the multi-feeder experiment is attempted.
 		} else
 			throw new RuntimeException("Affordance " + af.getClass().getName() + " not supported by robot");
 	
@@ -650,21 +644,11 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 	}
 	
 	private boolean canRobotMove(float angle, float distance) {	
-//		RigidTransformation move = new RigidTransformation(step + ROBOT_RADIUS, 0f, angle);
-//		RigidTransformation cur = new RigidTransformation((float)getPosition().x, (float)getPosition().y, getOrientationAngle());
-//		RigidTransformation to = cur;
-//		to.composeBefore(move);
-//		LineSegment path = new LineSegment(getPosition(), to.getTranslation());	
-//		Coordinate destCenter = to.getTranslation();
-//		for (Wall wall : wallDetector.getWalls()) {
-//			if(wall.intersects(path)) return false;//(path.distance(wall.s) < MIN_DISTANCE_TO_WALLS);
-//		}
-		
 		//creates forward path from the center of the robot and the forward path from each flank
 		Coordinate curPos = getPosition();
 		float orientation = getOrientationAngle();
 		
-		RigidTransformation move = new RigidTransformation(step + ROBOT_RADIUS, 0f, angle);
+		RigidTransformation move = new RigidTransformation(step + ROBOT_RADIUS + MIN_DIST_FROM_WALL, 0f, angle);
 		
 		RigidTransformation[] to = 	   {new RigidTransformation((float)curPos.x, (float)curPos.y, orientation),
 									    new RigidTransformation((float)curPos.x, (float)curPos.y + ROBOT_RADIUS, orientation),
