@@ -22,6 +22,7 @@ import edu.usf.ratsim.model.morris_replay.submodules.ProportionalVotesSingleBloc
 import edu.usf.ratsim.model.morris_replay.submodules.UpdateQModuleAC2;
 import edu.usf.ratsim.model.morris_replay.submodules.VQErrorSignalModule;
 import edu.usf.ratsim.model.morris_replay.submodules.WUpdater2;
+import edu.usf.ratsim.model.morris_replay.submodules.WallGateModule;
 import edu.usf.ratsim.model.multiplet.submodules.DistanceAffordanceGatingModule;
 import edu.usf.ratsim.model.multiplet.submodules.DistancesInputModule;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromProbabilities;
@@ -56,7 +57,7 @@ public class ModelAwake extends Model {
 	public Softmax softmax;
 
 	public Last2ActionsActionGating twoActionsGateModule;
-	public DistanceAffordanceGatingModule affordanceGateModule;
+	public WallGateModule affordanceGateModule;
 
 	private DistancesInputModule inputDisntaceModule;
 
@@ -79,7 +80,7 @@ public class ModelAwake extends Model {
 		float learningRate 	 = params.getChildFloat("learningRate");
 		float wTransitionLR  = params.getChildFloat("wTransitionLR");
 		float foodReward 	 = params.getChildFloat("foodReward");
-		float minDistance	 = params.getChildFloat("step");
+		float minDistance	 = params.getChildFloat("step")*1.1f;
 
 		float sameActionBias = params.getChildFloat("sameActionBias");
 		//float maxDistanceSensorDistnace = params.getChildFloat("maxDistanceSensorDistance");
@@ -228,7 +229,7 @@ public class ModelAwake extends Model {
 
 		// Create ActionGatingModule -- sets the probabilities of impossible
 		// actions to 0 and then normalizes them
-		affordanceGateModule = new DistanceAffordanceGatingModule("actionGating",numActions,minDistance);
+		affordanceGateModule = new WallGateModule("actionGating",numActions,minDistance);
 		affordanceGateModule.addInPort("input", softmax.getOutPort("probabilities"));
 		affordanceGateModule.addInPort("distances", inputDisntaceModule.getOutPort("distances"));
 		addModule(affordanceGateModule);

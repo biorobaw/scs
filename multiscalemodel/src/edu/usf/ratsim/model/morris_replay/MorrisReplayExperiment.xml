@@ -22,6 +22,7 @@
 		<simulationSpeed>9</simulationSpeed> <!--speed reference: 5000,3000,2000,1000,500,400,300,100,30,0-->
 		<display>true</display>
 		<!-- <seed>3365448354185182426</seed> -->
+		<!-- <seed>-2233845621342143863</seed> -->
 		<syncDisplay>true</syncDisplay>
 		<collisionDetection>false</collisionDetection>
 		
@@ -313,7 +314,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>40</number><!-- 24 session * (80 + 80 laps * 8 replays) =   -->
+			<number>100</number><!-- 24 session * (80 + 80 laps * 8 replays) =   -->
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- <task>

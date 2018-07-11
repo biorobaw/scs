@@ -77,5 +77,18 @@ Morris Replay Model Log file
 	    errorQ = r_t + gamma * V(s_{t+1}) - Q(s_t,a_t)
 	 Change finished
 	-Modified WTable so that it gets erased each episode
-		
+	-Changed replay episodes from 200 to 50 to 0
+	-Changing affordance bias
+	-Tested several learning rates:
+		0.6 
+		0.30
+		0.15	
+		0.06
+		with 0.6 reward is propagated all the way back to initial position
+		with 0.3 it is only propagated between 1/2 and 1/3 of the way back to initial position
+		biases allow the robot to converge fast any way
+		Also, lower learn rates are more stable since value functions update slower
+	-ISSUE 4 : Found issue with radial basis functions, view issue 4 on "issues.pptx". Problem is that the lack of HD cells make what should be different states indistinguishable.
+	Reason is radial basis function generalize the policy to whole area, so if moving to the right from the left of the food is a good action, so will it be if the robot is placed slightly to the right of the food.	
+	-ISSUE 5 : Matrix update equation "atan( average(P_i)*delta(P_j) )" increase strength between cells even when moving perpendicular to those cells		
 		

@@ -37,6 +37,7 @@ import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePortMatrix;
 import edu.usf.platform.drawers.PCDrawer;
 import edu.usf.platform.drawers.PolarArrowDrawer;
 import edu.usf.platform.drawers.PolarDataDrawer;
+import edu.usf.ratsim.model.morris_replay.drawers.RuntimesDrawer;
 import edu.usf.ratsim.model.multiplet.drawers.VDrawer;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.vlwsim.robot.VirtualRobot;
@@ -285,6 +286,7 @@ public class MorrisReplayModel extends Model  {
 		d.addPanel(new DrawPanel(300, 300), "panel4", 1, 1, 1, 1);
 		d.addPanel(new DrawPanel(300, 300), "panel5", 0, 2, 1, 1);
 		d.addPanel(new DrawPanel(300, 300), "panel6", 1, 2, 1, 1);
+		d.addPanel(new DrawPanel(300, 300), "panel7", 0, 3, 1, 1);
 
 		// DrawPanel panel2 = new DrawPanel();
 		// panel1.setMinimumSize(new Dimension(300, 300));
@@ -295,6 +297,8 @@ public class MorrisReplayModel extends Model  {
 		PolarDataDrawer affordances = new PolarDataDrawer("Affordances", modelAwake.affordanceGateModule.gates);
 		PolarDataDrawer actionGating = new PolarDataDrawer("2 Actions Gate", modelAwake.twoActionsGateModule.gates);
 		resultProbabilities = new PolarDataDrawer("Resulting Probs", modelAwake.twoActionsGateModule.probabilities);
+		RuntimesDrawer runtimes = new RuntimesDrawer(100, 0, 800);
+		
 		
 		RobotDrawer rDrawer = new RobotDrawer((GlobalCameraUniverse)UniverseLoader.getUniverse());
 		
@@ -339,6 +343,8 @@ public class MorrisReplayModel extends Model  {
 		d.addDrawer("panel6", "paths", pathDrawer, 2);
 		
 		d.addDrawer("panel6", "p6 robot", rDrawer);
+		d.addDrawer("panel5", "p5 robot", rDrawer);
+		d.addDrawer("panel7", "runtimes", runtimes);
 		
 		
 		

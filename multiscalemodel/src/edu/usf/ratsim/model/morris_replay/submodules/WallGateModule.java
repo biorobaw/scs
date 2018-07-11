@@ -12,7 +12,7 @@ import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
  * @author biorob
  * 
  */
-public class DistanceAffordanceGatingModule extends Module {
+public class WallGateModule extends Module {
 	
 	public float[] probabilities;
 	public float[] gates;
@@ -22,7 +22,7 @@ public class DistanceAffordanceGatingModule extends Module {
 	float minDistance;
 	
 	
-	public DistanceAffordanceGatingModule(String name,int numActions,float minDistance) {
+	public WallGateModule(String name,int numActions,float minDistance) {
 		super(name);
 		this.numActions = numActions;
 		
@@ -48,8 +48,8 @@ public class DistanceAffordanceGatingModule extends Module {
 			if(distances.get(i) <= minDistance) probabilities[i] = gates[i] = 0;
 			else{
 				//System.out.println("action "+i+" posible");
-				probabilities[i] =  (float)(input.get(i)*distances.get(i));
-				gates[i] = distances.get(i);
+				probabilities[i] =  input.get(i);
+				gates[i] = 1f;
 				sum += probabilities[i];
 			}
 			
