@@ -187,14 +187,14 @@ public class MorrisReplayModel extends Model  {
 		String snapshot = Globals.getInstance().get("loadSnapshot").toString();
 		
 		RandomSingleton.load(snapshot);
-		float[][] c = BinaryFile.loadMatrix(loadPath+"/pcCenters.bin");
+//		float[][] c = BinaryFile.loadMatrix(loadPath+"/pcCenters.bin");
 		Map<Entry,Float> w = BinaryFile.loadSparseMatrix(snapshot+"WTable.bin");
 		float[][] q = BinaryFile.loadMatrix(snapshot+"QTable.bin");
 		float[][] v = BinaryFile.loadMatrix(snapshot+"VTable.bin");
 		
 		//replace pcs with loaded ones
-		modelAsleep.setPCcenters(c);
-		modelAwake.setPCcenters(c);
+//		modelAsleep.setPCcenters(c);
+//		modelAwake.setPCcenters(c);
 		
 		//restore w
 		WTable.clear();
@@ -213,7 +213,7 @@ public class MorrisReplayModel extends Model  {
 
 	}
 
-	static boolean savedOnce = false;
+//	static boolean savedOnce = false;
 	@Override
 	public void save() {
 		
@@ -236,17 +236,17 @@ public class MorrisReplayModel extends Model  {
 		
 		//save model invariants
 		//save place cell centers
-		if(!savedOnce){
-			
-			List<PlaceCell> pcs = getPlaceCells();
-			float pcCenters[][] = new float[pcs.size()][2];
-			for(int i=0;i<pcs.size();i++) {
-				pcCenters[i][0] = (float)pcs.get(i).getPreferredLocation().x;
-				pcCenters[i][1] = (float)pcs.get(i).getPreferredLocation().y;
-			}
-			BinaryFile.saveBinaryMatrix(pcCenters, pcs.size(), 2, savePath + "pcCenters.bin");
-			savedOnce=true;
-		}
+//		if(!savedOnce){
+//			
+//			List<PlaceCell> pcs = getPlaceCells();
+//			float pcCenters[][] = new float[pcs.size()][2];
+//			for(int i=0;i<pcs.size();i++) {
+//				pcCenters[i][0] = (float)pcs.get(i).getPreferredLocation().x;
+//				pcCenters[i][1] = (float)pcs.get(i).getPreferredLocation().y;
+//			}
+//			BinaryFile.saveBinaryMatrix(pcCenters, pcs.size(), 2, savePath + "pcCenters.bin");
+//			savedOnce=true;
+//		}
 		
 		
 		//save variables of the model
@@ -297,7 +297,8 @@ public class MorrisReplayModel extends Model  {
 		PolarDataDrawer affordances = new PolarDataDrawer("Affordances", modelAwake.affordanceGateModule.gates);
 		PolarDataDrawer actionGating = new PolarDataDrawer("2 Actions Gate", modelAwake.twoActionsGateModule.gates);
 		resultProbabilities = new PolarDataDrawer("Resulting Probs", modelAwake.twoActionsGateModule.probabilities);
-		RuntimesDrawer runtimes = new RuntimesDrawer(100, 0, 800);
+		RuntimesDrawer runtimes = new RuntimesDrawer(Integer.parseInt(Globals.getInstance().get("learningEpisodes").toString()), 0, 800);
+		runtimes.doLines = false;
 		
 		
 		RobotDrawer rDrawer = new RobotDrawer((GlobalCameraUniverse)UniverseLoader.getUniverse());

@@ -92,3 +92,5 @@ Morris Replay Model Log file
 	Reason is radial basis function generalize the policy to whole area, so if moving to the right from the left of the food is a good action, so will it be if the robot is placed slightly to the right of the food.	
 	-ISSUE 5 : Matrix update equation "atan( average(P_i)*delta(P_j) )" increase strength between cells even when moving perpendicular to those cells		
 		
+07/11/2018
+	-Fixing load function - seems like random streams are not the same - fixed: random action selection was storing the random stream before being loaded

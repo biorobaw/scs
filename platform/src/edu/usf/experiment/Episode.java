@@ -144,7 +144,7 @@ public class Episode {
 
 			long stamp = Debug.tic();
 			getSubject().getModel().run();
-			System.out.println("Model time: " + Debug.toc(stamp));
+			if(Debug.profiling) System.out.println("Model time: " + Debug.toc(stamp));
 			
 			
 			//update data being displayed (update is done if display is being synced or if last frame was already drawn, otherwise update is skipped)

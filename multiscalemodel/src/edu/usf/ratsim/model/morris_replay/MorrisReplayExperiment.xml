@@ -16,6 +16,11 @@
 			<name>sample</name>
 			<value>1</value>  <!-- will always be considered as strings, can be used within xml file -->
 		</var>
+		<var>
+			<name>learningEpisodes</name>
+			<value>1000</value>
+			
+		</var>
 	</variables>
 	
 	<simulationControls>
@@ -26,10 +31,10 @@
 		<syncDisplay>true</syncDisplay>
 		<collisionDetection>false</collisionDetection>
 		
-		<saveFile>saveTest</saveFile>
-		<!-- <load>
+		<!-- <saveFile>saveTest</saveFile>
+		<load>
 			<path>logs/v21/test/multiplet/snapshots/saveTest</path>
-			<episode>20</episode>
+			<episode>45</episode>
 			<trial>Learning</trial>
 		</load> --> 
 		
@@ -93,7 +98,7 @@
 			<wTransitionLR>1.0</wTransitionLR>
 			
 			<!-- sessions, laps, and replay -->
-			<cantReplay>50</cantReplay>
+			<cantReplay>0</cantReplay>
 			<!-- threshold to propagate PC activation during 
 			     sleep state. Should be numPC/50           -->
 			<replayThres>.001</replayThres>
@@ -314,7 +319,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>100</number><!-- 24 session * (80 + 80 laps * 8 replays) =   -->
+			<number>$(learningEpisodes)</number><!-- 24 session * (80 + 80 laps * 8 replays) =   -->
 			<!-- Tasks to perform before each episode -->
 			<beforeEpisodeTasks>
 				<!-- <task>

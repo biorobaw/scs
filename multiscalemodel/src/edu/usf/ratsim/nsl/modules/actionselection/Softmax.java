@@ -1,5 +1,6 @@
 package edu.usf.ratsim.nsl.modules.actionselection;
 
+import edu.usf.experiment.utils.Debug;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
@@ -52,6 +53,7 @@ public class Softmax extends Module {
 			probabilities[i]/=sum;
 		}
 
+		
 
 	}
 

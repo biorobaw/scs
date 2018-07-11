@@ -14,7 +14,6 @@ import edu.usf.micronsl.port.singlevalue.Int0dPort;
  */
 public class ActionFromProbabilities extends Module {	
 	
-	Random rand = RandomSingleton.getInstance();
 	Int0dPort outport  = new Int0dPort(this);
 
 	public ActionFromProbabilities(String name) {
@@ -27,16 +26,13 @@ public class ActionFromProbabilities extends Module {
 	public void run() {
 		Float1dPortArray input = (Float1dPortArray) getInPort("probabilities");
 
-		float u = rand.nextFloat();
+		float u = RandomSingleton.getInstance().nextFloat();
 		int i=1;
 		for (float sum = input.get(0);  sum < u;  i++)
 			sum+=input.get(i);
 		outport.set(i-1);
 
-//		do {
-//			i = rand.nextInt(input.getSize());
-//		} while (input.get(i) <= 0);
-//		outport.set(i);
+		
 	}
 
 

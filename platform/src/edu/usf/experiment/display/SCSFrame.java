@@ -394,7 +394,7 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}	
-			System.out.println("Waiting time: " + Debug.toc(stamp));
+			if(Debug.profiling) System.out.println("Waiting time: " + Debug.toc(stamp));
 		} 
 		
 		boolean signalRepaint = false;
@@ -433,7 +433,7 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		if(cycle==renderCycle) { 
 			remainingPanels = Math.max(--remainingPanels, -1);
 			if(remainingPanels==0){
-				System.out.println("Render cycle time: " + Debug.toc(renderCycleTime));
+				if(Debug.profiling) System.out.println("Render cycle time: " + Debug.toc(renderCycleTime));
 				doneRenderingLastCycle = true;
 				
 				if( waitingPreviousFrame) {

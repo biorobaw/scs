@@ -21,13 +21,14 @@ public class RandomSingleton {
 	
 	public static void save(String logpath){
 		String fileName = logpath + "random.ser";
+		System.out.println("Saving random state: " + fileName);
 		try {
 			FileOutputStream os = new FileOutputStream(fileName);
 			ObjectOutputStream oos = new ObjectOutputStream(os);
 			oos.writeObject(instance);
 			oos.close();
 			os.close();
-			System.out.println("next int is: " + instance.nextInt());
+//			System.out.println("next int is: " + instance.nextInt());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -43,7 +44,7 @@ public class RandomSingleton {
 	
 	public static void load(String logpath){
 		String fileName = logpath + "random.ser";
-		
+		System.out.println("Loading random state: " + fileName);
 		
 		try {
 			FileInputStream is = new FileInputStream(fileName);
@@ -52,6 +53,8 @@ public class RandomSingleton {
 			ois.close();
 			is.close();
 //			System.out.println("next int is: " + instance.nextInt());
+			
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
