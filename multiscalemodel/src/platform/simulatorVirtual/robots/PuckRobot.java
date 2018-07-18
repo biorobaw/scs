@@ -1,5 +1,6 @@
 package platform.simulatorVirtual.robots;
 
+import java.awt.geom.Point2D;
 import java.util.AbstractCollection;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import edu.usf.experiment.robot.specificActions.DifferentialNavigationAction;
 import edu.usf.experiment.robot.specificActions.DifferentialNavigationPolarAction;
 import edu.usf.experiment.robot.specificActions.FeederTaxicAction;
 import edu.usf.experiment.robot.specificActions.MoveToAction;
+import edu.usf.experiment.robot.specificActions.TeleportToAction;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.SubjectOld;
 import edu.usf.experiment.universe.Feeder;
@@ -112,6 +114,10 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 			}
 			
 			
+		} else if (currentAction instanceof TeleportToAction) {
+			TeleportToAction a = (TeleportToAction)currentAction;
+			
+			teleportTo(a.x(), a.y(),a.theta());
 		}
 		
 	}
@@ -166,6 +172,10 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 	}
 	
 	
+	public void teleportTo(float x,float y,float angle) {
+		universe.setRobotPosition(new Point2D.Float(x, y), angle);
+	}
+	
 	public boolean tryToEatIfCloseToFeeder(int feederId){
 		
 		if(universe.isRobotCloseToFeeder(feederId) ){
@@ -217,6 +227,8 @@ public class PuckRobot extends Robot implements LocalizationInterface , FeederVi
 		} else if (action instanceof FeederTaxicAction){
 			currentAction = action;
 		} else if (action instanceof MoveToAction){
+			currentAction = action;
+		} else if (action instanceof TeleportToAction) {
 			currentAction = action;
 		}
 		

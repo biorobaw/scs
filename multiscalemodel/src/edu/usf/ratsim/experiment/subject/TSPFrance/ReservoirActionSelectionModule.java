@@ -22,11 +22,13 @@ public class ReservoirActionSelectionModule extends Module
 	//action = new DifferentialNavigationAction(leftSpeed,RightSpeed)
 	ModelActionPort outport = new ModelActionPort(this, action);
 	Reservoir reservoir;
+	
+	boolean firstCycle = true;
 
 	public ReservoirActionSelectionModule(String name, Reservoir reservoir) {
 		super(name);
 		this.reservoir = reservoir;
- 		reservoir.finishInitialization(new PositionLoop(), new StimulusLoop());
+ 		reservoir.finishInitialization(new Agent());
 		// TODO Auto-generated constructor stub
 	}
 
@@ -35,9 +37,9 @@ public class ReservoirActionSelectionModule extends Module
 	{
 		Bool0dPort finishedAction = (Bool0dPort)getInPort("finishedAction");
 		
-		if (finishedAction.get())
+		if (firstCycle || finishedAction.get())
 		{
-			
+			firstCycle=false;
 			
 			Point3f next_position = reservoir.get_next_position();
 			if (next_position != null)
@@ -69,27 +71,20 @@ public class ReservoirActionSelectionModule extends Module
 	}
 	
 	public void newEpisode(){
-
+		firstCycle = true;
 	}
 	
 	
-	class PositionLoop extends TRN4JAVA.Custom.Simulation.Loop
+	class Agent extends TRN4JAVA.Custom.Simulation.Encoder
 	{
 		@Override
-		public void callback(final long id, final long trial, final long evaluation, final float prediction[], final long rows, final long cols)
+		public void callback(final long simulation_id, final long evaluation_id, final float prediction[], final long rows, final long cols)
 		{
 			assert(rows == 1);
 			assert(cols == 2);
 			
-			reservoir.append_next_position(id, trial, evaluation, new Point3f(prediction[0], prediction[1], 0.0f));
+			reservoir.append_next_position(simulation_id, evaluation_id, new Point3f(prediction[0], prediction[1], 0.0f));
 		}	
 	}
-	class StimulusLoop extends TRN4JAVA.Custom.Simulation.Loop
-	{
-		@Override
-		public void callback(final long id, final long trial, final long evaluation, final float prediction[], final long rows, final long cols)
-		{
-			System.out.println("RESERVOIR PREDICTED STIMULUS");
-		}
-	}
+
 }

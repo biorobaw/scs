@@ -161,8 +161,6 @@ public class Episode {
 			while((boolean)g.get("pause")); //the pause is here so that the model state can be observed before performing the actions
 			
 			
-			getSubject().getRobot().processPendingActions();
-			getSubject().getRobot().executeTimeStep(timeStep);
 			
 
 			for (Logger l : afterCycleLoggers)
@@ -173,6 +171,10 @@ public class Episode {
 			// Evaluate stop conditions
 			for (Condition sc : stopConds)
 				finished = finished || sc.holds(this);
+			
+			
+			getSubject().getRobot().processPendingActions();
+			getSubject().getRobot().executeTimeStep(timeStep);
 
 			if (Debug.printEndCycle)
 				System.out.println("End cycle");

@@ -43,6 +43,16 @@ public class ExponentialPlaceCellNoThresholding implements PlaceCell, ConjCell {
 		this.width = (float) (-Math.pow(radius, 2) / Math.log(RADIUS_THRS));
 	}
 
+	public Point3f getCenter()
+	{
+		return center;
+	}
+	
+	public float getWidth()
+	{
+		return width;
+	}
+	
 	/**
 	 * Outside the place field radius, the activation is 0. Inside the place
 	 * field, the response curve corresponds to a gaussian function of the
