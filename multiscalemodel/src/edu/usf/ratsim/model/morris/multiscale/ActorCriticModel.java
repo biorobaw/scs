@@ -47,11 +47,11 @@ public class ActorCriticModel extends Model implements ValueModel {
 	private Float1dSparseConcatModule jointPCHDIntentionState;
 	private GradientValue rlValue;
 	private List<RndHDPCellLayer> conjCellLayers;
-	private float[][] value;
+	private float[][] value; //this array is useful/necessary for 
 	private int numActions;
 	private QLAlgorithm rlAlg;
 	private MultiStateACNoTraces msac;
-	private List<Float> valueConnProbs;
+	private List<Float> valueConnProbs; //this one as well
 
 	public ActorCriticModel() {
 	}

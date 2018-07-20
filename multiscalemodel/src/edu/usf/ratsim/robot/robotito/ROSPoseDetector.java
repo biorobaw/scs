@@ -103,7 +103,10 @@ public class ROSPoseDetector implements NodeMain {
 		return new Coordinate(x,y);
 	}
 	
-	/*Simple filter that returns the most recent coordinate in any set of two recent readings
+	/* NOTE: This was a quick method to test step_calibration in Robotito.java. A more thoughtful
+	 * implementation should be considered before using this elsewhere.
+	 * 
+	 * Simple filter that returns the most recent coordinate in any set of two recent readings
 	 *that are within a close threshold value. This prevents movement readings and any 
 	 *noise spikes from being returned, if the current position must be accurate.
 	 *

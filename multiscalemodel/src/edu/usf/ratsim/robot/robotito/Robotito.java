@@ -68,8 +68,8 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 	private static final boolean WAIT_FOR_LOCATION = false;
 	private static final double FOUND_PLAT_THRS = .1f;
 	private static final float FORWARD_SPEED = 0.03f;
-	private static final float ANGULAR_VEL = (float)(15f * Math.PI / 180);
-	private static final float MIN_DIST_FROM_WALL = 0.035f; //wall shouldn't touch any part of the robot
+	private static final float ANGULAR_VEL = (float)(25f * Math.PI / 180);
+	private static final float MIN_DIST_FROM_WALL = 0.04f; //wall shouldn't touch any part of the robot
 	
 	private XBee xbee;
 	private XBeeAddress16 remoteAddress;
@@ -98,10 +98,12 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 	
 	//error correction values
 	private float stepCorrectionRatio = 1.2f; //more accurate value determined by calibrateStep()
-	private float rotCorrectionRatio = 2.7f; //learned by experimentation; currently no automatic test
+	private float rotCorrectionRatio = 2.1f; //learned by experimentation; currently no automatic test
 	
+	//Set ROBOT_DEBUG to true to use the main method. Set ROBOT_DEBUG to false when using running SCS.
 	private static final boolean ROBOT_DEBUG = false;
-	//TODO: add a MOTION_DEBUG for various motion print statements.
+	private static final boolean ROBOT_MOTION_DEBUG = false; //prints the selected affordance, action taken,
+															 //and time estimated to complete each action.
 	
 	public Robotito(ElementWrapper params, Universe u) {
 		
@@ -228,35 +230,6 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 		} */
 		
 		
-		/*
-		//TODO: marker for top of the actual code
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		r.step = 0.05f;
-		
-		r.calibrateStep();
-		
-		try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		for(int m = 0; m < 5; m++) {
-			r.forward(0.05f);
-			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		} 
-		*/
-		
-		
 		for(int i = 0; i < 25; i++) { //should be a little less than a full rotation.
 			r.rotate(-.25f);
 			
@@ -266,38 +239,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 				e.printStackTrace();
 			}
 		}
-		/*
-		r.rotate(.195f);
-		
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		r.rotate(.195f);
-		
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		r.rotate(-.195f);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} */
-		
-		
-//		r.setLinearVel(0);
-//		r.setAngularVel(0f);
-//		try {
-//			Thread.sleep(1000);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
+
 		
 		System.exit(0);
 		
@@ -501,10 +443,8 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 		tVel = t;
 	}
 	
-	//Affordance hack
+	//Affordance code
 	//Below methods were added by David Ehrenhaft
-	//Note that these are not yet tested and almost certainly have errors to work
-	//out. 
 	
 	@Override
 	public void executeAffordance(Affordance af) {
@@ -518,10 +458,12 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 			List<Affordance> forward = new LinkedList<Affordance>();
 			forward.add(new ForwardAffordance(ta.getDistance()));
 			rotate(ta.getAngle());
-			System.out.println("Turn affordance: " + ta.getAngle());
+			if(ROBOT_MOTION_DEBUG)
+				System.out.println("Turn affordance: " + ta.getAngle());
 		} else if (af instanceof ForwardAffordance) {
 			forward(((ForwardAffordance) af).getDistance());
-			System.out.println("Forward affordance: " + ((ForwardAffordance) af).getDistance());
+			if(ROBOT_MOTION_DEBUG)
+				System.out.println("Forward affordance: " + ((ForwardAffordance) af).getDistance());
 		} else if (af instanceof EatAffordance) {
 			// Updates food in universe
 				eat(); // TODO: should the robot check for feeder close or just
@@ -552,8 +494,8 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 		} else if (af instanceof ForwardAffordance) {
 			realizable =  canRobotMove(0, getRadius() * lookaheadSteps);
 			//System.out.println("Forward affordance realizable? " + realizable);
-		} else if (af instanceof EatAffordance) { //TODO: The code for eating may be totally unnecessary in a platform approach.
-			realizable = false; //this needs to be changed if the multi-feeder experiment is attempted.
+		} else if (af instanceof EatAffordance) { //TODO: update to work with feeders
+			realizable = false; //Fine with a platform-only experiment; must be modified if feeders are needed
 		} else
 			throw new RuntimeException("Affordance " + af.getClass().getName() + " not supported by robot");
 	
@@ -651,12 +593,12 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 		RigidTransformation move = new RigidTransformation(step + ROBOT_RADIUS + MIN_DIST_FROM_WALL, 0f, angle);
 		
 		RigidTransformation[] to = 	   {new RigidTransformation((float)curPos.x, (float)curPos.y, orientation),
-									    new RigidTransformation((float)curPos.x, (float)curPos.y + ROBOT_RADIUS, orientation),
-									    new RigidTransformation((float)curPos.x, (float)curPos.y - ROBOT_RADIUS, orientation)};
+									    new RigidTransformation((float)curPos.x, (float)curPos.y + ROBOT_RADIUS + MIN_DIST_FROM_WALL, orientation),
+									    new RigidTransformation((float)curPos.x, (float)curPos.y - ROBOT_RADIUS - MIN_DIST_FROM_WALL, orientation)};
 		
 		Coordinate[] startCoordinate = {curPos,
-										new Coordinate(curPos.x, curPos.y + ROBOT_RADIUS),
-										new Coordinate(curPos.x, curPos.y - ROBOT_RADIUS)};
+										new Coordinate(curPos.x, curPos.y + ROBOT_RADIUS + MIN_DIST_FROM_WALL),
+										new Coordinate(curPos.x, curPos.y - ROBOT_RADIUS - MIN_DIST_FROM_WALL)};
 		
 		LineSegment[] paths = new LineSegment[3];
 		
@@ -673,7 +615,11 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 		}
 		
 		//confirms that front of robot won't touch any wall
-		if(getDistanceToClosestWall(to[0].getTranslation()) <= ROBOT_RADIUS) return false;
+		if(getDistanceToClosestWall(to[0].getTranslation()) <= ROBOT_RADIUS + MIN_DIST_FROM_WALL) return false;
+		
+		//confirms the robot's flanks won't get too close to the walls
+		if(getDistanceToClosestWall(to[1].getTranslation()) <= MIN_DIST_FROM_WALL) return false;
+		if(getDistanceToClosestWall(to[2].getTranslation()) <= MIN_DIST_FROM_WALL) return false;
 		
 		return true;
 	}
@@ -716,11 +662,6 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 					p.getPosition()));
 	}
 	
-	/** Returns closest platform from a list of platforms, or returns null if 
-	 *  the list is empty.
-	 *  
-	 *  @param List<Platform> platforms
-	 */
 	private Platform getClosestPlatform(List<Platform> platforms) {
 		Platform closest = null;
 		if(!platforms.isEmpty()) {
@@ -735,13 +676,13 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 		return closest;
 	}
 	
-	//Below is an estimate approach. If the motion is noisy, the robot will not have
-	//any sort of external checker. As the camera approach is highly inaccurate (as is), 
-	//for now I'll use this approach.
+	//Below is an estimate approach, which is more effective than relying on the camera for error checking,
+	//and simpler than modifying the firmware.
 	private void forward(float distance) {
-		System.out.println("Moving forward");
+		if(ROBOT_MOTION_DEBUG)
+			System.out.println("Moving forward");
 		setLinearVel(FORWARD_SPEED);
-		if(ROBOT_DEBUG) 
+		if(ROBOT_MOTION_DEBUG) 
 			System.out.println("Est. Time: " + (long)((distance/(5*FORWARD_SPEED) * 1000)/stepCorrectionRatio));
 		try {
 			Thread.sleep((long)((distance/(5*FORWARD_SPEED) * 1000)/stepCorrectionRatio));
@@ -749,11 +690,13 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 			e.printStackTrace();
 		}
 		setLinearVel(0f);
+		if(ROBOT_MOTION_DEBUG)
 		System.out.println("Completed forward motion");
 	}
 	
 	//sets the stepCorrectionRatio value, to be used in forward. 
 	//Ensures the distance moved is appropriate, based on MOVING_SPEED and stepLength.
+	//TODO: this result is only maintained in the current session, so it isn't helpful without a config file
 	public void calibrateStep() {
 		int numMoves = 10;
 		System.out.println("Began step calibration: \n\tMoving speed = " + FORWARD_SPEED * 5 + 
@@ -834,7 +777,8 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 	
 	//This is an estimation approach
 	private void rotate(float angle) {
-		System.out.println("Starting rotation");
+		if(ROBOT_MOTION_DEBUG)
+			System.out.println("Starting rotation");
 		
 		//identify the direction to turn
 		float goalAngle = GeomUtils.standardAngle(getOrientationAngle() + angle);
@@ -851,7 +795,8 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 		} //TODO above 1.11 constant should be combined with a separate rotCorrectionRatio, and retested.
 		
 		
-		System.out.println(turningTime);
+		if(ROBOT_MOTION_DEBUG) 
+			System.out.println(turningTime);
 		
 		try {
 			Thread.sleep(turningTime);
@@ -860,7 +805,8 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 		}
 		
 		setAngularVel(0f);
-		System.out.println("Completed rotation");
+		if(ROBOT_MOTION_DEBUG)
+			System.out.println("Completed rotation");
 	}
 	
 	
@@ -900,7 +846,7 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot,
 		return error;
 	}
 
-	//TODO: If feeders needed, this will be necessary
+	//TODO: If feeders needed, this will be necessary to actually implement
 	public void eat() {
 		System.out.println("\n\n\nRobotito tried to eat!\n\n");
 	}

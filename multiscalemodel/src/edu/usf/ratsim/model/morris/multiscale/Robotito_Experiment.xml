@@ -24,9 +24,9 @@
 			<!-- Step length in meters -->
 			<step>0.05</step>
 			<!-- Left rotation amount in radians -->
-			<leftAngle>.195</leftAngle>
+			<leftAngle>.25</leftAngle>
 			<!-- Right rotation amount in radians -->
-			<rightAngle>-.195</rightAngle>
+			<rightAngle>-.25</rightAngle>
 			<!-- Percentual translational noise -->
 			<noise>.05</noise>
 			<!-- Rotation noise added after translation -->
@@ -80,17 +80,17 @@
 			<!-- Half life value for decay exploration -->
 			<explorationHalfLifeVal>1000</explorationHalfLifeVal>
 			<!-- Map dimensions for conjuntive cell placing -->
-			<xmin>-1</xmin>
+			<xmin>0</xmin>
 			<ymin>-1</ymin>
-			<xmax>1</xmax>
-			<ymax>1</ymax>
+			<xmax>2.1</xmax>
+			<ymax>1.3</ymax>
 		</params>
 	</model>
 	
 	<!-- Group definition. The order determines order of execution -->
 	<group>
 		<name>Learning</name>
-		<numMembers>16</numMembers>
+		<numMembers>1</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -99,7 +99,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>16</numMembers>
+		<numMembers>1</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -109,7 +109,7 @@
 	<beforeExperimentTasks>
 	</beforeExperimentTasks>
 	
-	<!-- Loggers to be executed before the eperiment -->
+	<!-- Loggers to be executed before the experiment -->
 	<beforeExperimentLoggers>
 		<!-- Log walls -->
 		<!--<logger> <name>edu.usf.experiment.log.WallLogger</name> <params> </params> </logger>-->
@@ -132,9 +132,6 @@
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
-			<task>
-				<name>edu.usf.experiment.task.robot.CalibrateRobot</name>
-			</task>
 		</beforeTrialTasks>
 		<!-- Episodes definition -->
 		<episodes>
@@ -148,8 +145,8 @@
 				<task>
 					<name>edu.usf.experiment.task.platform.CreatePlatformROS</name>
 					<params>
-						<x>0.5</x>
-						<y>0.5</y>
+						<x>1.75</x>
+						<y>0.25</y>
 						<radius>0.1</radius>
 					</params>
 				</task>
@@ -157,9 +154,9 @@
 					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<point>
-							<x>.2</x>
-							<y>.2</y>
-							<theta>3.14</theta>
+							<x>.4</x>
+							<y>.9</y>
+							<theta>-1.57</theta>
 						</point>
 					</params>
 				</task>
@@ -272,9 +269,6 @@
 		</groups>
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
-			<task>
-				<name>edu.usf.experiment.task.robot.CalibrateRobot</name>
-			</task>
 		</beforeTrialTasks>
 		<beforeTrialLoggers>
 		</beforeTrialLoggers>
@@ -288,12 +282,20 @@
 			<beforeEpisodeTasks>
 				<!-- Place the animat in a given place -->
 				<task>
+					<name>edu.usf.experiment.task.platform.CreatePlatformROS</name>
+					<params>
+						<x>1.75</x>
+						<y>0.25</y>
+						<radius>0.1</radius>
+					</params>
+				</task>				
+				<task>
 					<name>edu.usf.experiment.task.robot.PlaceRobotInitally</name>
 					<params>
 						<point>
-							<x>-.5</x>
-							<y>-.5</y>
-							<theta>3.14</theta>
+							<x>.4</x>
+							<y>.9</y>
+							<theta>-1.57</theta>
 						</point>
 					</params>
 				</task>
@@ -307,9 +309,12 @@
 			<!-- Tasks to performe after each cycle -->
 			<afterCycleTasks>
 				<!-- Release food from the feeder if the rat is close -->
-				<task>
+				<!-- Code removed; task in question fills feeders with food. Since this setup uses
+				     no feeders, it is unnecessary to fill it up, and would require haphazard implementation
+				     of a dozen otherwise unused methods.-->
+				<!--<task>
 					<name>edu.usf.experiment.task.feeder.ReleaseFoodFromFeeders</name>
-				</task>
+				</task> -->
 			</afterCycleTasks>
 			<!-- Loggers to execute after each cycle -->
 			<afterCycleLoggers>

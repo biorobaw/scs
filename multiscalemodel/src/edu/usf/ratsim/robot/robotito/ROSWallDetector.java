@@ -87,10 +87,11 @@ public class ROSWallDetector implements NodeMain {
 						
 						Wall wall1 = new Wall((float) (-Math.cos(t) * OBS_HALF_WALL + x), (float) (-Math.sin(t) * OBS_HALF_WALL + y),
 								(float) (Math.cos(t) * OBS_HALF_WALL + x), (float) (Math.sin(t) * OBS_HALF_WALL + y));
-						Wall wall2 = new Wall((float) (-Math.cos(t) * OBS_HALF_WALL + (OBS_WIDTH * -Math.sin(t) + x)), 
-											  (float) (-Math.sin(t) * OBS_HALF_WALL + (OBS_WIDTH * Math.cos(t) + y)),
-											  (float) (Math.cos(t) * OBS_HALF_WALL + (OBS_WIDTH * -Math.sin(t) + x)), 
-											  (float) (Math.sin(t) * OBS_HALF_WALL + (OBS_WIDTH * Math.cos(t) + y)));
+						Wall wall2 = new Wall((float) (wall1.getX1() + (OBS_WIDTH * -Math.sin(t))), 
+											  (float) (wall1.getY1() + (OBS_WIDTH * Math.cos(t))),
+											  (float) (wall1.getX2() + (OBS_WIDTH * -Math.sin(t))), 
+											  (float) (wall1.getY2() + (OBS_WIDTH * Math.cos(t))));
+						
 						walls.put(id,  wall1);
 						walls.put(id + 1, wall2);
 						

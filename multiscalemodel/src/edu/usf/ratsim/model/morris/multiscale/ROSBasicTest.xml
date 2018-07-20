@@ -136,7 +136,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>10</number>
+			<number>4</number>
 			<!-- Sleep between cycles for visualization -->
 			<sleep>100</sleep>
 			<!-- Tasks to perform before each episode -->
@@ -275,7 +275,7 @@
 		<!-- Episodes definition -->
 		<episodes>
 			<!-- Number of episodes -->
-			<number>5</number>
+			<number>1</number>
 			<!-- Sleep between cycles for visualization -->
 			<sleep>00</sleep>
 			<!-- Tasks to perform before each episode -->
