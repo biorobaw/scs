@@ -47,7 +47,7 @@ public class DiscretePathDrawer extends Drawer {
 	}
 
 	@Override
-	public void clearState() {
+	public void endEpisode() {
 		poses.clear();
 	}
 

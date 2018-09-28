@@ -90,7 +90,7 @@ public class PDFDisplay implements Display {
 	@Override
 	public void newEpisode() {
 		for (Drawer d : drawers)
-			d.clearState();
+			d.endEpisode();
 	}
 
 	@Override

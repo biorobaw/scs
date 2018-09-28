@@ -1,4 +1,4 @@
-package edu.usf.ratsim.model.multiplet;
+package edu.usf.ratsim.model.pablo.multiplet;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,8 +20,8 @@ import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.platform.drawers.PolarDataDrawer;
-import edu.usf.ratsim.model.multiplet.submodules.DistanceAffordanceGatingModule;
-import edu.usf.ratsim.model.multiplet.submodules.DistancesInputModule;
+import edu.usf.ratsim.model.pablo.multiplet.submodules.DistanceAffordanceGatingModule;
+import edu.usf.ratsim.model.pablo.multiplet.submodules.DistancesInputModule;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromProbabilities;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalValue;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;

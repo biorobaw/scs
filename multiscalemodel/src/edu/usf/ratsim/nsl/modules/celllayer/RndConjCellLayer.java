@@ -14,6 +14,8 @@ import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
+import edu.usf.micronsl.port.onedimensional.vector.PointPort;
+import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.ratsim.nsl.modules.cell.ConjCell;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialConjCell;
 import edu.usf.ratsim.nsl.modules.cell.ExponentialPlaceIntentionCell;
@@ -33,15 +35,6 @@ public class RndConjCellLayer extends Module {
 	 */
 	private List<ConjCell> cells;
 
-	/**
-	 * A pointer to the robot. This is used to get the robot's current location
-	 */
-	private LocalizableRobot lRobot;
-	
-	/**
-	 * A pointer to the wall robot interface
-	 */
-	private WallRobot wRobot;
 
 	/**
 	 * A copy of the random number generator
@@ -116,9 +109,9 @@ public class RndConjCellLayer extends Module {
 	 * @param wallParamB
 	 * @param wallParamA
 	 */
-	public RndConjCellLayer(String name, Robot robot, float placeRadius, float minDirectionRadius,
+	public RndConjCellLayer(String name, float placeRadius, float minDirectionRadius,
 			float maxDirectionRadius, int numIntentions, int numCells, String placeCellType, float xmin, float ymin,
-			float xmax, float ymax, float layerLength, float wallParamA, float wallParamB) {
+			float xmax, float ymax, float layerLength) {
 		super(name);
 
 		if (!(placeCellType.equals("ExponentialPlaceIntentionCell") || placeCellType.equals("ExponentialConjCell")
@@ -164,7 +157,8 @@ public class RndConjCellLayer extends Module {
 				cell = new ExponentialPlaceIntentionCell(prefLocation, placeRadius, preferredIntention);
 			} else if (placeCellType.equals("ExponentialWallConjCell")) {
 				cell = new ExponentialWallConjCell(prefLocation, preferredDirection, placeRadius, directionRadius,
-						preferredIntention, random, wallParamA, wallParamB);
+						preferredIntention, random.nextBoolean());
+						//preferredIntention, random, wallParamA, wallParamB);
 			}
 
 			cells.add(cell);
@@ -178,8 +172,6 @@ public class RndConjCellLayer extends Module {
 		activationPort = new Float1dSparsePortMap(this, cells.size(), 1f / 4000);
 		addOutPort("activation", activationPort);
 
-		this.lRobot = (LocalizableRobot) robot;
-		this.wRobot = (WallRobot) robot;
 	}
 
 	/**
@@ -214,16 +206,20 @@ public class RndConjCellLayer extends Module {
 	 */
 	public void run() {
 		// Find the intention
-		Float1dPort intention = (Float1dPort) getInPort("intention");
+		Float1dPort intention 	= (Float1dPort) getInPort("intention");
+		float orientation 		= ((Float0dPort)getInPort("hd")).get();
+		float distanceToWall 	= ((Float0dPort)getInPort("distanceToWall")).get();
+		Coordinate position 	= ((PointPort)getInPort("position")).get();
+		
+		//get id of non zero intention cell
 		int intentionNum = -1;
 		int i = 0;
 		while (intentionNum == -1 && i < intention.getSize()) {
-			if (intention.get(i) == 1)
-				intentionNum = i;
+			if (intention.get(i) == 1) intentionNum = i;
 			i++;
 		}
 
-		run(lRobot.getPosition(), lRobot.getOrientationAngle(), intentionNum, wRobot.getDistanceToClosestWall());
+		run(position, orientation, intentionNum, distanceToWall);
 	}
 
 	/**

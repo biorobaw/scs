@@ -12,7 +12,7 @@ import edu.usf.micronsl.port.singlevalue.Bool0dPort;
  */
 public class SubjectAte extends Module {
 
-	private Bool0dPort outPort;
+	public Bool0dPort outPort;
 	private FeederRobot robot;
 
 	public SubjectAte(String name, Robot robot) {

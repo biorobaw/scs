@@ -24,12 +24,7 @@ public class LastAteIntention extends Module implements Intention {
 	}
 
 	public void run() {
-		Int0dPort goalFeeder = (Int0dPort) getInPort("goalFeeder");
-
-		for (int i = 0; i < intention.length; i++)
-			intention[i] = 0;
-
-		run(goalFeeder.get());
+		run(((Int0dPort) getInPort("goalFeeder")).get());
 	}
 
 	public void run(int intentionNumber) {

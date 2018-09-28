@@ -1,4 +1,4 @@
-package edu.usf.ratsim.model.multiplet;
+package edu.usf.ratsim.model.pablo.multiplet;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -29,7 +29,7 @@ import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePortMatrix;
 import edu.usf.platform.drawers.PCDrawer;
 import edu.usf.platform.drawers.PolarArrowDrawer;
 import edu.usf.platform.drawers.PolarDataDrawer;
-import edu.usf.ratsim.model.multiplet.drawers.VDrawer;
+import edu.usf.ratsim.model.pablo.multiplet.drawers.VDrawer;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.vlwsim.robot.VirtualRobot;
 import edu.usf.vlwsim.universe.VirtUniverse;
@@ -131,7 +131,7 @@ public class MultipleTModel extends Model  {
 		// Execute replay episodes
 		for (int r = 0; r < cantReplay; r++) {
 			modelAsleep.newEpisode();
-			pathDrawer.clearState(); // this is actually equivalent to
+			pathDrawer.endEpisode(); // this is actually equivalent to
 										// newEpisode
 			fRobot.clearEaten();
 			do {

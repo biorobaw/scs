@@ -40,7 +40,7 @@ import edu.usf.experiment.utils.Debug;
  * @author martin
  *
  */
-public class SCSFrame extends JFrame implements Display, ChangeListener {
+public class SCSDisplay extends JFrame implements Display, ChangeListener {
 
 	/**
 	 * 
@@ -55,7 +55,7 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 	
 	private HashMap<Integer,Runnable> keyActions = new HashMap<>();
 	private HashMap<String,DrawPanel> drawPanels = new HashMap<>();
-	private HashMap<String,Drawer>    drawers    = new HashMap<>();
+	
 	
 	private Semaphore doneRenderLock = new Semaphore(0);
 	
@@ -71,7 +71,7 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 	int remainingPanels = -1; //panels that still need to render current cycle
 	
 	
-	public SCSFrame(){
+	public SCSDisplay(){
 		//create a synchronizable content pane
 		setContentPane(new DrawableContentPane());
 		
@@ -229,10 +229,24 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 
 	@Override
 	public synchronized void newEpisode() {
-		for(Drawer d : drawers.values()) d.clearState();
+		Display.super.newEpisode();
 		renderCycle = -2;
 	}
 	
+	@Override
+	public synchronized void endEpisode() {
+		Display.super.endEpisode();
+	}
+	
+	@Override
+	public synchronized void newTrial() {
+		Display.super.newTrial();
+	}
+	
+	@Override
+	public synchronized void endTrial() {
+		Display.super.endTrial();
+	}
 
 	private GridBagConstraints getConstraints(int x, int y){
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -398,10 +412,11 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		} 
 		
 		boolean signalRepaint = false;
-		synchronized(SCSFrame.this){
-			
-			for(Drawer d : drawers.values()) d.appendData();
-			
+
+		
+		for(Drawer d : drawers.values()) d.appendData();
+		synchronized(SCSDisplay.this){	
+		
 			if (doneRenderingLastCycle ){
 				
 				renderCycleTime = Debug.tic();
@@ -467,7 +482,7 @@ public class SCSFrame extends JFrame implements Display, ChangeListener {
 		public void paint(Graphics g) {
 			// TODO Auto-generated method stub
 			
-			synchronized (SCSFrame.this) {
+			synchronized (SCSDisplay.this) {
 				super.paint(g);
 			}
 			

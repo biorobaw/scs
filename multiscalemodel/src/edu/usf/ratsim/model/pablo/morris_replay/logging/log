@@ -95,3 +95,32 @@ Morris Replay Model Log file
 07/11/2018
 	-Fixing load function - seems like random streams are not the same - fixed: random action selection was storing the random stream before being loaded
 	-When running 1000 episodes, plotting cannot keep up with model and threads start accumulating.
+		-Momentary fix: remove logging and plotting, will make my own later
+	
+	
+07/24/2018
+	-Updating replay model:
+		-Before:
+		    *replay start cell chosen from uniform distribution
+		    *activity propagated to max neighbor
+		    *activity propagated until loop formed
+		-After:
+			*start cell chosen from distribution proportional to either backpropagated reward or value function
+		
+		-Not yet done, analyzing 2D PC vector space
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

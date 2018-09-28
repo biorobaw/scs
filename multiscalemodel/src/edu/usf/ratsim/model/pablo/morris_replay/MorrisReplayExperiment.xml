@@ -12,6 +12,9 @@
 	
 	<!-- Add variables to define global variables -->
 	<variables>
+		<!-- Variables that can be used in the document -->
+		<!-- to use, use notation $(varname) within the file-->
+		<!-- variables can be overwritten by console variables -->
 		<var>
 			<name>sample</name>
 			<value>1</value>  <!-- will always be considered as strings, can be used within xml file -->
@@ -21,6 +24,7 @@
 			<value>1000</value>
 			
 		</var>
+		
 	</variables>
 	
 	<simulationControls>
@@ -48,7 +52,7 @@
 			<!-- Delta T step for simulation -->
 			<deltaT>.1</deltaT>
 			<!-- Map file -->
-			<maze>multiscalemodel/src/edu/usf/ratsim/model/morris_replay/MorrisMaze.xml</maze>
+			<maze>multiscalemodel/src/edu/usf/ratsim/model/pablo/morris_replay/MorrisMaze.xml</maze>
 			<!-- Display de window or run without GUI -->
 		</params>
 	</universe>
@@ -79,7 +83,7 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.model.morris_replay.MorrisReplayModel</name>
+		<name>edu.usf.ratsim.model.pablo.morris_replay.MorrisReplayModel</name>
 		<params>
 			<!-- subject params: -->
 			<!-- Step length in meters / second -->
@@ -98,7 +102,7 @@
 			<wTransitionLR>1.0</wTransitionLR>
 			
 			<!-- sessions, laps, and replay -->
-			<cantReplay>0</cantReplay>
+			<cantReplay>50</cantReplay>
 			<!-- threshold to propagate PC activation during 
 			     sleep state. Should be numPC/50           -->
 			<replayThres>.001</replayThres>
@@ -216,23 +220,23 @@
 			<!-- Loggers to execute after each cycle -->
 			<afterCycleLoggers>
 				<!-- Log the subject position -->
-				<logger>
+				<!-- <logger>
 					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
 					<params>
 					</params>
-				</logger>
+				</logger> -->
 			</afterCycleLoggers>
 			<!-- Loggers to execute after each episode -->
 			<afterEpisodeLoggers>
 				<!-- Log each wall position -->
-				<logger>
+				<!-- <logger>
 					<name>edu.usf.experiment.log.WallLogger</name>
 					<params>
 					</params>
-				</logger>
-				<logger>
+				</logger> -->
+				<!-- <logger>
 					<name>edu.usf.experiment.log.FeederLogger</name>
-				</logger>
+				</logger> -->
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
@@ -259,21 +263,21 @@
 			<!-- Plotters to execute after each episode -->
 			<afterEpisodePlotters>
 				<!-- Copy the maze file to the episode folder -->
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.experiment.plot.CopyMazeFile</name>
-				</plotter>
+				</plotter> -->
 				<!-- Convert csv to rdata -->
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.experiment.plot.CSVConverter</name>
-				</plotter>
+				</plotter> -->
 				<!-- Get time info from position information -->
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
-				</plotter>
+				</plotter> -->
 				<!-- Plot path for each episode -->
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
-				</plotter>
+				</plotter> -->
 			</afterEpisodePlotters>
 		</episodes>
 		<!-- Tasks to perform after the trial has ended -->
@@ -285,9 +289,9 @@
 		</afterTrialLoggers>
 		<!-- Plotters to execute after the trial has ended -->
 		<afterTrialPlotters>
-			<plotter>
+			<!-- <plotter>
 				<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
-			</plotter> 
+			</plotter> --> 
 		</afterTrialPlotters>
 	</trial>
 	
@@ -348,11 +352,11 @@
 			<!-- Loggers to execute after each cycle -->
 			<afterCycleLoggers>
 				<!-- Log the subject position -->
-				<logger>
+				<!-- <logger>
 					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
 					<params>
 					</params>
-				</logger>
+				</logger> -->
 				<!--  <logger>
 					<name>edu.usf.ratsim.experiment.log.PCActivityLogger</name>
 				</logger>-->
@@ -360,14 +364,14 @@
 			<!-- Loggers to execute after each episode -->
 			<afterEpisodeLoggers>
 				<!-- Log each wall position -->
-				<logger>
+				<!-- <logger>
 					<name>edu.usf.experiment.log.WallLogger</name>
 					<params>
 					</params>
-				</logger>
-				<logger>
+				</logger> -->
+				<!-- <logger>
 					<name>edu.usf.experiment.log.FeederLogger</name>
-				</logger>
+				</logger> -->
 				<!-- <logger>
 					<name>edu.usf.ratsim.experiment.log.PCLogger</name>
 				</logger> -->
@@ -397,21 +401,21 @@
 			<!-- Plotters to execute after each episode -->
 			<afterEpisodePlotters>
 				<!-- Copy the maze file to the episode folder -->
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.experiment.plot.CopyMazeFile</name>
-				</plotter>
+				</plotter> -->
 				<!-- Convert csv to rdata -->
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.experiment.plot.CSVConverter</name>
-				</plotter>
+				</plotter> -->
 				<!-- Get time info from position information -->
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
-				</plotter>
+				</plotter> -->
 				<!-- Plot path for each episode -->
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
-				</plotter>
+				</plotter> -->
 				<!-- <plotter>
 					<name>edu.usf.ratsim.experiment.plot.PCPlotter</name>
 				</plotter>-->
@@ -427,9 +431,9 @@
 		</afterTrialLoggers>
 		<!-- Plotters to execute after the trial has ended -->
 		<afterTrialPlotters>
-			<plotter>
+			<!-- <plotter>
 				<name>edu.usf.experiment.plot.RuntimePerEpisodePlotter</name>
-			</plotter> 
+			</plotter>  -->
 		</afterTrialPlotters>
 	</trial>
 	
@@ -441,9 +445,9 @@
 	</afterExperimentLoggers>
 	<!-- Plotters to execute after the experiment is over -->
 	<afterExperimentPlotters>
-		<plotter>
+		<!-- <plotter>
 			<name>edu.usf.experiment.plot.RuntimePerTrialPlotter</name>
-		</plotter>
+		</plotter> -->
 		
 	</afterExperimentPlotters>
 </experiment>

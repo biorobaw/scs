@@ -1,0 +1,25 @@
+9/22/2018 - log created
+	-Currently updating the model from scs v1 to v2.1
+	-Finished organizing modules, must verify xml file
+	-Model runs, not sure whether it should run with or without collision detection (since it supposed to be a new feature)
+	    With collition detection it can get really hard for the robot to move between walls
+	    Without, it gets stuck in outter walls due to unknown error
+	-Currently adding drawers to view inner workings:
+	   -drawer runtime per feeder  (DONE)
+	   -draw feeders (enabled = blue, active=red , flashing=twice as big)
+	   -drawer votes (DONE - but making it more understandable)
+	*MODIFIED THE DRAW INTERFACE
+	-Looking for errors:
+		-Error: In GeomUtils simulate affordance was incorrect for turning affordances
+		    Result should apply opposite movement (as in translation), it was applying the movement itself
+		    FIXED
+		-StepVirtualRobot: getMinAngle(angleLeft,angleRight)
+		    Seems like it requires an absolute value
+		    FIXED
+		-The strategy to get the robot unstack is not working, 
+		   it assumed that it could control the robot within the model but it cant anymore
+		-Task Cells are pointless unless the robot ends up going to the cell it really wanted to,
+		otherwise each task cell learn to go to any cell
+		
+9/24/2018
+	-Creating view to see where robot tries to eat and action viewer

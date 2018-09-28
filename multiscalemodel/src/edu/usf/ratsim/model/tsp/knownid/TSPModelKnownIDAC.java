@@ -96,16 +96,16 @@ public class TSPModelKnownIDAC extends Model {
 		LinkedList<RndConjCellLayer> conjCellLayers = new LinkedList<RndConjCellLayer>();
 		List<Port> conjCellLayersPorts = new LinkedList<Port>();
 		// For each layer
-		for (int i = 0; i < numCCLayers; i++) {
-			RndConjCellLayer ccl = new RndConjCellLayer("CCL " + i, robot, radius, 0, 0, numIntentions,
-					numCCCellsPerLayer.get(i), "ExponentialPlaceIntentionCell", xmin, ymin, xmax, ymax,
-					layerLengths.get(i), 10, 0);
-			ccl.addInPort("intention", intention.getOutPort("intention"));
-			conjCellLayers.add(ccl);
-			conjCellLayersPorts.add(ccl.getOutPort("activation"));
-			addModule(ccl);
-			radius += (maxPCRadius - minPCRadius) / (numCCLayers - 1);
-		}
+//		for (int i = 0; i < numCCLayers; i++) {
+//			RndConjCellLayer ccl = new RndConjCellLayer("CCL " + i, robot, radius, 0, 0, numIntentions,
+//					numCCCellsPerLayer.get(i), "ExponentialPlaceIntentionCell", xmin, ymin, xmax, ymax,
+//					layerLengths.get(i), 10, 0);
+//			ccl.addInPort("intention", intention.getOutPort("intention"));
+//			conjCellLayers.add(ccl);
+//			conjCellLayersPorts.add(ccl.getOutPort("activation"));
+//			addModule(ccl);
+//			radius += (maxPCRadius - minPCRadius) / (numCCLayers - 1);
+//		}
 
 		// Concatenate all layers
 		Float1dSparseConcatModule jointPCLActivation = new Float1dSparseConcatModule("Joint PC State");

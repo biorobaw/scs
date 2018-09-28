@@ -73,7 +73,7 @@ public class QPolicyDrawer extends Drawer {
 	}
 
 	@Override
-	public void clearState() {
+	public void endEpisode() {
 		
 	}
 

@@ -32,8 +32,7 @@ public class ObstacleEndTaxic extends Module {
 	private float negReward;
 	private float tooCloseDist;
 
-	public ObstacleEndTaxic(String name, Robot robot,
-			float taxicVal, float negReward, float tooCloseDist) {
+	public ObstacleEndTaxic(String name, Robot robot,float taxicVal, float negReward, float tooCloseDist) {
 		super(name);
 		
 		this.ar = (LocalActionAffordanceRobot) robot;

@@ -68,7 +68,7 @@ public class ExpGraphDrawer extends Drawer {
 	}
 	
 	@Override
-	public void clearState() {
+	public void endEpisode() {
 		
 	}
 

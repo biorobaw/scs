@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.log.LoggerLoader;
 import edu.usf.experiment.plot.Plotter;
@@ -89,6 +90,8 @@ public class Trial implements Runnable {
 			
 			getSubject().getModel().newTrial();
 			
+			DisplaySingleton.getDisplay().newTrial();
+			
 			for (Logger logger : beforeLoggers) logger.finalizeLog();
 			Plotter.plot(beforePlotters);
 			
@@ -102,6 +105,8 @@ public class Trial implements Runnable {
 			// Log and finalize
 			for (Logger logger : afterLoggers) logger.log(this);
 			for (Logger logger : afterLoggers) logger.finalizeLog(); 
+			
+			DisplaySingleton.getDisplay().endTrial();
 		
 		    // Plot
 		    // Wait until all plots are done before contuining

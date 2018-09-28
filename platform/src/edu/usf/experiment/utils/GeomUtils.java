@@ -91,7 +91,7 @@ public class GeomUtils {
 			return nextP;
 		} else if (af instanceof TurnAffordance) {
 			TurnAffordance ta = (TurnAffordance) af;
-			RigidTransformation rot = new RigidTransformation(new Coordinate(),ta.getAngle());
+			RigidTransformation rot = new RigidTransformation(new Coordinate(),-ta.getAngle());
 			Coordinate nextP = new Coordinate();
 			rot.transform(position, nextP);
 			return nextP;

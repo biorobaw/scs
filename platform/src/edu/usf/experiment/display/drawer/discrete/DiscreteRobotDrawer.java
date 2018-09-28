@@ -46,7 +46,7 @@ public class DiscreteRobotDrawer extends Drawer {
 	}
 
 	@Override
-	public void clearState() {
+	public void endEpisode() {
 		
 	}
 

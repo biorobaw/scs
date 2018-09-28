@@ -1,4 +1,4 @@
-package edu.usf.ratsim.model.multiplet.drawers;
+package edu.usf.ratsim.model.pablo.multiplet.drawers;
 
 
 import java.awt.Color;
@@ -81,7 +81,7 @@ public class VDrawer extends Drawer {
 	}
 
 	@Override
-	public void clearState() {
+	public void endEpisode() {
 		
 	}
 

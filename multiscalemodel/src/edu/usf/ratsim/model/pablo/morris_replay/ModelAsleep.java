@@ -1,4 +1,4 @@
-package edu.usf.ratsim.model.morris_replay;
+package edu.usf.ratsim.model.pablo.morris_replay;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -24,12 +24,12 @@ import edu.usf.micronsl.port.onedimensional.vector.PointPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
-import edu.usf.ratsim.model.morris_replay.submodules.AreEqualModule;
-import edu.usf.ratsim.model.morris_replay.submodules.MaxModule;
-import edu.usf.ratsim.model.morris_replay.submodules.ProportionalValueSingleBlockMatrix;
-import edu.usf.ratsim.model.morris_replay.submodules.ProportionalVotesSingleBlockMatrix;
-import edu.usf.ratsim.model.morris_replay.submodules.UpdateQModuleAC2;
-import edu.usf.ratsim.model.morris_replay.submodules.VQErrorSignalModule;
+import edu.usf.ratsim.model.pablo.morris_replay.submodules.AreEqualModule;
+import edu.usf.ratsim.model.pablo.morris_replay.submodules.MaxModule;
+import edu.usf.ratsim.model.pablo.morris_replay.submodules.ProportionalValueSingleBlockMatrix;
+import edu.usf.ratsim.model.pablo.morris_replay.submodules.ProportionalVotesSingleBlockMatrix;
+import edu.usf.ratsim.model.pablo.morris_replay.submodules.UpdateQModuleAC2;
+import edu.usf.ratsim.model.pablo.morris_replay.submodules.VQErrorSignalModule;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalValue;
 import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
@@ -322,9 +322,9 @@ public class ModelAsleep extends Model {
 		return null;
 	}
 
-	public float getMaxActivation(){
-		return ((Float0dPort)nextActiveModule.getOutPort("maxActivation")).get();
-	}
+//	public float getMaxActivation(){
+//		return ((Float0dPort)nextActiveModule.getOutPort("maxActivation")).get();
+//	}
 
 	public boolean doneReplaying(){
 //		if(subFoundFood.outPort.get()) System.out.println("replay finished finding food");

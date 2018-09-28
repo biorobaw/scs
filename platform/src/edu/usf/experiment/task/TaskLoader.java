@@ -58,6 +58,7 @@ public class TaskLoader {
 				} catch (ClassNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					System.exit(-1);
 				}
 			}
 		}

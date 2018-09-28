@@ -56,7 +56,7 @@ public class PathDrawer extends Drawer {
 	}
 	
 	@Override
-	public void clearState() {
+	public void endEpisode() {
 		poses = new LinkedList<>();
 		currentDrawLength = 0;
 		if(drawOldPaths) oldPaths.add(poses);

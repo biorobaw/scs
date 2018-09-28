@@ -1,4 +1,4 @@
-package edu.usf.ratsim.model.morris_replay.drawers;
+package edu.usf.ratsim.model.pablo.morris_replay.drawers;
 
 
 import java.awt.Color;
@@ -63,7 +63,7 @@ public class VDrawer extends Drawer {
 	}
 
 	@Override
-	public void clearState() {
+	public void endEpisode() {
 		
 	}
 

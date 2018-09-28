@@ -133,10 +133,11 @@ public class Episode {
 		Plotter.plot(beforeEpisodePlotters);
 
 		// Execute cycles until stop condition holds
-		Display display = DisplaySingleton.getDisplay();
-		display.newEpisode();
 		boolean finished = false;
 		int cycle = 0;
+		g.put("cycle",cycle);
+		Display display = DisplaySingleton.getDisplay();
+		display.newEpisode();
 		while (!finished) {
 			g.put("cycle",cycle);
 			for (Logger l : beforeCycleLoggers) l.log(this);
@@ -188,7 +189,7 @@ public class Episode {
 		System.out.println();
 		
 		getSubject().getModel().endEpisode();
-
+		display.endEpisode();
 		
 		// Finalize loggers
 		for (Logger l : afterCycleLoggers)

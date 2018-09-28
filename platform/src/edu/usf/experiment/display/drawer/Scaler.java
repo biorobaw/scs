@@ -83,8 +83,8 @@ public class Scaler {
 	 */
 	public Point scale(Coordinate p) {
 		Point pScaled = new Point();
-		pScaled.x = (int)Math.round( ((p.x + xoffset) * xscale));
-		pScaled.y = -(int)Math.round( ((p.y + yoffset) * yscale));
+		pScaled.x = (int)panelCoordinates.x+(int)Math.round( ((p.x + xoffset) * xscale));
+		pScaled.y = (int)(panelCoordinates.y-Math.round( ((p.y + yoffset) * yscale)));
 		return pScaled;
 	}
 	

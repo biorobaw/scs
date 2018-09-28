@@ -79,7 +79,7 @@ public class DrawPanel extends JPanel{
 	
 	public void clearState() {
 		for (Drawer d : drawers)
-			d.clearState();
+			d.endEpisode();
 	}
 	
 	public void setCoordinateFrame(float x, float y, float w, float h) {

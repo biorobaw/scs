@@ -62,7 +62,7 @@ public class QValueDrawer extends Drawer {
 	}
 
 	@Override
-	public void clearState() {
+	public void endEpisode() {
 		
 	}
 

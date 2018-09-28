@@ -161,7 +161,7 @@ public class PolarDataDrawer extends Drawer {
 	}
 	
 	@Override
-	public void clearState() {
+	public void endEpisode() {
 	}
 
 	@Override

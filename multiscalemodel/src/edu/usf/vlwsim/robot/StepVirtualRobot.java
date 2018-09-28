@@ -170,7 +170,7 @@ public class StepVirtualRobot extends VirtualRobot implements StepRobot, LocalAc
 
 	@Override
 	public float getMinAngle() {
-		return Math.min(leftAngle, rightAngle);
+		return Math.min(Math.abs(leftAngle), Math.abs(rightAngle));
 	}
 
 	@Override

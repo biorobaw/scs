@@ -27,28 +27,41 @@ import com.vividsolutions.jts.geom.Coordinate;
 public class ExponentialWallConjCell extends ExponentialConjCell {
 
 	private boolean wallCell;
-	private float b;
 	private float a;
+	private float b;
+	private float b2;
 
 	public ExponentialWallConjCell(Coordinate preferredLocation, float preferredDirection, float placeRadius,
-			float angleRadius, int preferredIntention, Random r, float a, float b) {
+									float angleRadius, int preferredIntention, Boolean isWallCell, float a, float b,float b2) {
 		super(preferredLocation, preferredDirection, placeRadius, angleRadius, preferredIntention);
-		wallCell = r.nextBoolean();
+		wallCell = isWallCell;
 		this.a = a;
 		this.b = b;
+		this.b2 = b2;
 	}
+	
+	public ExponentialWallConjCell(Coordinate preferredLocation, float preferredDirection, float placeRadius,
+									float angleRadius, int preferredIntention, Boolean isWallCell) {
+		this(preferredLocation, preferredDirection, placeRadius, angleRadius, preferredIntention,isWallCell,10f,0.2f,0.7f);
+		if(isWallCell) {
+			b =.7f;
+			b2 = .2f;
+		}
+	}
+	
 
 	@Override
 	public float getActivation(Coordinate currLocation, float currAngle, int currIntention, float distanceToWall) {
 		float activation = super.getActivation(currLocation, currAngle, currIntention, distanceToWall);
 		if (activation != 0) {
 			float d = distanceToWall / (getPlaceRadius());
-			float dAcross = (float) Math.max(0, (d - getPreferredLocation().distance(currLocation) / getPlaceRadius()));
+			float dAcross = d - (float)getPreferredLocation().distance(currLocation) / getPlaceRadius();
+			if(dAcross<=0) return 0;
+			
 			if (wallCell) {
 				// If it is a wall cell, it activates more near walls but no
 				// across also
-				return (float) (activation * (1 - 1 / (Math.exp(-a * (d - b)) + 1))
-						* (1 / (Math.exp(-a * (dAcross - .01)) + 1)));
+				return (float) (activation * (1 - 1 / (Math.exp(-a * (d - b)) + 1))* (1 / (Math.exp(-a * (dAcross - b2)) + 1)));
 			} else {
 				// If it is not a wall cell, it should activate less near walls
 				return (float) (activation * (1 / (Math.exp(-a * (dAcross - b)) + 1)));

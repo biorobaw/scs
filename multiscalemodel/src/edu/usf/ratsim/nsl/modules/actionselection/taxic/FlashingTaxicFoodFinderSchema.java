@@ -29,12 +29,12 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 	public FlashingTaxicFoodFinderSchema(String name,
 			Robot robot, float reward, float negReward,
 			float lambda, boolean estimateValue) {
-		super(name);
-		this.reward = reward;
-		this.negReward = negReward;
 		
-		this.ar = (LocalActionAffordanceRobot) robot;
-		this.fr = (FeederRobot) robot;
+		super(name);
+		this.ar 		= (LocalActionAffordanceRobot) robot;
+		this.fr 		= (FeederRobot) robot;
+		this.negReward 	= negReward;
+		this.reward 	= reward;
 
 		// Votes for action and value
 		votes = new float[ar.getPossibleAffordances().size()];
@@ -51,56 +51,59 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 	 * goal).
 	 */
 	public void run() {
-		for (int i = 0; i < votes.length; i++)
-			votes[i] = 0;
-
-		// Get the votes for each affordable action
-		List<Affordance> affs = ar.checkAffordances(ar
-				.getPossibleAffordances());
-		int voteIndex = 0;
+		//init votes to 0
+		for (int i = 0; i < votes.length; i++) votes[i] = 0;
 		
+		//If there I cant see a flashing feeder, cant use flashing taxic strategy
+		if(!fr.seesFlashingFeeder()) return;
+
+		
+		
+		//Check if I can eat from flashing feeder
 		boolean feederToEat = fr.isFeederClose()
-				&& fr.seesFlashingFeeder()
 				&& fr.getFlashingFeeder().getId() == FeederUtils.getClosestFeeder(fr.getVisibleFeeders()).getId();
 ////		System.out.println("Feeder close: " + fr.isFeederClose());
 ////		System.out.println("Feeder to eat: " + feederToEat);
 //		if (fr.seesFlashingFeeder()){
 //			System.out.println("Seeing flashing feeder");
 //		}
+		
+		
+		// Check whether affordances are realizable, and for each realizable affordance
+		// calculate its taxic value and keep the maximum
+		List<Affordance> affs = ar.checkAffordances(ar.getPossibleAffordances());
+		int voteIndex = 0;
 		float maxValue = 0;
 		int index = -1;
 		for (Affordance af : affs) {
-			float value = 0;
 			if (af.isRealizable()) {
-				if (af instanceof TurnAffordance
-						|| af instanceof ForwardAffordance) {
-					if (fr.seesFlashingFeeder() && !feederToEat) {
+				
+				//calculate value of this affordance
+				float value = 0;
+				
+				if (af instanceof EatAffordance) {
+					
+					//eat affordance can only be non zero if close to flashing feeder
+					if(feederToEat) value = reward;
+					
+				} else if(af instanceof TurnAffordance|| af instanceof ForwardAffordance) {
+					
+					//other affordances are non zero only if cannot eat from the flashing feeder
+					if(!feederToEat) {
 						Feeder f = fr.getFlashingFeeder();
-						Coordinate newPos = GeomUtils
-								.simulate(f.getPosition(), af);
+						Coordinate newPos = GeomUtils.simulate(f.getPosition(), af);
 						float rotToNewPos = GeomUtils.angleToPoint(newPos);
-
 						float angleDiff = Math.abs(rotToNewPos);
-						if (angleDiff < fr.getHalfFieldView())
-							value += getFeederValue(newPos);
-						else
-							value += -getFeederValue(f.getPosition());
+						if (angleDiff < fr.getHalfFieldView()) value += getFeederValue(newPos);
+						else value += -getFeederValue(f.getPosition());
+						
 					}
-				} else if (af instanceof EatAffordance) {
-					if (feederToEat) {
-						// value += getFeederValue(robot.getClosestFeeder()
-						// .getPosition());
-						value += reward;
-					}
-				} else
-					throw new RuntimeException("Affordance "
-							+ af.getClass().getName()
-							+ " not supported by robot");
-			}
-
-			if (value > maxValue) {
-				maxValue = value;
-				index = voteIndex;
+				} else throw new RuntimeException("Affordance "+ af.getClass().getName()+ " not supported by robot");
+				
+				if (value > maxValue) {
+					maxValue = value;
+					index = voteIndex;
+				}
 			}
 			voteIndex++;
 		}

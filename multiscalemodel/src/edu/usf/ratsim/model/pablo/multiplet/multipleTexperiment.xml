@@ -34,7 +34,7 @@
 			<!-- Delta T step for simulation -->
 			<deltaT>.1</deltaT>
 			<!-- Map file -->
-			<maze>multiscalemodel/src/edu/usf/ratsim/model/multiplet/multipleTmaze.xml</maze>
+			<maze>multiscalemodel/src/edu/usf/ratsim/model/pablo/multiplet/multipleTmaze.xml</maze>
 			<!-- Display de window or run without GUI -->
 		</params>
 	</universe>
@@ -65,7 +65,7 @@
 	
 	<model>
 		<!-- Model implementation -->
-		<name>edu.usf.ratsim.model.multiplet.MultipleTModel</name>
+		<name>edu.usf.ratsim.model.pablo.multiplet.MultipleTModel</name>
 		<params>
 			<!-- subject params: -->
 			<!-- Step length in meters / second -->

@@ -16,9 +16,12 @@ import edu.usf.experiment.universe.feeder.FeederUniverse;
 
 public class FeederDrawer extends Drawer {
 
-	private static final int RADIUS = 4;
+	private static final int RADIUS = 6;
 	private FeederUniverse u;
 	
+	ArrayList<Boolean> active = new ArrayList<>();
+	ArrayList<Boolean> flashing = new ArrayList<>(); 
+	ArrayList<Boolean> enabled  = new ArrayList<>();
 	ArrayList<Coordinate> feederPos = new ArrayList<>();
 	
 	Color color = GuiUtils.getHSBAColor(0.33f, 0.8f, 0.6f, 1f);
@@ -38,15 +41,16 @@ public class FeederDrawer extends Drawer {
 		
 		for (int i=0; i<feederPos.size();i++){
 			Point pos = s.scale(feederPos.get(i));
-			g.setColor(color);
-			g.fillOval(pos.x - RADIUS, pos.y - RADIUS,2*RADIUS,2*RADIUS);
+			g.setColor(active.get(i) ? Color.RED : enabled.get(i) ? Color.BLUE : color);
+			int radius = flashing.get(i) ? 2*RADIUS : RADIUS;
+			g.fillOval(pos.x - radius, pos.y - radius,2*radius,2*radius);
 		}
 
 		
 	}
 
 	@Override
-	public void clearState() {
+	public void endEpisode() {
 		
 	}
 
@@ -54,8 +58,14 @@ public class FeederDrawer extends Drawer {
 	public void updateData() {
 		// TODO Auto-generated method stub
 		feederPos.clear();
-		for (Feeder f : u.getFeeders())
+		active.clear();
+		flashing.clear();
+		for (Feeder f : u.getFeeders()) {
 			feederPos.add(f.getPosition());
+			active.add(f.isActive());
+			flashing.add(f.isFlashing());
+			enabled.add(f.isEnabled());
+		}
 	}
 
 	public void setColor(Color c){

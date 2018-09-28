@@ -21,14 +21,32 @@ public abstract class Drawer {
 	abstract public void  draw(Graphics g, Float panelCoordinates);
 
 	/**
-	 * Tells the drawer to clear potential stateful information, such as the path of the robot so far.
+	 * Signals end of episode
 	 */
-	abstract public void clearState();
+	public void endEpisode() {};
+	
+	/**
+	 * Signals start of episode
+	 */
+	public void newEpisode() {};
+	
+	/**
+	 * Signals end of trial
+	 */
+	public void endTrial() {};
+	
+	/**
+	 * Signals start of trial
+	 */
+	public void newTrial() {};
+	
+	
 	
 	/**
 	 * Updates data to be drawn in next cycle
 	 * Drawers which draw information of only one cycle should use this function
 	 * Drawers which draw info of multiple cycles should use appendData instead
+	 * Update data only gets called when last cycle has been rendered, if not synchronizing it may skip
 	 */
 	abstract public void updateData();
 	
@@ -56,6 +74,7 @@ public abstract class Drawer {
 //	public void setDefaultCoordinates(Float defaultCoordinates) {
 //		this.defaultWorldCoordinates = defaultCoordinates;
 //	}
+	
 	
 	
 

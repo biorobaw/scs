@@ -51,7 +51,7 @@ public class DPCDrawer extends Drawer {
 	}
 	
 	@Override
-	public void clearState() {
+	public void endEpisode() {
 		
 	}
 

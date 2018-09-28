@@ -1,4 +1,4 @@
-package edu.usf.ratsim.model.multiplet;
+package edu.usf.ratsim.model.pablo.multiplet;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;

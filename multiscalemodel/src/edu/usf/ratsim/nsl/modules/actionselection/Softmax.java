@@ -40,11 +40,14 @@ public class Softmax extends Module {
 			probabilities[i] = (float)Math.exp(input.get(i)/TAU);
 			sum+=probabilities[i];
 		}
-		//System.out.print("\nsum: "+sum+"\nP: ");
+//		System.out.print("\nsum: "+sum+"\nP: ");
 		
 //		System.out.print("Softmax output: ");
-		if (sum==Float.POSITIVE_INFINITY) 
+		if (sum==Float.POSITIVE_INFINITY){ 
+			System.out.println("inputs: ");
+			for(int i=0; i<numActions;i++)  System.out.print(input.get(i) + " " );
 			throw new IllegalArgumentException("Argument 'divisor' is Infinity");
+		}
 		if (sum==0) 
 			throw new IllegalArgumentException("Argument 'divisor' is 0");
 		

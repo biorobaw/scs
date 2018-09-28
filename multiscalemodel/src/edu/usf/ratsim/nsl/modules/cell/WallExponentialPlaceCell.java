@@ -28,35 +28,54 @@ public class WallExponentialPlaceCell extends
 		ExponentialPlaceCell {
 
 	private boolean wallCell;
+	private float a;
+	private float b;
+	private float b2;
 
+	
+	public WallExponentialPlaceCell(Coordinate center, float radius,boolean isWallCell,
+			float a, float b,float b2) {
+		super(center, radius);
+		wallCell = isWallCell;
+		this.a = a;
+		this.b = b;
+		this.b2 = b2;
+		
+	}
+	
+	public WallExponentialPlaceCell(Coordinate center, float radius,
+			boolean isWallCell) {
+		this(center, radius,isWallCell,10f,0.2f,0.7f);
+		if(isWallCell) {
+			b =.7f;
+			b2 = .2f;
+		}
+
+	}
+	
 	public WallExponentialPlaceCell(Coordinate center, float radius,
 			Random r) {
-		super(center, radius);
+		this(center, radius,r.nextBoolean());
 
-		wallCell = r.nextBoolean();
 	}
 
 	public float getActivation(Coordinate currLocation, float distanceToWall) {
 		float activation = super.getActivation(currLocation);
 		if (activation != 0) {
 			float d = distanceToWall / (getPlaceRadius());
-			float dAcross = (float) Math.max(0, (d - getPreferredLocation().distance(currLocation)
-					/ getPlaceRadius()));
+			float dAcross = d - (float)getPreferredLocation().distance(currLocation)/ getPlaceRadius();
 			
 			// No cell firing across a wall
-			if (dAcross == 0)
-				return 0;
+			if (dAcross <= 0) return 0;
 			
 			if (wallCell) {
 				// If it is a wall cell, it activates more near walls but no
 				// across also
-				return (float) (activation
-						* (1 - 1 / (Math.exp(-10 * (d - .7)) + 1)) * (1 / (Math
-						.exp(-10 * (dAcross - .2)) + 1)));
+				//return (float) (activation* (1 - 1 / (Math.exp(-a * (d - .7)) + 1)) * (1 / (Math.exp(-a * (dAcross - .2)) + 1)));
+				return (float) (activation* (1 - 1 / (Math.exp(-a * (d - b)) + 1)) * (1 / (Math.exp(-a * (dAcross - b2)) + 1)));
 			} else {
 				// If it is not a wall cell, it should activate less near walls
-				return (float) (activation * (1 / (Math.exp(-10
-						* (dAcross - .2)) + 1)));
+				return (float) (activation *                         (1 / (Math.exp(-a * (dAcross - b)) + 1)));
 			}
 
 		} else

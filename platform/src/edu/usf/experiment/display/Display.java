@@ -1,5 +1,6 @@
 package edu.usf.experiment.display;
 
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JComponent;
@@ -14,6 +15,9 @@ import edu.usf.experiment.universe.BoundedUniverse;
  */
 public interface Display {
 
+	
+	public HashMap<String,Drawer> drawers = new HashMap<>();
+	
 	/**
 	 * specifies whether the display needs to be synchronized with simulation
 	 */
@@ -77,7 +81,21 @@ public interface Display {
 	/**
 	 * Tells the display that a new episode began. Some drawers might have to clear stateful information due to this.
 	 */
-	public void newEpisode();
+	public default void newEpisode() {
+		for(Drawer d : drawers.values()) d.newEpisode();
+	};
+	
+	public default void endEpisode() {
+		for(Drawer d : drawers.values()) d.endEpisode();
+	}
+	
+	public default void newTrial() {
+		for(Drawer d : drawers.values()) d.newTrial();
+	}
+	
+	public default void endTrial() {
+		for(Drawer d : drawers.values()) d.endTrial();
+	}
 	
 	/*
 	 * Binds a runnable to a key, when the key is press the action is executed
@@ -85,4 +103,6 @@ public interface Display {
 	public void addKeyAction(int key,Runnable action);
 	
 	public void sync(long cycle);//function to be called by draw panels when they are done rendering for synchronization
+	
+
 }

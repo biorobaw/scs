@@ -11,7 +11,7 @@ import java.util.Random;
 import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.NoDisplay;
-import edu.usf.experiment.display.SCSFrame;
+import edu.usf.experiment.display.SCSDisplay;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.log.LoggerLoader;
 import edu.usf.experiment.plot.Plotter;
@@ -393,7 +393,7 @@ public class Experiment implements Runnable {
 		Display displayer;
 		if ((Boolean)Globals.getInstance().get("display")){
 //			displayer = new PDFDisplay();
-			displayer = new SCSFrame();
+			displayer = new SCSDisplay();
 		} else {
 			displayer = new NoDisplay();
 		}

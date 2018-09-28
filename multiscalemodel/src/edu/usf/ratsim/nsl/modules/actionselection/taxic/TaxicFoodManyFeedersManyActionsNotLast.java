@@ -61,9 +61,18 @@ public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 		float maxVal = 0;
 		int maxIndex = -1;
 		for (Affordance af : affs) {
-			float value = Float.NEGATIVE_INFINITY;
 			if (af.isRealizable()) {
-				if (af instanceof TurnAffordance || af instanceof ForwardAffordance) {
+				
+				float value = Float.NEGATIVE_INFINITY;
+				if (af instanceof EatAffordance) {
+					
+					//eat affordance can only be non zero if close to feeder
+					if (feederToEat) {
+						value = getFeederValue(FeederUtils.getClosestFeeder(fr.getVisibleFeeders()).getPosition());
+					}
+				} else if (af instanceof TurnAffordance || af instanceof ForwardAffordance) {
+					
+					//other affordances are non zero only if cannot eat from a feeder
 					if (!feederToEat) {
 						for (Feeder f : fr.getVisibleFeeders()) {
 							if (f != null) {
@@ -72,37 +81,28 @@ public class TaxicFoodManyFeedersManyActionsNotLast extends Module {
 
 								float angleDiff = Math.abs(rotToNewPos);
 								float feederVal;
-								if (angleDiff < fr.getHalfFieldView())
-									feederVal = getFeederValue(newPos);
-								else
-									feederVal = -getFeederValue(f.getPosition());
-								if (feederVal > value)
-									value = feederVal;
+								if (angleDiff < fr.getHalfFieldView()) feederVal = getFeederValue(newPos);
+								else feederVal = -getFeederValue(f.getPosition()); //it got out of sight
+								if (feederVal > value) value = feederVal;
 							}
 						}
 					}
-				} else if (af instanceof EatAffordance) {
-					if (feederToEat) {
-						float feederValue = getFeederValue(
-								FeederUtils.getClosestFeeder(fr.getVisibleFeeders()).getPosition());
-						if (feederValue > value)
-							value = feederValue;
-						// value += reward;
-					}
-				} else
-					throw new RuntimeException("Affordance " + af.getClass().getName() + " not supported by robot");
+				} else throw new RuntimeException("Affordance " + af.getClass().getName() + " not supported by robot");
+				
+				if (value > maxVal) {
+					maxVal = value;
+					maxIndex = voteIndex;
+				}
 			}
 
-			if (value > maxVal) {
-				maxVal = value;
-				maxIndex = voteIndex;
-			}
 			// if (value != Float.NEGATIVE_INFINITY)
 			// votes[voteIndex] = value;
 			// else
 			// votes[voteIndex] = 0;
 			voteIndex++;
 		}
+		
+		if(maxVal < 0 ) throw new RuntimeException("Taxic feeder module, max val is 0");
 
 		if (maxIndex != -1)
 			votes[maxIndex] = maxVal;

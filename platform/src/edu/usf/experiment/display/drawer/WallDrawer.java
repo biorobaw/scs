@@ -54,7 +54,7 @@ public class WallDrawer extends Drawer {
 	}
 	
 	@Override
-	public void clearState() {
+	public void endEpisode() {
 		
 	}
 
