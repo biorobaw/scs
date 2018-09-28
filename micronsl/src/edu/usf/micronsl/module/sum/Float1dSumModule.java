@@ -26,6 +26,12 @@ public class Float1dSumModule extends Module {
 		super.addInPorts(states);
 		addOutPort("jointState", new Float1dPortSum(this, (List<Float1dPort>)(List<?>)states));
 	}
+	
+	@Override
+	public void addInPort(Port port) {
+		super.addInPort(port);
+		addOutPort("jointState", new Float1dPortSum(this, (List<Float1dPort>)(List<?>)getInPorts()));
+	}
 
 	/**
 	 * All computations are done on the fly by the port.

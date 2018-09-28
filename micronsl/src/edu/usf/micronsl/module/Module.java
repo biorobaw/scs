@@ -129,6 +129,9 @@ public abstract class Module extends DependencyRunnable {
 		return res;
 	}
 
+
+	
+	
 	/**
 	 * Add a collection of ports. This will call addInPort for each one.
 	 * 
@@ -136,8 +139,21 @@ public abstract class Module extends DependencyRunnable {
 	 *            A list of port objects
 	 */
 	public void addInPorts(List<Port> ports) {
-		for (Port port : ports)
-			addInPort("Nameless Port #" + inPorts.size(), port);
+		for (Port port : ports) addInPort(port);
+	}
+	
+	/**
+	 * Add nameless port
+	 */
+	public void addInPort(Port port,boolean reversedDependency) {
+		addInPort("Nameless Port #" + inPorts.size(), port,reversedDependency);
+	}
+	
+	/**
+	 * Add nameless port
+	 */
+	public void addInPort(Port port) {
+		addInPort(port,false);
 	}
 
 	/**
