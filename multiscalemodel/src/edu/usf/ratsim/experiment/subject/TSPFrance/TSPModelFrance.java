@@ -583,7 +583,7 @@ public class TSPModelFrance extends Model {
 			//test_response( -0.3f, -1.0f, response, stimulus_size, rows, cols);
 		//			TRN4JAVA.Basic.Simulation.Identifier identifier = new TRN4JAVA.Basic.Simulation.Identifier((short)1, (short)condition_number, simulation_number);
 	
-			TRN4JAVA.Basic.Simulation.Identifier identifier = new TRN4JAVA.Basic.Simulation.Identifier((short)1, (short)params.getChildInt("condition_number"), params.getChildInt("simulation_number"));
+			TRN4JAVA.Basic.Simulation.Identifier identifier = new TRN4JAVA.Basic.Simulation.Identifier((short)0, (short)params.getChildInt("condition_number"), params.getChildInt("simulation_number"));
 			simulation_id = TRN4JAVA.Basic.Simulation.encode(identifier);
 		
 			
