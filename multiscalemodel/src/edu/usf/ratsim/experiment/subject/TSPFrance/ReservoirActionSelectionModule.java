@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.vecmath.Point3f;
 
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.robot.RobotAction;
 import edu.usf.experiment.robot.specificActions.MoveToAction;
 import edu.usf.micronsl.module.Module;
@@ -32,6 +33,7 @@ public class ReservoirActionSelectionModule extends Module
 		// TODO Auto-generated constructor stub
 	}
 
+	int positions = 0;
 	@Override
 	public void run()
 	{
@@ -41,12 +43,15 @@ public class ReservoirActionSelectionModule extends Module
 		{
 			firstCycle=false;
 			
+			positions++;
+			//system.out.println("Position " + positions + "/75");
+			
 			Point3f next_position = reservoir.get_next_position();
 			if (next_position != null)
 			{
 				action.setX(next_position.x);
 				action.setY(next_position.y);
-				System.out.println("moving robot to position "  + next_position.x + ", " + next_position.y);
+				//system.out.println(Globals.getInstance().get("cycle")+" moving robot to position "  + next_position.x + ", " + next_position.y);
 			}
 			else
 			{

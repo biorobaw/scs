@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +22,9 @@ import edu.usf.experiment.Globals;
 import edu.usf.experiment.robot.specificActions.FeederTaxicAction;
 import edu.usf.experiment.robot.specificActions.MoveToAction;
 import edu.usf.experiment.robot.specificActions.TeleportToAction;
+import edu.usf.experiment.utils.CSVReader;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
@@ -77,7 +80,8 @@ public class TSPModelFrance extends Model {
 	private TaxicNextFeederFromFileModule taxicNextFeederFromFileModule =null;
 	
 	
-	
+	 String targetSequenceFileName;
+	 
 	Bool0dPort chooseNewFeeder = new Bool0dPort(initialModule);
 
 	Bool0dPort finishReservoirAction = new Bool0dPort(initialModule);
@@ -234,10 +238,12 @@ public class TSPModelFrance extends Model {
 			
 		case 1: 
 			//Prerecorded path module - used to follow a prerecorded path, rewards are taken from the path file
-			String abcedFile = "Y:\\SCS-TRN\\ABCDE\\experiment\\Input\\abced.csv";
-			String bacdeFile = "Y:\\SCS-TRN\\ABCDE\\experiment\\Input\\bacde.csv";
-			String ebcdaFile = "Y:\\SCS-TRN\\ABCDE\\experiment\\Input\\ebcda.csv";
-			String abcdeFile = "Y:\\SCS-TRN\\ABCDE\\experiment\\Input\\abcde.csv";
+			String abcedFile = params.getChildText("abcedFile");
+			String bacdeFile = params.getChildText("bacdeFile");
+			String ebcdaFile = params.getChildText("ebcdaFile");
+			String abcdeFile = params.getChildText("abcdeFile");
+			
+			targetSequenceFileName = abcdeFile;
 			
 			//String fileSets[] = new String[] {abcdeFile,abcdeFile,bacdeFile + "," + ebcdaFile+","+ abcdeFile};
 			String fileSets[] = new String[] {abcdeFile,abcdeFile,bacdeFile + "," + ebcdaFile+","+ abcedFile};
@@ -446,7 +452,7 @@ public class TSPModelFrance extends Model {
 				@Override
 				public void callback(final long simulation_id, final long evaluation_id)
 				{
-					System.out.println("Simulation " + simulation_id + " is trained");
+					//System.out.println("Simulation " + simulation_id + " is trained");
 	
 					reservoir.onTrained(simulation_id, evaluation_id);
 				}
@@ -456,7 +462,7 @@ public class TSPModelFrance extends Model {
 				@Override
 				public void callback(final long simulation_id, final long evaluation_id)
 				{
-					System.out.println("Simulation " + simulation_id + " is tested");
+					//System.out.println("Simulation " + simulation_id + " is tested");
 					reservoir.onTested(simulation_id, evaluation_id);
 				}
 			});
@@ -465,7 +471,7 @@ public class TSPModelFrance extends Model {
 				@Override
 				public void callback(final long simulation_id, final long evaluation_id)
 				{
-					System.out.println("Simulation " + simulation_id + " is primed");
+					//System.out.println("Simulation " + simulation_id + " is primed");
 					reservoir.onPrimed(simulation_id, evaluation_id);
 				}
 			});
@@ -474,7 +480,7 @@ public class TSPModelFrance extends Model {
 				@Override
 				public void callback()
 				{
-					System.out.println("Simulations completed");
+					//System.out.println("Simulations completed");
 				}
 			});
 			TRN4JAVA.Advanced.Engine.Events.Allocated.install(new TRN4JAVA.Advanced.Engine.Events.Allocated()
@@ -482,7 +488,7 @@ public class TSPModelFrance extends Model {
 				@Override
 				public void callback(final long id, final int rank)
 				{
-					System.out.println("Simulation " + id + " allocated on processor rank " + rank);
+					//System.out.println("Simulation " + id + " allocated on processor rank " + rank);
 				}
 			});
 			
@@ -581,11 +587,17 @@ public class TSPModelFrance extends Model {
 			simulation_id = TRN4JAVA.Basic.Simulation.encode(identifier);
 		
 			
+			long 	replay_seed = RandomSingleton.getInstance().nextLong();
+			long	consolidation_seed = RandomSingleton.getInstance().nextLong();
+			long	decoder_seed = RandomSingleton.getInstance().nextLong();
+			
 			TRN4JAVA.Extended.Simulation.allocate(simulation_id);	
 			reservoir = new Reservoir(
 					callbacks_installed,
 					simulation_id,
-				
+					replay_seed,
+					consolidation_seed,
+					decoder_seed,
 					stimulus_size, reservoir_size, leak_rate, initial_state_scale, learning_rate, mini_batch_size,
 					snippets_size, time_budget,learn_reverse_rate, generate_reverse_rate, reverse_learning_rate, discount,
 					rows, cols, xmin, xmax, ymin, ymax, cx, cy, width, sigma, radius, scale, angle,
@@ -699,8 +711,9 @@ public class TSPModelFrance extends Model {
 					
 				} 
 				if(isLastTrainingEpisode()) {
-					reservoir.train();
 			
+					reservoir.train();
+					addTargetSequence();
 				}
 				reservoir.endEpisode();
 		}
@@ -795,7 +808,7 @@ public class TSPModelFrance extends Model {
 		if (finishedAction || isBasicRun)
 		{
 			Boolean ate = ((Bool0dPort)subAte.getOutPort("subAte")).get();
-			if(ate) System.out.println("subject ate? "+ ate);
+			//if(ate) System.out.println("subject ate? "+ ate);
 			float activation_pattern[] = ((Float1dSparsePortMap)placeCells.getOutPort("activation")).getData();
 			//((Float1dSparsePortMap)getInPort("placeCells")).getData()
 			Point3f pos = ((Point3fPort)posModule.getOutPort("position")).get();
@@ -889,8 +902,8 @@ public class TSPModelFrance extends Model {
 			else if (basicActionMechanism==1) {
 				TeleportToAction a = (TeleportToAction)prerecordedPath.outport.get();
 				prerecordedPath.printPathPercentage();
-				System.out.println("To: "+a.x() + " " + a.y() + " " +a.theta());
-				System.out.println("Path eneded: "+prerecordedPath.pathEnded);
+				//System.out.println("To: "+a.x() + " " + a.y() + " " +a.theta());
+				//System.out.println("Path eneded: "+prerecordedPath.pathEnded);
 				subject.robot.pendingActions.add(a);
 				Globals.getInstance().put("done", prerecordedPath.pathEnded);
 			}
@@ -916,4 +929,50 @@ public class TSPModelFrance extends Model {
 				
 	}
 
+	
+	void addTargetSequence() {
+
+		 
+		 
+		 
+		 
+		LinkedList<float[]> _positions = new LinkedList<>();
+		LinkedList<Boolean> _rewardHistory = new LinkedList<>();
+		LinkedList<float[]> _pcActivations = new LinkedList<>();
+		
+
+			
+		String[][] strPoints = CSVReader.loadCSV(targetSequenceFileName, "\t", "Place robot file not found");
+		
+		boolean ignoreLine = true;
+		for (String[] s : strPoints){
+			
+			if(ignoreLine) {
+				ignoreLine = false;
+				continue;
+			}
+			
+			Float x = Float.parseFloat(s[4]);
+			Float y = Float.parseFloat(s[5]);
+			Boolean reward = Boolean.parseBoolean(s[8].trim());
+			
+			
+			
+			_rewardHistory.add(reward);
+			_positions.add(new float[] {x,y});
+			
+			
+			placeCells.run(new Point3f(x,y,0), 10000f);
+			float activation_pattern[] = ((Float1dSparsePortMap)placeCells.getOutPort("activation")).getData();
+			_pcActivations.add(activation_pattern);
+			
+		}
+		
+		reservoir.gather("target_Sequence", _pcActivations, _positions, _rewardHistory);
+
+		 
+		 
+		 
+	 }
+	
 }

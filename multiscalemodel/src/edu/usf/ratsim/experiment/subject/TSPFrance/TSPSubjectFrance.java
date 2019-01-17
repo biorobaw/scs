@@ -86,8 +86,8 @@ public class TSPSubjectFrance extends Subject implements ActivityLoggerSubject {
 		System.loadLibrary("libmat");
 		System.loadLibrary("libmx");
 
-		System.loadLibrary("cudart64_92");
-		System.loadLibrary("cublas64_92");
+		System.loadLibrary("cudart64_100");
+		System.loadLibrary("cublas64_100");
 
 		System.loadLibrary("boost_chrono-vc140-mt-1_56");
 		System.loadLibrary("boost_date_time-vc140-mt-1_56");
@@ -140,7 +140,7 @@ public class TSPSubjectFrance extends Subject implements ActivityLoggerSubject {
 		System.loadLibrary("Distributed");
 		System.loadLibrary("Local");
 	
-		System.loadLibrary("ViewModel");
+		System.loadLibrary("Presenter");
 		System.loadLibrary("TRN4CPP");
 		System.loadLibrary("TRN4JAVA");
 	}	

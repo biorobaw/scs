@@ -16,8 +16,11 @@ import java.io.PrintWriter;
 import javax.swing.*;
 import javax.vecmath.Point3f;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import edu.usf.experiment.Globals;
+import edu.usf.experiment.robot.specificActions.TeleportToAction;
+import edu.usf.experiment.utils.CSVReader;
 
 public class Reservoir {
 	
@@ -66,7 +69,12 @@ public class Reservoir {
 	private float generate_reverse_rate;
 	private float reverse_learning_rate;
 	private float discount;
-	private long seed;
+
+	
+	private long replay_seed;
+	private long consolidation_seed;
+	private long decoder_seed; 
+	
 	private short trial, train, test, repeat;
 	private boolean callbacks_installed;
 	private float feedforward_scale, recurrent_scale;
@@ -75,13 +83,17 @@ public class Reservoir {
 	
 	private boolean injected = false;
 	public Reservoir(boolean callbacks_installed, long id, 
-			
+			long replay_seed, long consolidation_seed, long decoder_seed, 
 			long stimulus_size, long reservoir_size, float leak_rate, float initial_state_scale, float learning_rate, int mini_batch_size,
 			int snippets_size, int time_budget, float learn_reverse_rate, float generate_reverse_rate, float reverse_learning_rate, float discount,
 			long rows, long cols, float xmin, float xmax, float ymin, float ymax, float cx[], float cy[], float width[], float sigma, float radius, float scale, float angle,
 			int preamble)
 	{
+		
 		this.callbacks_installed = callbacks_installed;
+		this.replay_seed = replay_seed;
+		this.consolidation_seed = consolidation_seed;
+		this.decoder_seed = decoder_seed;
 		this.accumulated_sequences = new java.util.ArrayList<String>();
 		this.sid =id;
 		this.batch_size = 1;
@@ -231,9 +243,9 @@ public class Reservoir {
 		TRN4JAVA.Extended.Simulation.configure_begin(sid);
 		//TRN4JAVA.Extended.Simulation.Scheduler.Tiled.configure(id, 100);
 		
-		TRN4JAVA.Extended.Simulation.Scheduler.Snippets.configure(sid, seed+1, snippets_size, time_budget, learn_reverse_rate, generate_reverse_rate, reverse_learning_rate, discount, REW_TAG);
+		TRN4JAVA.Extended.Simulation.Scheduler.Snippets.configure(sid, replay_seed, snippets_size, time_budget, learn_reverse_rate, generate_reverse_rate, reverse_learning_rate, discount, REW_TAG);
 		//TRN4JAVA.Extended.Simulation.Scheduler.Tiled.configure(sid, 100);
-		TRN4JAVA.Extended.Simulation.Reservoir.WidrowHoff.configure(sid, stimulus_size, stimulus_size, reservoir_size, leak_rate, initial_state_scale, learning_rate, seed+2, batch_size, mini_batch_size);
+		TRN4JAVA.Extended.Simulation.Reservoir.WidrowHoff.configure(sid, stimulus_size, stimulus_size, reservoir_size, leak_rate, initial_state_scale, learning_rate, consolidation_seed, batch_size, mini_batch_size);
 		
 		float feedforward_a = -1.0f * feedforward_scale;
 		float feedforward_b = 1.0f * feedforward_scale;
@@ -247,7 +259,7 @@ public class Reservoir {
 		
 		TRN4JAVA.Extended.Simulation.Encoder.Custom.configure(sid, batch_size, stimulus_size);
 		TRN4JAVA.Extended.Simulation.Decoder.Kernel.Model.configure(sid, batch_size, stimulus_size, 
-				rows, cols, x_min, x_max, y_min, y_max, sigma, radius, angle, scale,   seed+3 , cx, cy, width);
+				rows, cols, x_min, x_max, y_min, y_max, sigma, radius, angle, scale,   decoder_seed , cx, cy, width);
 		TRN4JAVA.Extended.Simulation.Loop.SpatialFilter.configure(sid, batch_size, stimulus_size, POS_TAG);
 			
 		/*TRN4JAVA.Advanced.Simulation.Recording.States.configure(sid, new TRN4JAVA.Callbacks.Simulation.Recording.States(
@@ -283,13 +295,21 @@ public class Reservoir {
 		TRN4JAVA.Extended.Simulation.declare_set(sid,  TRAINING_SET,  EXP_TAG, sequences);
 		TRN4JAVA.Extended.Simulation.declare_set(sid,  TRAINING_SET,  REW_TAG, sequences);
 		TRN4JAVA.Extended.Simulation.declare_set(sid,  TRAINING_SET,  POS_TAG, sequences);
+		
+		/*
+		TRN4JAVA.Extended.Simulation.declare_sequence(sid, "target", INC_TAG, incoming, observations);
+		TRN4JAVA.Extended.Simulation.declare_sequence(sid, "target", EXP_TAG, expected, observations);
+		TRN4JAVA.Extended.Simulation.declare_sequence(sid, "target", REW_TAG, reward, observations);
+		TRN4JAVA.Extended.Simulation.declare_sequence(sid, "target", POS_TAG, position, observations);*/
+		
 		//accumulated_sequences.clear();
 		changeState(State.TRAINING);
 		TRN4JAVA.Extended.Simulation.train(sid, eid, TRAINING_SET, INC_TAG, EXP_TAG);
 		//if (getState() == State.TRAINING)
 			waitForState(State.TRAINED);
+			accumulated_sequences.clear();
 			changeState(State.READY);
-	
+		
 	 }
 	private static void dump_txt(String filename, float data[], int rows, int cols)
 	{
@@ -378,6 +398,7 @@ public class Reservoir {
 	
 	 public Point3f get_next_position()
 	 {
+		 //system.out.println(Globals.getInstance().get("cycle") + " " + pending_points.size());
 		return pending_points.poll();
 	 }
 	 
@@ -394,10 +415,12 @@ public class Reservoir {
 	 
 	 public void set_current_position(Point3f position, float place_cell_activation_pattern[])
 	 {
+		 //system.out.println(Globals.getInstance().get("cycle").toString() + " " + getState() + " " + pending_points.isEmpty() + " " + (!injected));
+		 
 		if (getState() == State.EVALUATING && pending_points.isEmpty() && !injected)
 		{
 			long eid = TRN4JAVA.Basic.Simulation.Evaluation.encode(new TRN4JAVA.Basic.Simulation.Evaluation.Identifier((short)trial, (short)train, (short)test, (short)repeat));
-			System.out.println("injecting robot position in TRN Loop : " + position.x + ", " + position.y);
+			//system.out.println("injecting robot position in TRN Loop : " + position.x + ", " + position.y);
 			 this.agent.notify(sid, eid, new float[]{position.x, position.y}, place_cell_activation_pattern, 1, place_cell_activation_pattern.length);
 			 injected = true;
 		}
@@ -416,6 +439,7 @@ public class Reservoir {
 	{
 		changeState(State.EVALUATED);
 
+		TRN4JAVA.Extended.Simulation.deallocate(simulation_id);
 		Globals.getInstance().put("done",true);
 
 	}
@@ -428,14 +452,19 @@ public class Reservoir {
 			try
 			{
 				test++;
-				assert(accumulated_sequences.size() == 1);
-				String target_sequence = accumulated_sequences.get(0);
+				repeat++;
+				pending_points.clear();
+				for (int t = 0; t < preamble; t++) {
+					//system.out.println("adding " +t+": " + (priming_sequence[t * 2] + " " + priming_sequence[t * 2 + 1]));
+					pending_points.add(new Point3f(priming_sequence[t * 2], priming_sequence[t * 2 + 1], 0.0f));
+				}
+				priming_sequence = null;
+				
+				//assert(accumulated_sequences.size() == 1);
+				String target_sequence = "target_Sequence";
 				long eid = TRN4JAVA.Basic.Simulation.Evaluation.encode(new TRN4JAVA.Basic.Simulation.Evaluation.Identifier((short)trial, (short)train, (short)test, (short)repeat));
 				TRN4JAVA.Extended.Simulation.test(sid, eid, target_sequence, INC_TAG, EXP_TAG, preamble, true, 0); // at beginning of new episode - this provides predictions
-				pending_points.clear();
-				for (int t = 0; t < preamble; t++)
-					pending_points.add(new Point3f(priming_sequence[t * 2], priming_sequence[t * 2 + 1], 0.0f));
-				priming_sequence = null;
+		
 				waitForState(State.EVALUATING);
 			}
 			catch (Exception e)
@@ -461,6 +490,9 @@ public class Reservoir {
 		//TRN4JAVA.Simulation.deallocate(id);	
 	}
 	
+	 
+	 
+	 
 
 
 	
