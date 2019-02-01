@@ -556,7 +556,7 @@ public class TSPModelFrance extends Model {
 			{
 				String plugin_name = plugin.getChildText("name");
 				String plugin_interface = plugin.getChildText("interface").toUpperCase();
-				String plugin_path = plugin.getChildText("path");
+				String plugin_path = System.getProperty("java.library.path");
 				java.util.Map<String, String> plugin_arguments = new java.util.HashMap<String,String>();
 				for (ElementWrapper argument : plugin.getChildren("argument"))
 				{

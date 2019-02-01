@@ -33,3 +33,4 @@ rat_sim.*
 *.swp
 ./im
 im/*
+*.log
