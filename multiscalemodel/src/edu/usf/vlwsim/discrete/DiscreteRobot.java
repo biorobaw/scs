@@ -60,5 +60,10 @@ public class DiscreteRobot implements LocalizableRobot, PlatformRobot, TeleportR
 	public float getRadius() {
 		return ROBOT_RADIUS;
 	}
+	
+	@Override
+	public void clearState() {
+		
+	}
 
 }

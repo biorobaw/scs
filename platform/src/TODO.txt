@@ -1,0 +1,15 @@
+
+
+* Unify Task Interface so that tasks plotters and loggers are the same
+* Change XML to a simpler markup language
+* Unify Universe so that discrete is just a special case of continuous
+* Create a single Universe, it should only provide basic functionality
+  Complex functionality should be added as optional modules not interfaces
+* Separate the simulator from the episode
+* Separate experiment definition from experiment control
+* Create unique robot class with loadable modules instead of interfaces
+* Move nsl modules to nsl when they are unrelated to scs
+
+
+* Separate the models to their own projects so that they will point to the SCS version that they work with,
+  so that we dont have to update every model each time SCS works

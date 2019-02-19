@@ -2,7 +2,6 @@ package edu.usf.ratsim.model.pablo.morris_replay.submodules;
 
 
 
-import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 
@@ -14,10 +13,10 @@ import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
  */
 public class WallGateModule extends Module {
 	
+	public Float1dPortArray probabilitiesPort;
 	public float[] probabilities;
 	public float[] gates;
 
-	private AffordanceRobot robot;
 	int numActions ;
 	float minDistance;
 	
@@ -30,8 +29,14 @@ public class WallGateModule extends Module {
 		
 		probabilities = new float[numActions];
 		gates = new float[numActions];
-		this.addOutPort("probabilities", new Float1dPortArray(this, probabilities));
+		probabilitiesPort = new Float1dPortArray(this, probabilities);
+		this.addOutPort("probabilities", probabilitiesPort);
 
+	}
+	
+	
+	public Float1dPortArray getProbabilitiesPort() {
+		return probabilitiesPort;
 	}
 
 	

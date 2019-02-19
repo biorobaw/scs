@@ -116,6 +116,10 @@ public class MorseUniverse implements GlobalCameraUniverse, PlatformUniverse, Mo
 		
 	}
 
+	@Override
+	public void clearState() {
+		
+	}
 
 
 }

@@ -79,7 +79,8 @@ public class PCDrawer extends Drawer {
 		g.setColor(new Color(grayLevel,grayLevel,grayLevel));
 		for(int i=firstRow;i<dataCopy.getEndRow();i++)
 			for(int j=firstCol;j<dataCopy.getEndCol();j++){
-				g.fillOval(coords[0][i][j], coords[1][i][j],diam ,diam);
+				if(dataCopy.get(i,j)!=0)
+					g.fillOval(coords[0][i][j], coords[1][i][j],diam ,diam);
 			}
 		
 //		for(Integer key : values.keySet()){
@@ -100,8 +101,10 @@ public class PCDrawer extends Drawer {
 		for(int i=firstRow;i<firstRow+dataCopy.getBlockRows();i++)
 			for(int j=firstCol;j<firstCol+dataCopy.getBlockCols();j++){
 				float val = dataCopy.get(i,j);
-				g.setColor(getColor(val));
-				g.fillOval(coords[0][i][j], coords[1][i][j],diam ,diam);
+				if(val!=0) {
+					g.setColor(getColor(val));
+					g.fillOval(coords[0][i][j], coords[1][i][j],diam ,diam);					
+				}
 			}
 //		for(Integer key : values.keySet()){			
 //			float val = values.get(key);
@@ -121,7 +124,7 @@ public class PCDrawer extends Drawer {
 	@Override
 	public void updateData() {
 		// TODO Auto-generated method stub
-		activations.copyData(dataCopy);
+		activations.copyDataTo(dataCopy);
 		
 	}
 	

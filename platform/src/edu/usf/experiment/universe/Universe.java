@@ -16,5 +16,7 @@ public interface Universe {
 	 * @param robot
 	 */
 	public void setRobot(Robot robot);
+	
+	public void clearState();
 
 }

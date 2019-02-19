@@ -11,6 +11,7 @@ import java.awt.geom.Rectangle2D.Float;
 public abstract class Drawer {
 	
 	public boolean doDraw = true;
+	public String drawerName;
 //	public Float defaultWorldCoordinates;
 
 	/**
@@ -75,7 +76,9 @@ public abstract class Drawer {
 //		this.defaultWorldCoordinates = defaultCoordinates;
 //	}
 	
-	
+	public void setName(String name) {
+		this.drawerName = name;
+	}
 	
 
 }

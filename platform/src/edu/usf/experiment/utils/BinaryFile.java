@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +34,10 @@ public class BinaryFile {
 
 		    OutputStream output = null;
 		    try {
-				output = new BufferedOutputStream(new FileOutputStream(filename));
+		    	File file = new File(filename);
+		    	File parent = file.getParentFile();
+		    	if(parent!=null) parent.mkdirs();
+				output = new BufferedOutputStream(new FileOutputStream(file));
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -81,12 +85,13 @@ public class BinaryFile {
 		
 	}
 	
-	public static void saveBinaryMatrix(Map<Entry,Float> matrix,int rows,int cols,String filename){
+	public static void saveBinaryMatrix(Map<Entry,Float> matrix,int rows,int cols,String filename, boolean isLittleEndian){
 		int totalSize =  2*Integer.SIZE + rows*cols*Float.SIZE; //in bits
 		totalSize/=8;
 		
 		
 		ByteBuffer data = ByteBuffer.allocate(totalSize);
+		if(isLittleEndian) data.order(ByteOrder.LITTLE_ENDIAN);
 		data.putInt(rows);
 		data.putInt(cols);
 		for(int i=0;i<rows;i++)
@@ -222,5 +227,15 @@ public class BinaryFile {
 		return null;
 	}
 	
+	public static void writeArray(OutputStream o ,int[] array,boolean isLittleIndian) {
+		int totalSize =  (array.length+1)*Integer.SIZE; //in bits
+		totalSize/=8;
+		
+		ByteBuffer data = ByteBuffer.allocate(totalSize);
+		if(isLittleIndian ) data.order(ByteOrder.LITTLE_ENDIAN);
+		data.putInt(array.length); //store size
+		for(int datum : array) data.putInt(datum); //store data
+		write(o, data.array());
+	}
 
 }

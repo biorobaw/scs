@@ -1,4 +1,4 @@
-package edu.usf.ratsim.model.pablo.morris_replay.submodules;
+package edu.usf.ratsim.model.pablo.shared.modules;
 
 import java.util.Map;
 
@@ -28,32 +28,29 @@ public class ProportionalValueSingleBlockMatrix extends Module {
 	}
 
 	public void run() {
-		Float2dSingleBlockMatrixPort states = (Float2dSingleBlockMatrixPort) getInPort("states");
-		Float2dPort value = (Float2dPort) getInPort("value");
 		
-		run(states, value);
-	}
-	
-
-	public void run(Float2dSingleBlockMatrixPort states, Float2dPort value) {
+		//get PC total activation:
+		float totalActivation = ((Float0dPort) getInPort("totalActivation")).get();
+		
+		//
 		float valueEst = 0f;
-
-		float sum = 0;
-		
-		for(int i=0; i<states.getBlockRows();i++)
-			for(int j=0;j<states.getBlockCols();j++){
-				sum+=states.getBlock(i,j);
-			}
-		
-		for(int i=0; i<states.getBlockRows();i++)
-			for(int j=0;j<states.getBlockCols();j++){
-				float stateVal = states.getBlock(i,j)/sum;
-				if (stateVal != 0) {
-					float val = value.get(states.getBlockIndex(i, j), 0);
-					if (val != 0)
-						valueEst += stateVal * val;
+		if(totalActivation!=0) {
+			
+			Float2dSingleBlockMatrixPort states = (Float2dSingleBlockMatrixPort) getInPort("states");
+			Float2dPort stateValues = (Float2dPort) getInPort("value");
+			
+			
+			for(int i=0; i<states.getBlockRows();i++)
+				for(int j=0;j<states.getBlockCols();j++){
+					
+						valueEst += states.getBlock(i,j)/totalActivation * stateValues.get(states.getBlockIndex(i, j), 0);
 				}
-			}
+			
+		}
+		
+		
+
+		//Get PC total:
 		
 
 		// Max value is food reward
@@ -68,6 +65,10 @@ public class ProportionalValueSingleBlockMatrix extends Module {
 
 	}
 
+	public Float0dPort getValuePort() {
+		return valuePort;
+	}
+	
 	@Override
 	public boolean usesRandom() {
 		return false;

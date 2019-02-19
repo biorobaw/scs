@@ -44,7 +44,7 @@ public class WUpdater2 extends Module {
 		@Override
 		public void run() {
 			oldPCs = ((Float2dSingleBlockMatrixPort) getInPort("PC")).copyPort();
-			((Float2dSingleBlockMatrixPort) getInPort("PC")).copyData(oldPCs);;
+			((Float2dSingleBlockMatrixPort) getInPort("PC")).copyDataTo(oldPCs);;
 
 			run = new RunGeneral();
 		}
@@ -78,7 +78,7 @@ public class WUpdater2 extends Module {
 				}
 			}
 
-			pc.copyData(oldPCs);;
+			pc.copyDataTo(oldPCs);;
 
 //			System.out.println(wPort.getNonZero().keySet().size());
 		}

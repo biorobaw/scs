@@ -117,6 +117,15 @@ public class ElementWrapper {
 		return list;
 	}
 	
+	public List<Float> getFloatList() {
+		String listString = getText();
+		List<Float> list = new LinkedList<Float>();
+		StringTokenizer tok = new StringTokenizer(listString, ",");
+		while (tok.hasMoreTokens())
+			list.add(Float.parseFloat(tok.nextToken()));
+		return list;
+	}
+	
 	public float[] getChildFloatArray(String name) {
 		List<Float> list = getChildFloatList(name);
 		float[] array = new float[list.size()];

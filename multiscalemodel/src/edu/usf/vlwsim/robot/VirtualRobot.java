@@ -36,9 +36,9 @@ public class VirtualRobot
 
 	private float closeThrs;
 
-	private boolean closestFeederValid;
+//	private boolean closestFeederValid;
 
-	private Feeder previouslyFoundFeeder;
+//	private Feeder previouslyFoundFeeder;
 
 	private int lastAteFeeder;
 
@@ -77,7 +77,7 @@ public class VirtualRobot
 		if (universe == null)
 			throw new RuntimeException("A virtual universe must be created" + " before Virtual Robot is created");
 
-		closestFeederValid = false;
+//		closestFeederValid = false;
 		lastAteFeeder = -1;
 		lastTriedToEat = -1;
 		lastAte = false;
@@ -278,7 +278,7 @@ public class VirtualRobot
 	}
 
 	public void moved() {
-		closestFeederValid = false;
+//		closestFeederValid = false;
 		lastAte = false;
 	}
 
@@ -303,5 +303,10 @@ public class VirtualRobot
 		return WallUniverseUtilities.distanceToNearestWall(universe.getWalls(), universe.getRobotPosition(), angle, maxDistance);
 	}
 
+	@Override
+	public void clearState() {
+		lastSuccessfulEat = false;
+		lastAte = false;
+	}
 
 }

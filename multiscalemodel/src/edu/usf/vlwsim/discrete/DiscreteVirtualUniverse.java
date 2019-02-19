@@ -202,5 +202,9 @@ public class DiscreteVirtualUniverse
 		
 	}
 
+	@Override
+	public void clearState() {
+		
+	}
 
 }

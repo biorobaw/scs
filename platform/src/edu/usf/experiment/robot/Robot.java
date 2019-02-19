@@ -17,4 +17,6 @@ public interface Robot {
 	 */
 	public float getRadius();
 
+	public void clearState();
+	
 }

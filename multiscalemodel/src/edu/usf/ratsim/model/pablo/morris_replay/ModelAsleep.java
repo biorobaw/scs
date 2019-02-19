@@ -1,7 +1,6 @@
 package edu.usf.ratsim.model.pablo.morris_replay;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -9,42 +8,28 @@ import java.util.Map;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.usf.experiment.Globals;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.TeleportRobot;
-import edu.usf.experiment.robot.affordance.EatAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.module.copy.Int0dCopyModule;
-import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.onedimensional.vector.PointPort;
-import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
-import edu.usf.ratsim.model.pablo.morris_replay.submodules.AreEqualModule;
-import edu.usf.ratsim.model.pablo.morris_replay.submodules.MaxModule;
-import edu.usf.ratsim.model.pablo.morris_replay.submodules.ProportionalValueSingleBlockMatrix;
-import edu.usf.ratsim.model.pablo.morris_replay.submodules.ProportionalVotesSingleBlockMatrix;
 import edu.usf.ratsim.model.pablo.morris_replay.submodules.UpdateQModuleAC2;
 import edu.usf.ratsim.model.pablo.morris_replay.submodules.VQErrorSignalModule;
-import edu.usf.ratsim.nsl.modules.actionselection.ProportionalValue;
-import edu.usf.ratsim.nsl.modules.actionselection.ProportionalVotes;
+import edu.usf.ratsim.model.pablo.shared.modules.ProportionalValueSingleBlockMatrix;
+import edu.usf.ratsim.model.pablo.shared.modules.ProportionalVotesSingleBlockMatrix;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.nsl.modules.celllayer.TesselatedPlaceCellLayer;
-import edu.usf.ratsim.nsl.modules.celllayer.TmazeRandomPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.input.Position;
 import edu.usf.ratsim.nsl.modules.input.SubjectFoundFood;
 import edu.usf.ratsim.nsl.modules.multipleT.ClosestActionSelection;
-import edu.usf.ratsim.nsl.modules.multipleT.MoveFromToActionPerformer;
 import edu.usf.ratsim.nsl.modules.multipleT.NextActiveModule;
 import edu.usf.ratsim.nsl.modules.multipleT.NextPositionModule;
-import edu.usf.ratsim.nsl.modules.rl.ActorCriticDeltaError;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
-import edu.usf.ratsim.nsl.modules.rl.UpdateQModuleAC;
-import edu.usf.vlwsim.robot.VirtualRobot;
 import edu.usf.vlwsim.universe.VirtUniverse;
 
 public class ModelAsleep extends Model {
@@ -179,6 +164,7 @@ public class ModelAsleep extends Model {
 		newStateValue = new ProportionalValueSingleBlockMatrix("newStateValue");
 		newStateValue.addInPort("states", placeCells.getActivationPort());
 		newStateValue.addInPort("value", VTable);
+		newStateValue.addInPort("totalActivation",placeCells.getTotalPort());
 		addModule(newStateValue);
 		
 		//Create reward module
@@ -220,6 +206,7 @@ public class ModelAsleep extends Model {
 		oldStateValue = new ProportionalValueSingleBlockMatrix("oldStateValue");
 		oldStateValue.addInPort("states", placeCells.getActivationPort());
 		oldStateValue.addInPort("value", VTable);
+		oldStateValue.addInPort("placeCells",placeCells.getTotalPort());
 		oldStateValue.addPreReq(updateQV);
 		addModule(oldStateValue);
 		

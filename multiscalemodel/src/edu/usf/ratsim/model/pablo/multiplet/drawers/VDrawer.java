@@ -22,9 +22,12 @@ public class VDrawer extends Drawer {
 
 	Coordinate[] centers;
 	Float2dSparsePort stateValues;
-	int distanceOption = 1; //0 to use radius and diam, 1 to use minDist and choose automatically
+	public int distanceOption = 1; //0 to use radius and diam, 1 to use minDist and choose automatically
 	float minDist = Float.POSITIVE_INFINITY;
 	int radius = 2;
+	
+	
+	float maxValue = Float.NEGATIVE_INFINITY;
 	
 	HashMap<Entry,Float> nonZero = new HashMap<>();
 	
@@ -63,7 +66,7 @@ public class VDrawer extends Drawer {
 		int d = 2*r;
 
 		
-		float maxValue = GuiUtils.findMaxInMap(nonZero);
+		
 		
 		for(int i=0; i <stateValues.getNRows();i++){
 			
@@ -75,8 +78,8 @@ public class VDrawer extends Drawer {
 			
 		}
 		
-		
-		
+		g.setColor(Color.BLACK);
+		g.drawString("MAX:   " + maxValue, 20, 20);
 
 	}
 
@@ -89,7 +92,11 @@ public class VDrawer extends Drawer {
 	public void updateData() {
 		// TODO Auto-generated method stub
 		nonZero.clear();
+//		if(stateValues.getNonZero().size() > 0 ) {
+//			System.out.println("NON ZERO!!!!!!!!!!");
+//		}
 		nonZero.putAll(stateValues.getNonZero());
+		maxValue = GuiUtils.findMaxInMap(nonZero);
 		
 	}
 	

@@ -97,12 +97,16 @@ public class DrawPanel extends JPanel{
 	public void setParent(Display parent) {
 		this.parent = parent;
 	}
-	public synchronized void setRenderCycle(int cycle) {
+	public synchronized void setRenderCycle(long cycle) {
 		renderCycle = cycle;
 	}
 	
 	public synchronized long getRenderCycle(){
 		return renderCycle;
+	}
+	
+	public void setPanelName(String name) {
+		this.panelName = name;
 	}
 
 	

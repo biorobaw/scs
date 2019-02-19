@@ -158,5 +158,10 @@ public class ROSUniverse implements GlobalCameraUniverse, WallUniverse, Platform
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
+	public void clearState() {
+		
+	}
 
 }

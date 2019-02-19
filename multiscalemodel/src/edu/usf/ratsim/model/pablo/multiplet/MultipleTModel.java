@@ -1,7 +1,6 @@
 package edu.usf.ratsim.model.pablo.multiplet;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -14,21 +13,21 @@ import edu.usf.experiment.display.DrawPanel;
 import edu.usf.experiment.display.GuiUtils;
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.PathDrawer;
+import edu.usf.experiment.display.drawer.RobotDrawer;
 import edu.usf.experiment.display.drawer.WallDrawer;
 import edu.usf.experiment.display.drawer.simulation.CycleDataDrawer;
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.robot.TeleportRobot;
+import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
-import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePortMatrix;
-import edu.usf.platform.drawers.PCDrawer;
-import edu.usf.platform.drawers.PolarArrowDrawer;
 import edu.usf.platform.drawers.PolarDataDrawer;
+import edu.usf.ratsim.model.pablo.morris_replay.drawers.RuntimesDrawer;
+import edu.usf.ratsim.model.pablo.multiplet.drawers.PCDrawerSparsePort;
 import edu.usf.ratsim.model.pablo.multiplet.drawers.VDrawer;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.vlwsim.robot.VirtualRobot;
@@ -258,6 +257,17 @@ public class MultipleTModel extends Model  {
 	}
 
 	void setDisplay() {
+		
+		//OLD DISPLAY:
+		// Add drawing utilities:
+		// universe.addDrawingFunction(new DrawPolarGraph("Q softmax", 50, 50, 50, softmax.probabilities, true));
+		// universe.addDrawingFunction(new DrawPolarGraph("gated probs", 50, 170, 50, actionGating.probabilities, true));
+		// universe.addDrawingFunction(new DrawPolarGraph("biased probs", 50, 290, 50, biasModule.probabilities, true));
+		// universe.addDrawingFunction(new DrawPolarGraph("bias ring", 50, 410, 50, biasModule.chosenRing, true));
+		
+		
+		
+		
 		Display d = DisplaySingleton.getDisplay();
 
 		d.addPanel(new DrawPanel(300, 300), "panel1", 0, 0, 1, 1);
@@ -266,38 +276,61 @@ public class MultipleTModel extends Model  {
 		d.addPanel(new DrawPanel(300, 300), "panel4", 1, 1, 1, 1);
 		d.addPanel(new DrawPanel(300, 300), "panel5", 0, 2, 1, 1);
 		d.addPanel(new DrawPanel(300, 300), "panel6", 1, 2, 1, 1);
+		d.addPanel(new DrawPanel(300, 300), "panel7", 0, 3, 1, 1);
+
 
 		// DrawPanel panel2 = new DrawPanel();
 		// panel1.setMinimumSize(new Dimension(300, 300));
 		// panel1.setPreferredSize(new Dimension(300, 300));
 		// panel1.setBackground(Color.red);
 
+		
+		
+		//ACTION SELECTION PROCESS
 		PolarDataDrawer qSoftMax = new PolarDataDrawer("Q softmax", modelAwake.softmax.probabilities);
 		PolarDataDrawer affordances = new PolarDataDrawer("Affordances", modelAwake.affordanceGateModule.gates);
 		PolarDataDrawer actionGating = new PolarDataDrawer("2 Actions Gate", modelAwake.twoActionsGateModule.gates);
 		resultProbabilities = new PolarDataDrawer("Resulting Probs", modelAwake.twoActionsGateModule.probabilities);
-//		PCDrawer pcDrawer = new PCDrawer(modelAwake.placeCells.getCells(), modelAwake.placeCells.getActivationPort());
-//		PCDrawer pcDrawerAsleep = new PCDrawer(modelAwake.getPlaceCells(), modelAsleep.placeCells.getActivationPort());
+
+		
+		//TIME SERIES DATA
+		RuntimesDrawer runtimes = new RuntimesDrawer(10, 0, 800);
+		runtimes.doLines = false;
 		pathDrawer = new PathDrawer((LocalizableRobot) lRobot);
 		pathDrawer.setColor(Color.red);
+		
+		
+		//UNIVERSE RELATED DRAWERS
+		RobotDrawer rDrawer = new RobotDrawer((GlobalCameraUniverse)UniverseLoader.getUniverse());
 		WallDrawer wallDrawer = new WallDrawer(VirtUniverse.getInstance(), 1);
-		wallDrawer.setColor(GuiUtils.getHSBAColor(0f, 0f, 0.7f, 1));
-
+		wallDrawer.setColor(GuiUtils.getHSBAColor(0f, 0f, 0f, 1));
+				
+		
+		
+		
+		//RASTERS DRAWERS
+		PCDrawerSparsePort pcDrawer 		= new PCDrawerSparsePort(modelAwake.placeCells.getCells(), modelAwake.placeCells.getActivationPort());
+		PCDrawerSparsePort pcDrawerAsleep = new PCDrawerSparsePort(modelAwake.getPlaceCells(), modelAsleep.placeCells.getActivationPort());
+		
 		VDrawer vdrawer = new VDrawer(modelAwake.getPlaceCells(), VTable);
+		vdrawer.distanceOption = 0; // use pc radis to draw PCs
 
+		
+		
+		//DEFINE SET OF AWAKE/ASLEEP PLOTS
 		awakePlots.add(qSoftMax);
 		awakePlots.add(affordances);
 		awakePlots.add(actionGating);
 		awakePlots.add(resultProbabilities);
-//		awakePlots.add(pcDrawer);
-//
-//		asleepPlots.add(pcDrawerAsleep);
+		awakePlots.add(pcDrawer);
 
-		// asleep plots
+		asleepPlots.add(pcDrawerAsleep);
+		
+
+
+		// ADD ALL PLOTS TO THE PANELS
 		d.addDrawer("universe", "cycle info", new CycleDataDrawer());
-//		d.addDrawer("universe", "pcsAwake", pcDrawer, 1);
-		d.addDrawer("universe", "paths", pathDrawer, 2);
-//		d.addDrawer("universe", "pcsAsleep", pcDrawerAsleep, 1);
+		
 
 		// awake plots
 		d.addDrawer("panel1", "softmax", qSoftMax);
@@ -308,7 +341,19 @@ public class MultipleTModel extends Model  {
 		// always plots
 		d.addDrawer("panel5", "wallsPanel5", wallDrawer);
 		d.addDrawer("panel5", "ValueF", vdrawer);
+		
+		
+		
+		d.addDrawer("panel6", "pcsAwake" , pcDrawer);
+		d.addDrawer("panel6", "pcsAsleep", pcDrawerAsleep);
 		d.addDrawer("panel6", "wallsPanel6", wallDrawer);
+		d.addDrawer("panel6", "paths", pathDrawer, 2);
+		
+		d.addDrawer("panel6", "p6 robot", rDrawer);
+		d.addDrawer("panel5", "p5 robot", rDrawer);
+		d.addDrawer("panel7", "runtimes", runtimes);
+		
+		
 
 		// mapa con paredes + Q plot
 		// mapa con paredes + W plot

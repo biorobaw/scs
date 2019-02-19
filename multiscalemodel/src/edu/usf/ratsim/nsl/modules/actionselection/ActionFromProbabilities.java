@@ -1,7 +1,5 @@
 package edu.usf.ratsim.nsl.modules.actionselection;
 
-import java.util.Random;
-
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
@@ -21,6 +19,10 @@ public class ActionFromProbabilities extends Module {
 
 		addOutPort("action", outport);
 
+	}
+	
+	public Int0dPort getOutport() {
+		return outport;
 	}
 
 	public void run() {

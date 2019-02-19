@@ -17,6 +17,7 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.task.TaskLoader;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.NSLSimulation;
@@ -126,6 +127,9 @@ public class Episode {
 		for (Task task : beforeEpisodeTasks) task.perform(this);
 		
 		// New episode is called after tasks are executed (e.g. reposition the robot)
+		UniverseLoader.getUniverse().clearState();
+		
+		getSubject().robot.clearState();
 		getSubject().getModel().newEpisode();
 		
 		for (Logger logger : beforeEpisodeLoggers) logger.log(this);
@@ -154,7 +158,10 @@ public class Episode {
 			if(!finished) waitNextStep(); //the pause is here so that the model state can be observed before performing the actions
 			
 			// Evaluate stop conditions
-			for (Condition sc : stopConds) if(finished = finished || sc.holds(this)) break;
+			for (Condition sc : stopConds) {
+				if(finished = finished || sc.holds(this)) 
+					break;
+			}
 			
 			getUniverse().step();
 			

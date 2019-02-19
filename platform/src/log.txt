@@ -1,0 +1,14 @@
+* Current issues:
+	The software is too complicated to work with.
+	Changes in scs or nsl affect all models
+	Too many things encode the same things
+	
+	
+	Interface system makes it complicated to reuse code and confusing
+	Example: VirtualUniverse
+	         VirtualWallUniverse
+	         VirtualDiscreteUniverse
+	         VirtualWallDiscreteUniverse
+	         In the example above VirtualWallDiscreteUniverse must reimplement functionality from at least
+	         on of the previous classes
+	

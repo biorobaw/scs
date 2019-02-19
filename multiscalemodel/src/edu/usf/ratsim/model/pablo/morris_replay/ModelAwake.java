@@ -15,16 +15,13 @@ import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
-import edu.usf.ratsim.model.pablo.morris_replay.submodules.AreEqualModule;
-import edu.usf.ratsim.model.pablo.morris_replay.submodules.MaxModule;
-import edu.usf.ratsim.model.pablo.morris_replay.submodules.ProportionalValueSingleBlockMatrix;
-import edu.usf.ratsim.model.pablo.morris_replay.submodules.ProportionalVotesSingleBlockMatrix;
 import edu.usf.ratsim.model.pablo.morris_replay.submodules.UpdateQModuleAC2;
 import edu.usf.ratsim.model.pablo.morris_replay.submodules.VQErrorSignalModule;
 import edu.usf.ratsim.model.pablo.morris_replay.submodules.WUpdater2;
 import edu.usf.ratsim.model.pablo.morris_replay.submodules.WallGateModule;
-import edu.usf.ratsim.model.pablo.multiplet.submodules.DistanceAffordanceGatingModule;
 import edu.usf.ratsim.model.pablo.multiplet.submodules.DistancesInputModule;
+import edu.usf.ratsim.model.pablo.shared.modules.ProportionalValueSingleBlockMatrix;
+import edu.usf.ratsim.model.pablo.shared.modules.ProportionalVotesSingleBlockMatrix;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromProbabilities;
 import edu.usf.ratsim.nsl.modules.actionselection.Softmax;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
@@ -32,7 +29,6 @@ import edu.usf.ratsim.nsl.modules.celllayer.TesselatedPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.input.Position;
 import edu.usf.ratsim.nsl.modules.input.SubjectAte;
 import edu.usf.ratsim.nsl.modules.multipleT.Last2ActionsActionGating;
-import edu.usf.ratsim.nsl.modules.rl.ActorCriticDeltaError;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
 import edu.usf.ratsim.support.NotImplementedException;
 import edu.usf.vlwsim.robot.VirtualRobot;
@@ -43,7 +39,7 @@ public class ModelAwake extends Model {
 	public TesselatedPlaceCellLayer placeCells;
 
 
-	public ProportionalVotesSingleBlockMatrix currentStateQ;
+	public  ProportionalVotesSingleBlockMatrix currentStateQ;
 	private ProportionalValueSingleBlockMatrix newStateValue;
 	private ProportionalValueSingleBlockMatrix oldStateValue;
 
@@ -132,7 +128,7 @@ public class ModelAwake extends Model {
 		
 		
 		// create subAte module
-		SubjectAte subAte = new SubjectAte("Subject Ate", robot);
+		SubjectAte subAte = new SubjectAte("Subject Ate");
 		addModule(subAte);
 		
 					
@@ -158,6 +154,7 @@ public class ModelAwake extends Model {
 		newStateValue = new ProportionalValueSingleBlockMatrix("newStateValue");
 		newStateValue.addInPort("states", placeCells.getActivationPort());
 		newStateValue.addInPort("value", VTable);
+		newStateValue.addInPort("placeCells",placeCells.getTotalPort());
 		addModule(newStateValue);
 		
 		
@@ -203,6 +200,7 @@ public class ModelAwake extends Model {
 		oldStateValue = new ProportionalValueSingleBlockMatrix("oldStateValue");
 		oldStateValue.addInPort("states", placeCells.getActivationPort());
 		oldStateValue.addInPort("value", VTable);
+		oldStateValue.addInPort("placeCells",placeCells.getTotalPort());
 		oldStateValue.addPreReq(updateQV);
 		addModule(oldStateValue);
 		

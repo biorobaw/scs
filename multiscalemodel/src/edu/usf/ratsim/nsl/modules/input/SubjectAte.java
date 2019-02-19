@@ -1,32 +1,38 @@
 package edu.usf.ratsim.nsl.modules.input;
 
-import edu.usf.experiment.robot.FeederRobot;
-import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.universe.UniverseLoader;
+import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 
 /**
  * Provides an output port stating whether the subject just ate
+ * 
  * @author Martin Llofriu
  *
  */
 public class SubjectAte extends Module {
 
 	public Bool0dPort outPort;
-	private FeederRobot robot;
+	private FeederUniverse u;
 
-	public SubjectAte(String name, Robot robot) {
+	public SubjectAte(String name) {
 		super(name);
-		
-		this.robot = (FeederRobot) robot;
-		
+
+		u = (FeederUniverse)UniverseLoader.getUniverse();
 		outPort = new Bool0dPort(this);
 		addOutPort("subAte", outPort);
 	}
 
+	public Bool0dPort getSubAtePort() {
+		return outPort;
+	}
+
 	@Override
 	public void run() {
-		outPort.set(robot.hasRobotEaten());
+		
+		var eaten = u.hasRobotEaten();
+		outPort.set(eaten);
 	}
 
 	@Override
@@ -34,5 +40,4 @@ public class SubjectAte extends Module {
 		return false;
 	}
 
-	
 }

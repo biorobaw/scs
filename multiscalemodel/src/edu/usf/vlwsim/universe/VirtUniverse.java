@@ -99,9 +99,10 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 
 	private boolean robotAte;
 
+	private boolean robotWantsToEat;
+
 	private Robot robot;
 
-	private boolean robotWantsToEat;
 
 	private float deltaT;
 
@@ -640,6 +641,13 @@ public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, 
 		}
 
 		return closestDist;
+	}
+	
+	@Override
+	public void clearState() {
+		robotTriedToEat =false;
+		robotAte		=false;
+		robotWantsToEat =false;
 	}
 
 }

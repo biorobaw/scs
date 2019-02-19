@@ -31,6 +31,10 @@ public class Position extends Module {
 	public boolean usesRandom() {
 		return false;
 	}
+	
+	public PointPort getOutPort() {
+		return pos;
+	}
 
 	
 }

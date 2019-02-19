@@ -199,7 +199,7 @@ public class Float2dSingleBlockMatrixPort extends Float2dPort {
 		return new Float2dSingleBlockMatrixPort(this.getOwner(), rows, cols,  windowRows,  windowCols, windowStartRow, windowStartCol);
 	}
 
-	public void copyData(Float2dSingleBlockMatrixPort destiny){
+	public void copyDataTo(Float2dSingleBlockMatrixPort destiny){
 		destiny.setWindowOrigin(windowStartRow, windowStartCol);
 		for(int i=0;i<blockRows;i++)
 			for(int j=0;j<blockCols;j++)

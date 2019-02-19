@@ -20,6 +20,7 @@ import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.module.copy.Int0dCopyModule;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.onedimensional.vector.PointPort;
+import edu.usf.micronsl.port.singlevalue.Bool0dPort;
 import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
@@ -48,6 +49,7 @@ public class MultipleTModelAsleep extends Model {
 	private ProportionalValue currentValue;
 	public NextActiveModule nextActiveModule;
 	private NextPositionModule nextPosModule;
+	private ProportionalValue oldValue;
 	
 	private Float2dSparsePort QTable;
 	private Float2dSparsePort WTable;
@@ -132,12 +134,15 @@ public class MultipleTModelAsleep extends Model {
 		 * 		-Reward receives input from subAte but executes before
 		 */
 		
+		// ====================== VARIABLES ========================================
 		
 		//Create Variables Q,W, note sleepState has already been initialized.
 		this.QTable = QTable;
 		this.VTable = VTable;
-		
 		this.WTable = WTable;
+		
+		
+		// ====================== INPUT MODULES ====================================
 		
 		//Create pos module 
 		Position pos = new Position("position", lRobot);
@@ -147,11 +152,8 @@ public class MultipleTModelAsleep extends Model {
 		subFoundFood = new SubjectFoundFood("Subject Found Food", robot);
 		addModule(subFoundFood);
 	
-		//Create reward module
-		float nonFoodReward = 0;
-		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
-		r.addInPort("rewardingEvent", subFoundFood.getOutPort("subFoundFood")); 
-		addModule(r);
+		
+		// ===================== current state ==================================
 		
 		//Create Place Cells module
 		placeCells = new TmazeRandomPlaceCellLayer("PCLayer",pcList);
@@ -159,15 +161,47 @@ public class MultipleTModelAsleep extends Model {
 		addModule(placeCells);
 		
 		
+		
+		// ===================== Learning Modules ===============================
+		
 		currentValue = new ProportionalValue("currentValueV", 10000);
 		currentValue.addInPort("states", placeCells.getActivationPort());
 		currentValue.addInPort("value", VTable);
 		addModule(currentValue);
 		
-		//Create copy Q module
-//		Module copyQ = new Float1dCopyModule("copyQ");
-//		copyQ.addInPort("toCopy", currentStateQ.getOutPort("votes"),true);
-//		addModule(copyQ);
+		//Create reward module
+		float nonFoodReward = 0;
+		Reward r = new Reward("foodReward", foodReward, nonFoodReward);
+		r.addInPort("rewardingEvent", subFoundFood.getOutPort("subFoundFood")); 
+		addModule(r);
+		
+		
+		//Create deltaSignal module
+		deltaError = new ActorCriticDeltaError("error", discountFactor, numActions);
+		deltaError.addInPort("reward", r.getOutPort("reward"));
+		deltaError.addInPort("newStateValue", currentValue.getOutPort("value"));
+		deltaError.addInPort("wasActionOptimal", new Bool0dPort(null, true));
+		addModule(deltaError);
+		
+		//Create update Q module		
+		updateQV = new UpdateQModuleAC("updateQ", learningRate);
+		updateQV.addInPort("delta", deltaError.getOutPort("delta"));
+		updateQV.addInPort("Q", QTable);
+		updateQV.addInPort("V", VTable);
+		updateQV.addInPort("actionPlaceCells", placeCells.getActivationPort() );
+		updateQV.addInPort("valuePlaceCells", placeCells.getActivationPort() );
+		addModule(updateQV);
+
+		
+		// ===================== Recalculation of V and Q =========================	
+		
+		oldValue = new ProportionalValue("oldValue", 10000);
+		oldValue.addInPort("states", placeCells.getActivationPort());
+		oldValue.addInPort("value", VTable);
+		addModule(oldValue);
+		
+		// ===================== Action Selection ===============================
+		
 		
 		nextActiveModule = new NextActiveModule("nextActive",propagationThreshold);
 		nextActiveModule.addInPort("W", WTable);
@@ -194,22 +228,12 @@ public class MultipleTModelAsleep extends Model {
 		addModule(actionSelection);
 		
 		
-		//Create deltaSignal module
-		deltaError = new ActorCriticDeltaError("error", discountFactor, numActions);
-		deltaError.addInPort("reward", r.getOutPort("reward"));
-		deltaError.addInPort("value", currentValue.getOutPort("value"));
-		addModule(deltaError);
+		// ===================== Backward connection =============================
+		updateQV.addInPort("action", actionSelection.getOutPort("action"),true);
+		deltaError.addInPort("oldStateValue", oldValue.getOutPort("value"),true);
 
 		
-		//Create update Q module		
-		updateQV = new UpdateQModuleAC("updateQ", learningRate);
-		updateQV.addInPort("delta", deltaError.getOutPort("delta"));
-		updateQV.addInPort("action", actionSelection.getOutPort("action"));
-		updateQV.addInPort("Q", QTable);
-		updateQV.addInPort("V", VTable);
-		updateQV.addInPort("actionPlaceCells", placeCells.getActivationPort() );
-		updateQV.addInPort("valuePlaceCells", placeCells.getActivationPort() );
-		addModule(updateQV);
+		
 		
 		
 		

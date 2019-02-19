@@ -52,7 +52,7 @@ public class UpdateQModuleAC2 extends Module {
 		}
 		
 		skip  = false;
-		((Float2dSingleBlockMatrixPort) getInPort("pcs")).copyData(oldPCs);		
+		((Float2dSingleBlockMatrixPort) getInPort("pcs")).copyDataTo(oldPCs);		
 
 	}
 

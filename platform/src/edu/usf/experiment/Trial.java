@@ -100,6 +100,8 @@ public class Trial implements Runnable {
 				episode.run();
 			}
 			
+			getSubject().getModel().endTrial();
+			
 			// Do all after trial tasks
 			for (Task task : afterTasks) task.perform(this);
 			// Log and finalize

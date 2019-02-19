@@ -45,4 +45,9 @@ public class DummyUniverse implements GlobalCameraUniverse, BoundedUniverse {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override 
+	public void clearState() {
+		
+	}
 }

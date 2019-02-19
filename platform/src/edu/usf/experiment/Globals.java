@@ -54,15 +54,15 @@ public class Globals {
 		return instance;
 	}
 	
-	public void put(String id,Object globalVar){
+	synchronized public void put(String id,Object globalVar){
 		global.put(id,globalVar);
 	}
 	
-	public Object get(String id){
+	synchronized public Object get(String id){
 		return global.get(id);
 	}
 	
-	public void remove(String id){
+	synchronized public void remove(String id){
 		global.remove(id);
 	}
 }

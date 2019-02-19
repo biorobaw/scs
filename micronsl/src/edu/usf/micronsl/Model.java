@@ -42,6 +42,9 @@ public class Model {
 		modules.newTrial();
 	}
 
+	public void endTrial() {
+	}
+	
 	public void endEpisode() {
 	}
 	

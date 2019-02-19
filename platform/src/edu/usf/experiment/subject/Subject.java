@@ -8,7 +8,7 @@ public class Subject {
 	private String name;
 	private String group;
 	private Model model;
-	private Robot robot;
+	public Robot robot;
 	
 	public Subject(String name, String group, Model model, Robot robot) {
 		this.name = name;

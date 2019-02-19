@@ -235,5 +235,10 @@ public class MorseRobot
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	@Override
+	public void clearState() {
+		
+	}
 
 }

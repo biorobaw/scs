@@ -1,9 +1,6 @@
 package edu.usf.experiment.display;
 
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.swing.JComponent;
 
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.universe.BoundedUniverse;

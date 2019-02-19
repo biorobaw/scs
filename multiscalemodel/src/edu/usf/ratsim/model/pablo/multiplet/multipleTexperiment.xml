@@ -222,9 +222,7 @@
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
-				<task>
-					<name>edu.usf.experiment.task.model.SaveModel</name>
-				</task>
+
 			</afterEpisodeTasks>
 			<!-- Conditions upon which the episode ends -->
 			<stopConditions>
@@ -362,9 +360,7 @@
 			</afterEpisodeLoggers>
 			<!-- Tasks to execute after each episode -->
 			<afterEpisodeTasks>
-				<task>
-					<name>edu.usf.experiment.task.model.SaveModel</name>
-				</task>
+
 			</afterEpisodeTasks>
 			<!-- Conditions upon which the episode ends -->
 			<stopConditions>

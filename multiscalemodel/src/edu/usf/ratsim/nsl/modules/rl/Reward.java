@@ -29,6 +29,10 @@ public class Reward extends Module {
 		}
 
 	}
+	
+	public Float0dPort getRewardPort() {
+		return reward;
+	}
 
 	@Override
 	public boolean usesRandom() {

@@ -33,4 +33,10 @@ INSTALLATION INSTRUCTIONS FOR LINUX
 8 - Run the following commands in R - observe installedpackages.rda is in parent git folder
 	load("installedpackages.rda")
 	for (count in 1:length(installedpackages)) install.packages(installedpackages[count])
+  
+9) when using .dll's or .so's (For exampl with jinput): 
+    For the project "Models" go to properties->java build path->libraries
+    For Maven Dependencies, set vlue "Native library location" to: "scs/deps"
+    Copy required dll's and so's to that folder
+    
 

@@ -163,7 +163,7 @@ public class MultiScaleArtificialPCModel extends Model implements DeactivableMod
 		
 		//==================== INPUT MODULES =======================
 		
-		subAte = new SubjectAte("Subject Ate", robot);
+		subAte = new SubjectAte("Subject Ate");
 //		subAte.addInPort("takenAction", takenActionPort); // just for dependency
 		addModule(subAte);
 

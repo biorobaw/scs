@@ -170,7 +170,7 @@ public class TSPModelKnownIDAC extends Model {
 		addModule(rlValueCopy);
 
 		// Rewarding schema
-		SubjectAte subAte = new SubjectAte("Subject Ate", robot);
+		SubjectAte subAte = new SubjectAte("Subject Ate");
 		subAte.addInPort("takenAction", takenActionPort); // just for dependency
 		addModule(subAte);
 		Reward reward = new Reward("Reward", foodReward, nonFoodReward);

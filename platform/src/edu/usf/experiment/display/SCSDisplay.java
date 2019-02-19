@@ -2,7 +2,6 @@ package edu.usf.experiment.display;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -12,16 +11,11 @@ import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.geom.Rectangle2D.Float;
 import java.util.HashMap;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -32,7 +26,6 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.universe.BoundedUniverse;
-import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.Debug;
 
 /**
@@ -105,6 +98,7 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 		uPanel = new DrawPanel(600,600);
 		uPanel.setParent(this);
 		drawPanels.put("universe", uPanel);
+		uPanel.setName("univers");
 		GridBagConstraints uPanelCons = getConstraints(1,1);
 		uPanelCons.weighty = 100;
 		add(uPanel, uPanelCons);
@@ -119,10 +113,10 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 		
 		
 		//set synchronization:
-		System.out.println("Synchronizing display: " +( Globals.getInstance().get("syncDisplay")!=null));
+		System.out.println("Synchronizing display: " + Globals.getInstance().get("syncDisplay"));
 		
 		synchronized(this){
-			syncDisplay = Globals.getInstance().get("syncDisplay")!=null;
+			syncDisplay = (Boolean)Globals.getInstance().get("syncDisplay");
 		}
 		
 		//pack and set visibility
@@ -160,6 +154,7 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 	
 	public void addPanel(DrawPanel panel,String id,int gridx, int gridy, int gridwidth, int gridheight) {
 		panel.setParent(this);
+		panel.setName(id);
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.gridx = gridx;
 		gridBagConstraints.gridy = gridy;
@@ -204,6 +199,7 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 	@Override
 	public void addDrawer(String panelID,String drawerID , Drawer d) {
 		DrawPanel panel = drawPanels.get(panelID);
+		d.setName(drawerID);
 		panel.addDrawer(d);		
 		drawers.put(drawerID, d);	
 		addCheckbox(d);
@@ -230,7 +226,6 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 	@Override
 	public synchronized void newEpisode() {
 		Display.super.newEpisode();
-		renderCycle = -2;
 	}
 	
 	@Override
@@ -396,20 +391,14 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 		
 	}
 	
+	
+	
+	
 	long renderCycleTime = 0;
 	@Override
 	public void  updateData() {	
 		
-		if( isWaitingNecessary() ) { //checks whether waiting is necessary, if so it sets a flag before waiting
-			//wait until done rendering last cycle:
-			long stamp = Debug.tic();
-			try {
-				doneRenderLock.acquire();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}	
-			if(Debug.profiling) System.out.println("Waiting time: " + Debug.toc(stamp));
-		} 
+		waitFinishRenderingLastCycle();
 		
 		boolean signalRepaint = false;
 
@@ -434,8 +423,23 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 		
 	}
 	
+	
+	void waitFinishRenderingLastCycle() {
+		if( isWaitingNecessary() ) { //checks whether waiting is necessary, if so it sets a flag before waiting
+			//wait until done rendering last cycle:
+			long stamp = Debug.tic();
+			try {
+				doneRenderLock.acquire();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}	
+			if(Debug.profiling) System.out.println("Waiting time: " + Debug.toc(stamp));
+		} //else System.out.println("Not waiting...");
+	}
+	
 	public synchronized boolean isWaitingNecessary(){
 		waitingPreviousFrame = syncDisplay && !doneRenderingLastCycle;
+//		System.out.println("waiting render cycle " + renderCycle + ": " + remainingPanels +"/" + drawPanels.size());
 		return waitingPreviousFrame;
 	}
 	
@@ -445,6 +449,7 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 
 	
 	public synchronized void sync(long cycle) {
+//		System.out.println("finished rendering panel of cycle " + cycle + ", current: " + renderCycle + ", rem "+(remainingPanels-1));
 		if(cycle==renderCycle) { 
 			remainingPanels = Math.max(--remainingPanels, -1);
 			if(remainingPanels==0){

@@ -256,8 +256,8 @@ public class MorrisReplayModel extends Model  {
 		RandomSingleton.save(snapshotPath);
 		//save W, V and Q
 		BinaryFile.saveSparseBinaryMatrix(WTable.getNonZero(), WTable.getNRows(), WTable.getNCols(), snapshotPath+"WTable.bin");
-		BinaryFile.saveBinaryMatrix(QTable.getNonZero(), QTable.getNRows(), QTable.getNCols(), snapshotPath+"QTable.bin");//this should not be sparse
-		BinaryFile.saveBinaryMatrix(VTable.getNonZero(), VTable.getNRows(), VTable.getNCols(), snapshotPath+"VTable.bin");//this should not be sparse
+		BinaryFile.saveBinaryMatrix(QTable.getNonZero(), QTable.getNRows(), QTable.getNCols(), snapshotPath+"QTable.bin", false);//this should not be sparse
+		BinaryFile.saveBinaryMatrix(VTable.getNonZero(), VTable.getNRows(), VTable.getNCols(), snapshotPath+"VTable.bin", false);//this should not be sparse
 		
 		
 
@@ -293,27 +293,40 @@ public class MorrisReplayModel extends Model  {
 		// panel1.setPreferredSize(new Dimension(300, 300));
 		// panel1.setBackground(Color.red);
 
+		
+		//ACTION SELECTION PROCESS
 		PolarDataDrawer qSoftMax = new PolarDataDrawer("Q softmax", modelAwake.softmax.probabilities);
 		PolarDataDrawer affordances = new PolarDataDrawer("Affordances", modelAwake.affordanceGateModule.gates);
 		PolarDataDrawer actionGating = new PolarDataDrawer("2 Actions Gate", modelAwake.twoActionsGateModule.gates);
 		resultProbabilities = new PolarDataDrawer("Resulting Probs", modelAwake.twoActionsGateModule.probabilities);
+		
+		
+		
+		//TIME SERIES DATA
 		RuntimesDrawer runtimes = new RuntimesDrawer(Integer.parseInt(Globals.getInstance().get("learningEpisodes").toString()), 0, 800);
 		runtimes.doLines = false;
+		pathDrawer = new PathDrawer((LocalizableRobot) lRobot);
+		pathDrawer.setColor(Color.red);
 		
 		
+		//UNIVERSE RELATED DRAWERS
 		RobotDrawer rDrawer = new RobotDrawer((GlobalCameraUniverse)UniverseLoader.getUniverse());
+		WallDrawer wallDrawer = new WallDrawer(VirtUniverse.getInstance(), 1);
+		wallDrawer.setColor(GuiUtils.getHSBAColor(0f, 0f, 0f, 1));
 		
+		
+		//RASTERS DRAWERS
 		PCDrawer pcDrawer 		= new PCDrawer(modelAwake.placeCells.getCells(), modelAwake.placeCells.getActivationPort());
 		PCDrawer pcDrawerAsleep = new PCDrawer(modelAwake.getPlaceCells(), modelAsleep.placeCells.getActivationPort());
 		
-		pathDrawer = new PathDrawer((LocalizableRobot) lRobot);
-		pathDrawer.setColor(Color.red);
-		WallDrawer wallDrawer = new WallDrawer(VirtUniverse.getInstance(), 1);
-		wallDrawer.setColor(GuiUtils.getHSBAColor(0f, 0f, 0f, 1));
 
 		VDrawer vdrawer = new VDrawer(modelAwake.getPlaceCells(), VTable);
 //		vdrawer.setRadius(10);
 
+		
+		
+		
+		//DEFINE SET OF AWAKE/ASLEEP PLOTS
 		awakePlots.add(qSoftMax);
 		awakePlots.add(affordances);
 		awakePlots.add(actionGating);
@@ -322,7 +335,7 @@ public class MorrisReplayModel extends Model  {
 
 		asleepPlots.add(pcDrawerAsleep);
 
-		// asleep plots
+		// ADD ALL PLOTS TO THE PANELS
 		d.addDrawer("universe", "cycle info", new CycleDataDrawer());
 		
 

@@ -303,5 +303,9 @@ public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, 
 		yVel = y;
 		tVel = t;
 	}
+	
+	public void clearState() {
+		
+	}
 
 }
