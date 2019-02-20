@@ -4,11 +4,11 @@ import java.io.File;
 import java.util.List;
 
 import edu.usf.experiment.Deprecated.plot.Plotter;
-import edu.usf.experiment.Deprecated.plot.PlotterLoader;
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.NoDisplay;
 import edu.usf.experiment.log.Logger;
-import edu.usf.experiment.log.LoggerLoader;
+import edu.usf.experiment.task.Task;
+import edu.usf.experiment.task.TaskLoader;
 import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.XMLExperimentParser;
@@ -24,8 +24,8 @@ import edu.usf.experiment.utils.XMLExperimentParser;
  * 
  */
 public class PostExperiment extends Experiment implements Runnable {
-	private List<Plotter> afterPlotters;
-	private List<Logger> afterLoggers;
+//	private List<Plotter> afterPlotters;
+	private List<Task> afterTasks;
 
 	/**
 	 * Build an object only for experiment purposes
@@ -42,10 +42,7 @@ public class PostExperiment extends Experiment implements Runnable {
 		DisplaySingleton.setDisplay(new NoDisplay());
 		setUniverse(UniverseLoader.getInstance().load(root, logPath));
 
-		afterPlotters = PlotterLoader.getInstance().load(
-				root.getChild("afterExperimentPlotters"), logPath);
-		afterLoggers = LoggerLoader.getInstance().load(
-				root.getChild("afterExperimentLoggers"), logPath);
+		afterTasks = TaskLoader.getInstance().load(root.getChild("afterExperimentLoggers"));
 
 	}
 
@@ -57,16 +54,19 @@ public class PostExperiment extends Experiment implements Runnable {
 		System.out.println("[+] Running plotters and loggers");
 		
 		// Log and finalize
-		for (Logger logger : afterLoggers) {
-			logger.log(UniverseLoader.getUniverse(),this.getSubject());
-			logger.finalizeLog();
+		for (Task t : afterTasks) {
+			if(t instanceof Logger) {
+				Logger logger = (Logger)t;
+				logger.perform(UniverseLoader.getUniverse(),this.getSubject());
+				logger.finalizeLog();
+			}
 		}
 		// Plot
-		Plotter.plot(afterPlotters);
-		
-		Plotter.join();
-
-		Plotter.join();
+//		Plotter.plot(afterPlotters);
+//		
+//		Plotter.join();
+//
+//		Plotter.join();
 	}
 
 	public static void main(String[] args) {

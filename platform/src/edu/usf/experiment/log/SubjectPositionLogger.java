@@ -12,12 +12,12 @@ import edu.usf.experiment.utils.ElementWrapper;
 
 public class SubjectPositionLogger extends PositionLogger {
 
-	public SubjectPositionLogger(ElementWrapper params, String logPath) {
-		super(params, logPath);
+	public SubjectPositionLogger(ElementWrapper params) {
+		super(params);
 	}
 
 	@Override
-	public void log(Universe u, Subject sub){
+	public void perform(Universe u, Subject sub){
 		if (!(sub.getRobot() instanceof LocalizableRobot))
 			throw new RuntimeException("SubjectPositionLogger needs a localizable robot to work");
 		

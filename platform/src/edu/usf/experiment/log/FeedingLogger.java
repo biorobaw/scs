@@ -17,7 +17,7 @@ public class FeedingLogger extends DistributedLogger {
 	private LinkedList<FeedingLog> feederLogs;
 
 	public FeedingLogger(ElementWrapper params, String logPath) {
-		super(params, logPath);
+		super(params);
 
 		feederLogs = new LinkedList<FeedingLog>();
 	}
@@ -27,7 +27,7 @@ public class FeedingLogger extends DistributedLogger {
 
 	// TODO: decide how to solve this issue - Global camera + feeding universe? Maybe redefine concept of just ate
 	@Override
-	public void log(Universe u, Subject sub) {
+	public void perform(Universe u, Subject sub) {
 //		if (!(univ instanceof FeederUniverse))
 //			throw new IllegalArgumentException("");
 //		
@@ -85,6 +85,26 @@ public class FeedingLogger extends DistributedLogger {
 	@Override
 	public String getFileName() {
 		return "atefeeders.csv";
+	}
+	
+	
+	class FeedingLog {
+
+		public int feederId;
+		public boolean ate;
+		public boolean wasFlashing;
+		public boolean wasEnabled;
+		public String cycle;
+		
+		public FeedingLog(int feederId, String cycle, boolean ate, boolean wasFlashing, boolean enabled) {
+			super();
+			this.feederId = feederId;
+			this.cycle = cycle;
+			this.ate = ate;
+			this.wasFlashing = wasFlashing;
+			this.wasEnabled = enabled;
+		}
+		
 	}
 
 }

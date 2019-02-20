@@ -1,22 +1,19 @@
 package edu.usf.experiment.log;
 
 
-import edu.usf.experiment.Episode;
-import edu.usf.experiment.Experiment;
-import edu.usf.experiment.Trial;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public class DummyLogger extends DistributedLogger {
 
-	public DummyLogger(ElementWrapper params, String logPath){
-		super(params, logPath);
+	public DummyLogger(ElementWrapper params){
+		super(params);
 	}
 	
 
 	@Override
-	public void log(Universe u, Subject sub) {
+	public void perform(Universe u, Subject sub) {
 		System.out.println("Logging");
 	}
 

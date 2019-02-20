@@ -20,15 +20,15 @@ public class ExperienceGraphLogger extends DistributedLogger {
 
 	private UndirectedGraph<PointNode, Edge> graph;
 
-	public ExperienceGraphLogger(ElementWrapper params, String logPath) {
-		super(params, logPath);
+	public ExperienceGraphLogger(ElementWrapper params) {
+		super(params);
 
 		graph = new UndirectedSparseGraph<PointNode, Edge>();
 	}
 
 
 
-	public void log(Universe u, Subject sub){
+	public void perform(Universe u, Subject sub){
 		if (!(sub.getModel() instanceof GraphModel))
 			throw new IllegalArgumentException("ExperienceGraphLogger needs a BugandGraphSubject");
 		GraphModel gs = (GraphModel) sub.getModel();

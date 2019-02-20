@@ -7,14 +7,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
-import edu.usf.experiment.Deprecated.plot.Plotter;
-import edu.usf.experiment.Deprecated.plot.PlotterLoader;
 import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.NoDisplay;
 import edu.usf.experiment.display.SCSDisplay;
-import edu.usf.experiment.log.Logger;
-import edu.usf.experiment.log.LoggerLoader;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.RobotLoader;
 import edu.usf.experiment.subject.ModelLoader;
@@ -71,8 +67,6 @@ public class Experiment implements Runnable {
 	private List<Trial> trials;
 	private List<Task> beforeTasks;
 	private List<Task> afterTasks;
-	private List<Logger> beforeLoggers;
-	private List<Logger> afterLoggers;
 	private Universe universe;
 	private Subject subject;
 	private Robot robot;
@@ -153,16 +147,15 @@ public class Experiment implements Runnable {
 	 * Runs the experiment for the especified subject. Just goes over trials and
 	 * runs them all. It also executes tasks and plotters.
 	 */
-	public void run() {		
-		// Do all before trial tasks
-		for (Task task : beforeTasks)
-			task.perform(UniverseLoader.getUniverse(),this.getSubject());
-
-		for (Logger l : beforeLoggers){
-			l.log(UniverseLoader.getUniverse(),this.getSubject());
-			l.finalizeLog();
-		}
+	public void run() {	
 		
+		//singal new experiment:
+		
+		for(Task t: beforeTasks) t.newExperiment();
+		for(Task t: afterTasks) t.newExperiment();
+		
+		// Do all before trial tasks
+		for (Task task : beforeTasks) task.perform(UniverseLoader.getUniverse(),this.getSubject());		
 		
 		//Debug Sleep at start
 		if (Debug.sleepBeforeStart) try {
@@ -172,22 +165,18 @@ public class Experiment implements Runnable {
 			e.printStackTrace();
 		}
 				
-		
 		// Run each trial in order
-		for (Trial t : trials)
-			t.run();
+		for (Trial t : trials) t.run();
 
 		// Do all after experiment tasks
-		for (Task task : afterTasks)
-			task.perform(UniverseLoader.getUniverse(),this.getSubject());
+		for (Task task : afterTasks) task.perform(UniverseLoader.getUniverse(),this.getSubject());
 		
-		for (Logger l : afterLoggers){
-			l.log(UniverseLoader.getUniverse(),this.getSubject());
-			l.finalizeLog();
-		}
+		//signal end of experiment
+		for(Task t : beforeTasks) t.endExperiment();
+		for(Task t : afterTasks) t.endExperiment();
+
 		
-		// Wait for threads
-		Plotter.join();
+
 
 	}
 
@@ -300,14 +289,12 @@ public class Experiment implements Runnable {
 	
 	void loadTasks(ElementWrapper root) {
 		String logPath = (String)Globals.getInstance().get("logPath");
-		
+		System.out.println("[+] Logpath: " + logPath);
 		System.out.println("[+] Loading Experiment Tasks");
+		
 		beforeTasks = TaskLoader.getInstance().load(root.getChild("beforeExperimentTasks"));
 		afterTasks = TaskLoader.getInstance().load(root.getChild("afterExperimentTasks"));		
 		
-		System.out.println("[+] creating loggers, logpath: " + logPath);
-		beforeLoggers = LoggerLoader.getInstance().load(root.getChild("beforeExperimentLoggers"),logPath);
-		afterLoggers = LoggerLoader.getInstance().load(root.getChild("afterExperimentLoggers"),logPath);
 		
 	}
 	

@@ -16,14 +16,14 @@ public class ValueEntropyLogger extends DistributedLogger {
 
 	private PrintWriter writer;
 
-	public ValueEntropyLogger(ElementWrapper params, String logPath) {
-		super(params, logPath);
+	public ValueEntropyLogger(ElementWrapper params) {
+		super(params);
 
 		writer = getWriter();
 	}
 
 
-	public void log(Universe u, Subject sub) {
+	public void perform(Universe u, Subject sub) {
 		Globals g = Globals.getInstance();
 		String trialName = g.get("trial").toString();
 		String groupName = g.get("group").toString();

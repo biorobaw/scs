@@ -10,7 +10,7 @@ public abstract class Plotter {
 
 	private String logPath;
 	// private static ExecutorService pool = Executors.newFixedThreadPool(100);
-	private static Set<Thread> threads = new HashSet<Thread>();
+//	private static Set<Thread> threads = new HashSet<Thread>();
 
 	public String getLogPath() {
 		return logPath;
@@ -26,26 +26,26 @@ public abstract class Plotter {
 
 	public abstract Runnable plot();
 
-	public static synchronized void plot(final List<Plotter> plotters) {
-		Thread t = new Thread(new Runnable() {
-			public void run() {
-				for (Plotter p : plotters)
-					p.plot().run();
-			}
-		});
-		threads.add(t);
-		t.start();
-	}
+//	public static synchronized void plot(final List<Plotter> plotters) {
+//		Thread t = new Thread(new Runnable() {
+//			public void run() {
+//				for (Plotter p : plotters)
+//					p.plot().run();
+//			}
+//		});
+//		threads.add(t);
+//		t.start();
+//	}
 
-	public static void join() {
-		for (Thread t : threads)
-			try {
-				t.join();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		threads.clear();
-	}
+//	public static void join() {
+//		for (Thread t : threads)
+//			try {
+//				t.join();
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		threads.clear();
+//	}
 
 }

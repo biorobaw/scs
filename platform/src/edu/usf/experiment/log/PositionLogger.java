@@ -13,8 +13,8 @@ public abstract class PositionLogger extends DistributedLogger {
 
 	private List<Coordinate> poses;
 	
-	public PositionLogger(ElementWrapper params, String logPath){
-		super(params, logPath);
+	public PositionLogger(ElementWrapper params){
+		super(params);
 		poses = new LinkedList<Coordinate>();
 	}
 

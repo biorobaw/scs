@@ -18,14 +18,14 @@ public class WallLogger extends DistributedLogger {
 
 	private List<Wall> walls;
 
-	public WallLogger(ElementWrapper params, String logPath) {
-		super(params, logPath);
+	public WallLogger(ElementWrapper params) {
+		super(params);
 
 		walls = new LinkedList<Wall>();
 	}
 
 	@Override
-	public void log(Universe u, Subject sub) {
+	public void perform(Universe u, Subject sub) {
 		if (!(u instanceof WallUniverse))
 			throw new IllegalArgumentException("");
 		

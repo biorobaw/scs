@@ -7,16 +7,14 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
+import edu.usf.experiment.Globals;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public abstract class DistributedLogger extends Logger {
 	
-	private String logPath;
 
-	public DistributedLogger(ElementWrapper params, String logPath){
-		super(params, logPath);
-		
-		this.setLogPath(logPath);
+	public DistributedLogger(ElementWrapper params){
+		super(params);
 	}
 
 	public PrintWriter getWriter() {
@@ -37,15 +35,13 @@ public abstract class DistributedLogger extends Logger {
 
 		return writer;
 	}
-
+	
 	public String getLogPath() {
-		return logPath;
-	}
-
-	public void setLogPath(String logPath) {
-		this.logPath = logPath;
+		return Globals.getInstance().get("logPath").toString();
 	}
 
 	public abstract String getHeader();
+	
+	public abstract String getFileName();
 
 }

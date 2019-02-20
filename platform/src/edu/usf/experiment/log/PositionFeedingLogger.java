@@ -11,8 +11,8 @@ public abstract class PositionFeedingLogger extends DistributedLogger {
 
 	private List<Pose> poses;
 	
-	public PositionFeedingLogger(ElementWrapper params, String logPath){
-		super(params, logPath);
+	public PositionFeedingLogger(ElementWrapper params){
+		super(params);
 		poses = new LinkedList<Pose>();
 	}
 

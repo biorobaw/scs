@@ -18,12 +18,12 @@ public class PCActivityLogger extends DistributedLogger {
 
 	PrintWriter writer = null;
 
-	public PCActivityLogger(ElementWrapper params, String logPath) {
-		super(params, logPath);
+	public PCActivityLogger(ElementWrapper params) {
+		super(params);
 	}
 
 	@Override
-	public void log(Universe u, Subject sub) {
+	public void perform(Universe u, Subject sub) {
 		if (writer == null)
 			writer = getWriter();
 

@@ -17,8 +17,8 @@ public abstract class SingleFileLogger extends Logger {
 	
 	PrintWriter out;
 	
-	public SingleFileLogger(ElementWrapper params, String logPath){
-		super(params, logPath);
+	public SingleFileLogger(ElementWrapper params){
+		super(params);
 		
 		FileWriter fw = null;
 		BufferedWriter bw = null;

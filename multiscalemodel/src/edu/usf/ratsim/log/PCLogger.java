@@ -18,12 +18,12 @@ public class PCLogger extends DistributedLogger {
 
 	private List<PlaceCell> cells;
 
-	public PCLogger(ElementWrapper params, String logPath) {
-		super(params, logPath);
+	public PCLogger(ElementWrapper params) {
+		super(params);
 	}
 
 
-	public void log(Universe u, Subject sub) {
+	public void perform(Universe u, Subject sub) {
 		if (sub.getModel() instanceof PlaceCellModel)
 			cells = ((PlaceCellModel)sub.getModel()).getPlaceCells();
 		else

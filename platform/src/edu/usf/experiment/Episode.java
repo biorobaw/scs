@@ -5,14 +5,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-import edu.usf.experiment.Deprecated.plot.Plotter;
-import edu.usf.experiment.Deprecated.plot.PlotterLoader;
 import edu.usf.experiment.condition.Condition;
 import edu.usf.experiment.condition.ConditionLoader;
 import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.log.Logger;
-import edu.usf.experiment.log.LoggerLoader;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.task.TaskLoader;
@@ -43,13 +40,6 @@ public class Episode {
 	private String logPath;
 	private List<Task> beforeEpisodeTasks;
 	private List<Task> afterEpisodeTasks;
-	private List<Plotter> beforeEpisodePlotters;
-	private List<Plotter> afterEpisodePlotters;
-	private List<Logger> beforeEpisodeLoggers;
-	private List<Logger> beforeCycleLoggers;
-	private List<Logger> afterCycleLoggers;
-	private List<Logger> afterEpisodeLoggers;
-	private boolean makePlots;
 	
 	//execution contriol variables
 	//implement modified consumer producer for doing step by step execution
@@ -65,7 +55,6 @@ public class Episode {
 	public Episode(ElementWrapper episodeNode, String parentLogPath, Trial trial, int episodeNumber) {
 		this.trial = trial;
 		this.episodeNumber = episodeNumber;
-		this.makePlots = makePlots;
 		
 		String timeStepString = episodeNode.getChildText("timeStep");
 		if(timeStepString!=null) this.timeStep = Float.parseFloat(timeStepString);
@@ -94,17 +83,6 @@ public class Episode {
 		afterCycleTasks 	= TaskLoader.getInstance().load(episodeNode.getChild("afterCycleTasks"));
 		stopConds 			= ConditionLoader.getInstance().load(episodeNode.getChild("stopConditions"));
 		
-		if (makePlots){
-			beforeEpisodePlotters = PlotterLoader.getInstance().load(episodeNode.getChild("beforeEpisodePlotters"), logPath);
-			afterEpisodePlotters  = PlotterLoader.getInstance().load(episodeNode.getChild("afterEpisodePlotters"), logPath);
-		} else {
-			beforeEpisodePlotters = new LinkedList<Plotter>();
-			afterEpisodePlotters  = new LinkedList<Plotter>();
-		}
-		beforeEpisodeLoggers 	= LoggerLoader.getInstance().load(episodeNode.getChild("beforeEpisodeLoggers"), logPath);
-		beforeCycleLoggers 		= LoggerLoader.getInstance().load(episodeNode.getChild("beforeCycleLoggers"), logPath);
-		afterCycleLoggers 		= LoggerLoader.getInstance().load(episodeNode.getChild("afterCycleLoggers"), logPath);
-		afterEpisodeLoggers 	= LoggerLoader.getInstance().load(episodeNode.getChild("afterEpisodeLoggers"), logPath);
 		
 		nslSim = NSLSimulation.getInstance();
 	}
@@ -122,19 +100,20 @@ public class Episode {
 		System.out.println("[+] Episode " + trial.getName() + " "
 				+ trial.getGroup() + " " + trial.getSubjectName() + " "
 				+ episodeNumber + " started.");
-		
-		// Do all before trial tasks
-		for (Task task : beforeEpisodeTasks) task.perform(UniverseLoader.getUniverse(),this.getSubject());
-		
-		// New episode is called after tasks are executed (e.g. reposition the robot)
-		UniverseLoader.getUniverse().clearState();
-		
+				
+		//Clear state of last episode
+		UniverseLoader.getUniverse().clearState();		
 		getSubject().robot.clearState();
 		getSubject().getModel().newEpisode();
 		
-		for (Logger logger : beforeEpisodeLoggers) logger.log(UniverseLoader.getUniverse(),this.getSubject());
+		//singla new episode to all tasks:
+		for(Task t : beforeCycleTasks) t.newEpisode();
+		for(Task t : beforeEpisodeTasks) t.newEpisode();
+		for(Task t : afterCycleTasks) t.newEpisode();
+		for(Task t : afterEpisodeTasks) t.newEpisode();
 		
-		Plotter.plot(beforeEpisodePlotters);
+		// Do all before episode tasks
+		for (Task task : beforeEpisodeTasks) task.perform(UniverseLoader.getUniverse(),this.getSubject());
 
 		// Execute cycles until stop condition holds
 		boolean finished = false;
@@ -144,8 +123,7 @@ public class Episode {
 		display.newEpisode();
 		while (!finished) {
 			g.put("cycle",cycle);
-			for (Logger l : beforeCycleLoggers) l.log(UniverseLoader.getUniverse(),this.getSubject());
-			for (Task t : beforeCycleTasks) 	t.perform(UniverseLoader.getUniverse(),this.getSubject());
+			for (Task t : beforeCycleTasks) t.perform(UniverseLoader.getUniverse(),this.getSubject());
 
 			long stamp = Debug.tic();
 			getSubject().getModel().run();
@@ -163,24 +141,15 @@ public class Episode {
 					break;
 			}
 			
-			getUniverse().step();
-			
-//			getSubject().getModel().runPost();
-			
-			
-//			System.out.println("cycle");
-			// TODO: universe step cycle
-			
+			//advance simulation time
+			getUniverse().step();			
 			nslSim.incSimTime();
 
-			for (Logger l : afterCycleLoggers)
-				l.log(UniverseLoader.getUniverse(),this.getSubject());
-			for (Task t : afterCycleTasks)
-				t.perform(UniverseLoader.getUniverse(),this.getSubject());
+			//perform after cycle tasks
+			for (Task t : afterCycleTasks) t.perform(UniverseLoader.getUniverse(),this.getSubject());
 
 			
-			if (Debug.printEndCycle)
-				System.out.println("End cycle");
+			if (Debug.printEndCycle) System.out.println("End cycle");
 
 			cycle++;
 			if (cycle % 1000 == 0)
@@ -195,31 +164,19 @@ public class Episode {
 
 		System.out.println();
 		
+		// After episode tasks
+		for (Task task : afterEpisodeTasks) task.perform(UniverseLoader.getUniverse(),this.getSubject());
+		
+		
+		//signal end episode
 		getSubject().getModel().endEpisode();
 		display.endEpisode();
+		for( Task t : beforeCycleTasks) t.endEpisode();
+		for( Task t : beforeEpisodeTasks) t.endEpisode();
+		for( Task t : afterCycleTasks) t.endEpisode();
+		for( Task t : afterEpisodeTasks) t.endEpisode();
 		
-		// Finalize loggers
-		for (Logger l : afterCycleLoggers)
-			l.finalizeLog();
-		for (Logger l : beforeCycleLoggers)
-			l.finalizeLog();
-		for (Logger l : beforeEpisodeLoggers) 
-			l.finalizeLog();
-		for (Logger l : afterEpisodeLoggers) {
-			l.log(UniverseLoader.getUniverse(),this.getSubject());
-			l.finalizeLog();
-		}
-
-		// After trial tasks
-		for (Task task : afterEpisodeTasks)
-			task.perform(UniverseLoader.getUniverse(),this.getSubject());
-
-		// Plotters
-		Plotter.plot(afterEpisodePlotters);
 		
-		// reset All conditions:
-//		for (Condition sc : stopConds)
-//			sc.reset();
 
 		System.out.println("[+] Episode " + trial.getName() + " "
 				+ trial.getGroup() + " " + trial.getSubjectName() + " "

@@ -18,15 +18,15 @@ public class ValueLogger extends DistributedLogger {
 
 	private PrintWriter writer;
 
-	public ValueLogger(ElementWrapper params, String logPath) {
-		super(params, logPath);
+	public ValueLogger(ElementWrapper params) {
+		super(params);
 
 		
 		writer = getWriter();
 	}
 
 	@Override
-	public void log(Universe u, Subject sub) {
+	public void perform(Universe u, Subject sub) {
 		Globals g = Globals.getInstance();
 		String trialName = g.get("trial").toString();
 		String groupName = g.get("group").toString();

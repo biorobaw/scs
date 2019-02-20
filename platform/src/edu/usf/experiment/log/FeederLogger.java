@@ -14,12 +14,12 @@ import edu.usf.experiment.utils.ElementWrapper;
 
 public class FeederLogger extends DistributedLogger {
 
-	public FeederLogger(ElementWrapper params, String logPath) {
-		super(params, logPath);
+	public FeederLogger(ElementWrapper params) {
+		super(params);
 	}
 
 	@Override
-	public void log(Universe u, Subject sub) {
+	public void perform(Universe u, Subject sub) {
 		if (!(u instanceof FeederUniverse))
 			throw new IllegalArgumentException("");
 		

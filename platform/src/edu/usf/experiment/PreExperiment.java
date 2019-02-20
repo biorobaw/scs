@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.List;
 
 import edu.usf.experiment.Deprecated.plot.Plotter;
-import edu.usf.experiment.Deprecated.plot.PlotterLoader;
 import edu.usf.experiment.log.Logger;
-import edu.usf.experiment.log.LoggerLoader;
+import edu.usf.experiment.task.Task;
+import edu.usf.experiment.task.TaskLoader;
 import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.IOUtils;
@@ -24,8 +24,7 @@ import edu.usf.experiment.utils.XMLExperimentParser;
  */
 public class PreExperiment extends Experiment implements Runnable {
 
-	private List<Plotter> beforePlotters;
-	private List<Logger> beforeLoggers;
+	private List<Task> beforeTasks;
 
 	/**
 	 * Build an object only for pre experiment purposes
@@ -59,10 +58,8 @@ public class PreExperiment extends Experiment implements Runnable {
 		setUniverse(UniverseLoader.getInstance().load(root, logPath));
 
 		// Load tasks and plotters
-		beforePlotters = PlotterLoader.getInstance().load(
-				root.getChild("beforeExperimentPlotters"), logPath);
-		beforeLoggers = LoggerLoader.getInstance().load(
-				root.getChild("beforeExperimentLoggers"), logPath);
+		beforeTasks = TaskLoader.getInstance().load(
+				root.getChild("beforeExperimentTasks"));
 
 	}
 
@@ -72,12 +69,14 @@ public class PreExperiment extends Experiment implements Runnable {
 	 */
 	public void run() {
 		System.out.println("[+] Executing Loggers and Plotters");
-		for (Logger logger : beforeLoggers) {
-			logger.log(UniverseLoader.getUniverse(),this.getSubject());
-			logger.finalizeLog();
+		for (Task t : beforeTasks) {
+			if(t instanceof Logger) {
+				Logger logger = (Logger)t;
+				logger.perform(UniverseLoader.getUniverse(),this.getSubject());
+				logger.finalizeLog();
+			};
+			
 		}
-		
-		Plotter.plot(beforePlotters);
 	}
 
 	public static void main(String[] args) {

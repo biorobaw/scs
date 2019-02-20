@@ -15,8 +15,8 @@ public class CyclesLogger extends SingleFileLogger {
 
 	private List<CompletionTime> times;
 
-	public CyclesLogger(ElementWrapper params, String logPath) {
-		super(params, logPath);
+	public CyclesLogger(ElementWrapper params) {
+		super(params);
 		
 		times = new LinkedList<CompletionTime>();
 	}
@@ -37,7 +37,7 @@ public class CyclesLogger extends SingleFileLogger {
 	}
 
 
-	public void log(Universe u, Subject sub) {
+	public void perform(Universe u, Subject sub) {
 		Globals g = Globals.getInstance();
 		int episode = (Integer)g.get("episode");
 		int cycle = (Integer)g.get("cycle");

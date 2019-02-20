@@ -11,17 +11,9 @@ import edu.usf.experiment.utils.ElementWrapper;
 public class TaskLoader {
 
 	private static TaskLoader instance = null;
-	private Map<String, Class<?>> classBySimpleName;
 
 	private TaskLoader() {
-		// Reflections reflections = new Reflections();
-		// Set<Class<? extends Task>> allClasses = reflections
-		// .getSubTypesOf(Task.class);
-		// classBySimpleName = new HashMap<>();
-		//
-		// for (Class<?> c : allClasses) {
-		// classBySimpleName.put(c.getSimpleName(), c);
-		// }
+
 	}
 
 	public static TaskLoader getInstance() {
