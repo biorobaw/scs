@@ -30,12 +30,6 @@ public abstract class SingleFileLogger extends Logger {
 		}
 	}
 
-	public abstract void log(Episode episode);
-	
-	public abstract void log(Trial trial);
-	
-	public abstract void log(Experiment experiment);
-
 	public void finalizeLog(){
 		out.flush();
 		out.close();

@@ -10,6 +10,7 @@ import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.DistributedLogger;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.model.PlaceCellModel;
 
@@ -21,7 +22,8 @@ public class PCActivityLogger extends DistributedLogger {
 		super(params, logPath);
 	}
 
-	public void log(Subject sub) {
+	@Override
+	public void log(Universe u, Subject sub) {
 		if (writer == null)
 			writer = getWriter();
 
@@ -40,15 +42,6 @@ public class PCActivityLogger extends DistributedLogger {
 					+ activation.get(cell));
 	}
 
-	@Override
-	public void log(Trial trial) {
-		log(trial.getSubject());
-	}
-
-	@Override
-	public void log(Episode episode) {
-		log(episode.getSubject());
-	}
 
 	@Override
 	public String getFileName() {
@@ -60,10 +53,6 @@ public class PCActivityLogger extends DistributedLogger {
 		return "trial\tgroup\tsubject\trepetition\tcycle\tcellNum\tactivation";
 	}
 
-	@Override
-	public void log(Experiment experiment) {
-		log(experiment.getSubject());
-	}
 
 	@Override
 	public void finalizeLog() {

@@ -50,29 +50,6 @@ public class AddSmallWallsTask extends Task {
 
 	}
 
-	@Override
-	public void perform(Experiment experiment) {
-		System.out.println("[+] Adding wmall walls");
-		while (!putWalls(experiment.getUniverse(), experiment.getSubject()))
-			;
-		System.out.println("[+] Small walls added");
-	}
-
-	@Override
-	public void perform(Trial trial) {
-		System.out.println("[+] Adding wmall walls");
-		while (!putWalls(trial.getUniverse(), trial.getSubject()))
-			;
-		System.out.println("[+] Small walls added");
-	}
-
-	@Override
-	public void perform(Episode episode) {
-		System.out.println("[+] Adding wmall walls");
-		while (!putWalls(episode.getUniverse(), episode.getSubject()))
-			;
-		System.out.println("[+] Small walls added");
-	}
 	
 	@Override
 	public void perform(Universe u, Subject s) {

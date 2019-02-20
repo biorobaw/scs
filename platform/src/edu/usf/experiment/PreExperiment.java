@@ -72,7 +72,7 @@ public class PreExperiment extends Experiment implements Runnable {
 	public void run() {
 		System.out.println("[+] Executing Loggers and Plotters");
 		for (Logger logger : beforeLoggers) {
-			logger.log(this);
+			logger.log(UniverseLoader.getUniverse(),this.getSubject());
 			logger.finalizeLog();
 		}
 		

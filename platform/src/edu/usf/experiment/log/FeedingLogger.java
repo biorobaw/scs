@@ -22,14 +22,12 @@ public class FeedingLogger extends DistributedLogger {
 		feederLogs = new LinkedList<FeedingLog>();
 	}
 
-	@Override
-	public void log(Episode episode) {
-		log(episode.getSubject(), episode.getUniverse());
+	
 
-	}
 
 	// TODO: decide how to solve this issue - Global camera + feeding universe? Maybe redefine concept of just ate
-	private void log(Subject subject, Universe univ) {
+	@Override
+	public void log(Universe u, Subject sub) {
 //		if (!(univ instanceof FeederUniverse))
 //			throw new IllegalArgumentException("");
 //		
@@ -49,15 +47,7 @@ public class FeedingLogger extends DistributedLogger {
 
 	}
 
-	@Override
-	public void log(Trial trial) {
-		log(trial.getSubject(), trial.getUniverse());
-	}
-
-	@Override
-	public void log(Experiment experiment) {
-		log(experiment.getSubject(), experiment.getUniverse());
-	}
+	
 
 	@Override
 	public void finalizeLog() {

@@ -124,7 +124,7 @@ public class Episode {
 				+ episodeNumber + " started.");
 		
 		// Do all before trial tasks
-		for (Task task : beforeEpisodeTasks) task.perform(this);
+		for (Task task : beforeEpisodeTasks) task.perform(UniverseLoader.getUniverse(),this.getSubject());
 		
 		// New episode is called after tasks are executed (e.g. reposition the robot)
 		UniverseLoader.getUniverse().clearState();
@@ -132,7 +132,7 @@ public class Episode {
 		getSubject().robot.clearState();
 		getSubject().getModel().newEpisode();
 		
-		for (Logger logger : beforeEpisodeLoggers) logger.log(this);
+		for (Logger logger : beforeEpisodeLoggers) logger.log(UniverseLoader.getUniverse(),this.getSubject());
 		
 		Plotter.plot(beforeEpisodePlotters);
 
@@ -144,8 +144,8 @@ public class Episode {
 		display.newEpisode();
 		while (!finished) {
 			g.put("cycle",cycle);
-			for (Logger l : beforeCycleLoggers) l.log(this);
-			for (Task t : beforeCycleTasks) 	t.perform(this);
+			for (Logger l : beforeCycleLoggers) l.log(UniverseLoader.getUniverse(),this.getSubject());
+			for (Task t : beforeCycleTasks) 	t.perform(UniverseLoader.getUniverse(),this.getSubject());
 
 			long stamp = Debug.tic();
 			getSubject().getModel().run();
@@ -174,9 +174,9 @@ public class Episode {
 			nslSim.incSimTime();
 
 			for (Logger l : afterCycleLoggers)
-				l.log(this);
+				l.log(UniverseLoader.getUniverse(),this.getSubject());
 			for (Task t : afterCycleTasks)
-				t.perform(this);
+				t.perform(UniverseLoader.getUniverse(),this.getSubject());
 
 			
 			if (Debug.printEndCycle)
@@ -206,13 +206,13 @@ public class Episode {
 		for (Logger l : beforeEpisodeLoggers) 
 			l.finalizeLog();
 		for (Logger l : afterEpisodeLoggers) {
-			l.log(this);
+			l.log(UniverseLoader.getUniverse(),this.getSubject());
 			l.finalizeLog();
 		}
 
 		// After trial tasks
 		for (Task task : afterEpisodeTasks)
-			task.perform(this);
+			task.perform(UniverseLoader.getUniverse(),this.getSubject());
 
 		// Plotters
 		Plotter.plot(afterEpisodePlotters);

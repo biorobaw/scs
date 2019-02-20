@@ -57,7 +57,7 @@ public class PostExperiment extends Experiment implements Runnable {
 		
 		// Log and finalize
 		for (Logger logger : afterLoggers) {
-			logger.log(this);
+			logger.log(UniverseLoader.getUniverse(),this.getSubject());
 			logger.finalizeLog();
 		}
 		// Plot

@@ -17,7 +17,8 @@ public class SubjectPositionFeedingLogger extends PositionFeedingLogger {
 		super(params, logPath);
 	}
 
-	public void log(Subject sub, Universe u){
+	@Override
+	public void log(Universe u, Subject sub){
 		if (!(sub.getRobot() instanceof LocalizableRobot))
 			throw new RuntimeException("SubjectPositionLogger needs a localizable robot to work");
 		
@@ -28,15 +29,6 @@ public class SubjectPositionFeedingLogger extends PositionFeedingLogger {
 		addPose(new Pose((float)pos.x,(float) pos.y, false, fu.hasRobotTriedToEat(), fu.hasRobotEaten()));
 	}
 	
-	@Override
-	public void log(Trial trial) {
-		log(trial.getSubject(), trial.getUniverse());
-	}
-	
-	@Override
-	public void log(Episode episode) {
-		log(episode.getSubject(), episode.getUniverse());
-	}
 
 	@Override
 	public String getFileName() {
@@ -48,9 +40,5 @@ public class SubjectPositionFeedingLogger extends PositionFeedingLogger {
 		return "trial\tgroup\tsubject\trepetition\tx\ty\trandom\ttriedToEat\tate";
 	}
 
-	@Override
-	public void log(Experiment experiment) {
-		log(experiment.getSubject(), experiment.getUniverse());		
-	}
 
 }

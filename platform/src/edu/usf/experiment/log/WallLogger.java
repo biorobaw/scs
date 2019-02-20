@@ -8,6 +8,7 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.wall.Wall;
 import edu.usf.experiment.universe.wall.WallUniverse;
@@ -23,25 +24,17 @@ public class WallLogger extends DistributedLogger {
 		walls = new LinkedList<Wall>();
 	}
 
-	public void log(Universe univ) {
-		if (!(univ instanceof WallUniverse))
+	@Override
+	public void log(Universe u, Subject sub) {
+		if (!(u instanceof WallUniverse))
 			throw new IllegalArgumentException("");
 		
-		WallUniverse wu = (WallUniverse) univ;
+		WallUniverse wu = (WallUniverse) u;
 		
 		for (Wall w : wu.getWalls())
 			walls.add(w);
 	}
 	
-	@Override
-	public void log(Episode episode) {
-		log(episode.getUniverse());
-	}
-
-	@Override
-	public void log(Trial trial) {
-		log(trial.getUniverse());
-	}
 	
 	
 
@@ -73,10 +66,6 @@ public class WallLogger extends DistributedLogger {
 		return "trial\tgroup\tsubject\trepetition\tx\ty\txend\tyend";
 	}
 
-	@Override
-	public void log(Experiment experiment) {
-		log(experiment.getUniverse());		
-	}
 
 	
 

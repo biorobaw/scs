@@ -12,7 +12,7 @@
 	
 	<!-- Add variables to define global variables -->
 	<variables>
-		<var>
+		<!-- <var>
 			<name>mazeFile</name>
 			<value>multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/mazes/MorrisMaze.xml</value>
 		</var>
@@ -21,13 +21,9 @@
 			<value>500</value>
 		</var>
 		<var>
-			<name>numStartingPositions</name> <!-- should be: numEpisodes % positions = 0 -->
+			<name>numStartingPositions</name> should be: numEpisodes % positions = 0
 			<value>2</value>
-		</var>
-		<var>
-			<name>config</name>
-			<value>1</value>
-		</var>
+		</var> -->
 	</variables>
 	
 	<simulationControls>
@@ -89,8 +85,8 @@
 			<mazeHeight>3.0</mazeHeight> 
 			           
 			<pcType>exponential</pcType> 	   
-			<pcSizes> 0.04 , 0.08 , 0.12</pcSizes>	   
-			<numPCx>25,13,9</numPCx>	 
+			<pcSizes>$(pcSizes)</pcSizes>	   
+			<numPCx>$(numPCx)</numPCx>	 
 			
 			<traceDecay>0.90</traceDecay>  
 			           
@@ -186,12 +182,12 @@
 			<!-- Conditions upon which the episode ends -->
 			<stopConditions>
 				<!-- Timeout cycles -->
-				<!-- <condition>
+				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>2000</max>
+						<max>4000</max>
 					</params>
-				</condition>  -->
+				</condition>
 
 				<condition>
 					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>

@@ -17,26 +17,18 @@ public class UniversePositionLogger extends PositionFeedingLogger {
 		super(params, logPath);
 	}
 
-	public void log(Universe univ, Subject sub) {
-		if (!(univ instanceof GlobalCameraUniverse))
+	@Override
+	public void log(Universe u, Subject sub) {
+		if (!(u instanceof GlobalCameraUniverse))
 			throw new IllegalArgumentException("");
 		
-		GlobalCameraUniverse gcu = (GlobalCameraUniverse) univ;
-		FeederUniverse fu = (FeederUniverse) univ;
+		GlobalCameraUniverse gcu = (GlobalCameraUniverse) u;
+		FeederUniverse fu = (FeederUniverse) u;
 		
 		Coordinate pos = gcu.getRobotPosition();
 		addPose(new Pose((float)pos.x,(float) pos.y, false, fu.hasRobotTriedToEat(), fu.hasRobotEaten()));
 	}
 	
-	@Override
-	public void log(Trial trial) {
-		log(trial.getUniverse(), trial.getSubject());
-	}
-	
-	@Override
-	public void log(Episode episode) {
-		log(episode.getUniverse(), episode.getSubject());
-	}
 
 	@Override
 	public String getFileName() {
@@ -48,10 +40,6 @@ public class UniversePositionLogger extends PositionFeedingLogger {
 		return "trial\tgroup\tsubject\trepetition\tx\ty\trandom\ttriedtoeat\tate";
 	}
 
-	@Override
-	public void log(Experiment experiment) {
-		log(experiment.getUniverse(), experiment.getSubject());		
-	}
 
 }
 

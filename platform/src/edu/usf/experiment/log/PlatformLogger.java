@@ -6,6 +6,7 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.platform.Platform;
 import edu.usf.experiment.universe.platform.PlatformUniverse;
@@ -17,8 +18,9 @@ public class PlatformLogger extends DistributedLogger {
 		super(params, logPath);
 	}
 
-	public void log(Universe univ) {
-		PlatformUniverse fu = (PlatformUniverse) univ;
+	@Override
+	public void log(Universe u, Subject sub) {
+		PlatformUniverse fu = (PlatformUniverse) u;
 		
 		synchronized (PlatformLogger.class) {
 			Globals g = Globals.getInstance();
@@ -32,15 +34,6 @@ public class PlatformLogger extends DistributedLogger {
 		}
 	}
 
-	@Override
-	public void log(Episode episode) {
-		log(episode.getUniverse());
-	}
-
-	@Override
-	public void log(Trial trial) {
-		log(trial.getUniverse());
-	}
 
 	public String getFileName() {
 		return "feeders.csv";
@@ -55,9 +48,5 @@ public class PlatformLogger extends DistributedLogger {
 		return "group\tsubject\tx\ty";
 	}
 
-	@Override
-	public void log(Experiment experiment) {
-		log(experiment.getUniverse());
-	}
 
 }

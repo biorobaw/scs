@@ -14,6 +14,7 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.task.TaskLoader;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
 
@@ -85,8 +86,8 @@ public class Trial implements Runnable {
 			
 			
 			// Do all before trial tasks
-			for (Task task : beforeTasks) task.perform(this);
-			for (Logger logger : beforeLoggers) logger.log(this);
+			for (Task task : beforeTasks) task.perform(UniverseLoader.getUniverse(),this.getSubject());
+			for (Logger logger : beforeLoggers) logger.log(UniverseLoader.getUniverse(),this.getSubject());
 			
 			getSubject().getModel().newTrial();
 			
@@ -103,9 +104,9 @@ public class Trial implements Runnable {
 			getSubject().getModel().endTrial();
 			
 			// Do all after trial tasks
-			for (Task task : afterTasks) task.perform(this);
+			for (Task task : afterTasks) task.perform(UniverseLoader.getUniverse(),this.getSubject());
 			// Log and finalize
-			for (Logger logger : afterLoggers) logger.log(this);
+			for (Logger logger : afterLoggers) logger.log(UniverseLoader.getUniverse(),this.getSubject());
 			for (Logger logger : afterLoggers) logger.finalizeLog(); 
 			
 			DisplaySingleton.getDisplay().endTrial();

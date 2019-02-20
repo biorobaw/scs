@@ -9,6 +9,7 @@ import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.DistributedLogger;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.model.PlaceCellModel;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
@@ -21,7 +22,8 @@ public class PCLogger extends DistributedLogger {
 		super(params, logPath);
 	}
 
-	public void log(Subject sub) {
+
+	public void log(Universe u, Subject sub) {
 		if (sub.getModel() instanceof PlaceCellModel)
 			cells = ((PlaceCellModel)sub.getModel()).getPlaceCells();
 		else
@@ -32,16 +34,7 @@ public class PCLogger extends DistributedLogger {
 		
 	}
 
-	@Override
-	public void log(Episode episode) {
-		log(episode.getSubject());
-	}
-
-	@Override
-	public void log(Trial trial) {
-		log(trial.getSubject());
-	}
-
+	
 	public String getFileName() {
 		return "placecells.csv";
 	}
@@ -74,9 +67,5 @@ public class PCLogger extends DistributedLogger {
 		return "tgroup\tsubject\tcellNum\tx\ty\tplaceradius";
 	}
 
-	@Override
-	public void log(Experiment experiment) {
-		log(experiment.getSubject());
-	}
 
 }

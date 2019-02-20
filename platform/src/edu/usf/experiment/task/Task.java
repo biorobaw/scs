@@ -13,17 +13,6 @@ public abstract class Task {
 
 	}
 
-	public void perform(Experiment e){
-		perform(e.getUniverse(), e.getSubject());
-	}
-
-	public void perform(Trial t){
-		perform(t.getUniverse(), t.getSubject());
-	}
-
-	public void perform(Episode e){
-		perform(e.getUniverse(), e.getSubject());
-	}
 	
 	public abstract void perform(Universe u, Subject s);
 

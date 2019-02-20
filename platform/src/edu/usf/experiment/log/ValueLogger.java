@@ -25,7 +25,8 @@ public class ValueLogger extends DistributedLogger {
 		writer = getWriter();
 	}
 
-	public void log(Universe univ, Subject sub) {
+	@Override
+	public void log(Universe u, Subject sub) {
 		Globals g = Globals.getInstance();
 		String trialName = g.get("trial").toString();
 		String groupName = g.get("group").toString();
@@ -50,15 +51,6 @@ public class ValueLogger extends DistributedLogger {
 		System.out.println("Finished loggin value");
 	}
 
-	@Override
-	public void log(Trial trial) {
-		log(trial.getUniverse(), trial.getSubject());
-	}
-
-	@Override
-	public void log(Episode episode) {
-		log(episode.getUniverse(), episode.getSubject());
-	}
 
 	private boolean inCircle(float x, float y, double width) {
 		return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) <= width / 2;
@@ -79,9 +71,5 @@ public class ValueLogger extends DistributedLogger {
 		return "value.csv";
 	}
 
-	@Override
-	public void log(Experiment experiment) {
-		log(experiment.getUniverse(), experiment.getSubject());
-	}
 
 }

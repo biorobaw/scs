@@ -10,6 +10,7 @@ import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.DistributedLogger;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.model.GraphModel;
 import edu.usf.ratsim.nsl.modules.pathplanning.Edge;
@@ -25,25 +26,12 @@ public class ExperienceGraphLogger extends DistributedLogger {
 		graph = new UndirectedSparseGraph<PointNode, Edge>();
 	}
 
-	@Override
-	public void log(Episode e) {
-		log(e.getSubject());
-	}
 
-	@Override
-	public void log(Trial t) {
-		log(t.getSubject());
-	}
 
-	@Override
-	public void log(Experiment e) {
-		log(e.getSubject());
-	}
-
-	private void log(Subject subject) {
-		if (!(subject.getModel() instanceof GraphModel))
+	public void log(Universe u, Subject sub){
+		if (!(sub.getModel() instanceof GraphModel))
 			throw new IllegalArgumentException("ExperienceGraphLogger needs a BugandGraphSubject");
-		GraphModel gs = (GraphModel) subject.getModel();
+		GraphModel gs = (GraphModel) sub.getModel();
 
 		graph = gs.getGraph();
 

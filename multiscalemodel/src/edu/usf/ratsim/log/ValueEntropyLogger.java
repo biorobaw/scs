@@ -22,7 +22,8 @@ public class ValueEntropyLogger extends DistributedLogger {
 		writer = getWriter();
 	}
 
-	public void log(Universe univ, Subject sub) {
+
+	public void log(Universe u, Subject sub) {
 		Globals g = Globals.getInstance();
 		String trialName = g.get("trial").toString();
 		String groupName = g.get("group").toString();
@@ -39,16 +40,6 @@ public class ValueEntropyLogger extends DistributedLogger {
 				+ episode + '\t' + cycle + "\t" + valueEntropy);
 
 //		System.out.println("Finished loggin value");
-	}
-
-	@Override
-	public void log(Trial trial) {
-		log(trial.getUniverse(), trial.getSubject());
-	}
-
-	@Override
-	public void log(Episode episode) {
-		log(episode.getUniverse(), episode.getSubject());
 	}
 
 	private boolean inCircle(float x, float y, double width) {
@@ -68,11 +59,6 @@ public class ValueEntropyLogger extends DistributedLogger {
 	@Override
 	public String getFileName() {
 		return "valueEntropy.csv";
-	}
-
-	@Override
-	public void log(Experiment experiment) {
-		log(experiment.getUniverse(), experiment.getSubject());
 	}
 
 }

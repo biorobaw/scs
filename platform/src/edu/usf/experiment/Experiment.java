@@ -165,10 +165,10 @@ public class Experiment implements Runnable {
 	public void run() {		
 		// Do all before trial tasks
 		for (Task task : beforeTasks)
-			task.perform(this);
+			task.perform(UniverseLoader.getUniverse(),this.getSubject());
 
 		for (Logger l : beforeLoggers){
-			l.log(this);
+			l.log(UniverseLoader.getUniverse(),this.getSubject());
 			l.finalizeLog();
 		}
 		
@@ -190,10 +190,10 @@ public class Experiment implements Runnable {
 
 		// Do all after experiment tasks
 		for (Task task : afterTasks)
-			task.perform(this);
+			task.perform(UniverseLoader.getUniverse(),this.getSubject());
 		
 		for (Logger l : afterLoggers){
-			l.log(this);
+			l.log(UniverseLoader.getUniverse(),this.getSubject());
 			l.finalizeLog();
 		}
 		

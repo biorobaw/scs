@@ -7,6 +7,8 @@ import edu.usf.experiment.Episode;
 import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.Trial;
+import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public class CyclesLogger extends SingleFileLogger {
@@ -17,11 +19,6 @@ public class CyclesLogger extends SingleFileLogger {
 		super(params, logPath);
 		
 		times = new LinkedList<CompletionTime>();
-	}
-
-	@Override
-	public void log(Episode episode) {
-		log();
 	}
 
 	@Override
@@ -39,21 +36,14 @@ public class CyclesLogger extends SingleFileLogger {
 		super.finalizeLog();
 	}
 
-	private void log() {
+
+	public void log(Universe u, Subject sub) {
 		Globals g = Globals.getInstance();
 		int episode = (Integer)g.get("episode");
 		int cycle = (Integer)g.get("cycle");
 		times.add(new CompletionTime(episode, cycle));
 	}
 
-	@Override
-	public void log(Trial trial) {
-
-	}
-
-	@Override
-	public void log(Experiment experiment) {
-	}
 
 	@Override
 	public String getFileName() {
