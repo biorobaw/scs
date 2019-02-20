@@ -1,6 +1,6 @@
 package edu.usf.ratsim.plot;
 
-import edu.usf.experiment.plot.Plotter;
+import edu.usf.experiment.Deprecated.plot.Plotter;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.IOUtils;
 

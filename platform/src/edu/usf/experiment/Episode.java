@@ -5,14 +5,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import edu.usf.experiment.Deprecated.plot.Plotter;
+import edu.usf.experiment.Deprecated.plot.PlotterLoader;
 import edu.usf.experiment.condition.Condition;
 import edu.usf.experiment.condition.ConditionLoader;
 import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.log.LoggerLoader;
-import edu.usf.experiment.plot.Plotter;
-import edu.usf.experiment.plot.PlotterLoader;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.task.TaskLoader;
@@ -62,7 +62,7 @@ public class Episode {
 	private static int[] sleepValues = new int[] {5000,3000,2000,1000,500,400,300,100,30,0};
 	private NSLSimulation nslSim;
 
-	public Episode(ElementWrapper episodeNode, String parentLogPath, Trial trial, int episodeNumber, boolean makePlots) {
+	public Episode(ElementWrapper episodeNode, String parentLogPath, Trial trial, int episodeNumber) {
 		this.trial = trial;
 		this.episodeNumber = episodeNumber;
 		this.makePlots = makePlots;

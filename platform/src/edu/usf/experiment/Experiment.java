@@ -7,14 +7,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
+import edu.usf.experiment.Deprecated.plot.Plotter;
+import edu.usf.experiment.Deprecated.plot.PlotterLoader;
 import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.NoDisplay;
 import edu.usf.experiment.display.SCSDisplay;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.log.LoggerLoader;
-import edu.usf.experiment.plot.Plotter;
-import edu.usf.experiment.plot.PlotterLoader;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.RobotLoader;
 import edu.usf.experiment.subject.ModelLoader;
@@ -73,11 +73,8 @@ public class Experiment implements Runnable {
 	private List<Task> afterTasks;
 	private List<Logger> beforeLoggers;
 	private List<Logger> afterLoggers;
-	private List<Plotter> beforePlotters;
-	private List<Plotter> afterPlotters;
 	private Universe universe;
 	private Subject subject;
-	private boolean makePlots;
 	private Robot robot;
 
 	protected Experiment(){
@@ -122,12 +119,6 @@ public class Experiment implements Runnable {
 		universe.setRobot(robot);
 		
 		
-		//set do plots (global plotting activator / deactivator
-		if (root.getChild("plot") != null)
-			makePlots = root.getChildBoolean("plot");
-		else
-			makePlots = true;
-		
 		
 		//set seed
 		setSeed(root);
@@ -136,7 +127,7 @@ public class Experiment implements Runnable {
 		loadModel(root,groupName,subjectName);
 
 		// Load trials that apply to the subject
-		trials = XMLExperimentParser.loadTrials(root, logPath, subject,universe, makePlots);
+		trials = XMLExperimentParser.loadTrials(root, logPath, subject,universe);
 		
 		// Load tasks and plotters
 		loadTasks(root);
@@ -172,8 +163,6 @@ public class Experiment implements Runnable {
 			l.finalizeLog();
 		}
 		
-		for (Plotter p : beforePlotters)
-			p.plot();
 		
 		//Debug Sleep at start
 		if (Debug.sleepBeforeStart) try {
@@ -196,9 +185,6 @@ public class Experiment implements Runnable {
 			l.log(UniverseLoader.getUniverse(),this.getSubject());
 			l.finalizeLog();
 		}
-		
-		for (Plotter p : afterPlotters)
-			p.plot();
 		
 		// Wait for threads
 		Plotter.join();
@@ -323,8 +309,6 @@ public class Experiment implements Runnable {
 		beforeLoggers = LoggerLoader.getInstance().load(root.getChild("beforeExperimentLoggers"),logPath);
 		afterLoggers = LoggerLoader.getInstance().load(root.getChild("afterExperimentLoggers"),logPath);
 		
-		beforePlotters = PlotterLoader.getInstance().load(root.getChild("beforeExperimentPlotters"),logPath);
-		afterPlotters = PlotterLoader.getInstance().load(root.getChild("afterExperimentPlotters"),logPath);
 	}
 	
 	void createAndInitLogFolder(String experimentFile) {

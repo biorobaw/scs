@@ -5,11 +5,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import edu.usf.experiment.Deprecated.plot.Plotter;
+import edu.usf.experiment.Deprecated.plot.PlotterLoader;
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.log.LoggerLoader;
-import edu.usf.experiment.plot.Plotter;
-import edu.usf.experiment.plot.PlotterLoader;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.task.TaskLoader;
@@ -38,20 +38,16 @@ public class Trial implements Runnable {
 	private Universe universe;
 	private List<Logger> beforeLoggers;
 	private String logPath;
-	private List<Plotter> beforePlotters;
-	private List<Plotter> afterPlotters;
 	private List<Logger> afterLoggers;
-	private boolean makePlots;
 	
 	Globals g = Globals.getInstance();
 
-	public Trial(ElementWrapper trialNode, String parentLogPath, Subject subject, Universe universe, boolean makePlots) {
+	public Trial(ElementWrapper trialNode, String parentLogPath, Subject subject, Universe universe) {
 		super();
 		this.name = trialNode.getChildText("name");
 		this.subject = subject;
 		this.universe = universe;
 		
-		this.makePlots = makePlots;
 		
 		logPath = parentLogPath + File.separator + name + File.separator;
 		
@@ -61,20 +57,13 @@ public class Trial implements Runnable {
 		beforeTasks = TaskLoader.getInstance().load(trialNode.getChild("beforeTrialTasks"));
 		afterTasks = TaskLoader.getInstance().load(trialNode.getChild("afterTrialTasks"));
 		
-		if (makePlots){
-			beforePlotters = PlotterLoader.getInstance().load(trialNode.getChild("beforeTrialPlotters"), logPath);
-			afterPlotters = PlotterLoader.getInstance().load(trialNode.getChild("afterTrialPlotters"), logPath);
-		} else {
-			beforePlotters = new LinkedList<Plotter>();
-			afterPlotters = new LinkedList<Plotter>();;
-		}
 		beforeLoggers = LoggerLoader.getInstance().load(trialNode.getChild("beforeTrialLoggers"), logPath);
 		afterLoggers = LoggerLoader.getInstance().load(trialNode.getChild("afterTrialLoggers"), logPath);
 
 		episodes = new LinkedList<Episode>();
 		int numEpisodes = trialNode.getChild("episodes").getChildInt("number");
 		for (int i = 0; i < numEpisodes; i++)
-			episodes.add(new Episode(trialNode.getChild("episodes"), logPath, this, i, makePlots));
+			episodes.add(new Episode(trialNode.getChild("episodes"), logPath, this, i));
 	}
 
 	public void run() {
@@ -94,7 +83,6 @@ public class Trial implements Runnable {
 			DisplaySingleton.getDisplay().newTrial();
 			
 			for (Logger logger : beforeLoggers) logger.finalizeLog();
-			Plotter.plot(beforePlotters);
 			
 			// Run each episode
 			for (Episode episode : episodes) {
@@ -115,9 +103,7 @@ public class Trial implements Runnable {
 		    // Wait until all plots are done before contuining
 		    // because some plots create files used by trial plots
 			Plotter.join();  
-        
-			Plotter.plot(afterPlotters);
-			
+        			
 
 		}
 
