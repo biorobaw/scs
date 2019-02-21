@@ -1,25 +1,18 @@
 package edu.usf.platform.drawers;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Stroke;
-import java.util.LinkedList;
+import java.awt.geom.Rectangle2D.Float;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.usf.experiment.Globals;
 import edu.usf.experiment.display.GuiUtils;
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
 import edu.usf.experiment.universe.BoundedUniverse;
-import edu.usf.experiment.universe.UniverseLoader;
-import edu.usf.experiment.universe.wall.Wall;
-import edu.usf.experiment.universe.wall.WallUniverse;
-import java.awt.geom.Rectangle2D.Float;
+import edu.usf.experiment.universe.Universe;
 
 public class PolarDataDrawer extends Drawer {
 	
@@ -110,7 +103,7 @@ public class PolarDataDrawer extends Drawer {
 	public void draw(Graphics g, java.awt.geom.Rectangle2D.Float panelCoordinates) {
 		if(!doDraw) return;
 		
-		BoundedUniverse bu = (BoundedUniverse)UniverseLoader.getUniverse();		
+		BoundedUniverse bu = (BoundedUniverse)Universe.getUniverse();		
 		Scaler s = new Scaler(localCoordinates,panelCoordinates,true);
 		Point center = s.scale(relativeCenter);
 		

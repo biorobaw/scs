@@ -15,11 +15,12 @@ import com.vividsolutions.jts.geom.Coordinate;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.MovableRobotUniverse;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.platform.Platform;
 import edu.usf.experiment.universe.platform.PlatformUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class MorseUniverse implements GlobalCameraUniverse, PlatformUniverse, MovableRobotUniverse {
+public class MorseUniverse extends Universe implements GlobalCameraUniverse, PlatformUniverse, MovableRobotUniverse {
 
 	private PosSensorProxy posSensor;
 	private BufferedWriter writer;

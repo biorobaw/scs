@@ -21,13 +21,14 @@ import edu.usf.experiment.universe.BoundedUniverse;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.GridUniverse;
 import edu.usf.experiment.universe.MovableRobotUniverse;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.platform.Platform;
 import edu.usf.experiment.universe.platform.PlatformUniverse;
 import edu.usf.experiment.universe.wall.Wall;
 import edu.usf.experiment.universe.wall.WallUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class DiscreteVirtualUniverse
+public class DiscreteVirtualUniverse extends Universe
 		implements PlatformUniverse, WallUniverse, GlobalCameraUniverse, MovableRobotUniverse, GridUniverse, BoundedUniverse {
 
 	private static final float HALF_CELL = .5f;

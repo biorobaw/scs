@@ -22,6 +22,13 @@ public class CyclesLogger extends SingleFileLogger {
 	}
 
 	@Override
+	public void initLog() {
+		// TODO Auto-generated method stub
+		super.initLog();
+		times.clear();
+	}
+	
+	@Override
 	public void finalizeLog() {
 //		PropertyHolder props = PropertyHolder.getInstance();
 		Globals g = Globals.getInstance();

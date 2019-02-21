@@ -2,15 +2,9 @@ package edu.usf.experiment.display.drawer;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geomgraph.Position;
-
-import edu.usf.experiment.universe.BoundedUniverse;
-import edu.usf.experiment.universe.GlobalCameraUniverse;
-import edu.usf.experiment.universe.UniverseLoader;
 
 public class BrokenDrawer extends Drawer {
 

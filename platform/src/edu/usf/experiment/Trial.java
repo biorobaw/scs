@@ -4,14 +4,10 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.usf.experiment.Deprecated.plot.Plotter;
 import edu.usf.experiment.display.DisplaySingleton;
-import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
-import edu.usf.experiment.task.TaskLoader;
 import edu.usf.experiment.universe.Universe;
-import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.utils.ElementWrapper;
 
 /**
@@ -48,8 +44,8 @@ public class Trial implements Runnable {
 		File file = new File(logPath);
 		file.mkdirs();
 
-		beforeTasks = TaskLoader.getInstance().load(trialNode.getChild("beforeTrialTasks"));
-		afterTasks = TaskLoader.getInstance().load(trialNode.getChild("afterTrialTasks"));
+		beforeTasks = Task.loadTask(trialNode.getChild("beforeTrialTasks"));
+		afterTasks = Task.loadTask(trialNode.getChild("afterTrialTasks"));
 		
 
 		episodes = new LinkedList<Episode>();
@@ -73,7 +69,7 @@ public class Trial implements Runnable {
 			
 			
 			// Do all before trial tasks
-			for (Task task : beforeTasks) task.perform(UniverseLoader.getUniverse(),this.getSubject());
+			for (Task task : beforeTasks) task.perform(Universe.getUniverse(),this.getSubject());
 
 			
 			//singal new trial to display (must occur after tasks)
@@ -88,7 +84,7 @@ public class Trial implements Runnable {
 			
 			
 			// Do all after trial tasks
-			for (Task task : afterTasks) task.perform(UniverseLoader.getUniverse(),this.getSubject());
+			for (Task task : afterTasks) task.perform(Universe.getUniverse(),this.getSubject());
 			
 			//Signal end of trial
 			for(Task t : beforeTasks) t.endTrial();

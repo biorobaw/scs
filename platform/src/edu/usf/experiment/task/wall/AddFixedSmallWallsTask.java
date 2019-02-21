@@ -4,12 +4,9 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
 import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.robot.RobotLoader;
-import edu.usf.experiment.subject.ModelLoader;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.universe.Universe;
-import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.universe.wall.WallUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.XMLExperimentParser;
@@ -102,10 +99,11 @@ public class AddFixedSmallWallsTask extends Task {
 //		for (int i = 0; i < 10000; i++){
 			ElementWrapper root = XMLExperimentParser
 					.loadRoot("src/edu/usf/ratsim/experiment/xml/multiFeedersTrainRecallSmallObs.xml");
-			WallUniverse wu = (WallUniverse) UniverseLoader.getInstance().load(root, ".");
-			Robot robot = RobotLoader.getInstance().load(root);
-			Model model = ModelLoader.getInstance().load(root.getChild("model"), robot);
-			new AddFixedSmallWallsTask(null).perform(wu, new Subject("sub", "group", model, robot));
+			Universe u = Universe.load(root, ".");
+			WallUniverse wu = (WallUniverse) u;
+			Robot robot = Robot.load(root,u);
+			Model model = Subject.load(root.getChild("model"), robot);
+			new AddFixedSmallWallsTask(null).perform(u, new Subject("sub", "group", model, robot));
 			System.out.println("walls added");
 			try {
 				Thread.sleep(10000);

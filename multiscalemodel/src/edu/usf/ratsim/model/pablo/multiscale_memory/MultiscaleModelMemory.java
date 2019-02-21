@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import edu.usf.experiment.Episode;
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.DisplaySingleton;
@@ -20,7 +19,7 @@ import edu.usf.experiment.robot.affordance.AbsoluteAngleAffordance;
 import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.experiment.robot.affordance.EatAffordance;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
-import edu.usf.experiment.universe.UniverseLoader;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.math.SumFloat0dModule;
@@ -31,13 +30,11 @@ import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePortMatrix;
 import edu.usf.platform.drawers.PCDrawer;
-import edu.usf.platform.drawers.PolarArrowDrawer;
 import edu.usf.platform.drawers.PolarDataDrawer;
 import edu.usf.ratsim.model.pablo.morris_replay.drawers.RuntimesDrawer;
 import edu.usf.ratsim.model.pablo.morris_replay.submodules.WallGateModule;
 import edu.usf.ratsim.model.pablo.multiplet.drawers.VDrawer;
 import edu.usf.ratsim.model.pablo.multiplet.submodules.DistancesInputModule;
-import edu.usf.ratsim.model.pablo.multiscale_memory.controllers.JoystickModule;
 import edu.usf.ratsim.model.pablo.multiscale_memory.drawers.ValueTraceDrawer;
 import edu.usf.ratsim.model.pablo.multiscale_memory.modules.ActionBiasModule;
 import edu.usf.ratsim.model.pablo.multiscale_memory.modules.EligibilityTraces;
@@ -456,7 +453,7 @@ public class MultiscaleModelMemory extends Model {
 //				Episode.togglePause();
 //			}
 
-			((AbsoluteDirectionRobotVirtualUniverse) UniverseLoader.getUniverse()).setRobotADStep(0);
+			((AbsoluteDirectionRobotVirtualUniverse) Universe.getUniverse()).setRobotADStep(0);
 
 //			float joyX = joystick.xAxis;
 //			float joyY = joystick.yAxis;
@@ -500,7 +497,7 @@ public class MultiscaleModelMemory extends Model {
 		d.addDrawer("universe", "cycle info", new CycleDataDrawer());
 		
 		// UNIVERSE RELATED DRAWERS
-		RobotDrawer rDrawer = new RobotDrawer((GlobalCameraUniverse) UniverseLoader.getUniverse());
+		RobotDrawer rDrawer = new RobotDrawer((GlobalCameraUniverse) Universe.getUniverse());
 		WallDrawer wallDrawer = new WallDrawer(VirtUniverse.getInstance(), 1);
 		wallDrawer.setColor(GuiUtils.getHSBAColor(0f, 0f, 0f, 1));
 		

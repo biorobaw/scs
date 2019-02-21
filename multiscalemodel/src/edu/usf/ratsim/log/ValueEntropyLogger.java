@@ -18,8 +18,7 @@ public class ValueEntropyLogger extends DistributedLogger {
 
 	public ValueEntropyLogger(ElementWrapper params) {
 		super(params);
-
-		writer = getWriter();
+		
 	}
 
 
@@ -44,6 +43,13 @@ public class ValueEntropyLogger extends DistributedLogger {
 
 	private boolean inCircle(float x, float y, double width) {
 		return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) <= width / 2;
+	}
+	
+	@Override
+	public void initLog() {
+		// TODO Auto-generated method stub
+		super.initLog();
+		writer = getWriter();
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.universe.Universe;
 
-public interface PlatformUniverse extends Universe {
+public interface PlatformUniverse  {
 
 	public List<Platform> getPlatforms();
 	

@@ -8,6 +8,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.PlatformRobot;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.SonarRobot;
 import edu.usf.experiment.robot.TeleportRobot;
 import edu.usf.experiment.robot.WallRobot;
@@ -23,7 +24,7 @@ import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.ratsim.support.NotImplementedException;
 import edu.usf.vlwsim.universe.VirtUniverse;
 
-public class VirtualRobot
+public class VirtualRobot extends Robot
 		implements FeederRobot, LocalizableRobot, SonarRobot, PlatformRobot, WallRobot, TeleportRobot {
 
 	private final float ROBOT_RADIUS = .075f;

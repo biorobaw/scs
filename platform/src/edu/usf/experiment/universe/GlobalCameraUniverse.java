@@ -2,7 +2,7 @@ package edu.usf.experiment.universe;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public interface GlobalCameraUniverse extends Universe {
+public interface GlobalCameraUniverse  {
 
 	/**
 	 * Return the virtual robot's position

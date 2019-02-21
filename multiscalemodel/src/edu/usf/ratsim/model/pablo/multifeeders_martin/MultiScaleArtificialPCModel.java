@@ -9,22 +9,15 @@ import java.util.Map;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.usf.experiment.Globals;
 import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.DrawPanel;
-import edu.usf.experiment.display.GuiUtils;
-import edu.usf.experiment.display.drawer.PathDrawer;
-import edu.usf.experiment.display.drawer.RobotDrawer;
-import edu.usf.experiment.display.drawer.WallDrawer;
 import edu.usf.experiment.display.drawer.simulation.CycleDataDrawer;
 import edu.usf.experiment.model.DeactivableModel;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.WallRobot;
 import edu.usf.experiment.robot.affordance.AffordanceRobot;
-import edu.usf.experiment.universe.GlobalCameraUniverse;
-import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
@@ -37,14 +30,10 @@ import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.array.Float1dPortArray;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePortMatrix;
-import edu.usf.platform.drawers.PCDrawer;
-import edu.usf.platform.drawers.PolarDataDrawer;
-import edu.usf.ratsim.model.pablo.morris_replay.drawers.RuntimesDrawer;
 import edu.usf.ratsim.model.pablo.multifeeders_martin.drawers.FeedingStepHistoryDrawer;
 import edu.usf.ratsim.model.pablo.multifeeders_martin.drawers.TryToEatPositionDrawer;
 import edu.usf.ratsim.model.pablo.multifeeders_martin.drawers.VoterDrawer;
 import edu.usf.ratsim.model.pablo.multifeeders_martin.modules.DistanceToClosesWallModule;
-import edu.usf.ratsim.model.pablo.multiplet.drawers.VDrawer;
 import edu.usf.ratsim.nsl.modules.actionselection.DecayingExplorationSchema;
 import edu.usf.ratsim.nsl.modules.actionselection.GradientValue;
 import edu.usf.ratsim.nsl.modules.actionselection.GradientVotes;
@@ -76,7 +65,6 @@ import edu.usf.ratsim.nsl.modules.rl.MultiStateACTaxic;
 import edu.usf.ratsim.nsl.modules.rl.MultiStateProportionalQL;
 import edu.usf.ratsim.nsl.modules.rl.QLAlgorithm;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
-import edu.usf.vlwsim.universe.VirtUniverse;
 
 public class MultiScaleArtificialPCModel extends Model implements DeactivableModel {
 

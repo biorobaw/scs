@@ -7,7 +7,7 @@ import com.vividsolutions.jts.geom.LineSegment;
 
 import edu.usf.experiment.universe.Universe;
 
-public interface WallUniverse extends Universe {
+public interface WallUniverse  {
 	
 	// Insertion and Deletions
 	public void addWall(LineSegment segment);

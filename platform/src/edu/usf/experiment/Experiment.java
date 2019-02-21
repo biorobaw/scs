@@ -12,13 +12,9 @@ import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.NoDisplay;
 import edu.usf.experiment.display.SCSDisplay;
 import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.robot.RobotLoader;
-import edu.usf.experiment.subject.ModelLoader;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
-import edu.usf.experiment.task.TaskLoader;
 import edu.usf.experiment.universe.Universe;
-import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.IOUtils;
@@ -67,9 +63,10 @@ public class Experiment implements Runnable {
 	private List<Trial> trials;
 	private List<Task> beforeTasks;
 	private List<Task> afterTasks;
+	
 	private Universe universe;
-	private Subject subject;
-	private Robot robot;
+	private Subject  subject;
+	private Robot 	 robot;
 
 	protected Experiment(){
 		
@@ -104,11 +101,11 @@ public class Experiment implements Runnable {
 		
 		//load universe
 		System.out.println("Loading universe...");
-		universe = UniverseLoader.getInstance().load(root, logPath + "/");
+		universe = Universe.load(root, logPath + "/");
 
 		//load robot
 		System.out.println("Loading robot...");
-		robot = RobotLoader.getInstance().load(root, universe);
+		robot = Robot.load(root, universe);
 		robot.startRobot();
 		universe.setRobot(robot);
 		
@@ -155,7 +152,7 @@ public class Experiment implements Runnable {
 		for(Task t: afterTasks) t.newExperiment();
 		
 		// Do all before trial tasks
-		for (Task task : beforeTasks) task.perform(UniverseLoader.getUniverse(),this.getSubject());		
+		for (Task task : beforeTasks) task.perform(Universe.getUniverse(),this.getSubject());		
 		
 		//Debug Sleep at start
 		if (Debug.sleepBeforeStart) try {
@@ -169,7 +166,7 @@ public class Experiment implements Runnable {
 		for (Trial t : trials) t.run();
 
 		// Do all after experiment tasks
-		for (Task task : afterTasks) task.perform(UniverseLoader.getUniverse(),this.getSubject());
+		for (Task task : afterTasks) task.perform(Universe.getUniverse(),this.getSubject());
 		
 		//signal end of experiment
 		for(Task t : beforeTasks) t.endExperiment();
@@ -292,8 +289,8 @@ public class Experiment implements Runnable {
 		System.out.println("[+] Logpath: " + logPath);
 		System.out.println("[+] Loading Experiment Tasks");
 		
-		beforeTasks = TaskLoader.getInstance().load(root.getChild("beforeExperimentTasks"));
-		afterTasks = TaskLoader.getInstance().load(root.getChild("afterExperimentTasks"));		
+		beforeTasks = Task.loadTask(root.getChild("beforeExperimentTasks"));
+		afterTasks = Task.loadTask(root.getChild("afterExperimentTasks"));		
 		
 		
 	}
@@ -385,7 +382,7 @@ public class Experiment implements Runnable {
 		System.out.println("gName " + groupName);
 		ElementWrapper groupParams = getGroupNode(root, groupName).getChild("params");
 		modelParams.merge(root, groupParams);
-		Model model = ModelLoader.getInstance().load(modelParams, robot);
+		Model model = Subject.load(modelParams, robot);
 		subject = new Subject(subjectName, groupName, model, robot);
 	}
 	

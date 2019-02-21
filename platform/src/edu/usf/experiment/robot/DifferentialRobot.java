@@ -1,6 +1,6 @@
 package edu.usf.experiment.robot;
 
-public interface DifferentialRobot extends Robot {
+public interface DifferentialRobot  {
 
 	/**
 	 * Sets the linear velocity of the robot

@@ -1,6 +1,6 @@
 package edu.usf.experiment.robot;
 
-public interface PlatformRobot extends Robot {
+public interface PlatformRobot  {
 
 	public abstract boolean hasFoundPlatform();
 }

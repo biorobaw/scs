@@ -1,6 +1,7 @@
 package edu.usf.ratsim.model.pathplanning.graphbased;
 
 import edu.usf.experiment.robot.HolonomicRobot;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.ratsim.nsl.modules.actionselection.bugs.BugUtilities;
@@ -13,13 +14,15 @@ public class StraightAndWF extends Module {
 		STRAIGHT, WF
 	};
 	private State state;
-	private HolonomicRobot robot;
+	private Robot robot;
+	private HolonomicRobot hRobot;
 	
-	public StraightAndWF(String name, HolonomicRobot robot) {
+	public StraightAndWF(String name, Robot robot) {
 		super(name);
 		
 		state = State.WF;
 		this.robot = robot;
+		this.hRobot = (HolonomicRobot)robot;
 	}
 
 	@Override
@@ -52,7 +55,7 @@ public class StraightAndWF extends Module {
 		v.trim();
 
 		// Execute commands
-		robot.setVels(v.x, v.y, v.theta);
+		hRobot.setVels(v.x, v.y, v.theta);
 	}
 
 	@Override

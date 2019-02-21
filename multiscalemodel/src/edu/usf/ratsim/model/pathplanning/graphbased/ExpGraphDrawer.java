@@ -4,9 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -14,7 +12,7 @@ import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
 import edu.usf.experiment.universe.BoundedUniverse;
-import edu.usf.experiment.universe.UniverseLoader;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.ratsim.nsl.modules.pathplanning.Edge;
 import edu.usf.ratsim.nsl.modules.pathplanning.ExperienceRoadMap;
 import edu.usf.ratsim.nsl.modules.pathplanning.PointNode;
@@ -34,7 +32,7 @@ public class ExpGraphDrawer extends Drawer {
 	public void draw(Graphics g, java.awt.geom.Rectangle2D.Float panelCoordinates) {
 		if(!doDraw) return;
 		
-		BoundedUniverse bu = (BoundedUniverse)UniverseLoader.getUniverse();
+		BoundedUniverse bu = (BoundedUniverse)Universe.getUniverse();
 		Scaler s = new Scaler(bu.getBoundingRect(), panelCoordinates, true);
 		
 		UndirectedGraph<PointNode, Edge> graph = erm.getGraph();

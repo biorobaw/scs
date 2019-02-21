@@ -45,7 +45,7 @@ public class APFModel extends Model {
 		apf.addInPort("platformPosition", platPos.getOutPort("platformPosition"));
 		addModule(apf);
 		
-		DisplaySingleton.getDisplay().addDrawer("universe","sonar",new SonarReadingsDrawer((SonarRobot) robot, (LocalizableRobot) robot), 0);
+		DisplaySingleton.getDisplay().addDrawer("universe","sonar",new SonarReadingsDrawer( robot), 0);
 		DisplaySingleton.getDisplay().addDrawer("universe","path",new PathDrawer((LocalizableRobot) robot));
 	}
 

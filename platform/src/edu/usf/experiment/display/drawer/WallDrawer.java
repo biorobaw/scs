@@ -9,7 +9,7 @@ import java.awt.Stroke;
 import java.util.LinkedList;
 
 import edu.usf.experiment.universe.BoundedUniverse;
-import edu.usf.experiment.universe.UniverseLoader;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.wall.Wall;
 import edu.usf.experiment.universe.wall.WallUniverse;
 
@@ -35,7 +35,7 @@ public class WallDrawer extends Drawer {
 	public void draw(Graphics g, java.awt.geom.Rectangle2D.Float panelCoordinates) {
 		if(!doDraw) return;
 		
-		BoundedUniverse bu = (BoundedUniverse)UniverseLoader.getUniverse();
+		BoundedUniverse bu = (BoundedUniverse)Universe.getUniverse();
 		if(bu==null) return;
 		Scaler s = new Scaler(bu.getBoundingRect(), panelCoordinates, true);
 		

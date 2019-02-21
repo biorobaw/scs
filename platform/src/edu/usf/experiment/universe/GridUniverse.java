@@ -1,6 +1,6 @@
 package edu.usf.experiment.universe;
 
-public interface GridUniverse  extends Universe {
+public interface GridUniverse   {
 
 	/**
 	 * Returns the width of the grid in number of cells

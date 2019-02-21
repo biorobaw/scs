@@ -1,6 +1,6 @@
 package edu.usf.experiment.robot;
 
-public interface SonarRobot extends Robot {
+public interface SonarRobot  {
 
 	/**
 	 * Get the current readings for all sonar sensors

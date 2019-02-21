@@ -11,7 +11,7 @@ import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
 import edu.usf.experiment.model.ValueModel;
 import edu.usf.experiment.universe.BoundedUniverse;
-import edu.usf.experiment.universe.UniverseLoader;
+import edu.usf.experiment.universe.Universe;
 
 public class QValueDrawer extends Drawer {
 
@@ -25,7 +25,7 @@ public class QValueDrawer extends Drawer {
 	public void draw(Graphics g, java.awt.geom.Rectangle2D.Float panelCoordinates) {
 		if(!doDraw) return;
 		
-		BoundedUniverse bu = (BoundedUniverse)UniverseLoader.getUniverse();
+		BoundedUniverse bu = (BoundedUniverse)Universe.getUniverse();
 		Scaler s = new Scaler(bu.getBoundingRect(), panelCoordinates, true);
 		
 		

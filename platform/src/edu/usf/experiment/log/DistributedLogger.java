@@ -36,6 +36,12 @@ public abstract class DistributedLogger extends Logger {
 		return writer;
 	}
 	
+	@Override
+	public void initLog() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	public String getLogPath() {
 		return Globals.getInstance().get("logPath").toString();
 	}
@@ -43,5 +49,7 @@ public abstract class DistributedLogger extends Logger {
 	public abstract String getHeader();
 	
 	public abstract String getFileName();
+	
+	
 
 }

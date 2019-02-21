@@ -1,13 +1,11 @@
 package edu.usf.ratsim.model.pablo.morris_replay;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import edu.usf.experiment.Episode;
 import edu.usf.experiment.Globals;
@@ -23,19 +21,16 @@ import edu.usf.experiment.display.drawer.simulation.CycleDataDrawer;
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.robot.TeleportRobot;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
-import edu.usf.experiment.universe.UniverseLoader;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.BinaryFile;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.micronsl.Model;
-import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.twodimensional.sparse.Entry;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePortMatrix;
 import edu.usf.platform.drawers.PCDrawer;
-import edu.usf.platform.drawers.PolarArrowDrawer;
 import edu.usf.platform.drawers.PolarDataDrawer;
 import edu.usf.ratsim.model.pablo.morris_replay.drawers.RuntimesDrawer;
 import edu.usf.ratsim.model.pablo.multiplet.drawers.VDrawer;
@@ -132,7 +127,7 @@ public class MorrisReplayModel extends Model  {
 		// Now we are ready to execute replay
 		// TODO: fix this, it has no effect currently
 		// lRobot.setCloseThrs(asleepFoodDistanceThreshold);
-		((VirtUniverse) UniverseLoader.getUniverse()).setCloseThrs(asleepFoodDistanceThreshold);
+		((VirtUniverse) Universe.getUniverse()).setCloseThrs(asleepFoodDistanceThreshold);
 
 		Display display = DisplaySingleton.getDisplay();
 
@@ -157,7 +152,7 @@ public class MorrisReplayModel extends Model  {
 		}
 
 		// lRobot.setCloseThrs(awakeFoodDistanceThreshold);
-		((VirtUniverse) UniverseLoader.getUniverse()).setCloseThrs(awakeFoodDistanceThreshold);
+		((VirtUniverse) Universe.getUniverse()).setCloseThrs(awakeFoodDistanceThreshold);
 
 		// Trick the condition to end simulation
 		fRobot.clearEaten();
@@ -310,7 +305,7 @@ public class MorrisReplayModel extends Model  {
 		
 		
 		//UNIVERSE RELATED DRAWERS
-		RobotDrawer rDrawer = new RobotDrawer((GlobalCameraUniverse)UniverseLoader.getUniverse());
+		RobotDrawer rDrawer = new RobotDrawer((GlobalCameraUniverse)Universe.getUniverse());
 		WallDrawer wallDrawer = new WallDrawer(VirtUniverse.getInstance(), 1);
 		wallDrawer.setColor(GuiUtils.getHSBAColor(0f, 0f, 0f, 1));
 		

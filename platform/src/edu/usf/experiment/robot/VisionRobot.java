@@ -1,6 +1,6 @@
 package edu.usf.experiment.robot;
 
-public interface VisionRobot extends Robot {
+public interface VisionRobot {
 
 	public abstract float getHalfFieldView();
 }

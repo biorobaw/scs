@@ -4,7 +4,7 @@ import java.util.List;
 
 import edu.usf.experiment.universe.Universe;
 
-public interface FeederUniverse extends Universe {
+public interface FeederUniverse  {
 
 	// Insertion and Deletion
 	public void addFeeder(int id, float x, float y);

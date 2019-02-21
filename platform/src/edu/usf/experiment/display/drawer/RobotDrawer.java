@@ -5,11 +5,10 @@ import java.awt.Graphics;
 import java.awt.Point;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geomgraph.Position;
 
 import edu.usf.experiment.universe.BoundedUniverse;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
-import edu.usf.experiment.universe.UniverseLoader;
+import edu.usf.experiment.universe.Universe;
 
 public class RobotDrawer extends Drawer {
 
@@ -27,7 +26,7 @@ public class RobotDrawer extends Drawer {
 	public void draw(Graphics g, java.awt.geom.Rectangle2D.Float panelCoordinates) {
 		if(!doDraw) return;
 		
-		BoundedUniverse bu = (BoundedUniverse)UniverseLoader.getUniverse();
+		BoundedUniverse bu = (BoundedUniverse)Universe.getUniverse();
 		if(bu==null) return;
 		Scaler s = new Scaler(bu.getBoundingRect(), panelCoordinates, true);
 		Point p = s.scale(position);

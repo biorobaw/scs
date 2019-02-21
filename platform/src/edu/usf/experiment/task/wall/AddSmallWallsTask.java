@@ -7,17 +7,11 @@ import java.util.Random;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
-import edu.usf.experiment.Episode;
-import edu.usf.experiment.Experiment;
-import edu.usf.experiment.Trial;
 import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.robot.RobotLoader;
-import edu.usf.experiment.subject.ModelLoader;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.Universe;
-import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.experiment.universe.feeder.FeederUniverseUtilities;
 import edu.usf.experiment.universe.wall.WallUniverse;
@@ -200,9 +194,9 @@ public class AddSmallWallsTask extends Task {
 		for (int i = 0; i < 10000; i++) {
 			ElementWrapper root = XMLExperimentParser
 					.loadRoot("multiscalemodel/src/edu/usf/ratsim/experiment/xml/multiFeedersTrainRecallSmallObs.xml");
-			Universe univ = UniverseLoader.getInstance().load(root, ".");
-			Robot robot = RobotLoader.getInstance().load(root);
-			Model model = ModelLoader.getInstance().load(root.getChild("model"), robot);
+			Universe univ = Universe.load(root, ".");
+			Robot robot = Robot.load(root,univ);
+			Model model = Subject.load(root.getChild("model"), robot);
 			AddSmallWallsTask t = new AddSmallWallsTask(null);
 			while (!t.putWalls(univ, new Subject("sub", "group", model, robot)))
 				;

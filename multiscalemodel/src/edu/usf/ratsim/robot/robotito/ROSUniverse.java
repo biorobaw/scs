@@ -20,13 +20,14 @@ import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.universe.BoundedUniverse;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.MovableRobotUniverse;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.platform.Platform;
 import edu.usf.experiment.universe.platform.PlatformUniverse;
 import edu.usf.experiment.universe.wall.Wall;
 import edu.usf.experiment.universe.wall.WallUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class ROSUniverse implements GlobalCameraUniverse, WallUniverse, PlatformUniverse, BoundedUniverse, MovableRobotUniverse {
+public class ROSUniverse extends Universe implements GlobalCameraUniverse, WallUniverse, PlatformUniverse, BoundedUniverse, MovableRobotUniverse {
 
 	private static final long SLEEP_PERIOD = 10;
 	private LinkedList<Platform> platforms;

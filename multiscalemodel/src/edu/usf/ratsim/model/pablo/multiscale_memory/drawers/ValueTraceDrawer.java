@@ -4,15 +4,14 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.HashMap;
 import java.util.List;
+
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.display.GuiUtils;
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
 import edu.usf.experiment.universe.BoundedUniverse;
-import edu.usf.experiment.universe.UniverseLoader;
-import edu.usf.experiment.utils.GeomUtils;
-import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.micronsl.port.twodimensional.sparse.Entry;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
@@ -55,7 +54,7 @@ public class ValueTraceDrawer  extends Drawer {
 		
 		
 		
-		BoundedUniverse bu = (BoundedUniverse)UniverseLoader.getUniverse();
+		BoundedUniverse bu = (BoundedUniverse)Universe.getUniverse();
 		Scaler s = new Scaler(bu.getBoundingRect(), panelCoordinates, true);
 		
 		int coords[][] = s.scale(centers);

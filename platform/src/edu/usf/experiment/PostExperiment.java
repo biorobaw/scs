@@ -3,13 +3,11 @@ package edu.usf.experiment;
 import java.io.File;
 import java.util.List;
 
-import edu.usf.experiment.Deprecated.plot.Plotter;
 import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.NoDisplay;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.task.Task;
-import edu.usf.experiment.task.TaskLoader;
-import edu.usf.experiment.universe.UniverseLoader;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.XMLExperimentParser;
 
@@ -40,9 +38,9 @@ public class PostExperiment extends Experiment implements Runnable {
 		ElementWrapper root = XMLExperimentParser.loadRoot(logPath + "experiment.xml");
 
 		DisplaySingleton.setDisplay(new NoDisplay());
-		setUniverse(UniverseLoader.getInstance().load(root, logPath));
+		setUniverse(Universe.load(root, logPath));
 
-		afterTasks = TaskLoader.getInstance().load(root.getChild("afterExperimentLoggers"));
+		afterTasks = Task.loadTask(root.getChild("afterExperimentLoggers"));
 
 	}
 
@@ -57,7 +55,7 @@ public class PostExperiment extends Experiment implements Runnable {
 		for (Task t : afterTasks) {
 			if(t instanceof Logger) {
 				Logger logger = (Logger)t;
-				logger.perform(UniverseLoader.getUniverse(),this.getSubject());
+				logger.perform(Universe.getUniverse(),this.getSubject());
 				logger.finalizeLog();
 			}
 		}

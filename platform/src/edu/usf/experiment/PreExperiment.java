@@ -3,11 +3,9 @@ package edu.usf.experiment;
 import java.io.File;
 import java.util.List;
 
-import edu.usf.experiment.Deprecated.plot.Plotter;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.task.Task;
-import edu.usf.experiment.task.TaskLoader;
-import edu.usf.experiment.universe.UniverseLoader;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.IOUtils;
 import edu.usf.experiment.utils.XMLExperimentParser;
@@ -55,11 +53,10 @@ public class PreExperiment extends Experiment implements Runnable {
 		System.out.println("[+] Saving date");
 		IOUtils.exec("date", ".");
 
-		setUniverse(UniverseLoader.getInstance().load(root, logPath));
+		setUniverse(Universe.load(root, logPath));
 
 		// Load tasks and plotters
-		beforeTasks = TaskLoader.getInstance().load(
-				root.getChild("beforeExperimentTasks"));
+		beforeTasks = Task.loadTask(root.getChild("beforeExperimentTasks"));
 
 	}
 
@@ -72,7 +69,7 @@ public class PreExperiment extends Experiment implements Runnable {
 		for (Task t : beforeTasks) {
 			if(t instanceof Logger) {
 				Logger logger = (Logger)t;
-				logger.perform(UniverseLoader.getUniverse(),this.getSubject());
+				logger.perform(Universe.getUniverse(),this.getSubject());
 				logger.finalizeLog();
 			};
 			

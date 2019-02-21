@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules.input;
 
-import edu.usf.experiment.universe.UniverseLoader;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.micronsl.module.Module;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
@@ -19,7 +19,7 @@ public class SubjectAte extends Module {
 	public SubjectAte(String name) {
 		super(name);
 
-		u = (FeederUniverse)UniverseLoader.getUniverse();
+		u = (FeederUniverse)Universe.getUniverse();
 		outPort = new Bool0dPort(this);
 		addOutPort("subAte", outPort);
 	}

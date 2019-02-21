@@ -16,6 +16,13 @@ public abstract class PositionFeedingLogger extends DistributedLogger {
 		poses = new LinkedList<Pose>();
 	}
 
+	@Override
+	public void initLog() {
+		// TODO Auto-generated method stub
+		super.initLog();
+		poses.clear();
+	}
+	
 	public void finalizeLog() {
 		Globals g = Globals.getInstance();
 		String trialName = g.get("trial").toString();

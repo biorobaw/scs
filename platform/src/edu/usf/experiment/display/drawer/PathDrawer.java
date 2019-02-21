@@ -2,15 +2,13 @@ package edu.usf.experiment.display.drawer;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.util.LinkedList;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.usf.experiment.Globals;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.universe.BoundedUniverse;
-import edu.usf.experiment.universe.UniverseLoader;
+import edu.usf.experiment.universe.Universe;
 
 public class PathDrawer extends Drawer {
 
@@ -33,7 +31,7 @@ public class PathDrawer extends Drawer {
 	public void draw(Graphics g, java.awt.geom.Rectangle2D.Float panelCoordinates) {
 		if(!doDraw) return;
 		
-		BoundedUniverse bu = (BoundedUniverse)UniverseLoader.getUniverse();
+		BoundedUniverse bu = (BoundedUniverse)Universe.getUniverse();
 		Scaler s = new Scaler(bu.getBoundingRect(), panelCoordinates, true);
 		
 

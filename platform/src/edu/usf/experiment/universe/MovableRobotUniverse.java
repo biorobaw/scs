@@ -2,7 +2,7 @@ package edu.usf.experiment.universe;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-public interface MovableRobotUniverse extends Universe {
+public interface MovableRobotUniverse {
 
 	/**
 	 * Sets the virtual robot position

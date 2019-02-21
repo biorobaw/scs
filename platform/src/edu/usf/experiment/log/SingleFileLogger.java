@@ -19,15 +19,6 @@ public abstract class SingleFileLogger extends Logger {
 	
 	public SingleFileLogger(ElementWrapper params){
 		super(params);
-		
-		FileWriter fw = null;
-		BufferedWriter bw = null;
-		try {
-		    fw = new FileWriter(getLogPath() + File.separator + getFileName(), true);
-		    bw = new BufferedWriter(fw);
-		    out = new PrintWriter(bw);
-		} catch (IOException e) {
-		}
 	}
 
 	public void finalizeLog(){
@@ -46,5 +37,19 @@ public abstract class SingleFileLogger extends Logger {
 	public String getLogPath() {
 		return Globals.getInstance().get("logPath").toString();
 	}
+	
+	@Override
+	public void initLog() {
+		FileWriter fw = null;
+		BufferedWriter bw = null;
+		try {
+		    fw = new FileWriter(getLogPath() + File.separator + getFileName(), true);
+		    bw = new BufferedWriter(fw);
+		    out = new PrintWriter(bw);
+		} catch (IOException e) {
+		}
+	}
 
+
+	
 }

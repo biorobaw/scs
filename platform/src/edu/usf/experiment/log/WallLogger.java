@@ -35,6 +35,12 @@ public class WallLogger extends DistributedLogger {
 			walls.add(w);
 	}
 	
+	@Override
+	public void initLog() {
+		// TODO Auto-generated method stub
+		super.initLog();
+		walls.clear();
+	}
 	
 	
 

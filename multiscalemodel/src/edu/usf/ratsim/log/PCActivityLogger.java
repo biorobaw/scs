@@ -23,9 +23,7 @@ public class PCActivityLogger extends DistributedLogger {
 	}
 
 	@Override
-	public void perform(Universe u, Subject sub) {
-		if (writer == null)
-			writer = getWriter();
+	public void perform(Universe u, Subject sub) {			
 
 		PlaceCellModel pcm = (PlaceCellModel) sub.getModel();
 		Map<Integer, Float> activation = pcm.getPCActivity();
@@ -53,6 +51,12 @@ public class PCActivityLogger extends DistributedLogger {
 		return "trial\tgroup\tsubject\trepetition\tcycle\tcellNum\tactivation";
 	}
 
+	@Override
+	public void initLog() {
+		// TODO Auto-generated method stub
+		super.initLog();
+		writer = getWriter();
+	}
 
 	@Override
 	public void finalizeLog() {

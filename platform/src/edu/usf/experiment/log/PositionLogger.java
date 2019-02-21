@@ -18,6 +18,13 @@ public abstract class PositionLogger extends DistributedLogger {
 		poses = new LinkedList<Coordinate>();
 	}
 
+	@Override
+	public void initLog() {
+		// TODO Auto-generated method stub
+		super.initLog();
+		poses.clear();
+	}
+	
 	public void finalizeLog() {
 		Globals g = Globals.getInstance();
 		String trialName = g.get("trial").toString();

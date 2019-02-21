@@ -14,7 +14,8 @@ public class Bug0Module extends Module {
 
 	private static final float FREE_PASSAGE_THRS = 1.5f * BugUtilities.DEFAULT_OBSTACLE_FOUND_THRS;
 
-	private DifferentialRobot r;
+	private Robot robot;
+	private DifferentialRobot dRobot;
 
 	private enum State {
 		GOAL_SEEKING, WALL_FOLLOWING_LEFT, WALL_FOLLOWING_RIGHT
@@ -28,7 +29,8 @@ public class Bug0Module extends Module {
 		super(name);
 
 		// TODO: set to differential robot?
-		this.r = (DifferentialRobot) robot;
+		this.robot = robot;
+		this.dRobot = (DifferentialRobot) robot;
 		this.obstFoundThrs = obstFoundThrs;
 
 	}
@@ -86,15 +88,15 @@ public class Bug0Module extends Module {
 			v = BugUtilities.wallFollowLeft(readings,angles);
 			break;
 		case WALL_FOLLOWING_RIGHT:
-			v = BugUtilities.wallFollowRight(readings, angles, r.getRadius(), obstFoundThrs);
+			v = BugUtilities.wallFollowRight(readings, angles, robot.getRadius(), obstFoundThrs);
 		}
 
 		// Enforce maximum velocities
 		v.trim();
 
 		// Execute commands
-		r.setAngularVel(v.theta);
-		r.setLinearVel(v.x);
+		dRobot.setAngularVel(v.theta);
+		dRobot.setLinearVel(v.x);
 	}
 
 	@Override

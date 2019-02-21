@@ -5,7 +5,7 @@ import java.util.List;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 
-public interface AffordanceRobot extends Robot {
+public interface AffordanceRobot  {
 
 	/**
 	 * Checks each passed affordance to decide if it is realizable or not

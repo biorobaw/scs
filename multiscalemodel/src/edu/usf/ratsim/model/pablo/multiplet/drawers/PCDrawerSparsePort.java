@@ -3,18 +3,16 @@ package edu.usf.ratsim.model.pablo.multiplet.drawers;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.HashMap;
 import java.util.List;
+
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.display.GuiUtils;
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
 import edu.usf.experiment.universe.BoundedUniverse;
-import edu.usf.experiment.universe.UniverseLoader;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
-import edu.usf.micronsl.port.twodimensional.Float2dSingleBlockMatrixPort;
-import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
 import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 
 public class PCDrawerSparsePort extends Drawer {
@@ -54,7 +52,7 @@ public class PCDrawerSparsePort extends Drawer {
 	public void draw(Graphics g, java.awt.geom.Rectangle2D.Float panelCoordinates) {
 		if(!doDraw) return;
 		
-		BoundedUniverse bu = (BoundedUniverse)UniverseLoader.getUniverse();
+		BoundedUniverse bu = (BoundedUniverse)Universe.getUniverse();
 		Scaler s = new Scaler(bu.getBoundingRect(), panelCoordinates, true);
 		
 		

@@ -1,6 +1,6 @@
 package edu.usf.experiment.robot;
 
-public interface StepRobot extends Robot {
+public interface StepRobot  {
 
 	/**
 	 * Move forward one step

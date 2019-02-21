@@ -17,11 +17,12 @@ import edu.usf.experiment.robot.DifferentialRobot;
 import edu.usf.experiment.robot.HolonomicRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.PlatformRobot;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.SonarRobot;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class Robotito implements DifferentialRobot, HolonomicRobot, SonarRobot, LocalizableRobot, PlatformRobot, Runnable {
+public class Robotito extends Robot implements DifferentialRobot, HolonomicRobot, SonarRobot, LocalizableRobot, PlatformRobot, Runnable {
 
     private static final String PORT = "/dev/ttyUSB0";
     private static final int BAUD_RATE = 57600;

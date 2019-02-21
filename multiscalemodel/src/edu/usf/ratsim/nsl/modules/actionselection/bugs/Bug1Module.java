@@ -13,7 +13,8 @@ import edu.usf.ratsim.support.SonarUtils;
 
 public class Bug1Module extends Module {
 
-	private HolonomicRobot r;
+	private Robot robot;
+	private HolonomicRobot hRobot;
 
 	private enum State {
 		GOAL_SEEKING, WF_AWAY_FROM_HP, WF_RETURN_TO_HP, WF_GO_TO_CP
@@ -29,7 +30,8 @@ public class Bug1Module extends Module {
 		super(name);
 
 		// TODO: set to differential robot?
-		this.r = (HolonomicRobot) robot;
+		this.robot = robot;
+		this.hRobot = (HolonomicRobot) robot;
 		this.obstFoundThrs = obstFoundThrs;
 		
 		state = State.GOAL_SEEKING;
@@ -106,7 +108,7 @@ public class Bug1Module extends Module {
 		case WF_AWAY_FROM_HP:
 		case WF_RETURN_TO_HP:
 		case WF_GO_TO_CP:
-			v = BugUtilities.wallFollowRight(readings, angles, r.getRadius(), obstFoundThrs);
+			v = BugUtilities.wallFollowRight(readings, angles, robot.getRadius(), obstFoundThrs);
 			break;
 		}
 
@@ -115,7 +117,7 @@ public class Bug1Module extends Module {
 		v.trim();
 
 		// Execute commands
-		r.setVels(v.x, v.y, v.theta);
+		hRobot.setVels(v.x, v.y, v.theta);
 	}
 
 	@Override

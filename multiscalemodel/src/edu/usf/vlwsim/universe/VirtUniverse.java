@@ -1,7 +1,6 @@
 package edu.usf.vlwsim.universe;
 
 import java.awt.Color;
-import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -26,6 +25,7 @@ import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.universe.BoundedUniverse;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.MovableRobotUniverse;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.element.MazeElement;
 import edu.usf.experiment.universe.element.MazeElementLoader;
 import edu.usf.experiment.universe.feeder.Feeder;
@@ -47,7 +47,7 @@ import edu.usf.ratsim.support.XMLDocReader;
  * @author ludo
  * 
  */
-public abstract class VirtUniverse implements FeederUniverse, PlatformUniverse, WallUniverse, GlobalCameraUniverse,
+public abstract class VirtUniverse extends Universe implements FeederUniverse, PlatformUniverse, WallUniverse, GlobalCameraUniverse,
 		BoundedUniverse, MovableRobotUniverse {
 
 	/**

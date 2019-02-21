@@ -45,12 +45,12 @@ public class StraightAndWallFollow extends Model implements GraphModel {
 		SubFoundPlatform foundPlat = new SubFoundPlatform("Found Plat", (PlatformRobot) robot);
 		addModule(foundPlat);
 		
-		StraightAndWF sawf = new StraightAndWF("Straight and WF", (HolonomicRobot) robot);
+		StraightAndWF sawf = new StraightAndWF("Straight and WF", robot);
 		sawf.addInPort("sonarReadings", sReadings.getOutPort("sonarReadings"));
 		sawf.addInPort("sonarAngles", sReadings.getOutPort("sonarAngles"));
 		addModule(sawf);
 		
-		DisplaySingleton.getDisplay().addDrawer("universe","sonar",new SonarReadingsDrawer((SonarRobot) robot, (LocalizableRobot) robot), 0);
+		DisplaySingleton.getDisplay().addDrawer("universe","sonar",new SonarReadingsDrawer( robot), 0);
 	}
 
 	public UndirectedGraph<PointNode, Edge> getGraph() {

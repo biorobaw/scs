@@ -3,15 +3,13 @@ package edu.usf.experiment.display.drawer.simulation;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.geom.Rectangle2D.Float;
+
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
-import edu.usf.experiment.universe.BoundedUniverse;
-import edu.usf.experiment.universe.UniverseLoader;
-
-import java.awt.geom.Rectangle2D.Float;
 
 public class CycleDataDrawer extends Drawer {
 	

@@ -64,5 +64,11 @@ public class PlaceRobotFile extends Task {
 		else Globals.getInstance().put("done", true);
 		
 	}
+	
+	@Override
+	public void newEpisode() {
+		// TODO Auto-generated method stub
+		nextPos = 0;
+	}
 
 }

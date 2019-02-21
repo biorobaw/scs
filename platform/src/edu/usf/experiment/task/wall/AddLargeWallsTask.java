@@ -8,13 +8,9 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
 import edu.usf.experiment.PreExperiment;
-import edu.usf.experiment.robot.Robot;
-import edu.usf.experiment.robot.RobotLoader;
-import edu.usf.experiment.subject.ModelLoader;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
 import edu.usf.experiment.universe.Universe;
-import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.experiment.universe.feeder.FeederUniverseUtilities;
 import edu.usf.experiment.universe.wall.WallUniverse;
@@ -23,7 +19,6 @@ import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.GeomUtils;
 import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.experiment.utils.XMLExperimentParser;
-import edu.usf.micronsl.Model;
 
 public class AddLargeWallsTask extends Task {
 
@@ -232,10 +227,8 @@ public class AddLargeWallsTask extends Task {
 		new PreExperiment(
 				"multiscalemodel/src/edu/usf/ratsim/experiment/xml/multiFeedersTrainRecallLargeObs.xml",
 				"logs/Experiment/");
-		WallUniverse univ = (WallUniverse) UniverseLoader.getInstance().load(root,
+		WallUniverse univ = (WallUniverse) Universe.load(root,
 				"logs/Experiment/");
-		Robot robot = RobotLoader.getInstance().load(root);
-		Model model = ModelLoader.getInstance().load(root.getChild("model"), robot);
 		AddLargeWallsTask t = new AddLargeWallsTask(null);
 		while (!t.placeWalls(univ))
 			;

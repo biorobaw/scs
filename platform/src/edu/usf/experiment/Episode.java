@@ -1,7 +1,6 @@
 package edu.usf.experiment;
 
 import java.io.File;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
@@ -9,12 +8,9 @@ import edu.usf.experiment.condition.Condition;
 import edu.usf.experiment.condition.ConditionLoader;
 import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.DisplaySingleton;
-import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
-import edu.usf.experiment.task.TaskLoader;
 import edu.usf.experiment.universe.Universe;
-import edu.usf.experiment.universe.UniverseLoader;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.NSLSimulation;
@@ -77,10 +73,10 @@ public class Episode {
 		File file = new File(logPath);
 		file.mkdirs();
 
-		beforeEpisodeTasks 	= TaskLoader.getInstance().load(episodeNode.getChild("beforeEpisodeTasks"));
-		afterEpisodeTasks 	= TaskLoader.getInstance().load(episodeNode.getChild("afterEpisodeTasks"));
-		beforeCycleTasks   	= TaskLoader.getInstance().load(episodeNode.getChild("beforeCycleTasks"));
-		afterCycleTasks 	= TaskLoader.getInstance().load(episodeNode.getChild("afterCycleTasks"));
+		beforeEpisodeTasks 	= Task.loadTask(episodeNode.getChild("beforeEpisodeTasks"));
+		afterEpisodeTasks 	= Task.loadTask(episodeNode.getChild("afterEpisodeTasks"));
+		beforeCycleTasks   	= Task.loadTask(episodeNode.getChild("beforeCycleTasks"));
+		afterCycleTasks 	= Task.loadTask(episodeNode.getChild("afterCycleTasks"));
 		stopConds 			= ConditionLoader.getInstance().load(episodeNode.getChild("stopConditions"));
 		
 		
@@ -102,7 +98,7 @@ public class Episode {
 				+ episodeNumber + " started.");
 				
 		//Clear state of last episode
-		UniverseLoader.getUniverse().clearState();		
+		Universe.getUniverse().clearState();		
 		getSubject().robot.clearState();
 		getSubject().getModel().newEpisode();
 		
@@ -113,7 +109,7 @@ public class Episode {
 		for(Task t : afterEpisodeTasks) t.newEpisode();
 		
 		// Do all before episode tasks
-		for (Task task : beforeEpisodeTasks) task.perform(UniverseLoader.getUniverse(),this.getSubject());
+		for (Task task : beforeEpisodeTasks) task.perform(Universe.getUniverse(),this.getSubject());
 
 		// Execute cycles until stop condition holds
 		boolean finished = false;
@@ -123,7 +119,7 @@ public class Episode {
 		display.newEpisode();
 		while (!finished) {
 			g.put("cycle",cycle);
-			for (Task t : beforeCycleTasks) t.perform(UniverseLoader.getUniverse(),this.getSubject());
+			for (Task t : beforeCycleTasks) t.perform(Universe.getUniverse(),this.getSubject());
 
 			long stamp = Debug.tic();
 			getSubject().getModel().run();
@@ -146,7 +142,7 @@ public class Episode {
 			nslSim.incSimTime();
 
 			//perform after cycle tasks
-			for (Task t : afterCycleTasks) t.perform(UniverseLoader.getUniverse(),this.getSubject());
+			for (Task t : afterCycleTasks) t.perform(Universe.getUniverse(),this.getSubject());
 
 			
 			if (Debug.printEndCycle) System.out.println("End cycle");
@@ -165,7 +161,7 @@ public class Episode {
 		System.out.println();
 		
 		// After episode tasks
-		for (Task task : afterEpisodeTasks) task.perform(UniverseLoader.getUniverse(),this.getSubject());
+		for (Task task : afterEpisodeTasks) task.perform(Universe.getUniverse(),this.getSubject());
 		
 		
 		//signal end episode

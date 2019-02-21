@@ -3,25 +3,15 @@ package edu.usf.ratsim.model.pablo.multifeeders_martin.drawers;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.geom.Rectangle2D.Float;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.Globals;
-import edu.usf.experiment.display.GuiUtils;
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
-import edu.usf.experiment.universe.BoundedUniverse;
-import edu.usf.experiment.universe.UniverseLoader;
-import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
-import edu.usf.micronsl.port.twodimensional.sparse.Entry;
-import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
-import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.nsl.modules.input.SubjectAte;
-import edu.usf.ratsim.nsl.modules.rl.Reward;
 
 public class FeedingStepHistoryDrawer extends Drawer {
 

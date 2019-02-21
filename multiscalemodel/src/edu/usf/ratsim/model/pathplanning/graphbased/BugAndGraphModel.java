@@ -70,7 +70,7 @@ public class BugAndGraphModel extends Model implements GraphModel {
 		addModule(erm);		
 		
 		DisplaySingleton.getDisplay().addDrawer("universe","graph",new ExpGraphDrawer(erm, followThrs), 0);
-		DisplaySingleton.getDisplay().addDrawer("universe","sonar",new SonarReadingsDrawer((SonarRobot) robot, (LocalizableRobot) robot), 0);
+		DisplaySingleton.getDisplay().addDrawer("universe","sonar",new SonarReadingsDrawer(robot), 0);
 		DisplaySingleton.getDisplay().addDrawer("universe","path",new PathDrawer((LocalizableRobot) robot));
 	}
 

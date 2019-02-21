@@ -23,10 +23,14 @@ public class ExperienceGraphLogger extends DistributedLogger {
 	public ExperienceGraphLogger(ElementWrapper params) {
 		super(params);
 
-		graph = new UndirectedSparseGraph<PointNode, Edge>();
 	}
 
-
+	@Override
+	public void initLog() {
+		// TODO Auto-generated method stub
+		super.initLog();
+		graph = new UndirectedSparseGraph<PointNode, Edge>();
+	}
 
 	public void perform(Universe u, Subject sub){
 		if (!(sub.getModel() instanceof GraphModel))

@@ -22,7 +22,12 @@ public class FeedingLogger extends DistributedLogger {
 		feederLogs = new LinkedList<FeedingLog>();
 	}
 
-	
+	@Override
+	public void initLog() {
+		// TODO Auto-generated method stub
+		super.initLog();
+		feederLogs.clear();
+	}
 
 
 	// TODO: decide how to solve this issue - Global camera + feeding universe? Maybe redefine concept of just ate

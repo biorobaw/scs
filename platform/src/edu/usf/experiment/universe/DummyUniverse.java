@@ -7,7 +7,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class DummyUniverse implements GlobalCameraUniverse, BoundedUniverse {
+public class DummyUniverse extends Universe implements GlobalCameraUniverse, BoundedUniverse {
 
 	public DummyUniverse(ElementWrapper params, String logPath){
 		System.out.println("Dummy universe created");

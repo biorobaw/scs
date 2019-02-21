@@ -17,7 +17,7 @@ import edu.usf.experiment.universe.morse.PosSensorProxy;
 import edu.usf.experiment.utils.ElementWrapper;
 
 //TODO: Implement the functionality of all these interfaces
-public class MorseRobot
+public class MorseRobot extends Robot
 		implements DifferentialRobot, LocalizableRobot, StepRobot, PlatformRobot, LocalActionAffordanceRobot, SonarRobot {
 
 	private static final float FORWARD_THRS = .3f;

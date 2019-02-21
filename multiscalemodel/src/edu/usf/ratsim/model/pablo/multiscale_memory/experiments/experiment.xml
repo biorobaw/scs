@@ -114,14 +114,10 @@
 		</task>
 	</beforeExperimentTasks>
 	
-	<!-- Loggers to be executed before the eperiment -->
-	<beforeExperimentLoggers>
-	</beforeExperimentLoggers>
 
 
 
-	<beforeExperimentPlotters>
-	</beforeExperimentPlotters>
+
 	
 	
 	<!-- Training trial - Non-delayed cue phase -->
@@ -163,15 +159,7 @@
 			<afterCycleTasks>
 			</afterCycleTasks>
 			
-			
-			<!-- Loggers to execute after each cycle -->
-			<afterCycleLoggers>
-			</afterCycleLoggers>
-
-
-			<!-- Loggers to execute after each episode -->
-			<afterEpisodeLoggers>
-			</afterEpisodeLoggers>
+		
 			
 			
 			<!-- Tasks to execute after each episode -->
@@ -198,10 +186,6 @@
 				
 			</stopConditions>
 			
-			
-			<!-- Plotters to execute after each episode -->
-			<afterEpisodePlotters>
-			</afterEpisodePlotters>
 		</episodes>
 		
 		
@@ -210,14 +194,6 @@
 		</afterTrialTasks>
 		
 		
-		<!-- Loggers to execute after the trial has ended -->
-		<afterTrialLoggers>
-		</afterTrialLoggers>
-		
-		
-		<!-- Plotters to execute after the trial has ended -->
-		<afterTrialPlotters>
-		</afterTrialPlotters>
 	</trial>
 	
 
@@ -225,11 +201,4 @@
 	<afterExperimentTasks>
 	</afterExperimentTasks>
 	
-	<!-- Loggers to execute after the experiment is over -->
-	<afterExperimentLoggers>
-	</afterExperimentLoggers>
-	
-	<!-- Plotters to execute after the experiment is over -->
-	<afterExperimentPlotters>		
-	</afterExperimentPlotters>
 </experiment>
