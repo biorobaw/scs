@@ -19,11 +19,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
-import edu.usf.experiment.Episode;
 import edu.usf.experiment.Globals;
+import edu.usf.experiment.SimulationControl;
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.universe.BoundedUniverse;
 import edu.usf.experiment.utils.Debug;
@@ -33,13 +31,13 @@ import edu.usf.experiment.utils.Debug;
  * @author martin
  *
  */
-public class SCSDisplay extends JFrame implements Display, ChangeListener {
+public class SCSDisplay extends Display  {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6489459171441343768L;
 	private static final int PADDING = 10;
+	private JFrame mainFrame;
 	private DrawPanel uPanel;
 	private JPanel plotsPanel;
 	
@@ -65,14 +63,18 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 	
 	
 	public SCSDisplay(){
+		//create main frame:
+		mainFrame = new JFrame();
+		
 		//create a synchronizable content pane
-		setContentPane(new DrawableContentPane());
+		mainFrame.setContentPane(new DrawableContentPane());
 		
 		
 		//init frame properties
-		setLayout(new GridBagLayout());
-		setTitle("Spatial Cognition Simulator");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainFrame.setLayout(new GridBagLayout());
+		mainFrame.setTitle("Spatial Cognition Simulator");
+		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 		
 		//create and add checkbox panel
 		cbPanel = new JPanel();
@@ -83,7 +85,7 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 //		for(int i=0;i<100;i++)cbPanel.add(new JCheckBox("Hola hola hola"));
 		GridBagConstraints cbConstraints = getConstraints(0, 0);
 		cbConstraints.gridwidth = 0;
-		add(cbPanel, cbConstraints);
+		mainFrame.add(cbPanel, cbConstraints);
 		
 		// Create and add Plot panel
 		plotsPanel = new JPanel();
@@ -92,7 +94,7 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 		GridBagConstraints cs = getConstraints(0, 1);
 		cs.gridheight = 0;
 //		cs.gridwidth = 0;
-		add(plotsPanel, cs);
+		mainFrame.add(plotsPanel, cs);
 		
 		// create and add universePanel
 		uPanel = new DrawPanel(600,600);
@@ -101,11 +103,11 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 		uPanel.setName("univers");
 		GridBagConstraints uPanelCons = getConstraints(1,1);
 		uPanelCons.weighty = 100;
-		add(uPanel, uPanelCons);
+		mainFrame.add(uPanel, uPanelCons);
 
 		
 		// Create and add Control Panel
-		add(createControlPanel(),getConstraints(1,2));
+		mainFrame.add(createControlPanel(),getConstraints(1,2));
 			
 		
 		//create and add key press listener (must be called after all gui has been created)
@@ -120,14 +122,21 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 		}
 		
 		//pack and set visibility
-		pack();
-		setVisible(true);
-		setSize(800,800 );
+		mainFrame.pack();
+		mainFrame.setVisible(true);
+		mainFrame.setSize(800,800 );
 		repaint();
 
 		
 	}
 
+	
+	void repack(){
+		mainFrame.setMinimumSize(mainFrame.getSize());
+		mainFrame.pack();
+		mainFrame.setMinimumSize(null);
+	}
+	
 	@Override
 	public void log(String s) {
 		System.out.println(s);
@@ -135,22 +144,9 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 	
 	@Override
 	public void repaint(){
-//		paintAll(getGraphics());
-		super.repaint();
-		
+		mainFrame.repaint();
 	}
 	
-	
-
-	@Override
-	public void stateChanged(ChangeEvent e) {
-		JSlider source = (JSlider)e.getSource();
-	    if (!source.getValueIsAdjusting()) {
-	        int vel = (int)source.getValue();
-	        Globals g = Globals.getInstance();
-			g.put("simulationSpeed", vel);
-	    }
-	}
 	
 	public void addPanel(DrawPanel panel,String id,int gridx, int gridy, int gridwidth, int gridheight) {
 		panel.setParent(this);
@@ -172,11 +168,7 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 		
 	}
 	
-	void repack(){
-		setMinimumSize(getSize());
-		pack();
-		setMinimumSize(null);
-	}
+	
 	
 	private void addCheckbox(Drawer d) {
 		JCheckBox cb = new JCheckBox(d.getClass().getSimpleName(), true);
@@ -221,27 +213,6 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 		uPanel.setCoordinateFrame(bu.getBoundingRect());
 		
 	}
-	
-
-	@Override
-	public synchronized void newEpisode() {
-		Display.super.newEpisode();
-	}
-	
-	@Override
-	public synchronized void endEpisode() {
-		Display.super.endEpisode();
-	}
-	
-	@Override
-	public synchronized void newTrial() {
-		Display.super.newTrial();
-	}
-	
-	@Override
-	public synchronized void endTrial() {
-		Display.super.endTrial();
-	}
 
 	private GridBagConstraints getConstraints(int x, int y){
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -268,14 +239,19 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 		controlPanel.setLayout(new GridBagLayout());
 		
 		// Create slider for simulation velocity
-		int simSpeed = (int)Globals.getInstance().get("simulationSpeed");
+		int simSpeed = SimulationControl.getSimulationSpeed();
 		JSlider simVel = new JSlider(JSlider.HORIZONTAL,0, 9, simSpeed);
 		simVel.setPreferredSize(new Dimension(300, 50));
-		simVel.addChangeListener(this);
 		simVel.setMajorTickSpacing(1);
 		simVel.setMinorTickSpacing(1);
 		simVel.setPaintTicks(true);
 		simVel.setPaintLabels(true);
+		simVel.addChangeListener(e -> {
+		    if (!simVel.getValueIsAdjusting()) {
+		        int vel = (int)simVel.getValue();
+		        SimulationControl.setSimulationSpeed(vel);
+		    }
+		});
 		
 		//create step button
 		buttonStep = new JButton("Step");
@@ -284,25 +260,26 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub	
-				Episode.step();				
+				SimulationControl.produceStep();
 			}
 		});
 		
 		//Create pause button
 		buttonPause = new JButton("Pause");
 		buttonStep.setEnabled(false);
-		buttonPause.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub	
-				if(Episode.togglePause()) {
-					buttonPause.setText("Resume");
-					buttonStep.setEnabled(true);
-				}else {
-					buttonPause.setText("Pause");
-					buttonStep.setEnabled(false);
-				}			
-			}
+		buttonPause.addActionListener(e-> {
+			SimulationControl.togglePause();
+			
+		});
+		SimulationControl.addPauseStateListener(  pauseValue -> {
+			if(pauseValue) {
+				buttonPause.setText("Resume");
+				buttonStep.setEnabled(true);
+			}else {
+				buttonPause.setText("Pause");
+				buttonStep.setEnabled(false);
+			}			
+			return null;
 		});
 		
 		
@@ -343,50 +320,17 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 			    if (e.getID() == KeyEvent.KEY_PRESSED) {
 			      Runnable run = keyActions.get(e.getKeyCode());
 			      if(run!=null) run.run();
-//			      else System.out.println("No runnable found... "+e.getKeyCode() + " " + KeyEvent.VK_RIGHT);
 			    }
-			    // Pass the KeyEvent to the next KeyEventDispatcher in the chain
 			    return true;
 			  }
-			};
+		};
 		
 		
+		//Add key commands
 		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(dispatcher);
-		
-		keyActions.put(KeyEvent.VK_SPACE, new Runnable() {
-			
-			@Override
-			public void run() {
-				if(Episode.togglePause()) {
-					buttonPause.setText("Resume");
-					buttonStep.setEnabled(true);
-				}else {
-					buttonPause.setText("Pause");
-					buttonStep.setEnabled(false);
-				}	
-				
-			}
-		});
-		
-		keyActions.put(KeyEvent.VK_RIGHT,new Runnable() {
-			
-			@Override
-			public void run() {
-				Episode.step();
-				
-			}
-		});
-		
-		keyActions.put(KeyEvent.VK_K, new Runnable(){
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				toggleSync();
-			}
-			
-		});
-		
+		keyActions.put(KeyEvent.VK_SPACE, ()-> SimulationControl.togglePause() );
+		keyActions.put(KeyEvent.VK_RIGHT,() -> SimulationControl.produceStep());
+		keyActions.put(KeyEvent.VK_K, () -> toggleSync());
 		
 		
 	}
@@ -494,14 +438,6 @@ public class SCSDisplay extends JFrame implements Display, ChangeListener {
 		}
 		
 
-	}
-	
-
-	
-	
-	
-
-
-	
+	}	
 	
 }

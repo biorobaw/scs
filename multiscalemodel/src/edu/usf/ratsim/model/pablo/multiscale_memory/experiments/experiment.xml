@@ -132,62 +132,55 @@
 		<beforeTrialTasks>
 		</beforeTrialTasks>
 		
-		<!-- Episodes definition -->
-		<episodes>
-			<!-- Number of episodes -->
-			<number>$(numEpisodes)</number>
-			<!-- Tasks to perform before each episode -->
-			
-			
-			<beforeEpisodeTasks>
-				<!-- Place the animat in a given place -->
-				<task>
-					<name>edu.usf.ratsim.model.pablo.multiscale_memory.tasks.SetInitialPosition</name>
-					<params>						
-					</params>
-				</task>
-			</beforeEpisodeTasks>
-			
-			
-			
-			<!-- Tasks to performe before each cycle -->
-			<beforeCycleTasks>
-			</beforeCycleTasks>
-			
-			
-			<!-- Tasks to performe after each cycle -->
-			<afterCycleTasks>
-			</afterCycleTasks>
-			
+		<!-- Number of episodes -->
+		<numberOfEpisodes>$(numEpisodes)</numberOfEpisodes>
 		
+		
+		<!-- Tasks to perform before each episode -->
+		<beforeEpisodeTasks>
+			<!-- Place the animat in a given place -->
+			<task>
+				<name>edu.usf.ratsim.model.pablo.multiscale_memory.tasks.SetInitialPosition</name>
+				<params>						
+				</params>
+			</task>
+		</beforeEpisodeTasks>
+		
+		<!-- Tasks to performe before each cycle -->
+		<beforeCycleTasks>
+		</beforeCycleTasks>
+		
+		
+		<!-- Tasks to performe after each cycle -->
+		<afterCycleTasks>
+		</afterCycleTasks>
+		
+	
+		
+		
+		<!-- Tasks to execute after each episode -->
+		<afterEpisodeTasks>
+		</afterEpisodeTasks>
 			
 			
-			<!-- Tasks to execute after each episode -->
-			<afterEpisodeTasks>
-			</afterEpisodeTasks>
-			
-			
-			<!-- Conditions upon which the episode ends -->
-			<stopConditions>
-				<!-- Timeout cycles -->
-				<condition>
-					<name>edu.usf.experiment.condition.MaxCycles</name>
-					<params>
-						<max>4000</max>
-					</params>
-				</condition>
+		<!-- Conditions upon which the episode ends -->
+		<stopConditions>
+			<!-- Timeout cycles -->
+			<condition>
+				<name>edu.usf.experiment.condition.MaxCycles</name>
+				<params>
+					<max>4000</max>
+				</params>
+			</condition>
 
-				<condition>
-					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
-					<params>
-						<n>1</n>
-					</params>
-				</condition>
-				
-			</stopConditions>
+			<condition>
+				<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
+				<params>
+					<n>1</n>
+				</params>
+			</condition>
 			
-		</episodes>
-		
+		</stopConditions>		
 		
 		<!-- Tasks to perform after the trial has ended -->
 		<afterTrialTasks>

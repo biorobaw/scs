@@ -8,7 +8,7 @@ import java.util.Map;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.usf.experiment.display.DisplaySingleton;
+import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.drawer.BrokenDrawer;
 import edu.usf.experiment.model.ValueModel;
 import edu.usf.experiment.robot.FeederRobot;
@@ -23,7 +23,6 @@ import edu.usf.micronsl.module.concat.Float1dSparseConcatModule;
 import edu.usf.micronsl.module.copy.Float1dCopyModule;
 import edu.usf.micronsl.module.copy.Float1dSparseCopyModule;
 import edu.usf.micronsl.module.sum.Float1dSumModule;
-import edu.usf.platform.drawers.micronsl.float1d.Float1dDiscPlot;
 import edu.usf.micronsl.port.Port;
 import edu.usf.micronsl.port.onedimensional.Float1dPort;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
@@ -238,7 +237,7 @@ public class ActorCriticModel extends Model implements ValueModel {
 		// Displays
 //		DisplaySingleton.getDisplay().addPlot(
 //				new Float1dDiscPlot((Float1dPort) jointVotes.getOutPort("jointState"), "Action Values"), 0, 0, 1, 1);
-		DisplaySingleton.getDisplay().addDrawer("universe","broken plot",new BrokenDrawer());
+		Display.getDisplay().addDrawer("universe","broken plot",new BrokenDrawer());
 	}
 
 	public List<RndHDPCellLayer> getPCLLayers() {

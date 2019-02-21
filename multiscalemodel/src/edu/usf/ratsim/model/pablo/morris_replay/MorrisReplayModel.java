@@ -7,10 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import edu.usf.experiment.Episode;
 import edu.usf.experiment.Globals;
+import edu.usf.experiment.SimulationControl;
 import edu.usf.experiment.display.Display;
-import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.DrawPanel;
 import edu.usf.experiment.display.GuiUtils;
 import edu.usf.experiment.display.drawer.Drawer;
@@ -129,7 +128,7 @@ public class MorrisReplayModel extends Model  {
 		// lRobot.setCloseThrs(asleepFoodDistanceThreshold);
 		((VirtUniverse) Universe.getUniverse()).setCloseThrs(asleepFoodDistanceThreshold);
 
-		Display display = DisplaySingleton.getDisplay();
+		Display display = Display.getDisplay();
 
 		// Execute replay episodes
 		for (int r = 0; r < cantReplay; r++) {
@@ -144,7 +143,7 @@ public class MorrisReplayModel extends Model  {
 //				display.repaint();
 //				display.waitUntilDoneRendering();
 
-				Episode.waitNextStep();
+				SimulationControl.waitIfPaused();
 
 				modelAsleep.move();
 
@@ -273,7 +272,7 @@ public class MorrisReplayModel extends Model  {
 	}
 
 	void setDisplay() {
-		Display d = DisplaySingleton.getDisplay();
+		Display d = Display.getDisplay();
 
 		d.addPanel(new DrawPanel(300, 300), "panel1", 0, 0, 1, 1);
 		d.addPanel(new DrawPanel(300, 300), "panel2", 1, 0, 1, 1);

@@ -9,7 +9,6 @@ import com.vividsolutions.jts.geom.LineSegment;
 
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.display.Display;
-import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.robot.FeederRobot;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
@@ -82,7 +81,7 @@ public class DummyModel extends Model  {
 		// TODO Auto-generated method stub
 		super.endEpisode();
 
-		Display display = DisplaySingleton.getDisplay();
+		Display display = Display.getDisplay();
 
 		
 
@@ -140,7 +139,7 @@ public class DummyModel extends Model  {
 	
 
 	void setDisplay() {
-		Display d = DisplaySingleton.getDisplay();
+		Display d = Display.getDisplay();
 		
 		
 		d.addKeyAction(KeyEvent.VK_E, new KeyMover(0f, 0.001f));

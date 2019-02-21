@@ -1,6 +1,5 @@
 package edu.usf.experiment.condition;
 
-import edu.usf.experiment.Episode;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.platform.PlatformUniverse;
@@ -14,8 +13,8 @@ public class FoundPlatform implements Condition {
 	}
 
 	@Override
-	public boolean holds(Episode e) {
-		Universe u = e.getUniverse();
+	public boolean holds() {
+		Universe u = Universe.getUniverse();
 		if (!(u instanceof PlatformUniverse))
 			throw new IllegalArgumentException("");
 		

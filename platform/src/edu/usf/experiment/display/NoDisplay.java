@@ -1,7 +1,5 @@
 package edu.usf.experiment.display;
 
-import javax.swing.JComponent;
-
 import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.universe.BoundedUniverse;
 
@@ -10,7 +8,7 @@ import edu.usf.experiment.universe.BoundedUniverse;
  * @author martin
  *
  */
-public class NoDisplay implements Display {
+public class NoDisplay extends Display {
 
 	@Override
 	public void log(String s) {

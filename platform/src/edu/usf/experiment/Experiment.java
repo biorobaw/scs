@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Random;
 
 import edu.usf.experiment.display.Display;
-import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.NoDisplay;
 import edu.usf.experiment.display.SCSDisplay;
 import edu.usf.experiment.robot.Robot;
@@ -255,7 +254,6 @@ public class Experiment implements Runnable {
 		g.put("group", args[nextArg++]);
 		g.put("subName", args[nextArg++]);
 		g.put("maze.file",logPath + "/maze.xml");
-		g.put("simulationSpeed",9); //init at full speed
 		g.put("episode",0);
 		
 		
@@ -348,9 +346,8 @@ public class Experiment implements Runnable {
 		}
 		
 		//pop episodes from the trial until we reach the episode being loaded
-		for(int i=0;i<e;i++)
-			trials.get(0).episodes.remove(0);
-		g.put("episode",e);
+		trials.get(0).startingEpisode = e;
+//		g.put("episode",e);
 		
 		subject.getModel().load();
 		
@@ -364,7 +361,7 @@ public class Experiment implements Runnable {
 		} else {
 			displayer = new NoDisplay();
 		}
-		DisplaySingleton.setDisplay(displayer);
+		Display.setDisplay(displayer);
 	}
 
 	void setSeed(ElementWrapper root) {
@@ -392,7 +389,7 @@ public class Experiment implements Runnable {
 		
 		Globals g = Globals.getInstance();		
 		if(controls.hasChild("display")) g.put("display",controls.getChildBoolean("display") );
-		if(controls.hasChild("simulationSpeed")) g.put("simulationSpeed",controls.getChildInt("simulationSpeed") );
+		if(controls.hasChild("simulationSpeed")) SimulationControl.setSimulationSpeed(controls.getChildInt("simulationSpeed")); 
 		if(controls.hasChild("seed")) g.put("seed",controls.getChildLong("seed") );
 		g.put("syncDisplay", !controls.hasChild("syncDisplay") || controls.getChildBoolean("syncDisplay"));
 		g.put("collisionDetection", controls.getChildBoolean("collisionDetection"));

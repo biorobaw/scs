@@ -7,10 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import edu.usf.experiment.Episode;
-import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Globals;
-import edu.usf.experiment.Trial;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public abstract class SingleFileLogger extends Logger {

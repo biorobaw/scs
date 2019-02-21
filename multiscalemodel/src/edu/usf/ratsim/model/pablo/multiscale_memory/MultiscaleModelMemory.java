@@ -6,7 +6,6 @@ import java.util.stream.IntStream;
 
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.display.Display;
-import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.DrawPanel;
 import edu.usf.experiment.display.GuiUtils;
 import edu.usf.experiment.display.drawer.PathDrawer;
@@ -491,7 +490,7 @@ public class MultiscaleModelMemory extends Model {
 
 	public void setDisplay() {
 
-		Display d = DisplaySingleton.getDisplay();
+		Display d = Display.getDisplay();
 
 		//add cycle info to universe panel
 		d.addDrawer("universe", "cycle info", new CycleDataDrawer());

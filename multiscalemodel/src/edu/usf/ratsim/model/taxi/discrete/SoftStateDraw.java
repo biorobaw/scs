@@ -1,7 +1,7 @@
 package edu.usf.ratsim.model.taxi.discrete;
 
 
-import edu.usf.experiment.display.DisplaySingleton;
+import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.NoDisplay;
 import edu.usf.experiment.display.PDFDisplay;
 import edu.usf.experiment.display.drawer.WallDrawer;
@@ -16,7 +16,7 @@ public class SoftStateDraw {
 	private static final int SIZE = 5;
 
 	public static void main(String[] args){
-		DisplaySingleton.setDisplay(new NoDisplay());
+		Display.setDisplay(new NoDisplay());
 		// Must execute from the scs folder
 		DiscreteVirtualUniverse dvu = new DiscreteVirtualUniverse(SIZE, SIZE, "logs/cellpaint/");
 		FourNAbsDirDiscreteRobot robot = new FourNAbsDirDiscreteRobot(dvu);

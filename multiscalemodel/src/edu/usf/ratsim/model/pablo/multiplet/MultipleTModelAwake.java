@@ -4,9 +4,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.usf.experiment.display.Display;
-import edu.usf.experiment.display.DisplaySingleton;
-import edu.usf.experiment.display.drawer.simulation.CycleDataDrawer;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.affordance.AbsoluteAngleAffordance;
@@ -15,13 +12,10 @@ import edu.usf.experiment.robot.affordance.EatAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
-import edu.usf.micronsl.module.copy.Int0dCopyModule;
 import edu.usf.micronsl.port.onedimensional.sparse.Float1dSparsePortMap;
 import edu.usf.micronsl.port.singlevalue.Bool0dPort;
-import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.singlevalue.Int0dPort;
 import edu.usf.micronsl.port.twodimensional.sparse.Float2dSparsePort;
-import edu.usf.platform.drawers.PolarDataDrawer;
 import edu.usf.ratsim.model.pablo.multiplet.submodules.DistanceAffordanceGatingModule;
 import edu.usf.ratsim.model.pablo.multiplet.submodules.DistancesInputModule;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromProbabilities;
@@ -32,17 +26,13 @@ import edu.usf.ratsim.nsl.modules.cell.PlaceCell;
 import edu.usf.ratsim.nsl.modules.celllayer.TmazeRandomPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.input.Position;
 import edu.usf.ratsim.nsl.modules.input.SubjectAte;
-import edu.usf.ratsim.nsl.modules.multipleT.ActionGatingModule;
 import edu.usf.ratsim.nsl.modules.multipleT.Last2ActionsActionGating;
-import edu.usf.ratsim.nsl.modules.multipleT.MultipleTActionPerformer;
 import edu.usf.ratsim.nsl.modules.multipleT.PlaceCellTransitionMatrixUpdater;
 import edu.usf.ratsim.nsl.modules.rl.ActorCriticDeltaError;
 import edu.usf.ratsim.nsl.modules.rl.Reward;
 import edu.usf.ratsim.nsl.modules.rl.UpdateQModuleAC;
 import edu.usf.ratsim.support.NotImplementedException;
 import edu.usf.vlwsim.robot.VirtualRobot;
-//import edu.usf.vlwsim.display.drawingUtilities.DrawPolarGraph;
-import edu.usf.vlwsim.universe.VirtUniverse;
 
 public class MultipleTModelAwake extends Model {
 

@@ -1,6 +1,5 @@
 package edu.usf.experiment.condition;
 
-import edu.usf.experiment.Episode;
 import edu.usf.experiment.utils.ElementWrapper;
 
 /**
@@ -19,7 +18,7 @@ public class MaxCycles implements Condition {
 	}
 
 	@Override
-	public boolean holds(Episode episode) {
+	public boolean holds() {
 		cycles++;
 
 		return cycles >= maxCycles;

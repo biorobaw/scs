@@ -15,7 +15,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
 import edu.usf.experiment.Globals;
-import edu.usf.experiment.display.DisplaySingleton;
+import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.drawer.FeederDrawer;
 import edu.usf.experiment.display.drawer.PlatformDrawer;
 import edu.usf.experiment.display.drawer.RobotDrawer;
@@ -191,11 +191,11 @@ public abstract class VirtUniverse extends Universe implements FeederUniverse, P
 		}
 		
 		
-		DisplaySingleton.getDisplay().setupUniversePanel(this);
-		DisplaySingleton.getDisplay().addDrawer("universe","platform",new PlatformDrawer(this));
-		DisplaySingleton.getDisplay().addDrawer("universe","feeder",new FeederDrawer(this));
-		DisplaySingleton.getDisplay().addDrawer("universe","walls",new WallDrawer(this));
-		DisplaySingleton.getDisplay().addDrawer("universe","robot",new RobotDrawer(this));
+		Display.getDisplay().setupUniversePanel(this);
+		Display.getDisplay().addDrawer("universe","platform",new PlatformDrawer(this));
+		Display.getDisplay().addDrawer("universe","feeder",new FeederDrawer(this));
+		Display.getDisplay().addDrawer("universe","walls",new WallDrawer(this));
+		Display.getDisplay().addDrawer("universe","robot",new RobotDrawer(this));
 
 	}
 

@@ -3,12 +3,8 @@ package edu.usf.ratsim.log;
 import java.io.PrintWriter;
 import java.util.Map;
 
-import edu.usf.experiment.Episode;
-import edu.usf.experiment.Experiment;
 import edu.usf.experiment.Globals;
-import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.DistributedLogger;
-import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;

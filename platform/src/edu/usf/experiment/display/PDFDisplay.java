@@ -16,7 +16,7 @@ import edu.usf.experiment.display.drawer.Drawer;
 import edu.usf.experiment.display.drawer.Scaler;
 import edu.usf.experiment.universe.BoundedUniverse;
 
-public class PDFDisplay implements Display {
+public class PDFDisplay extends Display {
 
 	private static final double WIDTH = 200;
 	private static final double HEIGHT = 200;

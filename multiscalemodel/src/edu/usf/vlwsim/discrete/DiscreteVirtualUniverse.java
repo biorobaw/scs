@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
 
-import edu.usf.experiment.display.DisplaySingleton;
+import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.drawer.WallDrawer;
 import edu.usf.experiment.display.drawer.discrete.DiscretePathDrawer;
 import edu.usf.experiment.display.drawer.discrete.DiscretePlatformDrawer;
@@ -58,12 +58,12 @@ public class DiscreteVirtualUniverse extends Universe
 		robotDx = 0;
 		robotDy = 0;
 
-		DisplaySingleton.getDisplay().setupUniversePanel(this);
-		DisplaySingleton.getDisplay().addDrawer("universe","platform",new DiscretePlatformDrawer(this));
-		DisplaySingleton.getDisplay().addDrawer("universe","grid",new GridDrawer(this));
-		DisplaySingleton.getDisplay().addDrawer("universe","walls",new WallDrawer(this));
-		DisplaySingleton.getDisplay().addDrawer("universe","path",new DiscretePathDrawer(this));
-		DisplaySingleton.getDisplay().addDrawer("universe","robot",new DiscreteRobotDrawer(this));
+		Display.getDisplay().setupUniversePanel(this);
+		Display.getDisplay().addDrawer("universe","platform",new DiscretePlatformDrawer(this));
+		Display.getDisplay().addDrawer("universe","grid",new GridDrawer(this));
+		Display.getDisplay().addDrawer("universe","walls",new WallDrawer(this));
+		Display.getDisplay().addDrawer("universe","path",new DiscretePathDrawer(this));
+		Display.getDisplay().addDrawer("universe","robot",new DiscreteRobotDrawer(this));
 	}
 
 	public DiscreteVirtualUniverse(ElementWrapper params, String logPath) {

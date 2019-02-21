@@ -1,6 +1,5 @@
 package edu.usf.ratsim.model.test.spiking;
 
-import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -12,7 +11,6 @@ import edu.usf.micronsl.spiking.module.NeuronSet;
 import edu.usf.micronsl.spiking.module.ProbSpikingModule;
 import edu.usf.micronsl.spiking.module.SpikeEventMgrModule;
 import edu.usf.micronsl.spiking.neuron.LeakyIntegratorSpikingNeuron;
-import edu.usf.micronsl.spiking.plot.NetPlot;
 
 public class FFSpikingModel extends Model {
 

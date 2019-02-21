@@ -3,7 +3,6 @@ package edu.usf.experiment.condition;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.usf.experiment.Episode;
 import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.feeder.FeederUniverse;
@@ -26,8 +25,8 @@ public class FoundNFoodNoMistakesStopCond implements Condition {
 	}
 
 	@Override
-	public boolean holds(Episode episode) {
-		Universe u = episode.getUniverse();
+	public boolean holds() {
+		Universe u = Universe.getUniverse();
 		if (!(u instanceof FeederUniverse))
 			throw new IllegalArgumentException("");
 		

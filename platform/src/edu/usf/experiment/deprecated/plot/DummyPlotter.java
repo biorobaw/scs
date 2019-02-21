@@ -1,4 +1,4 @@
-package edu.usf.experiment.Deprecated.plot;
+package edu.usf.experiment.deprecated.plot;
 
 import edu.usf.experiment.utils.ElementWrapper;
 

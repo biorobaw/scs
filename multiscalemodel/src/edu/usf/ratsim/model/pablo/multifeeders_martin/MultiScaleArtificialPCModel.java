@@ -10,7 +10,6 @@ import java.util.Map;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import edu.usf.experiment.display.Display;
-import edu.usf.experiment.display.DisplaySingleton;
 import edu.usf.experiment.display.DrawPanel;
 import edu.usf.experiment.display.drawer.simulation.CycleDataDrawer;
 import edu.usf.experiment.model.DeactivableModel;
@@ -619,7 +618,7 @@ public class MultiScaleArtificialPCModel extends Model implements DeactivableMod
 	
 	
 	void setDisplay() {
-		Display d = DisplaySingleton.getDisplay();
+		Display d = Display.getDisplay();
 
 		d.addPanel(new DrawPanel(300, 300), "panel1", 0, 0, 1, 1);
 //		d.addPanel(new DrawPanel(300, 300), "panel2", 1, 0, 1, 1);

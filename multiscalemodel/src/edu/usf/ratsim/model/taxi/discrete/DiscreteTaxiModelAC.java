@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.usf.experiment.display.DisplaySingleton;
+import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.drawer.BrokenDrawer;
 import edu.usf.experiment.model.PolicyModel;
 import edu.usf.experiment.model.ValueModel;
@@ -19,12 +19,6 @@ import edu.usf.experiment.robot.affordance.AffordanceRobot;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.micronsl.module.Module;
-import edu.usf.platform.drawers.micronsl.float0d.Float0dSeriesPlot;
-import edu.usf.platform.drawers.micronsl.float1d.Float1dBarPlot;
-import edu.usf.platform.drawers.micronsl.float1d.Float1dDiscPlot;
-import edu.usf.platform.drawers.micronsl.float1d.Float1dFillPlot;
-import edu.usf.micronsl.port.onedimensional.Float1dPort;
-import edu.usf.micronsl.port.singlevalue.Float0dPort;
 import edu.usf.micronsl.port.twodimensional.FloatMatrixPort;
 import edu.usf.ratsim.nsl.modules.actionselection.ActionFromProbabilities;
 import edu.usf.ratsim.nsl.modules.actionselection.MaxAffordanceActionPerformer;
@@ -126,7 +120,7 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 //		DisplaySingleton.getDisplay().addPlot(new Float1dDiscPlot((Float1dPort) currentStateQ.getOutPort("votes"), "Action values"),
 //				0, 0, 1, 1);
 		
-		DisplaySingleton.getDisplay().addDrawer("universe","broken plot",new BrokenDrawer());
+		Display.getDisplay().addDrawer("universe","broken plot",new BrokenDrawer());
 
 		currentValue = new ProportionalValue("currentValueQ", foodReward);
 		currentValue.addInPort("states", valuePlaceCells.getActivationPort());
@@ -191,8 +185,8 @@ public class DiscreteTaxiModelAC extends Model implements ValueModel, PolicyMode
 		addModule(updateQ);
 		
 		
-		DisplaySingleton.getDisplay().addDrawer("universe","QValue",new QValueDrawer(this), 0);
-		DisplaySingleton.getDisplay().addDrawer("universe","qpolicy",new QPolicyDrawer(this, (AffordanceRobot) robot));
+		Display.getDisplay().addDrawer("universe","QValue",new QValueDrawer(this), 0);
+		Display.getDisplay().addDrawer("universe","qpolicy",new QPolicyDrawer(this, (AffordanceRobot) robot));
 	}
 
 	public void newEpisode() {

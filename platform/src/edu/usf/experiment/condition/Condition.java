@@ -1,7 +1,5 @@
 package edu.usf.experiment.condition;
 
-import edu.usf.experiment.Episode;
-
 /**
  * Conditions signal whether a certain condition holds or not. They usually
  * query information about the subject and the universe.
@@ -11,7 +9,7 @@ import edu.usf.experiment.Episode;
  */
 public interface Condition {
 
-	public abstract boolean holds(Episode e);
+	public abstract boolean holds();
 	
 
 }

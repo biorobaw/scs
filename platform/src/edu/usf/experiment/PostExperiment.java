@@ -3,7 +3,7 @@ package edu.usf.experiment;
 import java.io.File;
 import java.util.List;
 
-import edu.usf.experiment.display.DisplaySingleton;
+import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.NoDisplay;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.task.Task;
@@ -37,7 +37,7 @@ public class PostExperiment extends Experiment implements Runnable {
 
 		ElementWrapper root = XMLExperimentParser.loadRoot(logPath + "experiment.xml");
 
-		DisplaySingleton.setDisplay(new NoDisplay());
+		Display.setDisplay(new NoDisplay());
 		setUniverse(Universe.load(root, logPath));
 
 		afterTasks = Task.loadTask(root.getChild("afterExperimentLoggers"));

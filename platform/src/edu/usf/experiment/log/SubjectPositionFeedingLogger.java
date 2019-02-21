@@ -2,9 +2,6 @@ package edu.usf.experiment.log;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import edu.usf.experiment.Episode;
-import edu.usf.experiment.Experiment;
-import edu.usf.experiment.Trial;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;

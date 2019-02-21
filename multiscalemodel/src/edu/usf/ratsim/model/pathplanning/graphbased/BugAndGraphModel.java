@@ -1,14 +1,12 @@
 package edu.usf.ratsim.model.pathplanning.graphbased;
 
 import edu.uci.ics.jung.graph.UndirectedGraph;
-import edu.usf.experiment.condition.FoundPlatform;
-import edu.usf.experiment.display.DisplaySingleton;
+import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.drawer.PathDrawer;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.PlatformRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.robot.SonarRobot;
-import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.micronsl.Model;
 import edu.usf.ratsim.model.GraphModel;
@@ -69,9 +67,9 @@ public class BugAndGraphModel extends Model implements GraphModel {
 		erm.addInPort("foundPlatform", foundPlat.getOutPort("foundPlatform"));
 		addModule(erm);		
 		
-		DisplaySingleton.getDisplay().addDrawer("universe","graph",new ExpGraphDrawer(erm, followThrs), 0);
-		DisplaySingleton.getDisplay().addDrawer("universe","sonar",new SonarReadingsDrawer(robot), 0);
-		DisplaySingleton.getDisplay().addDrawer("universe","path",new PathDrawer((LocalizableRobot) robot));
+		Display.getDisplay().addDrawer("universe","graph",new ExpGraphDrawer(erm, followThrs), 0);
+		Display.getDisplay().addDrawer("universe","sonar",new SonarReadingsDrawer(robot), 0);
+		Display.getDisplay().addDrawer("universe","path",new PathDrawer((LocalizableRobot) robot));
 	}
 
 	public UndirectedGraph<PointNode, Edge> getGraph() {
