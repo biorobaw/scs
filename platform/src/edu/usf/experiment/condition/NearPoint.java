@@ -6,7 +6,7 @@ import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class NearPoint implements Condition {
+public class NearPoint extends Condition {
 	
 	private float thrs;
 	private Coordinate point;

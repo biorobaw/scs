@@ -47,11 +47,11 @@ public class SimulationControl {
 		if(paused){   
         	stepsAvailable--;
         	if(stepsAvailable<0) {
-        		return true;
+        		return false;
         	}
 
         } 
-		return false;
+		return true;
 	}
 	
 	

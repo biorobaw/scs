@@ -12,23 +12,20 @@
 	
 	<!-- Add variables to define global variables -->
 	<variables>
-		<!-- <var>
-			<name>mazeFile</name>
+		<!-- <mazeFile>
 			<value>multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/mazes/MorrisMaze.xml</value>
-		</var>
-		<var>
-			<name>numEpisodes</name>
+		</mazeFile>
+		<numEpisodes>
 			<value>500</value>
-		</var>
-		<var>
-			<name>numStartingPositions</name> should be: numEpisodes % positions = 0
+		</numEpisodes>
+		<numStartingPositions>
 			<value>2</value>
-		</var> -->
+		</numStartingPositions> -->
 	</variables>
 	
 	<simulationControls>
 		<simulationSpeed>9</simulationSpeed> <!--speed reference: 5000,3000,2000,1000,500,400,300,100,30,0-->
-		<display>false</display>
+		<display>true</display>
 		<!-- <seed>3365448354185182426</seed> -->
 		<syncDisplay>false</syncDisplay>
 		<collisionDetection>false</collisionDetection>
@@ -106,19 +103,7 @@
 		<tasks>
 		</tasks>
 	</group>
-	
-	<!-- Task to be performed before the eperiment -->
-	<beforeExperimentTasks>
-		<task>
-			<name>edu.usf.experiment.task.feeder.SetAllFeedersPermanentFood</name>
-		</task>
-	</beforeExperimentTasks>
-	
 
-
-
-
-	
 	
 	<!-- Training trial - Non-delayed cue phase -->
 	<trial>
@@ -130,6 +115,9 @@
 		
 		<!-- Tasks to perform beforehand -->
 		<beforeTrialTasks>
+			<task>
+				<name>edu.usf.experiment.task.feeder.SetAllFeedersPermanentFood</name>
+			</task>
 		</beforeTrialTasks>
 		
 		<!-- Number of episodes -->
@@ -145,22 +133,6 @@
 				</params>
 			</task>
 		</beforeEpisodeTasks>
-		
-		<!-- Tasks to performe before each cycle -->
-		<beforeCycleTasks>
-		</beforeCycleTasks>
-		
-		
-		<!-- Tasks to performe after each cycle -->
-		<afterCycleTasks>
-		</afterCycleTasks>
-		
-	
-		
-		
-		<!-- Tasks to execute after each episode -->
-		<afterEpisodeTasks>
-		</afterEpisodeTasks>
 			
 			
 		<!-- Conditions upon which the episode ends -->
@@ -182,16 +154,10 @@
 			
 		</stopConditions>		
 		
-		<!-- Tasks to perform after the trial has ended -->
-		<afterTrialTasks>
-		</afterTrialTasks>
 		
 		
 	</trial>
 	
 
-	<!-- Tasks to perform after the experiment is over -->
-	<afterExperimentTasks>
-	</afterExperimentTasks>
 	
 </experiment>

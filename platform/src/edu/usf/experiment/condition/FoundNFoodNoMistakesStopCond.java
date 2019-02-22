@@ -10,7 +10,7 @@ import edu.usf.experiment.universe.feeder.FeederUniverseUtilities;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class FoundNFoodNoMistakesStopCond implements Condition {
+public class FoundNFoodNoMistakesStopCond extends Condition {
 
 	private int n;
 	private int toGo;
@@ -24,6 +24,15 @@ public class FoundNFoodNoMistakesStopCond implements Condition {
 		lastFeeder = -1;
 	}
 
+	@Override
+	public void newEpisode() {
+		// TODO Auto-generated method stub
+		super.newEpisode();
+		toGo = n;
+		flashing.clear();
+		lastFeeder = -1;
+	}
+	
 	@Override
 	public boolean holds() {
 		Universe u = Universe.getUniverse();

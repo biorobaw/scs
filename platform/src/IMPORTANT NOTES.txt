@@ -1,0 +1,10 @@
+1) experiment.xml format has changed.
+Plotters have been removed.
+Episodes have been removed.
+Elements previously specified on episodes should now be specified on trial.
+Loggers are now a subclass of task and should be specified as other tasks.
+The definition of variables now is done through the following syntax <variables>[<NAME>VALUE</NAME>]*</variables>
+
+
+2) Method to execute experiments has changed.
+Now it is unified.

@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.List;
 
 import edu.usf.experiment.condition.Condition;
-import edu.usf.experiment.condition.ConditionLoader;
 import edu.usf.experiment.display.Display;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.task.Task;
@@ -62,7 +61,7 @@ public class Trial implements Runnable {
 		afterCycleTasks 	= Task.loadTask(trialNode.getChild("afterCycleTasks"));
 		
 		//load stop condition
-		stopConds 			= ConditionLoader.getInstance().load(trialNode.getChild("stopConditions"));
+		stopConds 			= Condition.load(trialNode.getChild("stopConditions"));
 		
 		//get number of episodes, if the number is not defined, possibly
 		//the old xml format is being used, give error and hint
@@ -201,6 +200,7 @@ public class Trial implements Runnable {
 		for(Task t : afterEpisodeTasks)  t.newEpisode();
 		for(Task t : beforeCycleTasks)   t.newEpisode();
 		for(Task t : afterCycleTasks)    t.newEpisode();
+		for(var c : stopConds) c.newEpisode();
 		
 		display.newEpisode();
 		
@@ -262,7 +262,7 @@ public class Trial implements Runnable {
 			// Evaluate stop conditions
 			for (Condition sc : stopConds) if(sc.holds()) {
 				System.out.println();
-				break;
+				return;
 			}
 			
 			//advance simulation time

@@ -7,7 +7,7 @@ import edu.usf.experiment.utils.ElementWrapper;
  * @author ludo
  *
  */
-public class MaxCycles implements Condition {
+public class MaxCycles extends Condition {
 
 	private int maxCycles;
 	private int cycles;
@@ -17,6 +17,13 @@ public class MaxCycles implements Condition {
 		cycles = 0;
 	}
 
+	@Override
+	public void newEpisode() {
+		// TODO Auto-generated method stub
+		super.newEpisode();
+		cycles = 0;
+	}
+	
 	@Override
 	public boolean holds() {
 		cycles++;

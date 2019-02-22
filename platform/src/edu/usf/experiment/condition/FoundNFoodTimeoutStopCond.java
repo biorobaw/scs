@@ -5,7 +5,7 @@ import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class FoundNFoodTimeoutStopCond implements Condition {
+public class FoundNFoodTimeoutStopCond extends Condition {
 
 	private int stepsSinceLastAte;
 	private int timeout;
@@ -21,6 +21,14 @@ public class FoundNFoodTimeoutStopCond implements Condition {
 		stepsSinceLastAte = 0;
 	}
 
+	@Override
+	public void newEpisode() {
+		// TODO Auto-generated method stub
+		super.newEpisode();
+		toGo = n;
+		stepsSinceLastAte = 0;
+	}
+	
 	@Override
 	public boolean holds() {
 		FeederUniverse fu = (FeederUniverse) Universe.getUniverse();

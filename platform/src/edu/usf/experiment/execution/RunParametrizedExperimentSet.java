@@ -14,9 +14,9 @@ public class RunParametrizedExperimentSet {
 		if (args.length < 2)
 			System.out.println("Usage: java edu.usf.experiment.execution.RunParametrizedExperiment" + "logPath individualIndex");
 		
-		String experimentFile = Experiment.loadGlobalsFromIndividual(args);
-		Experiment e = new Experiment(experimentFile);
-		e.run();
+//		String experimentFile = Experiment.loadGlobalsFromIndividual(args);
+//		Experiment e = new Experiment(experimentFile);
+//		e.run();
 
 		System.out.println("[+] Finished running");
 		System.exit(0);

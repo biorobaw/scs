@@ -64,12 +64,12 @@ public class DrawPanel extends JPanel{
 		return true;
 	}
 	
-	public void addDrawer(Drawer d, int pos) {
+	public synchronized void addDrawer(Drawer d, int pos) {
 
 		drawers.add(pos, d);
 	}
 	
-	public void addDrawer(Drawer d){
+	public synchronized void addDrawer(Drawer d){
 		addDrawer(d, drawers.size());
 	}
 	

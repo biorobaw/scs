@@ -4,7 +4,7 @@ import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class FoundFoodStopCond implements Condition {
+public class FoundFoodStopCond extends Condition {
 
 	public FoundFoodStopCond(ElementWrapper params) {
 	}

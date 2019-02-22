@@ -3,7 +3,7 @@ package edu.usf.experiment.condition;
 import edu.usf.experiment.Globals;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class DoneCondition implements Condition {
+public class DoneCondition extends Condition {
 
 	Globals  g = Globals.getInstance();
 	

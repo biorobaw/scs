@@ -163,7 +163,7 @@ public class ElementWrapper {
 		return result;
 	}
 
-	private String getName() {
+	public String getName() {
 		return e.getNodeName();
 	}
 

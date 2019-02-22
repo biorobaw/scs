@@ -6,7 +6,7 @@ import edu.usf.experiment.universe.platform.PlatformUniverse;
 import edu.usf.experiment.universe.platform.PlatformUniverseUtilities;
 import edu.usf.experiment.utils.ElementWrapper;
 
-public class FoundPlatformDiscrete implements Condition {
+public class FoundPlatformDiscrete extends Condition {
 	
 
 	public FoundPlatformDiscrete(ElementWrapper params){
