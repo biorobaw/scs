@@ -31,3 +31,4 @@ rat_sim.*
 *.Rhistory
 *bin/
 *.swp
+*.idea*

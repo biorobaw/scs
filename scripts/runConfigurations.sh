@@ -9,6 +9,12 @@ mvn package
 #create log folder structure:
 python ${SCS_FOLDER}/scripts/python/logFolderGenerator.py ${baseDir} ${configFile}
 
+
+#store command executed along with commit version and time
+cmdHistory=${baseDir}/cmdHistory.txt
+date >> ${cmdHistory}
+git log --pretty=format:'%h' -n 1 >> ${cmdHistory} && echo " ${configFile}" >>${cmdHistory}
+
 #get number of lines in configFile:
 numConfigs=`wc -l ${configFile}`-1
 
