@@ -21,7 +21,7 @@ numRatsPerConfig = 3
 episodesPerStartingLocation = 200
 runLevel = 1
 
-outputFile = 'configSet1NoRats.csv'
+outputFile = 'configSet1.csv'
 outputFileNoRats = 'configSet1NoRats.csv'
 
 runLevel = dataFrame('runLevel',[runLevel])

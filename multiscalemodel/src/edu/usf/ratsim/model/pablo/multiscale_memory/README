@@ -6,3 +6,4 @@ To run the model:
 	2) use script "createLogFolder.py" to create the log folders
 	3) use script "runSlurm.py" to execute the whole experiment
 	
+d

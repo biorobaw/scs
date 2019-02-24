@@ -5,6 +5,8 @@ baseDir=$2
 
 mvn package
 
+#add python module to circe
+module add apps/python/3.7.0
 
 #create log folder structure:
 python ${SCS_FOLDER}/scripts/python/logFolderGenerator.py ${baseDir} ${configFile}
@@ -16,11 +18,13 @@ date >> ${cmdHistory}
 git log --pretty=format:'%h' -n 1 >> ${cmdHistory} && echo " ${configFile}" >>${cmdHistory}
 
 #get number of lines in configFile:
-numConfigs=`wc -l ${configFile}`-1
+numLines=`wc -l ${configFile} | cut -f1 -d' '`
+
 
 #set individuals to run:
+#the last one is the number of lines in the file minus 2 (since its 0 based and the first line are headers)
 fromIndiv=0
-toIndiv=${numConfigs}
+toIndiv=`expr ${numLines} - 2` 
 
 #execute each line
 idMessage=`sbatch -a $fromIndiv-$toIndiv ./scripts/execOne.sh $configFile $baseDir`
