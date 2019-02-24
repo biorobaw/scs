@@ -1,0 +1,8 @@
+This model implements a multiscale actor critic model with discrete actions space and continuous state space.
+
+To run the model:
+	1) run one of the config set generators in the folder experiments. It will produce 2 configuration files,
+	one with only the configuration information, and another including the rat ids
+	2) use script "createLogFolder.py" to create the log folders
+	3) use script "runSlurm.py" to execute the whole experiment
+	

@@ -10,9 +10,7 @@ public class Globals {
 	 * 
 	 * load all globals defined in console command
 	 * 
-	 *Boolean pause				Indicates to pause simulation
 	 *Boolean done				Signals that the experiment is done - used with done condition
-	 *Integer simulationSpeed	Chooses simulation speed from a predetermined value
 	 *
 	 *
 	 *String group				Group to which the subject belongs to
@@ -22,9 +20,22 @@ public class Globals {
 	 *Integer cycle				cycle (iteration) being executed
 	 *
 	 *String maze.file			Address of maze file
-	 *String logPath			Log folder path
+	 *String baseLogPath		The base log folder for all configs
+	 *String configFile			The csv file specifying the parameters of each execution
+	 *String configId			The line of the csv to be executed
+	 *String logPath			Log folder for specified config
 	 *String episodeLogPath 	Indicates the path to store the current episode information
 	 *	
+	 *
+	 *Display and simulation control:
+	 *Boolean 	display
+	 *Boolean 	syncDisplay
+	 *Long 		seed
+	 *Boolean 	collisionDetection
+	 *Integer	runLevel 		The level of execution 0=PreExperiment 1=Experiment 2=PostExperiment 3=AllPhases
+	 *
+	 *
+	 *
 	 *The next 3 are used for loading a particular episode - define in xml or command line
 	 *Integer loadEpisode
 	 *String  loadTrial

@@ -305,7 +305,7 @@ public class Experiment implements Runnable {
 	
 		System.out.println("[+] Loading Globals");
 		Experiment e = new Experiment(loadGlobals(processCommandInput(args),
-										g.get("configLogPath").toString()));		
+										g.get("baseLogPath").toString()));		
 		e.run();
 		
 		System.out.println("[+] Finished running");
@@ -319,14 +319,14 @@ public class Experiment implements Runnable {
 		//Get configFile from the arguments, and the configId
 		String configFile = args[0];
 		int configId = Integer.parseInt(args[1]);
-		String configLogPath = args[2];
+		String baseLogPath = args[2];
 		
 		//trim logpath
-		if (configLogPath.endsWith("/"))
-			configLogPath = configLogPath.substring(0, configLogPath.length()-1);
+		if (baseLogPath.endsWith("/"))
+			baseLogPath = baseLogPath.substring(0, baseLogPath.length()-1);
 		
 		//store command arguments in global
-		g.put("configLogPath", configLogPath);
+		g.put("baseLogPath", baseLogPath);
 		g.put("configId", configId);
 		g.put("configFile", configFile);
 		

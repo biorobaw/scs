@@ -17,9 +17,12 @@ def createConfigColumn(df):
 def saveResult(df,fileName):
   df.drop(['key'],axis=1).to_csv(fileName,sep='\t',index=False)
   
-numRatsPerConfig = 100
+numRatsPerConfig = 3
 episodesPerStartingLocation = 200
 runLevel = 1
+
+outputFile = 'configSet1NoRats.csv'
+outputFileNoRats = 'configSet1NoRats.csv'
 
 runLevel = dataFrame('runLevel',[runLevel])
 experiment = dataFrame('experiment',[ './multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/experiments/experiment.xml'])
@@ -57,9 +60,12 @@ partial = allXall(partial,pcSizes)
 partial = allXall(partial,numPCx)
 
 createConfigColumn(partial)
+
+saveResult(partial,outputFileNoRats)
+
 final = allXall(partial,ratIds);
 
-saveResult(final,'configSet1.csv')
+saveResult(final,outputFile)
 
 
 

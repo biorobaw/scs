@@ -27,7 +27,6 @@ import edu.usf.experiment.universe.GlobalCameraUniverse;
 import edu.usf.experiment.universe.MovableRobotUniverse;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.element.MazeElement;
-import edu.usf.experiment.universe.element.MazeElementLoader;
 import edu.usf.experiment.universe.feeder.Feeder;
 import edu.usf.experiment.universe.feeder.FeederUniverse;
 import edu.usf.experiment.universe.platform.Platform;
@@ -141,10 +140,9 @@ public abstract class VirtUniverse extends Universe implements FeederUniverse, P
 		}
 		wallsToRevert = new LinkedList<Wall>();
 
-		MazeElementLoader meloader = MazeElementLoader.getInstance();
 		list = maze.getChildren("mazeElement");
 		for (ElementWrapper element : list) {
-			MazeElement e = meloader.load(element);
+			MazeElement e = MazeElement.load(element);
 			for (Wall w : e.walls) {
 				walls.add(w);
 			}
