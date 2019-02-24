@@ -27,6 +27,7 @@ fromIndiv=0
 toIndiv=`expr ${numLines} - 2` 
 
 #execute each line
-idMessage=`sbatch -a $fromIndiv-$toIndiv ./scripts/execOne.sh $configFile $baseDir`
+outputFilePattern="${baseDir}/slurmOut/slurm-%A_%a.out"
+idMessage=`sbatch -a $fromIndiv-$toIndiv -e=$outputFilePattern -o=$outputFilePattern ./scripts/execSingleConfig.sh $configFile $baseDir`
 #ratsId=`echo $idMessage | cut -d " " -f 4`
 #sbatch --qos=preempt -p mri2016 --dependency=afterok:$ratsId scripts/postProcess.sh $logPath
