@@ -23,3 +23,7 @@ def makedirs(dir):
 makedirs(baseFolder)
 for folder in  configFolders:
   makedirs(baseFolder +"/" + folder)
+
+#copy config folder to base folder
+import shutil
+shutil.copy2(file,baseFolder + '/configs.csv')
