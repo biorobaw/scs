@@ -1,3 +1,4 @@
+package edu.usf.experiment.deprecated.execution;
 //package edu.usf.experiment;
 //
 //import java.io.File;
@@ -8,33 +9,31 @@
 //import java.util.Map;
 //
 //import edu.usf.experiment.utils.ElementWrapper;
-//import edu.usf.experiment.utils.IOUtils;
 //import edu.usf.experiment.utils.XMLExperimentParser;
 //
-//public class CalibrationPreExperiment {
+//public class CalibrationPostExperiment {
 //
-//	public CalibrationPreExperiment(String calibrationFile, String logPath) {
+//	public CalibrationPostExperiment(String logPath) {
 //		logPath += File.separator;
 //
-//		IOUtils.copyFile(calibrationFile, logPath + "calibration.xml");
+//		// Assumes pre calibration put it on the folder
 //		ElementWrapper calibrationRoot = XMLExperimentParser
-//				.loadRoot(calibrationFile);
+//				.loadRoot(logPath + "calibration.xml");
 //
 //		String experimentFile = calibrationRoot.getChildText("experiment");
-//
-//		IOUtils.copyFile(experimentFile, logPath + "/experiment.xml");
 //
 //		Map<String, List<String>> paramsToCalibrate = calibrationRoot
 //				.getCalibrationList(calibrationRoot);
 //
 //		// Change values in model according to individual number
-//		List<String> remainingParams = new LinkedList<String>(paramsToCalibrate.keySet());
-//		initializeAllExperiments(remainingParams, new HashMap<String, String>(),
+//		List<String> remainingParams = new LinkedList<String>(
+//				paramsToCalibrate.keySet());
+//		wrapupAllExperiments(remainingParams, new HashMap<String, String>(),
 //				paramsToCalibrate, experimentFile, logPath);
 //
 //	}
 //
-//	private void initializeAllExperiments(List<String> remainingParams,
+//	private void wrapupAllExperiments(List<String> remainingParams,
 //			Map<String, String> currentParamValues,
 //			Map<String, List<String>> paramsToCalibrate, String experimentFile,
 //			String logPath) {
@@ -46,20 +45,19 @@
 //					currentParamValues);
 //			newParamValues.put(currentParam, value);
 //			if (remainingParams.isEmpty()) {
-//				String config = "";
+//				String config = ""; 
 //				for (String param : newParamValues.keySet())
 //					config += param + "-" + newParamValues.get(param) + "--";
-//				new PreExperiment(experimentFile, logPath + File.separator
+//				new PostExperiment(logPath + File.separator
 //						+ config + File.separator).run();
 //			} else {
-//				initializeAllExperiments(new LinkedList<String>(remainingParams), newParamValues,
+//				wrapupAllExperiments(new LinkedList<String>(remainingParams), newParamValues,
 //						paramsToCalibrate, experimentFile, logPath);
 //			}
 //		}
 //	}
 //
 //	public static void main(String[] args) {
-//		new CalibrationPreExperiment(args[0],
-//				args[1]);
+//		new CalibrationPostExperiment(args[0]);
 //	}
 //}

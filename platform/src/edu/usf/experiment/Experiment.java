@@ -332,14 +332,37 @@ public class Experiment implements Runnable {
 		
 		//get specified configuration from the config set
 		try (Stream<String> lines = Files.lines(Paths.get(configFile))) {
-			//get the selected config line
-		    String config = lines.skip( configId>0 ? configId : 0).findFirst().get();
+
+			//get lines iterator:
+			var iterator = lines.iterator();
+			
+			//get the columns
+			String columns = iterator.next();
+			
+			//skip to the line
+			for(int i=0;i<configId;i++) iterator.next();
+			
+			//get config values:
+			String values = iterator.next();
+		    		    
 		    //get tokens and trim them:
-		    String[] tokens = config.split("\t");		    
-		    for(int i=0;i<tokens.length;i++) {
-		    	tokens[i] = tokens[i].trim();
-		    	if(tokens[i].charAt(0)=='"') tokens[i] = tokens[i].substring(1, tokens[i].length()-1);		    	
+		    String[] valueTokens  = values.split("\t");	
+		    String[] columnTokens = columns.split("\t");
+		    
+		    if(valueTokens.length != columnTokens.length) {
+		    	System.err.println("ERROR: The number of values in the config does not match the number of columns");
+		    	System.exit(-1);
 		    }
+		    
+		    String[] tokens = new String[2*valueTokens.length];
+		    for(int i=0;i<valueTokens.length;i++) {
+		    	
+		    	tokens[2*i] = columnTokens[i].trim();
+		    	tokens[2*i+1] = valueTokens[i].trim();		    	
+		    }
+		    for(int i=0;i<tokens.length;i++)
+		    	if(tokens[i].charAt(0)=='"') tokens[i] = tokens[i].substring(1, tokens[i].length()-1);
+		    
 		    return tokens;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -354,7 +377,7 @@ public class Experiment implements Runnable {
 	
 	static public ElementWrapper loadGlobals(String[] args, String configLogPath ) {
 		
-	    for(int i=0;(i+1)<args.length;i=i+2) 
+	    for(int i=0; i+1<args.length; i=i+2) 
 	    	g.put(args[i], args[i+1]);
 	    
 	    //check required fields were included:
