@@ -14,6 +14,7 @@ public class PathDrawer extends Drawer {
 
 	private LocalizableRobot robot;
 	private LinkedList<Coordinate> poses;
+	private LinkedList<Coordinate> newPoses = new LinkedList<>();
 	private int currentDrawLength = 0;
 	public LinkedList<LinkedList<Coordinate>> oldPaths = new LinkedList<>();
 	
@@ -56,6 +57,7 @@ public class PathDrawer extends Drawer {
 	@Override
 	public void endEpisode() {
 		poses = new LinkedList<>();
+		newPoses = new LinkedList<>();
 		currentDrawLength = 0;
 		if(drawOldPaths) oldPaths.add(poses);
 		
@@ -64,6 +66,8 @@ public class PathDrawer extends Drawer {
 	@Override
 	public void updateData() {
 		// TODO Auto-generated method stub
+		poses.addAll(newPoses);
+		newPoses.clear();
 		currentDrawLength = poses.size();
 		
 	}
@@ -71,7 +75,7 @@ public class PathDrawer extends Drawer {
 	@Override 
 	public void appendData(){
 		Coordinate pos = robot.getPosition();
-		poses.add(pos);
+		newPoses.add(pos);
 	}
 	
 	public void setColor(Color c){

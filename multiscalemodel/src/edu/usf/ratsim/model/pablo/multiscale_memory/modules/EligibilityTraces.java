@@ -61,10 +61,11 @@ public class EligibilityTraces extends Module {
 			// for active pcs choose between current activation and trace decay
 			if(oldTotalActivation!=0)
 				for (int i = 0; i < oldPCs.getBlockRows(); i++)
-					for (int j = 0; j < oldPCs.getBlockRows(); j++) {
+					for (int j = 0; j < oldPCs.getBlockCols(); j++) {
 						int index = oldPCs.getBlockIndex(i, j);
 						float newVal = oldPCs.getBlock(i, j) / oldTotalActivation;
 						float currentVal = traces.get(index);
+//						System.out.println("trace: " + newVal + " " + currentVal + " " + index + " " + lastAction);
 						if (newVal > currentVal)
 							traces.set(index, lastAction, newVal);
 					}

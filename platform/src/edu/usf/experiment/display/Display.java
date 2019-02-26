@@ -91,11 +91,11 @@ public abstract class Display {
 	/**
 	 * Tells the display that a new episode began. Some drawers might have to clear stateful information due to this.
 	 */
-	public void newEpisode() {
+	synchronized public void newEpisode() {
 		for(Drawer d : drawers.values()) d.newEpisode();
 	};
 	
-	public void endEpisode() {
+	synchronized public void endEpisode() {
 		for(Drawer d : drawers.values()) d.endEpisode();
 	}
 	

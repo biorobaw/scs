@@ -60,7 +60,14 @@ public class WallGateModule extends Module {
 			
 		}
 		
-		if(sum==0) throw new IllegalArgumentException("Argument 'divisor' is 0");
+		if(sum==0) {
+			//policy is assigning probability of 0 to the only possible actions.
+			//Instead assign uniform probabilities for possible actions:
+			sum = 0;
+			for(int i=0;i<numActions;i++) {
+				probabilities[i] = gates[i];
+			}
+		}
 		for (int i =0;i<numActions;i++) probabilities[i]/=sum;
 		
 

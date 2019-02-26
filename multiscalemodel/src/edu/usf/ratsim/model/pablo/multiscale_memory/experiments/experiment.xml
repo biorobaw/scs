@@ -85,7 +85,7 @@
 			<pcSizes>$(pcSizes)</pcSizes>	   
 			<numPCx>$(numPCx)</numPCx>	 
 			
-			<traceDecay>0.90</traceDecay>  
+			<traceDecay>0.5</traceDecay>  
 			           
 			<discountFactor>0.999</discountFactor>
 			<learningRate>0.6</learningRate>

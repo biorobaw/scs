@@ -121,7 +121,7 @@ public abstract class VirtUniverse extends Universe implements FeederUniverse, P
 		feeders = new HashMap<Integer, Feeder>();
 
 		// Assumes maze is already copied by pre-experiment or experiment
-		String mazeFile = logPath + "maze.xml";
+		String mazeFile = Globals.getInstance().get("maze.file").toString();
 		Document doc = XMLDocReader.readDocument(mazeFile);
 		ElementWrapper maze = new ElementWrapper(doc.getDocumentElement());
 		List<ElementWrapper> list;

@@ -23,19 +23,28 @@
 		<x2>0.5</x2><y2>0</y2>
 	</wall>
 	
+	<wall>
+		<x1>0.65</x1><y1>0</y1>
+		<x2>1.1</x2><y2>0</y2>
+	</wall>
+	
 	
 	<feeder>
 			<id>1</id>
-			<x>0.6</x> 
+			<x>0.1</x> 
 			<y>1.2</y> 
-=	</feeder>
+	</feeder>
 	
 	
 	
 	<startPositions>
-		<pos>-0.6,-0.3,1.57</pos>
-		<pos>0.6,-0.3,1.57</pos>
-		<pos>0.2,-0.3,1.57</pos>
+		<pos>-1,1.4,0</pos>
+		<pos>-1,-1.4,0</pos>
+		<pos>1,-1.4,0</pos>
+		<pos>1,1.4,0</pos>
+		<pos>-0.9,-0.1,0</pos>
+		<pos>-0.9,-0.1,0</pos>
+		<pos>-0.1,-1.3,0</pos>
 	</startPositions>
 
 	<floor>
@@ -56,17 +65,7 @@
 		<y>0</y>
 		<z>8</z>
 	</topview>
-	<!-- <thirdview>
-		<x>2.1</x>
-		<y>2.5</y>
-		<z>2.1</z>
-	</thirdview>
-	<robotview>
-		<x>1</x>
-		<y>.1</y>
-		<z>0</z>
-		<theta>1.57</theta>
-	</robotview>  -->
+
 	
 </world>
 

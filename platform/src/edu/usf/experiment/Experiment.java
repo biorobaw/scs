@@ -147,6 +147,7 @@ public class Experiment implements Runnable {
 
 	
 	void createAndInitLogFolder() {
+		String baseLogPath = (String)g.get("baseLogPath");
 		String logPath = (String)g.get("logPath");
 		
 		//create log path directories
@@ -155,19 +156,27 @@ public class Experiment implements Runnable {
 		File file = new File(logPath +"/");
 		file.mkdirs();
 		
+		File experimentFolder = new File(baseLogPath + "/experiments/");
+		experimentFolder.mkdirs();
+		
+		File mazeFolder = new File(baseLogPath + "/mazes/");
+		mazeFolder.mkdirs();
+		
 		
 		//Copy experiment file
 		String experimentFile = g.get("experiment").toString();
-		IOUtils.copyFile(experimentFile, logPath + "/experiment.xml");	
+		String experimentName = (new File(experimentFile)).getName();
+		IOUtils.copyFile(experimentFile, baseLogPath + "/experiments/" + experimentName);	
 		
 		//Copy configuration file
 		String configFile = g.get("configFile").toString();
-		IOUtils.copyFile(configFile, logPath + "/config.txt");	
+		IOUtils.copyFile(configFile, baseLogPath + "/config.txt");	
 		
 		//Copy maze file
 		ElementWrapper root = XMLExperimentParser.loadRoot(experimentFile);
 		String mazeFile = root.getChild("universe").getChild("params").getChildText("maze");
-		if (mazeFile != null) IOUtils.copyFile(mazeFile, logPath + "/maze.xml");
+		String mazeName = (new File(mazeFile)).getName();
+		if (mazeFile != null) IOUtils.copyFile(mazeFile, baseLogPath + "/mazes/" + mazeName);
 		
 		
 //		//Save globals to a file:
@@ -375,7 +384,7 @@ public class Experiment implements Runnable {
 	}
 	
 	
-	static public ElementWrapper loadGlobals(String[] args, String configLogPath ) {
+	static public ElementWrapper loadGlobals(String[] args, String baseLogPath ) {
 		
 	    for(int i=0; i+1<args.length; i=i+2) 
 	    	g.put(args[i], args[i+1]);
@@ -405,7 +414,7 @@ public class Experiment implements Runnable {
 	    
 	    
 	    //set logPath:
-	    g.put("logPath", configLogPath +"/" +g.get("config"));
+	    g.put("logPath", baseLogPath +"/" +g.get("config"));
 	    
 	    
 	    //check if running a rat or only executing pre or post experiment tasks
@@ -426,11 +435,7 @@ public class Experiment implements Runnable {
 
 	    //check if display was defined:
 	    String displayAux = (String)g.get("display");
-	    if(displayAux!=null) g.put("display",Boolean.parseBoolean(displayAux));
-	    
-	    //define other globals
-	    g.put("maze.file",g.get("logPath") + "/maze.xml");
-	    g.put("episode",-1);		    
+	    if(displayAux!=null) g.put("display",Boolean.parseBoolean(displayAux)); 
 	    
 	    
 		//Load globals from experiment file
@@ -443,6 +448,13 @@ public class Experiment implements Runnable {
 				g.put(varName, value);
 			}
 	    
+		
+		//define other globals
+		String mazeFile = root.getChild("universe").getChild("params").getChildText("maze");
+		String mazeName = (new File(mazeFile)).getName();
+	    g.put("maze.file", baseLogPath +"/mazes/"+ mazeName);
+	    g.put("episode",-1);	
+		
 		loadSimControls(root);
 		    
 		return root;

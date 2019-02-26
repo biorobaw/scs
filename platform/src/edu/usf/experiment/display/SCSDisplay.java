@@ -56,9 +56,10 @@ public class SCSDisplay extends Display  {
 	
 	//sync display variables
 	boolean syncDisplay = false;
-	private boolean waitingPreviousFrame ; // boolean which indicates whether a thread is waiting to finish rendering last frame
+	private Integer mutexSync =0;
+	private Boolean waitingPreviousFrame =false; // boolean which indicates whether a thread is waiting to finish rendering last frame
 	private boolean doneRenderingLastCycle = true; //indicates whether last cycle has been drawn
-	int renderCycle = -2; // cycle being rednered
+	int renderCycle = -2; // cycle being rendered
 	int remainingPanels = -1; //panels that still need to render current cycle
 	
 	
@@ -117,9 +118,8 @@ public class SCSDisplay extends Display  {
 		//set synchronization:
 		System.out.println("Synchronizing display: " + Globals.getInstance().get("syncDisplay"));
 		
-		synchronized(this){
-			syncDisplay = (Boolean)Globals.getInstance().get("syncDisplay");
-		}
+		
+		syncDisplay = (Boolean)Globals.getInstance().get("syncDisplay");
 		
 		//pack and set visibility
 		mainFrame.pack();
@@ -341,29 +341,29 @@ public class SCSDisplay extends Display  {
 	long renderCycleTime = 0;
 	@Override
 	public void  updateData() {	
-		
 		waitFinishRenderingLastCycle();
 		
 		boolean signalRepaint = false;
 
-		
 		for(Drawer d : drawers.values()) d.appendData();
-		synchronized(SCSDisplay.this){	
-		
+		synchronized(mutexSync){	
 			if (doneRenderingLastCycle ){
 				
 				renderCycleTime = Debug.tic();
-				
 				renderCycle++;
 				doneRenderingLastCycle = false;
-				for(Drawer d : drawers.values()) d.updateData();
 				remainingPanels = drawPanels.size();
-				for(DrawPanel p :drawPanels.values()) p.setRenderCycle(renderCycle);
-				signalRepaint = true;
+				signalRepaint = true;	
 			}	
 		}
-		if(signalRepaint) repaint();
-		
+		if(signalRepaint) {
+			synchronized(this) {
+				for(Drawer d : drawers.values()) d.updateData();
+				for(DrawPanel p :drawPanels.values()) p.setRenderCycle(renderCycle);
+			}
+			
+			repaint();
+		}
 		
 	}
 	
@@ -381,10 +381,14 @@ public class SCSDisplay extends Display  {
 		} //else System.out.println("Not waiting...");
 	}
 	
-	public synchronized boolean isWaitingNecessary(){
-		waitingPreviousFrame = syncDisplay && !doneRenderingLastCycle;
+	public boolean isWaitingNecessary(){
+		boolean result;
+		synchronized(mutexSync) {
+			waitingPreviousFrame = syncDisplay && !doneRenderingLastCycle;
+			result = waitingPreviousFrame;
+		}
 //		System.out.println("waiting render cycle " + renderCycle + ": " + remainingPanels +"/" + drawPanels.size());
-		return waitingPreviousFrame;
+		return result;
 	}
 	
 
@@ -392,37 +396,41 @@ public class SCSDisplay extends Display  {
 
 
 	
-	public synchronized void sync(long cycle) {
+	public void sync(long cycle) {
 //		System.out.println("finished rendering panel of cycle " + cycle + ", current: " + renderCycle + ", rem "+(remainingPanels-1));
-		if(cycle==renderCycle) { 
-			remainingPanels = Math.max(--remainingPanels, -1);
-			if(remainingPanels==0){
-				if(Debug.profiling) System.out.println("Render cycle time: " + Debug.toc(renderCycleTime));
-				doneRenderingLastCycle = true;
-				
-				if( waitingPreviousFrame) {
+		
+		synchronized (mutexSync) {
+			if(cycle==renderCycle) { 
+				remainingPanels = Math.max(--remainingPanels, -1);
+				if(remainingPanels==0){
+					if(Debug.profiling) System.out.println("Render cycle time: " + Debug.toc(renderCycleTime));
+					doneRenderingLastCycle = true;
+					
+					if( waitingPreviousFrame) {
+						waitingPreviousFrame = false;
+						doneRenderLock.release();
+					}					
+					
+					
+				}
+			}
+		}
+	}
+	
+	
+	public void toggleSync(){
+		
+		synchronized (mutexSync) {
+			syncDisplay = !syncDisplay;
+			if(!syncDisplay)
+			{
+				if(waitingPreviousFrame){
 					waitingPreviousFrame = false;
 					doneRenderLock.release();
-				}
-				
-				
-			}
-		}
-	}
-	
-	
-	public synchronized void toggleSync(){
-		syncDisplay = !syncDisplay;
-		if(!syncDisplay)
-		{
-				
-			if(waitingPreviousFrame){
-				waitingPreviousFrame = false;
-				doneRenderLock.release();
-			}
+				}				
+			}	
 			
 		}
-		
 	}
 	
 	
@@ -439,5 +447,6 @@ public class SCSDisplay extends Display  {
 		
 
 	}	
+	
 	
 }
