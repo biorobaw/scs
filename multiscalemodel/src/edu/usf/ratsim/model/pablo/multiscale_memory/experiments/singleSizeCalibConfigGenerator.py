@@ -20,12 +20,12 @@ def createConfigColumn(df):
 def saveResult(df,fileName):
   df.drop(['key'],axis=1).to_csv(fileName,sep='\t',index=False)
   
-numRatsPerConfig = 100
-episodesPerStartingLocation = 80
+numRatsPerConfig = 5
+episodesPerStartingLocation = 100
 runLevel = 1
 
-outputFile = 'singleSizeConfigSet1.csv'
-outputFileNoRats = 'singleSizeConfigSet1.csv'
+outputFile = 'singleSizeCalibConfigSet1.csv'
+outputFileNoRats = 'singleSizeCalibConfigSet1.csv'
 
 runLevel = dataFrame('runLevel',[runLevel])
 experiment = dataFrame('experiment',[ './multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/experiments/experiment.xml'])
@@ -33,8 +33,7 @@ group = dataFrame('group',['Control'])
 
 ratIds = dataFrame('subName',range(numRatsPerConfig))
 
-mazePaths = ['multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/mazes/M0.xml',
-            'multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/mazes/M1.xml'
+mazePaths = ['multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/mazes/M0.xml'
             ]
 mazes = dataFrame('mazeFile',mazePaths)
             
@@ -43,7 +42,8 @@ numLocations = [len(ET.parse(f).getroot().iter('startPositions').__next__().find
 numLocations = dataFrame('numStartingPositions',numLocations)
 
 pcSizes = dataFrame('pcSizes',[0.04*i for i in range(1,15)])
-                              
+traces  = dataFrame('traces',[0.05*i for i in range(0,20)])        
+        
 #we got 27.5 from doing d_between_cells*sqrt(2) < 2r
 #d_between_cells = (maze_width + 2r)/(n+1)
 numPCx = dataFrame('numPCx',[math.ceil((1+27.5/i)*math.sqrt(2)-1) for i in range(1,15)])
@@ -63,7 +63,7 @@ partial = allXall(experiment,partial)
 partial = allXall(runLevel,partial)
 
 pcTable = oneXone(pcSizes,numPCx)
-pcTable['traces']=0.5
+pcTable = allXall(pcTable,traces)
 partial = allXall(partial,pcTable)
 
 createConfigColumn(partial)

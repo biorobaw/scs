@@ -68,7 +68,7 @@ public class MultiscaleModelMemory extends Model {
 	int totalPCs;
 	int numScales;
 	
-	float traceDecay;
+	List<Float> traceDecay;
 
 	final float mazeWidth;
 	final float mazeHeight;
@@ -155,7 +155,7 @@ public class MultiscaleModelMemory extends Model {
 		numPCx = params.getChildIntList("numPCx");
 		numScales = pcSizes.size();
 		
-		traceDecay = params.getChildFloat("traceDecay");
+		traceDecay = params.getChildFloatList("traces");
 
 		discountFactor = params.getChildFloat("discountFactor");
 		learningRate = params.getChildFloat("learningRate");
@@ -224,13 +224,13 @@ public class MultiscaleModelMemory extends Model {
 			
 			//add state traces:
 			int numCells=numPCx.get(i)*numPCy[i];
-			valueTraces[i] = new EligibilityTraces("state trace " + i, traceDecay, placeCellLayers[i].getActivationPort(), numCells, 1);
+			valueTraces[i] = new EligibilityTraces("state trace " + i, traceDecay.get(i), placeCellLayers[i].getActivationPort(), numCells, 1);
 			valueTraces[i].addInPort("placeCells",placeCellLayers[i].getActivationPort());
 			valueTraces[i].addInPort("totalActivation",totalActivation.getSumPort());
 			addModule(valueTraces[i]);
 			
 			//add action traces
-			actionTraces[i] = new EligibilityTraces("action trace " + i, traceDecay, placeCellLayers[i].getActivationPort(), numCells, numActions);
+			actionTraces[i] = new EligibilityTraces("action trace " + i, traceDecay.get(i), placeCellLayers[i].getActivationPort(), numCells, numActions);
 			actionTraces[i].addInPort("placeCells",placeCellLayers[i].getActivationPort());
 			actionTraces[i].addInPort("totalActivation",totalActivation.getSumPort());
 			actionTraces[i].addInPort("lastAction",actionTaken);
@@ -585,7 +585,8 @@ public class MultiscaleModelMemory extends Model {
 		
 		
 		//ADD RUNTIMES DRAWER
-		RuntimesDrawer runtimes = new RuntimesDrawer(100, 0, 800);
+		int numEpisodes = Integer.parseInt(Globals.getInstance().get("numEpisodes").toString());
+		RuntimesDrawer runtimes = new RuntimesDrawer(numEpisodes, 0, 800);
 		runtimes.doLines = false;
 		d.addPanel(new DrawPanel(300,300), "runtimes", 1, 4, 1, 1);
 		d.addDrawer("runtimes", "runtimes", runtimes);

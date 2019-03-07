@@ -12,20 +12,20 @@
 	
 	<!-- Add variables to define global variables -->
 	<variables>
-		<!-- <mazeFile>
-			<value>multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/mazes/MorrisMaze.xml</value>
+	<!--
+		<mazeFile>
+			multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/mazes/MorrisMaze.xml
 		</mazeFile>
-		<numEpisodes>
-			<value>500</value>
-		</numEpisodes>
-		<numStartingPositions>
-			<value>2</value>
-		</numStartingPositions> -->
+		<numEpisodes>500</numEpisodes>
+		<numStartingPositions>2</numStartingPositions> 
+		<traces>0.5</traces>
+	-->
+		
 	</variables>
 	
 	<simulationControls>
-		<simulationSpeed>9</simulationSpeed> <!--speed reference: 5000,3000,2000,1000,500,400,300,100,30,0-->
-		<display>true</display>
+		<!-- <simulationSpeed>9</simulationSpeed> --> <!--speed reference: 5000,3000,2000,1000,500,400,300,100,30,0-->
+		<!-- <display>false</display> --> <!-- controlling it from console input  -->
 		<!-- <seed>3365448354185182426</seed> -->
 		<syncDisplay>false</syncDisplay>
 		<collisionDetection>false</collisionDetection>
@@ -83,9 +83,9 @@
 			           
 			<pcType>exponential</pcType> 	   
 			<pcSizes>$(pcSizes)</pcSizes>	   
-			<numPCx>$(numPCx)</numPCx>	 
+			<numPCx>$(numPCx)</numPCx>
+			<traces>$(traces)</traces>	 
 			
-			<traceDecay>0.5</traceDecay>  
 			           
 			<discountFactor>0.999</discountFactor>
 			<learningRate>0.6</learningRate>

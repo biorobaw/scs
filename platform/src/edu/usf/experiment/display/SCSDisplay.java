@@ -240,7 +240,7 @@ public class SCSDisplay extends Display  {
 		
 		// Create slider for simulation velocity
 		int simSpeed = SimulationControl.getSimulationSpeed();
-		JSlider simVel = new JSlider(JSlider.HORIZONTAL,0, 9, simSpeed);
+		JSlider simVel = new JSlider(JSlider.HORIZONTAL,0, SimulationControl.sleepValues.length-1, simSpeed);
 		simVel.setPreferredSize(new Dimension(300, 50));
 		simVel.setMajorTickSpacing(1);
 		simVel.setMinorTickSpacing(1);
@@ -275,6 +275,7 @@ public class SCSDisplay extends Display  {
 			if(pauseValue) {
 				buttonPause.setText("Resume");
 				buttonStep.setEnabled(true);
+				System.out.println("updating");  
 			}else {
 				buttonPause.setText("Pause");
 				buttonStep.setEnabled(false);
@@ -428,7 +429,9 @@ public class SCSDisplay extends Display  {
 					waitingPreviousFrame = false;
 					doneRenderLock.release();
 				}				
-			}	
+			}else {
+				repaint();
+			}
 			
 		}
 	}

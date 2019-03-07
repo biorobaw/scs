@@ -22,7 +22,7 @@ public class SimulationControl {
 	static private int stepsAvailable = 0;
 	static private boolean paused = false;
 	
-	private static int[] sleepValues = new int[] {5000,3000,2000,1000,500,400,300,100,30,15,8,5,3,2,1,0};
+	public static int[] sleepValues = new int[] {5000,3000,2000,1000,500,400,300,100,30,15,8,5,3,2,1,0};
 	private static int simulationSpeed = sleepValues.length-1;	
 	
 	static LinkedList<Function<Boolean,Void>> pauseStateListeners = new LinkedList<>();

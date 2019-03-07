@@ -433,9 +433,9 @@ public class Experiment implements Runnable {
 	    	
 	    }
 
-	    //check if display was defined:
+	    //check if display was defined, if not default is false:
 	    String displayAux = (String)g.get("display");
-	    if(displayAux!=null) g.put("display",Boolean.parseBoolean(displayAux)); 
+	    g.put("display",displayAux!=null && Boolean.parseBoolean(displayAux)); 
 	    
 	    
 		//Load globals from experiment file
