@@ -42,6 +42,10 @@ public class ActionBiasModule extends Module {
 	public ActionBiasModule(String name,int numActions,int episodesToHalfLife) {
 		super(name);
 
+		
+		//TODO: if numbers are very small, when multiplying to low numbers we might get zeros
+		//to prevent this, the precalculated bias should be re normalized removing values corresponding to zero entries
+		
 		this.numActions = numActions;
 		
 		this.episodesToHalfLife = episodesToHalfLife;
