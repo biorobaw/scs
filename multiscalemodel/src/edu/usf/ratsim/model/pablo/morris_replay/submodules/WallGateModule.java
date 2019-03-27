@@ -66,6 +66,7 @@ public class WallGateModule extends Module {
 			sum = 0;
 			for(int i=0;i<numActions;i++) {
 				probabilities[i] = gates[i];
+				sum+=1;
 			}
 		}
 		for (int i =0;i<numActions;i++) probabilities[i]/=sum;

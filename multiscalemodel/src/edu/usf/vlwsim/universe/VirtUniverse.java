@@ -100,7 +100,7 @@ public abstract class VirtUniverse extends Universe implements FeederUniverse, P
 
 	private boolean robotWantsToEat;
 
-	private Robot robot;
+	public Robot robot;
 
 
 	private float deltaT;
@@ -129,8 +129,6 @@ public abstract class VirtUniverse extends Universe implements FeederUniverse, P
 
 		robotPos = new RigidTransformation();
 
-		robotWantsToEat = false;
-
 		list = maze.getChildren("wall");
 		for (ElementWrapper wall : list) {
 			Wall w = new Wall(wall.getChildFloat("x1"), wall.getChildFloat("y1"), wall.getChildFloat("x2"),
@@ -158,7 +156,6 @@ public abstract class VirtUniverse extends Universe implements FeederUniverse, P
 		}
 
 		list = maze.getChildren("platform");
-		list = maze.getChildren("platform");
 		platforms = new LinkedList<Platform>();
 		for (ElementWrapper platform : list) {
 			Platform p = new Platform(new Coordinate(platform.getChildFloat("x"), platform.getChildFloat("y")),
@@ -168,8 +165,6 @@ public abstract class VirtUniverse extends Universe implements FeederUniverse, P
 
 		instance = this;
 
-		robotTriedToEat = false;
-		robotAte = false;
 
 		
 		ElementWrapper brEW = maze.getChild("boundingRect");
@@ -188,6 +183,8 @@ public abstract class VirtUniverse extends Universe implements FeederUniverse, P
 			setBoundingRect(new Rectangle2D.Float(mx, my, Mx-mx, My-my));
 		}
 		
+		
+		clearState();
 		
 		Display.getDisplay().setupUniversePanel(this);
 		Display.getDisplay().addDrawer("universe","platform",new PlatformDrawer(this));
@@ -265,20 +262,13 @@ public abstract class VirtUniverse extends Universe implements FeederUniverse, P
 					feedingFeeder = f.getId();
 		}
 
-		if (feedingFeeder != -1) {
+		robotAte = feedingFeeder != -1;
+		if (robotAte) {
 			feeders.get(feedingFeeder).clearFood();
-			robotAte = true;
-			if (Debug.printRobotAte)
-				System.out.println("Robot has eaten");
-
 			((FeederRobot) robot).setAte();
-		} else {
-			robotAte = false;
-			if (Debug.printRobotAte)
-				System.out.println("Robot tried to eat far from food");
-		}
-
-		robotWantsToEat = false;
+		} 
+		if (Debug.printRobotAte)
+			System.out.println("Robot has eaten");
 	}
 
 	@Override
@@ -378,8 +368,6 @@ public abstract class VirtUniverse extends Universe implements FeederUniverse, P
 	 *************************************/
 	public void setRobotPosition(Coordinate pos) {
 		robotPos = new RigidTransformation(pos, robotPos.getRotation());
-
-		robotAte = robotTriedToEat = false;
 	}
 
 	public void setRobotOrientation(float angle) {
@@ -403,9 +391,13 @@ public abstract class VirtUniverse extends Universe implements FeederUniverse, P
 	 */
 	@Override
 	public void step() {
+		robotTriedToEat =false;
+		robotAte		=false;
+		
 		stepMotion();
 		if (robotWantsToEat) {
 			robotEat();
+			robotWantsToEat = false;
 		}
 			
 	}
@@ -447,13 +439,19 @@ public abstract class VirtUniverse extends Universe implements FeederUniverse, P
 			robotPos = toT;
 		}
 
-		robotAte = robotTriedToEat = false;
+//		var coord = getRobotPosition();
+//		if(coord.y >= -0.32 && coord.y<=0.32)
+//			if(coord.x <= 0.6 || coord.x >= 0.65 ) {
+//				Globals g = Globals.getInstance();
+//				System.err.println("ERROR: episode, cycle: " + g.get("episode") +", " + g.get("cycle"));
+//				System.err.println("ERROR: pos=(" + coord.x + ", " + coord.y + ")");
+//			}
+
 	}
 
 	public void rotateRobot(float angle) {
 		robotPos.composeBefore(new RigidTransformation(angle));
 
-		robotAte = robotTriedToEat = false;
 	}
 
 	public boolean canRobotMove(float angle, float step) {
