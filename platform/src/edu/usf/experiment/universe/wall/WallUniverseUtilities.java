@@ -64,13 +64,22 @@ public class WallUniverseUtilities {
 
 		double minDistance = maxDistance;
 		LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
-		Coordinate inter;
 		double distance;
 		for (Wall wall : walls) {
 
-			if ((inter = path.intersection(wall.s)) != null
-					&& (distance = inter.distance(initCoordinate)) < minDistance)
-				minDistance = distance;
+			distance = path.distance(wall.s);
+			
+			if(distance < 0.001) {
+				//segments do not intersect but a wall ends at a distance of 0.01 of the ray,
+				//assuming it does intersect
+				Coordinate[] closest = path.closestPoints(wall.s);
+				for(var c : closest) {
+					if( (distance = initCoordinate.distance(c)) < minDistance )
+						minDistance = distance;
+				}
+				
+			}
+			
 		}
 
 		return minDistance;

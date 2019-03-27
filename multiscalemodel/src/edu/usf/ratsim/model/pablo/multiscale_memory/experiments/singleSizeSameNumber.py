@@ -21,11 +21,11 @@ def saveResult(df,fileName):
   df.drop(['key'],axis=1).to_csv(fileName,sep='\t',index=False)
   
 numRatsPerConfig = 100
-episodesPerStartingLocation = 100
+episodesPerStartingLocation = 500
 runLevel = 1
 
-outputFile = 'singleSizeTracesConfigSet1.csv'
-#outputFileNoRats = 'singleSizeTracesConfigSet1.csv'
+outputFile = 'singleSizeSameNumberMoreEpisodes.csv'
+#outputFileNoRats = 'singleSizeSameNumberMoreEpisodes.csv'
 
 runLevel = dataFrame('runLevel',[runLevel])
 experiment = dataFrame('experiment',[ './multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/experiments/experiment.xml'])
@@ -33,7 +33,8 @@ group = dataFrame('group',['Control'])
 
 ratIds = dataFrame('subName',range(numRatsPerConfig))
 
-mazePaths = ['multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/mazes/M1.xml'
+mazePaths = ['multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/mazes/M0.xml',
+             'multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/mazes/M1.xml'
             ]
 mazes = dataFrame('mazeFile',mazePaths)
             
@@ -46,7 +47,7 @@ traces  = dataFrame('traces',[0.1*i for i in range(0,10)])
         
 #we got 27.5 from doing d_between_cells*sqrt(2) < 2r
 #d_between_cells = (maze_width + 2r)/(n+1)
-numPCx = dataFrame('numPCx',[math.ceil((1+27.5/i)*math.sqrt(2)-1) for i in range(1,15)])
+numPCx = dataFrame('numPCx',[math.ceil((1+27.5/1)*math.sqrt(2)-1) for i in range(1,15)])
 
 ##############################################################
 #generate table
@@ -63,7 +64,7 @@ partial = allXall(experiment,partial)
 partial = allXall(runLevel,partial)
 
 pcTable = oneXone(pcSizes,numPCx)
-pcTable = allXall(pcTable,traces)
+pcTable['traces']=0.7
 partial = allXall(partial,pcTable)
 
 createConfigColumn(partial)

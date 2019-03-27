@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+
 import edu.usf.experiment.universe.element.MazeElement;
 import edu.usf.experiment.universe.wall.Wall;
 import edu.usf.experiment.utils.ElementWrapper;
@@ -19,6 +20,8 @@ import edu.usf.ratsim.support.XMLDocReader;
 public class MazeMetrics {
 	public static void main(String[] args) {
 		
+		System.err.println("ERROR - needs to be fixed before it can be used");
+		System.exit(-1);
 		//OUT FILE
 		String outFolder = "./src/edu/usf/ratsim/model/pablo/multiscale_memory/mazes/";
 		String outFile   = outFolder + "mazeMetrics.csv";

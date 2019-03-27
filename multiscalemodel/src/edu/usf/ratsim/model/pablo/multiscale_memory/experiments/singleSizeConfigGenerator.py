@@ -21,11 +21,11 @@ def saveResult(df,fileName):
   df.drop(['key'],axis=1).to_csv(fileName,sep='\t',index=False)
   
 numRatsPerConfig = 100
-episodesPerStartingLocation = 80
+episodesPerStartingLocation = 100
 runLevel = 1
 
-outputFile = 'singleSizeConfigSet1.csv'
-outputFileNoRats = 'singleSizeConfigSet1.csv'
+outputFile = 'singleSizeConfigSet2.csv'
+#outputFileNoRats = 'singleSizeConfigSet1.csv'
 
 runLevel = dataFrame('runLevel',[runLevel])
 experiment = dataFrame('experiment',[ './multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/experiments/experiment.xml'])
@@ -63,12 +63,12 @@ partial = allXall(experiment,partial)
 partial = allXall(runLevel,partial)
 
 pcTable = oneXone(pcSizes,numPCx)
-pcTable['traces']=0.5
+pcTable['traces']=0.7
 partial = allXall(partial,pcTable)
 
 createConfigColumn(partial)
 
-saveResult(partial,outputFileNoRats)
+#saveResult(partial,outputFileNoRats)
 
 final = allXall(partial,ratIds);
 
