@@ -21,10 +21,11 @@ def saveResult(df,fileName):
   df.drop(['key'],axis=1).to_csv(fileName,sep='\t',index=False)
   
 numRatsPerConfig = 100
-episodesPerStartingLocation = 250
+episodesPerStartingLocation = 200
 runLevel = 1
 
-outputFile = 'singleSizeVsMazes.csv'
+outputFile = 'memoryReductionExperiment.csv'
+
 
 runLevel = dataFrame('runLevel',[runLevel])
 experiment = dataFrame('experiment',[ './multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/experiments/experiment.xml'])
@@ -32,18 +33,25 @@ group = dataFrame('group',['Control'])
 
 ratIds = dataFrame('subName',range(numRatsPerConfig))
 
-mazePaths = ['multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/mazes/M{}.xml'.format(i) for i in range(2,8)]
+mazePaths = ['multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/mazes/M0.xml']
 mazes = dataFrame('mazeFile',mazePaths)
             
 fullMazePaths = [os.environ['SCS_FOLDER']+'/' + f for f in mazePaths]      
 numLocations = [len(ET.parse(f).getroot().iter('startPositions').__next__().findall('pos')) for f in fullMazePaths    ]
 numLocations = dataFrame('numStartingPositions',numLocations)
 
-pcSizes = dataFrame('pcSizes',[0.04*i for i in range(1,9)])
-                              
-#we got 27.5 from doing d_between_cells*sqrt(2) < 2r
-#d_between_cells = (maze_width + 2r)/(n+1)
-numPCx = dataFrame('numPCx',[math.ceil((1+27.5/i)*math.sqrt(2)-1) for i in range(1,15)])
+
+
+
+pcTable = dataFrame('numPCx',['{},6'.format(nx) for nx in range(10,40,2)])
+pcTable['pcSizes']='0.04,0.32'
+pcTable['traces']='0.0,0.0'
+
+basePCconfig = dataFrame('numPCx',['40'])
+basePCconfig['pcSizes']='0.04'
+basePCconfig['traces']='0.0'
+
+pcTable = pcTable.append(basePCconfig,ignore_index=True)
 
 ##############################################################
 #generate table
@@ -59,13 +67,12 @@ partial = allXall(group,partial)
 partial = allXall(experiment,partial)
 partial = allXall(runLevel,partial)
 
-pcTable = oneXone(pcSizes,numPCx)
-pcTable['traces']=0.7
+
+
 partial = allXall(partial,pcTable)
 
 createConfigColumn(partial)
 
-#saveResult(partial,outputFileNoRats)
 
 final = allXall(partial,ratIds);
 

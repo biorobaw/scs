@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import edu.usf.experiment.Globals;
+import edu.usf.experiment.SimulationControl;
 import edu.usf.experiment.display.Display;
 import edu.usf.experiment.display.DrawPanel;
 import edu.usf.experiment.display.GuiUtils;
+import edu.usf.experiment.display.SCSDisplay;
 import edu.usf.experiment.display.drawer.PathDrawer;
 import edu.usf.experiment.display.drawer.RobotDrawer;
 import edu.usf.experiment.display.drawer.WallDrawer;
@@ -438,6 +440,13 @@ public class MultiscaleModelMemory extends Model {
 		@Override
 		public void initialTask() {
 			super.initialTask();
+			Globals g = Globals.getInstance();
+//			if((int)g.get("episode") == 39 && (int)g.get("cycle")==381) {
+//				System.out.println("Reaching value");
+//				SCSDisplay d = (SCSDisplay)Display.getDisplay();
+//				d.toggleSync();
+//				SimulationControl.togglePause();
+//			}
 		}
 
 		@Override
