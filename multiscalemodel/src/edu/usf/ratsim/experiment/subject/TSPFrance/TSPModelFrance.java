@@ -246,10 +246,8 @@ public class TSPModelFrance extends Model {
 			targetSequenceFileName = abcdeFile;
 			
 			//String fileSets[] = new String[] {abcdeFile,abcdeFile,bacdeFile + "," + ebcdaFile+","+ abcdeFile};
-			String fileSets[] = new String[] {abcdeFile,abcdeFile,bacdeFile + "," + ebcdaFile+","+ abcedFile};
+			String fileSets[] = new String[] {abcdeFile,abcdeFile,abcedFile + "," + bacdeFile + "," + ebcdaFile};
 			String fileSet =fileSets[experimentID];
-
-			
 			prerecordedPath = new PrerecordedPathModule("recorded path", fileSet);
 			addModule(prerecordedPath);
 			break;
@@ -420,8 +418,9 @@ public class TSPModelFrance extends Model {
 		float scale = params.getChildFloat("scale");
 		int preamble = params.getChildInt("preamble");
 		int stimulus_size = numPCellsPerSide * numPCellsPerSide;
-		
-		
+		float feedforward_scale=params.getChildFloat("feedforwardScale");
+		float recurrent_scale=params.getChildFloat("recurrentScale");
+	
 		String severity = params.getChild("loggingSeverity").getText().toUpperCase();
 		
 		if(runLevel>0) {
@@ -587,9 +586,9 @@ public class TSPModelFrance extends Model {
 			simulation_id = TRN4JAVA.Basic.Simulation.encode(identifier);
 		
 			
-			long 	replay_seed = RandomSingleton.getInstance().nextLong();
-			long	consolidation_seed = RandomSingleton.getInstance().nextLong();
-			long	decoder_seed = RandomSingleton.getInstance().nextLong();
+			long 	replay_seed = identifier.batch_number * 3;
+			long	consolidation_seed = identifier.batch_number *3 + 1;
+			long	decoder_seed = identifier.batch_number * 3 + 2;
 			
 			TRN4JAVA.Extended.Simulation.allocate(simulation_id);	
 			reservoir = new Reservoir(
@@ -599,6 +598,7 @@ public class TSPModelFrance extends Model {
 					consolidation_seed,
 					decoder_seed,
 					stimulus_size, reservoir_size, leak_rate, initial_state_scale, learning_rate, mini_batch_size,
+					feedforward_scale, recurrent_scale,
 					snippets_size, time_budget,learn_reverse_rate, generate_reverse_rate, reverse_learning_rate, discount,
 					rows, cols, xmin, xmax, ymin, ymax, cx, cy, width, sigma, radius, scale, angle,
 					preamble );

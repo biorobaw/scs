@@ -20,9 +20,9 @@ impi
 boost_mpi-vc141-mt-x64-1_69
 		
 Backend
-cudart64_100
-cublas64_100
-curand64_100
+cudart64_101
+cublas64_10
+curand64_10
 
 Helper
 GPU

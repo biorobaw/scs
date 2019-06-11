@@ -85,6 +85,7 @@ public class Reservoir {
 	public Reservoir(boolean callbacks_installed, long id, 
 			long replay_seed, long consolidation_seed, long decoder_seed, 
 			long stimulus_size, long reservoir_size, float leak_rate, float initial_state_scale, float learning_rate, int mini_batch_size,
+			float feedforward_scale, float recurrent_scale,
 			int snippets_size, int time_budget, float learn_reverse_rate, float generate_reverse_rate, float reverse_learning_rate, float discount,
 			long rows, long cols, float xmin, float xmax, float ymin, float ymax, float cx[], float cy[], float width[], float sigma, float radius, float scale, float angle,
 			int preamble)
@@ -126,13 +127,13 @@ public class Reservoir {
 		this.scale = scale;
 		this.angle = angle;
 		
+		this.recurrent_scale = recurrent_scale;
+		this.feedforward_scale = feedforward_scale;
+		
 		this.trial = 1;
 		this.train = 0;
 		this.test = 0;
 		this.repeat = 0;
-		
-		feedforward_scale=4.256110f;
-		recurrent_scale=4.544998f;
 		
 		//customEventQueue.enqueue(ALLOCATE_SIMULATION, id);
 	}
@@ -277,10 +278,10 @@ public class Reservoir {
 		{
 			TRN4JAVA.Extended.Simulation.Recording.Performances.configure(sid, true, true, true);
 			/*TRN4JAVA.Extended.Simulation.Recording.States.configure(sid, true, true, true);
-			TRN4JAVA.Extended.Simulation.Recording.Weights.configure(sid, true, true);
-			TRN4JAVA.Extended.Simulation.Recording.Scheduling.configure(sid);*/
+			TRN4JAVA.Extended.Simulation.Recording.Weights.configure(sid, true, true);*/
+			TRN4JAVA.Extended.Simulation.Recording.Scheduling.configure(sid);
 			TRN4JAVA.Extended.Simulation.Measurement.Position.Raw.configure(sid, batch_size);
-			TRN4JAVA.Extended.Simulation.Measurement.Readout.Raw.configure(sid, batch_size);
+			/*TRN4JAVA.Extended.Simulation.Measurement.Readout.Raw.configure(sid, batch_size);*/
 		}
 		TRN4JAVA.Extended.Simulation.configure_end(sid);
 	}
