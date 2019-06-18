@@ -420,7 +420,7 @@ public class TSPModelFrance extends Model {
 		int stimulus_size = numPCellsPerSide * numPCellsPerSide;
 		float feedforward_scale=params.getChildFloat("feedforwardScale");
 		float recurrent_scale=params.getChildFloat("recurrentScale");
-	
+		int supplementary_steps = params.getChildInt("supplementarySteps");
 		String severity = params.getChild("loggingSeverity").getText().toUpperCase();
 		
 		if(runLevel>0) {
@@ -601,7 +601,8 @@ public class TSPModelFrance extends Model {
 					feedforward_scale, recurrent_scale,
 					snippets_size, time_budget,learn_reverse_rate, generate_reverse_rate, reverse_learning_rate, discount,
 					rows, cols, xmin, xmax, ymin, ymax, cx, cy, width, sigma, radius, scale, angle,
-					preamble );
+					preamble,
+					supplementary_steps);
 		
 			reservoirActionSelectionModule = new ReservoirActionSelectionModule("reservoirAction", reservoir);
 			reservoirActionSelectionModule.addInPort("placeCells", placeCells.getOutPort("activation"));

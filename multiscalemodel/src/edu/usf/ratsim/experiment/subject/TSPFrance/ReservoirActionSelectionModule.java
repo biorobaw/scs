@@ -82,12 +82,14 @@ public class ReservoirActionSelectionModule extends Module
 	
 	class Agent extends TRN4JAVA.Custom.Simulation.Encoder
 	{
+		private int counter = 0;
 		@Override
 		public void callback(final long simulation_id, final long evaluation_id, final float prediction[], final long rows, final long cols)
 		{
 			assert(rows == 1);
 			assert(cols == 2);
 			
+			System.out.println("generation step counter = " + counter++);
 			reservoir.append_next_position(simulation_id, evaluation_id, new Point3f(prediction[0], prediction[1], 0.0f));
 		}	
 	}

@@ -57,6 +57,7 @@ public class Reservoir {
 	private float leak_rate, initial_state_scale, learning_rate;
 	private long sid;
 	private int preamble;
+	private int supplementary_steps;
 	
 	private float cx[];
 	private float cy[];
@@ -88,7 +89,7 @@ public class Reservoir {
 			float feedforward_scale, float recurrent_scale,
 			int snippets_size, int time_budget, float learn_reverse_rate, float generate_reverse_rate, float reverse_learning_rate, float discount,
 			long rows, long cols, float xmin, float xmax, float ymin, float ymax, float cx[], float cy[], float width[], float sigma, float radius, float scale, float angle,
-			int preamble)
+			int preamble, int supplementary_steps)
 	{
 		
 		this.callbacks_installed = callbacks_installed;
@@ -104,6 +105,8 @@ public class Reservoir {
 		this.discount = discount;
 		this.mini_batch_size = mini_batch_size;
 		this.preamble=preamble;
+		this.supplementary_steps = supplementary_steps;
+		
 		this.stimulus_size = stimulus_size;
 		this.reservoir_size = reservoir_size;
 		this.leak_rate = leak_rate;
@@ -117,8 +120,6 @@ public class Reservoir {
 		this.x_max = xmax;
 		this.y_min = ymin;
 		this.y_max = ymax;
-		this.x_min = xmin;
-		this.x_max = xmax;
 		this.cx = cx;
 		this.cy = cy;
 		this.width = width;
@@ -134,7 +135,7 @@ public class Reservoir {
 		this.train = 0;
 		this.test = 0;
 		this.repeat = 0;
-		
+
 		//customEventQueue.enqueue(ALLOCATE_SIMULATION, id);
 	}
 	
@@ -464,7 +465,7 @@ public class Reservoir {
 				//assert(accumulated_sequences.size() == 1);
 				String target_sequence = "target_Sequence";
 				long eid = TRN4JAVA.Basic.Simulation.Evaluation.encode(new TRN4JAVA.Basic.Simulation.Evaluation.Identifier((short)trial, (short)train, (short)test, (short)repeat));
-				TRN4JAVA.Extended.Simulation.test(sid, eid, target_sequence, INC_TAG, EXP_TAG, preamble, true, 0); // at beginning of new episode - this provides predictions
+				TRN4JAVA.Extended.Simulation.test(sid, eid, target_sequence, INC_TAG, EXP_TAG, preamble, true, supplementary_steps); // at beginning of new episode - this provides predictions
 		
 				waitForState(State.EVALUATING);
 			}
