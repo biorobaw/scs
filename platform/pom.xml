@@ -16,6 +16,10 @@
 			<name>central</name>
 			<url>http://central.maven.org/maven2/</url>
 		</repository>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
 	</repositories>
 
 	<build>
@@ -75,5 +79,10 @@
 			<artifactId>micronsl</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+		    <groupId>com.github.biorobaw</groupId>
+		    <artifactId>SSLVisionJavaClient</artifactId>
+		    <version>v0.2.0</version>
+        </dependency>
 	</dependencies>
 </project>

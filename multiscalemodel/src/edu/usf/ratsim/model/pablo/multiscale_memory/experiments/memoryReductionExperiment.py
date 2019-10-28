@@ -21,10 +21,10 @@ def saveResult(df,fileName):
   df.drop(['key'],axis=1).to_csv(fileName,sep='\t',index=False)
   
 numRatsPerConfig = 100
-episodesPerStartingLocation = 200
+episodesPerStartingLocation = 300
 runLevel = 1
 
-outputFile = 'memoryReductionExperiment.csv'
+outputFile = 'memoryReductionExperimentFull.csv'
 
 
 runLevel = dataFrame('runLevel',[runLevel])
@@ -33,7 +33,7 @@ group = dataFrame('group',['Control'])
 
 ratIds = dataFrame('subName',range(numRatsPerConfig))
 
-mazePaths = ['multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/mazes/M0.xml']
+mazePaths = ['multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/mazes/M0.xml','multiscalemodel/src/edu/usf/ratsim/model/pablo/multiscale_memory/mazes/M1.xml']
 mazes = dataFrame('mazeFile',mazePaths)
             
 fullMazePaths = [os.environ['SCS_FOLDER']+'/' + f for f in mazePaths]      
@@ -57,7 +57,7 @@ pcTable = pcTable.append(basePCconfig,ignore_index=True)
 #generate table
                              
 #combine mazes and numLocations one2one
-partial = oneXone(mazes,numLocations)
+partial = allXall(mazes,numLocations)
 
 #calculate num of episodes for each maze: locations*episodes per location
 partial['numEpisodes'] = partial['numStartingPositions']*episodesPerStartingLocation
