@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="us-ascii"?>
+
+<maze>
+
+	<wall x1="1" y1="1" x2="2" y2="2"/>
+
+</maze>

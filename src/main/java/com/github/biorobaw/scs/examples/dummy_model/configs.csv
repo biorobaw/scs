@@ -1,0 +1,2 @@
+config  group run_id  experiment
+c0 g1  0 ./src/main/java/com/github/biorobaw/scs/examples/dummy_model/experiments/experiment_1.xml

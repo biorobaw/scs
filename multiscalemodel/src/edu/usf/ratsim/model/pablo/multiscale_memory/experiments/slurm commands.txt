@@ -1,8 +1,0 @@
-watch squeue -u pablos
-python processAllConfigs.py memoryReductionExperiment2/
-expr 1600 / 5
-sh scripts/run5Configurations.sh logs/configs/memoryReductionExperimentFull logs/multiscale_memory/memoryReductionExperimentFull 0 319 0
-sbatch -a 76,1292 ./scripts/execSingleConfig.sh logs/configs/memoryReductionExperiment2.csv logs/multiscale_memory/memoryReductionExperiment2/ 0
-python logs/multiscale_memory/pythonUtils/MissingFiles.py logs/multiscale_memory/memoryReductionExperiment2/ r#ID-steps.bin 100
-sbatach -a 0-15 postProcess.sh memoryReductionExperiment2/
-sbatach -a 0-15 postProcessPlot.sh memoryReductionExperiment2/

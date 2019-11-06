@@ -1,7 +1,1 @@
-	In Windows:
-1) Install apache ant (Set JAVA_HOME, ANT_HOME, and add ant to PATH variables)
-2) run "ant compile"
-	If neccessary copy D:\Program Files\Java\jdk1.8.0_101\jre\lib\rt.jar
-	to lib add ...\Java\jdk1.8.0_101\jre\lib to class path
-	
-3) when running a program, observe that the class path separator is a semicolon instead of colon 
+FORTHCOMING

@@ -1,21 +1,7 @@
-untitled.sublime*
-*.RData
-<<<<<<< HEAD
-morseout.txt
-*__pycache__*
-*.pyc
-=======
-out
->>>>>>> proposalexperiments
 *~
 javadocs/*
-InterLabFunctionality/*
-multiscalemodel/logs
-multiscalemodel/target
-.settings
 *.project
 *.classpath
-slurm-*
 hs_err*
 logs/
 target
