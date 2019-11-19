@@ -26,7 +26,7 @@ import com.github.biorobaw.scs.gui.Drawer;
 import com.github.biorobaw.scs.gui.WrapLayout;
 import com.github.biorobaw.scs.simulation.SimulationControl;
 import com.github.biorobaw.scs.utils.Debug;
-import com.github.biorobaw.scs.utils.XML;
+import com.github.biorobaw.scs.utils.files.XML;
 
 /**
  * A Java Swing frame to display the SCS data.

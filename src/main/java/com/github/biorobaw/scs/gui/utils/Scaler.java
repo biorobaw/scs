@@ -3,6 +3,7 @@ package com.github.biorobaw.scs.gui.utils;
 import java.awt.Point;
 import java.util.List;
 
+import com.github.biorobaw.scs.utils.math.Floats;
 import com.vividsolutions.jts.geom.Coordinate;
 
 /**
@@ -37,6 +38,10 @@ public class Scaler {
 	 * The offset for the x and y coordinate. Expressed in universe coordinates.
 	 */
 	private float xoffset,  yoffset;
+	
+	/**
+	 * The offset for the x and y coordinates expressed in panel coordinates
+	 */
 
 	public Scaler(Window<Float> worldCoords, Window<Float> panelCoords,boolean keepAspectRatio) {
 //		this.worldCoordinates = worldCoords;
@@ -58,8 +63,10 @@ public class Scaler {
 		//-scale * (world_Ymidpoint + offset) = panel_Ymidpoint
 		xoffset = 0.5f*( (float)panelCoords.width /xscale - 2*worldCoords.x - worldCoords.width  );
 		yoffset = -0.5f*( (float)panelCoords.height /yscale + 2*worldCoords.y + worldCoords.height  );
-		
-		
+				
+		xoffset = panelCoordinates.x + xoffset*xscale;
+		yoffset = panelCoordinates.y - yoffset*yscale;
+
 	}
 	
 	public Scaler(float[] worldCoords, Window<Float> panelCoords,boolean keepAspectRatio) {
@@ -79,9 +86,36 @@ public class Scaler {
 	 */
 	public int[] scale(float[] p) {
 		var res = new int[2];
-		res[0] = (int)(panelCoordinates.x+Math.round( ((p[0] + xoffset) * xscale)));
-		res[1] = (int)(panelCoordinates.y-Math.round( ((p[1] + yoffset) * yscale)));
+		res[0] = Math.round( xoffset + p[0]* xscale );
+		res[1] = Math.round( yoffset - p[1]* yscale );
 		return res;
+	}
+	
+	public float[] scaleX(float[] x) {
+		var res = Floats.mul(x, xscale);
+		return Floats.add(res,xoffset,res);
+	}
+	
+	public float[] scaleY(float[] y) {
+		var res = Floats.mul(y, -yscale);
+		return Floats.add(res,yoffset,res);
+	}
+	
+	
+	public float[] scaleDistanceX(float[] d) {
+		return Floats.mul(d, xscale);
+	}
+	
+	public float[] scaleDistanceY(float[] d) {
+		return Floats.mul(d, yscale);
+	}
+	
+	public float scaleDistanceX(float dx) {
+		return xscale*dx;
+	}
+	public float scaleDistanceY(float dy) {
+		
+		return yscale*dy;
 	}
 	
 	public int[][] scale(float p[][]) {
@@ -120,13 +154,7 @@ public class Scaler {
 	
 
 	
-	public int scaleDistanceX(float dx) {
-		return Math.round(xscale*dx);
-	}
-	public float scaleDistanceY(float dy,boolean signed) {
-		
-		return signed? -yscale*dy : yscale*dy;
-	}
+	
 	public Point scaleDistance(Coordinate p,boolean signed) {
 		return new Point((int)(p.x*xscale),(int)(signed ?  -p.y*yscale : p.y*yscale));
 	}

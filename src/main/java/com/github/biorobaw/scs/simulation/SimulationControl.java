@@ -59,13 +59,17 @@ public class SimulationControl {
 	/**
 	 * A function that waits until the simulation can proceed with the next cycle.
 	 */
+	static long previousTime =0;
 	static public void waitIfPaused() {
 		
 		try {
 			if(!consumeStep()) waitSemaphore.acquire(); //if cant consume wait until step is produced
 			else {
 				int sleep = sleepValues[getSimulationSpeed()];
-				if(sleep>0) Thread.sleep(sleep);
+				long now = System.currentTimeMillis();
+				long remaining = previousTime + sleep - now; 
+				if(remaining>0) Thread.sleep(remaining);
+				previousTime = now;
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

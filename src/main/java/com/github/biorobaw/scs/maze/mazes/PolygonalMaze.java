@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 import com.github.biorobaw.scs.maze.Maze;
 import com.github.biorobaw.scs.simulation.object.maze_elements.walls.Wall;
-import com.github.biorobaw.scs.utils.XML;
+import com.github.biorobaw.scs.utils.files.XML;
 
 public class PolygonalMaze extends Maze {
 	float apotema; // distance from center to any of the walls

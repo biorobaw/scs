@@ -4,7 +4,7 @@ import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import com.github.biorobaw.scs.robot.RobotModule;
-import com.github.biorobaw.scs.utils.XML;
+import com.github.biorobaw.scs.utils.files.XML;
 
 public class GlobalLocalization extends RobotModule implements SlamModule {
 		
@@ -27,5 +27,9 @@ public class GlobalLocalization extends RobotModule implements SlamModule {
 		return proxy.getOrientation2D();
 	}
 	
+	@Override
+	public String getDefaultName() {
+		return SlamModule.super.getDefaultName();
+	}
 	
 }

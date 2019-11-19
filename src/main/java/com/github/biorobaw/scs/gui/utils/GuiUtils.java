@@ -22,7 +22,6 @@ public class GuiUtils {
 	      
         graphics.setColor(color);
         
-//        int aThickness =  arrowThickness;
         
         int dx = x2-x1;
         int dy = y2 -y1;

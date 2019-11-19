@@ -47,7 +47,7 @@ public class WallDrawer extends Drawer {
 		
 		for (var w : cwalls){
 			var p = s.scale(new float[] {w.x, w.y});
-			var r  = s.scaleDistanceX(w.r);
+			var r  = Math.round(s.scaleDistanceX(2*w.r));
 			g.drawOval(p[0]-r, p[1]-r, 2*r, 2*r);
 		}
 		
@@ -65,7 +65,7 @@ public class WallDrawer extends Drawer {
 		super.newEpisode();
 		
 		walls.clear();
-		var m = Experiment.instance.maze;
+		var m = Experiment.get().maze;
 		for (var w : m.walls){
 			if(w instanceof Wall) walls.add(new Wall((Wall)w));
 			else if(w instanceof CylindricalWall) 

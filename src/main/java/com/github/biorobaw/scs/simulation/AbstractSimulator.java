@@ -11,7 +11,7 @@ import com.github.biorobaw.scs.simulation.object.SimulatedObject;
 import com.github.biorobaw.scs.simulation.scripts.Scheduler;
 import com.github.biorobaw.scs.simulation.scripts.Script;
 import com.github.biorobaw.scs.utils.Debug;
-import com.github.biorobaw.scs.utils.XML;
+import com.github.biorobaw.scs.utils.files.XML;
 
 public abstract class AbstractSimulator {
 	

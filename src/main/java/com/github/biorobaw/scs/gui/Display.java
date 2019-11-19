@@ -2,9 +2,9 @@ package com.github.biorobaw.scs.gui;
 
 import java.util.HashMap;
 
-import com.github.biorobaw.scs.experiment.task.cycle.CycleTask;
 import com.github.biorobaw.scs.gui.utils.Window;
-import com.github.biorobaw.scs.utils.XML;
+import com.github.biorobaw.scs.tasks.cycle.CycleTask;
+import com.github.biorobaw.scs.utils.files.XML;
 
 /**
  * This interface represents a means of displaying information. 

@@ -26,13 +26,15 @@ public class RobotDrawer extends Drawer {
 		
 		Scaler s = new Scaler(worldCoordinates, panelCoordinates, true);
 		var p = s.scale(position);
+		var r = s.scaleDistanceX((float)RADIUS);
+		var r2 = (int)Math.round(2*r);
 		
 
 		g.setColor(Color.BLACK);
-		g.drawOval(p[0] - (int) (RADIUS * s.xscale), p[1] - (int) (RADIUS * s.yscale),
-				(int) (RADIUS * s.xscale * 2), (int) (RADIUS * s.yscale * 2));
-		g.drawLine(p[0], p[1], p[0] + (int) (RADIUS * Math.cos(angle) * s.xscale),
-				p[1] - (int) (RADIUS * Math.sin(angle) * s.yscale));
+		g.drawOval((int)Math.round(p[0] -r) , (int)Math.round(p[1] - r), r2, r2);
+		g.drawLine(p[0], p[1], 
+				(int)Math.round(p[0] + r * Math.cos(angle)),
+				(int)Math.round(p[1] - r * Math.sin(angle)));
 	}
 
 	@Override

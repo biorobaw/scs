@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 import com.github.biorobaw.scs.simulation.object.RobotProxy;
 import com.github.biorobaw.scs.simulation.scripts.Script;
-import com.github.biorobaw.scs.utils.XML;
+import com.github.biorobaw.scs.utils.files.XML;
 
 /**
  * Class that implements a robot.
@@ -25,7 +25,7 @@ public class Robot {
 		for(var m : xml.getChildren("module")) {
 			var module = m.<RobotModule>loadObject();
 			module.setRobotProxy(robot_proxy);
-			modules.put(m.getId(), module);
+			modules.put(module.getID(), module);
 		}
 	}
 	
@@ -42,6 +42,11 @@ public class Robot {
 		modules.put(name, m);
 		m.setRobotProxy(robot_proxy);
 		if(m.runsScript()) scripts.add(m);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> T getModule(String id) {
+		return (T)modules.get(id);
 	}
 	
 	/**

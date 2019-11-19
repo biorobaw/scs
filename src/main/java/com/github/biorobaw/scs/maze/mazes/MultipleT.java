@@ -3,10 +3,10 @@ package com.github.biorobaw.scs.maze.mazes;
 import java.util.LinkedList;
 import java.util.Random;
 
-import com.github.biorobaw.scs.utils.XML;
 import com.github.biorobaw.scs.maze.Maze;
 import com.github.biorobaw.scs.simulation.object.maze_elements.walls.Wall;
-import com.github.biorobaw.scs.utils.RandomSingleton;
+import com.github.biorobaw.scs.utils.files.XML;
+import com.github.biorobaw.scs.utils.math.RandomSingleton;
 
 public class MultipleT extends Maze {
 	

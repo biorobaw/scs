@@ -6,24 +6,24 @@ import java.util.LinkedList;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import com.github.biorobaw.scs.experiment.Experiment;
+import com.github.biorobaw.scs.experiment.Subject;
 import com.github.biorobaw.scs.gui.drawer.CycleDataDrawer;
 import com.github.biorobaw.scs.gui.drawer.RobotDrawer;
 import com.github.biorobaw.scs.gui.drawer.WallDrawer;
-import com.github.biorobaw.scs.model.Model;
 import com.github.biorobaw.scs.robot.commands.RotateT;
 import com.github.biorobaw.scs.robot.commands.SetSpeedVW;
 import com.github.biorobaw.scs.robot.commands.SetSpeedXYW;
 import com.github.biorobaw.scs.robot.commands.StepD;
 import com.github.biorobaw.scs.robot.commands.TranslateXY;
-import com.github.biorobaw.scs.simulation.scs_simulator.SCSRobotProxy;
-import com.github.biorobaw.scs.utils.XML;
+import com.github.biorobaw.scs.robot.proxies.SCSRobotProxy;
+import com.github.biorobaw.scs.utils.files.XML;
 
 /**
  * A dummy model exemplifying how to use SCS.
  * @author bucef
  *
  */
-public class DummyModel extends Model {
+public class DummyModel extends Subject {
 
 	LinkedList<Object> list = new LinkedList<Object>();
 	

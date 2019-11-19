@@ -28,8 +28,14 @@ import com.github.biorobaw.scs.simulation.object.SimulatedObject;
 public class SCSRobot extends SimulatedObject {
 	
 	// list of pending commands
-	public LinkedList<Object> cmds = new LinkedList<>();
+	private LinkedList<Object> cmds = new LinkedList<>();
 	
+	// pointer to last command that needs execution over multiple time steps
+	private Object multi_step_command = null;
+	
+	// position and orientation of the robot in the SCS simulator
+	protected float x, y, tita;
+
 	// hash that maps commands (classes) to their executing function
 	static HashMap<Class<?>, ExecuteCommand> command_functions = new HashMap<>();
 	{
@@ -41,19 +47,13 @@ public class SCSRobot extends SimulatedObject {
 		command_functions.put(StepD.class, 		 (r,o,t)-> r.simulateStepD(o,t));
 	}
 	
-	// pointer to last command that needs execution over multiple time steps
-	Object multi_step_command = null;
-	
-	// position and orientation of the robot in the SCS simulator
-	public float x, y, tita;
-	
 	/**
 	 * Constructs the SCS Robot specifying it's initial position
 	 * @param x		robot coordinate x
 	 * @param y		robot coordinate y
 	 * @param tita 	robot orientation
 	 */
-	public SCSRobot(float x, float y, float tita) {
+	protected SCSRobot(float x, float y, float tita) {
 		//set initial position
 		this.x = x;
 		this.y = y;

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.stream.Stream;
 
 import com.github.biorobaw.scs.experiment.Experiment;
+import com.github.biorobaw.scs.utils.Debug;
 
 public class Main {
 	
@@ -24,11 +25,14 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		
+		long start = Debug.tic();
 		// process command arguments:
 		var parsed_args = parseArguments(args);
 		
 		Experiment e = new Experiment(parsed_args);		
 		e.run();
+		
+		System.out.println("TOTAL TIME: " + Debug.toc(start) + "ms");
 		System.exit(0);
 	}
 	

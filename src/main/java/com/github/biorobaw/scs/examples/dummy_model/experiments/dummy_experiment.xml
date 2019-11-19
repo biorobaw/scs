@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="us-ascii"?>
+
+<!-- Sample experiment xml file -->
+<!-- Provides explanations of what is required to define the xml file, as 
+	well as some optional nodes and parameters. For full details about the arguments 
+	and childs required by a node, see the respective class constructor -->
+<experiment>
+
+	<!-- variables : optional tag, defines variables that will be used as global 
+		variables -->
+	<!-- any global variable can be used inside the xml file to assign the value 
+		of an attribute or the text of a node using the notation $(VAR), see usage 
+		example in next template node -->
+	<!-- Important variables: seed : seed for the singleton random generator, 
+		chosen randomly if not defined -->
+	<variables var_1="my_var" var_2="my_var_2" seed="1008" PROJECT="com.github.biorobaw.scs.examples.dummy_model"/>
+
+
+	<!-- template tag [optional] -->
+	<!-- template nodes are used as templates for other xml nodes -->
+	<!-- the use of templates is optional -->
+	<!-- templates require the attribute "id" which musts be unique -->
+	<template id="t1" var_name_1="$(var_2)" var_name_2="2">
+		<child_1>A child node</child_1>
+	</template>
+
+	<!-- Another template -->
+	<!-- This is recursive template since it builds from "t1" -->
+	<!-- Note this template will have all attributes from template "t1" plus 
+		the newly defined -->
+	<!-- When attributes collide, the new values are kept. Here the value of 
+		var_name_2 will be "v3" and not "v2" -->
+	<!-- If a tag using a template defines any children, the result will combine 
+		all children with the children of the template first and the tag second -->
+	<template id="recursive" template="t1" var_name_2="3" />
+
+	<!-- Display tag [required] -->
+	<!-- class  :  [required] defines the class to be loaded, note that the variable 
+				   $(SCS) get replaced by its value "com.github.biorobaw" -->
+	<!-- window : defines the default world coordinates to display 
+		[optional] the tuple defines "xmin,ymin,width,height", the values are -1,-1,2,2 -->
+	<!-- syncDisplay : defines whether to sync the display and the simulation 
+		[optional] by default the display and simulation are not -->
+	<display
+		class="$(SCS).gui.displays.SCSDisplay"
+		window="-2,-2,4,4" syncDisplay="true" />
+
+	<!-- maze tag [required] defines the elements in the maze -->
+	<!-- class : [required] maze class to be loaded -->
+	<!-- file : [optional] path to an xml file defining more maze elements -->
+	<!-- currently 3 types of children can be specified: wall, feeder and generator -->
+	<maze class="$(SCS).maze.Maze"
+		  file="src/main/java/com/github/biorobaw/scs/examples/dummy_model/mazes/maze_1.xml">
+		<!-- wall : defines a straight wall from (x1,y1) to (x2,y2) class : [optional] 
+			by default loads com.github.biorobaw.scs.simulation.object.maze_elements.walls.Wall 
+			the width and height params (w and h) are optional, by default they are 0.1m 
+			and 2m respectively -->
+		<wall x1="-0.2" y1="-0.2" x2="-0.2" y2="0.2" w="0.05" h="1.5" />
+
+		<!-- Another type of wall, similar to the previous tag w and h are optional. 
+			Since its not the default wall, the class must be specified -->
+		<wall
+			class="$(SCS).simulation.object.maze_elements.walls.CylindricalWall"
+			x="0" y="0" r="1" />
+
+		<!-- feeder : defines a feeder in the maze -->
+		<!-- class : [optional] by default: com.github.biorobaw.scs.simulation.object.maze_elements.Feeder -->
+		<!-- id : [required] must be unique
+		     x,y : [required] x, y coordinaes -->
+		<feeder id="1" x="0" y="0.5"/>
+
+		<!-- generator : defines another maze whose walls are added to current 
+			maze -->
+		<!-- class : [required] maze subclass to be loaded and used as a generator -->
+		<!-- other classes: MultipleT and PolygonalMaze, see respective classes 
+			for more documentation -->
+		<generator
+			class="$(SCS).maze.mazes.Rectangle" x1="-1" y1="-1"
+			x2="1" y2="1" />
+	</maze>
+
+	<!-- simulator : [required] defines the simulator to be used -->
+	<!-- class : [required] defines simulator class to be loaded -->
+	<!-- simulation_step_ms : [optional] simulation time step in ms, defaults 
+		to 30ms -->
+	<!-- simulation_speed : [optional] defines how fast runs the simulation 
+		where 0 is the lowest and 15 is the max, defaults to max speed -->
+	<simulator
+		class="$(SCS).simulation.scs_simulator.SCSSimulator"
+		simulation_step_ms="30" simulation_speed="8" />
+
+
+	<!-- groups : [required] defines a set of experimental groups. 
+	     Each group specifies a set of subjects and trials. 
+	     The name of each group node will represent the group's name.
+	     Each child of a group specifies a subject.
+	     Each subject (a.k.a. model) must specify its class and a robot node.
+	     The name of a subject node specifies the subject_id used for the model and the robot.
+	     Both the model and the robot nodes might need to specify other variables as defined
+	     by their respective class constructors.-->
+	<groups>
+		<g1 trials="t1,t2">
+			<subject_1 template="recursive" 
+					   class="$(PROJECT).model.DummyModel">
+					   <robot template="robot"/>
+			</subject_1>
+			<subject_2 template="recursive" 
+					   class="$(PROJECT).model.DummyModel">
+					   <robot template="robot"/>
+			</subject_2>
+		</g1>
+		<g2 trials="t1">
+			<subject_1 template="recursive" 
+					   class="$(PROJECT).model.DummyModel"
+					   var_name_1="sub 1 in g2">
+					   <robot template="robot"/>
+			</subject_1>
+		</g2>
+	</groups>
+	
+	<!-- template for a robot node: requires class attribute and robot_proxy node
+	     optionally a set of modules. Other nodes/attributes might be required by a particular class-->
+	<template id="robot"
+			  class="$(SCS).robot.Robot">
+		<robot_proxy class="$(SCS).robot.proxies.SCSRobotProxy"/>
+		<module class="$(SCS).robot.modules.localization.GlobalLocalization"/>
+		<module class="$(SCS).robot.modules.FeederModule" 
+				max_feeding_distance="0.1"/><!-- feeding distance is optional, defaults to 0.1m -->	  
+	</template>>
+
+	
+	<!--  <experimentTasks></experimentTasks> OPTIONAL-->
+	
+	<!-- Must define the trials performed by each group.
+		A trial defines a set of identical episodes.
+		Each trial requires attributes "id" and "numberOfEpisodes".
+		Optionally, nodes "trialTasks" "episodeTasks" "cycleTasks"  can be defined. 
+		Each of those nodes defines a set of tasks, where each task requires the class attribute.
+		Tasks scheduled for the same time and priority are schedule in the order they were defined.
+		A special task (a condition) must be included in the cycle tasks to define 
+		the end of an episode, otherwise the simulation runs forever. -->
+	<trial id="t1" numEpisodes="4">
+		<episodeTasks>
+			<init_pos class="$(SCS).tasks.episode.robot.PlaceRobotInitially"
+					  pointXYW="0.5, 0 ,1.57079"
+					  robot_id="subject_1"/>
+			<init_pos class="$(SCS).tasks.episode.robot.PlaceRobotInitially"
+					  pointXYW="1,0.3,3.14158"
+					  robot_id="subject_2"/>
+		</episodeTasks>
+		<cycleTasks>
+			<!-- the name of task nodes does not matter, you can name them however you wish -->
+			<maxCyclesCondition class="$(SCS).tasks.cycle.condition.MaxCycles"
+								cycles="1000"/> 
+		</cycleTasks>
+	</trial>
+	
+	<trial id="t2" numEpisodes="5">
+		<episodeTasks>
+			<init_pos class="$(SCS).tasks.episode.robot.PlaceRobotInitially"
+					  pointXYW="0.5, 0 ,1.57079"
+					  robot_id="subject_1"/>
+			<init_pos class="$(SCS).tasks.episode.robot.PlaceRobotInitially"
+					  pointXYW="1,0.3,3.14158"
+					  robot_id="subject_2"/>
+		</episodeTasks>
+		<cycleTasks>
+			<!-- the name of task nodes does not matter, you can name them however you wish -->
+			<maxCyclesCondition class="$(SCS).tasks.cycle.condition.MaxCycles"
+								cycles="1000"/> 
+		</cycleTasks>
+	</trial>
+
+
+</experiment>

@@ -3,7 +3,7 @@ package com.github.biorobaw.scs.gui.displays;
 import com.github.biorobaw.scs.gui.Display;
 import com.github.biorobaw.scs.gui.DrawPanel;
 import com.github.biorobaw.scs.gui.Drawer;
-import com.github.biorobaw.scs.utils.XML;
+import com.github.biorobaw.scs.utils.files.XML;
 
 /**
  * A dummy display to be able to run headless.

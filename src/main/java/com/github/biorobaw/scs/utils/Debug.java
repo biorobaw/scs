@@ -12,12 +12,17 @@ public class Debug {
 		return System.nanoTime();
 	}
 	
-	public static long toc(long stamp){
-		return (System.nanoTime()-stamp)/(long)1e6;
+	public static float toc(long stamp){
+		return (float)(System.nanoTime()-stamp)/(float)1e6;
 	}
 	
 	public static void print(Object array[],String separator,boolean newLine){
 		for(int i=0;i<array.length;i++) System.out.println(array[i].toString() + separator);
+		if(newLine) System.out.println();
+	}
+	
+	public static <T> void printLArray(long array[],String separator,boolean newLine){
+		for(int i=0;i<array.length;i++) System.out.print(array[i] + separator);
 		if(newLine) System.out.println();
 	}
 

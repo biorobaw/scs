@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.github.biorobaw.scs.simulation.scripts.Script;
-import com.github.biorobaw.scs.utils.XML;
+import com.github.biorobaw.scs.utils.files.XML;
 
 /**
  * This class defines a trial (set of episodes) of an experiment.

@@ -23,4 +23,9 @@ public interface SlamModule {
 	 * @return
 	 */
 	public abstract float getOrientation2D();
+	
+	
+	default public String getDefaultName() {
+		return "slam";
+	};
 }

@@ -1,6 +1,6 @@
 package com.github.biorobaw.scs.simulation.object.maze_elements.walls;
 
-import com.github.biorobaw.scs.utils.XML;
+import com.github.biorobaw.scs.utils.files.XML;
 
 public class CylindricalWall extends AbstractWall {
 

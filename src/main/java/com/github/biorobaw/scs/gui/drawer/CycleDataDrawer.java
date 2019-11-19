@@ -35,7 +35,7 @@ public class CycleDataDrawer extends Drawer {
 	public CycleDataDrawer(float x, float y,int size){
 		relativePosition = new float[] {x, y};
 		this.size = size;
-		e = Experiment.instance;
+		e = Experiment.get();
 		this.group   = e.getGlobal("group");
 		this.run_id = e.getGlobal("run_id").toString();
 		

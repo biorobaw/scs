@@ -14,15 +14,17 @@ public class FeederDrawer extends Drawer {
 
 	Maze maze;
 	
-	private static int RADIUS = 6;
 	ArrayList<Boolean> hasFood = new ArrayList<>();
 	ArrayList<float[]> feederPos = new ArrayList<>();
-
-	static Color hasFoodColor = Color.red;
-	static Color noFoodColor  = Color.GRAY;
+	float feeding_radius;
 	
-	public FeederDrawer(float xmin) {
+	static Color hasFoodColor = Color.GREEN;
+	static Color noFoodColor  = Color.GRAY;
+	static final int CENTER_RADIUS = 3;
+	
+	public FeederDrawer(float feeding_radius) {
 		maze = Experiment.get().maze;
+		this.feeding_radius = feeding_radius;
 	}
 
 	@Override
@@ -30,11 +32,13 @@ public class FeederDrawer extends Drawer {
 		if(!doDraw) return;
 		
 		Scaler s = new Scaler(worldCoordinates, panelCoordinates, true);
+		int r = (int)s.scaleDistanceX(feeding_radius);
 		
 		for (int i=0; i<feederPos.size();i++){
 			var pos = s.scale(feederPos.get(i));
 			g.setColor(hasFood.get(i) ? hasFoodColor : noFoodColor );
-			g.fillOval(pos[0] - RADIUS, pos[1] - RADIUS,2*RADIUS,2*RADIUS);
+			g.drawOval(pos[0] - r, pos[1] - r,2*r,2*r);
+			g.fillOval(pos[0] - CENTER_RADIUS, pos[1] - CENTER_RADIUS,2*CENTER_RADIUS,2*CENTER_RADIUS);
 		}
 
 		

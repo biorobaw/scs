@@ -1,6 +1,6 @@
 package com.github.biorobaw.scs.robot.modules;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
@@ -8,7 +8,7 @@ import com.github.biorobaw.scs.experiment.Experiment;
 import com.github.biorobaw.scs.maze.Maze;
 import com.github.biorobaw.scs.robot.RobotModule;
 import com.github.biorobaw.scs.simulation.object.maze_elements.Feeder;
-import com.github.biorobaw.scs.utils.XML;
+import com.github.biorobaw.scs.utils.files.XML;
 
 public class FeederModule extends RobotModule {
 
@@ -22,6 +22,8 @@ public class FeederModule extends RobotModule {
 	Feeder eatingFeeder = null; // feeder trying to eat from
 	boolean ate = false;		// whether robot was able to eat
 	
+	LinkedList<Runnable> eatEventListeners = new LinkedList<>();
+	
 	
 	// ============ PUBLIC METHODS ============================
 	
@@ -31,37 +33,12 @@ public class FeederModule extends RobotModule {
 	 */
 	public FeederModule(XML xml) {
 		super(xml);
-		maze = Experiment.instance.maze;
+		maze = Experiment.get().maze;
 		max_feeding_distance_sq = xml.hasAttribute("max_feeding_distance") ?
 				xml.getFloatAttribute("max_feeding_distance") : 
 				0.1f; // default distance is 10cm
 		max_feeding_distance_sq *= max_feeding_distance_sq; // store the square value
 		
-	}
-	
-	/**
-	 * Orders the robot to attempt eating in the next simulation cycle.
-	 * If successful an event is generated which can be checked with the function 'ate()'
-	 * @param feeder feeder to try eating from
-	 */
-	public void eat(Feeder feeder) {
-		eatingFeeder = feeder;
-		simulator.addEventGeneratorSingleUse(this::generateEatEvent);
-	}
-	
-	/**
-	 * Returns the list of feeders that the robot can eat from.
-	 * @return An array with the feeders the robot cane at from
-	 */
-	public ArrayList<Feeder> canEatFeeders() {
-		var res = new ArrayList<Feeder>(3); // create result array
-		var pos = proxy.getPosition(); // get postion
-		
-		// for each feeder, check whether the robot can eat or not
-		for(var f : maze.feeders.values())
-			if(canEat(f, pos))
-				res.add(f);
-		return res;
 	}
 	
 	/**
@@ -73,10 +50,66 @@ public class FeederModule extends RobotModule {
 	}
 	
 	
+	/**
+	 * Order the robot to attempt eating from any feeder before performing any movement actions
+	 * in the next simulation cycle.
+	 */
+	public void eatBeforeMotion() {
+		eatingFeeder = canSubjectEat();
+		if(eatingFeeder != null)
+			simulator.addEventGeneratorSingleUse(()->{
+				//check if still has food (somebody else ate from the feeder?)
+				if(eatingFeeder.hasFood) {
+					eatingFeeder.eat();
+					for(var l : eatEventListeners) l.run();
+				}		
+			});
+	}
+	
+	/**
+	 * Orders the robot to attempt eating from any feeder after performing all movement actions
+	 * in the next simulation cycle.
+	 */
+	public void eatAfterMotion() {
+		simulator.addEventGeneratorSingleUse(()->{
+			eatingFeeder = canSubjectEat();
+			if(eatingFeeder!=null) {
+				ate=true;
+				eatingFeeder.eat();
+				for(var l : eatEventListeners) l.run();				
+			}
+		});
+	}
+	
+	
+	/**
+	 * The function checks whether the subject can eat from any feeder.
+	 * If it can, the functions returns a feeder, otherwise it returns null
+	 * @return A feeder from which the robot can eat or null if it can't eat from any feeder
+	 */
+	public Feeder canSubjectEat() {
+		// get postion
+		var pos = proxy.getPosition(); 
+		
+		// for each feeder, check whether the robot can eat or not
+		for(var f : maze.feeders.values())
+			if(canEat(f, pos)) 
+				return f;
+		return null;
+	}
+	
+	
+	
+	
 	@Override
-	public void clearEvents() {
+	protected void clearEvents() {
 		eatingFeeder = null;
 		ate = false;
+	}
+	
+	
+	public void addEatEventListener(Runnable r) {
+		eatEventListeners.add(r);
 	}
 	
 	// ========== PRIVATE AND PROTECTED METHODS ====================
@@ -90,18 +123,10 @@ public class FeederModule extends RobotModule {
 	protected boolean canEat(Feeder f, Vector3D pos) {
 		return f.hasFood && pos.distanceSq(f.pos) < max_feeding_distance_sq;
 	}
-		
-	protected void generateEatEvent() {
-		// check if feeder has food
-		if(eatingFeeder.hasFood) {
-			//check if robot is close enough for eating
-			var pos = proxy.getPosition();
-			if(pos.distanceSq(eatingFeeder.pos) < max_feeding_distance_sq) {
-				eatingFeeder.eat();
-			}
-		}
+	
+	@Override
+	public String getDefaultName() {
+		return "FeederModule";
 	}
-	
-	
 	
 }

@@ -6,7 +6,7 @@ import java.util.HashSet;
 import com.github.biorobaw.scs.simulation.object.maze_elements.Feeder;
 import com.github.biorobaw.scs.simulation.object.maze_elements.walls.AbstractWall;
 import com.github.biorobaw.scs.simulation.object.maze_elements.walls.Wall;
-import com.github.biorobaw.scs.utils.XML;
+import com.github.biorobaw.scs.utils.files.XML;
 
 /**
  * Defines an empty maze that allows adding walls and feeders.

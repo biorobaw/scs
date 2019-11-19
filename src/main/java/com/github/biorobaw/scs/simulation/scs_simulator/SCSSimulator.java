@@ -6,9 +6,10 @@ import org.apache.commons.math3.geometry.euclidean.threed.Rotation;
 import org.apache.commons.math3.geometry.euclidean.threed.RotationOrder;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
+import com.github.biorobaw.scs.robot.proxies.SCSRobotProxy;
 import com.github.biorobaw.scs.simulation.AbstractSimulator;
 import com.github.biorobaw.scs.simulation.object.SimulatedObject;
-import com.github.biorobaw.scs.utils.XML;
+import com.github.biorobaw.scs.utils.files.XML;
 
 /**
  * This class implements a very simple 2d simulator
@@ -34,10 +35,11 @@ public class SCSSimulator extends AbstractSimulator {
 		o.set_guid(next_object_id++);
 		if( o instanceof SCSRobotProxy ) {
 			SCSRobotProxy proxy = (SCSRobotProxy)o;
-			proxy.robot = new SCSRobot((float)position.getX(), 
-									   (float)position.getY(), 
-									   (float)orientation.getAngles(RotationOrder.XYZ)[2]);
-			robots.put(proxy.get_guid(), proxy.robot);
+			var robot = new SCSRobot((float)position.getX(), 
+									 (float)position.getY(), 
+									 (float)orientation.getAngles(RotationOrder.XYZ)[2]);
+			proxy.setRobot(robot);
+			robots.put(proxy.get_guid(), robot);
 		}
 	}
 
