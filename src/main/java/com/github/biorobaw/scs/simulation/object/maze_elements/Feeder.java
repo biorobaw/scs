@@ -31,4 +31,5 @@ public class Feeder extends SimulatedObject {
 		hasFood = false;
 	}
 	
+	
 }

@@ -43,7 +43,7 @@ public class Trial {
 		
 		//get number of episodes, if the number is not defined, possibly
 		//the old xml format is being used, give error and hint
-		assert trialNode.hasChild("numberOfEpisodes") : "\"ERROR: number of episodes in trial \"+ trialName + \" was not specified.\""; 
+		assert trialNode.hasAttribute("numberOfEpisodes") : "ERROR: number of episodes in trial \"+ trialName + \" was not specified."; 
 		numEpisodes = trialNode.getIntAttribute("numEpisodes");
 
 	}

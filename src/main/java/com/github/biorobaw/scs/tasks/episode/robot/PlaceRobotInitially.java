@@ -49,7 +49,7 @@ public class PlaceRobotInitially implements Script {
 		initOrientation = xyw[2];
 		robot = Experiment.get()
 						  .subjects
-						  .get(xml.getAttribute("robot_id"))
+						  .get(xml.getAttribute("subject_id"))
 						  .getRobot()
 						  .getRobotProxy();
 

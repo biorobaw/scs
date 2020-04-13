@@ -62,17 +62,36 @@ public class BinaryFile {
 	}
 	
 	
-	public static void saveBinaryMatrix(float[][] matrix,int rows,int cols,String filename){
+	public static void saveBinaryMatrix(float[][] matrix,int rows,int cols,String filename, boolean isLittleEndian){
 		int totalSize =  2*Integer.SIZE + rows*cols*Float.SIZE; //in bits
 		totalSize/=8;
 		
 		
 		ByteBuffer data = ByteBuffer.allocate(totalSize);
+		if(isLittleEndian) data.order(ByteOrder.LITTLE_ENDIAN);
 		data.putInt(rows);
 		data.putInt(cols);
 		for(float[] r : matrix)
 			for(float v : r)
 				data.putFloat(v);
+		
+		OutputStream out = openFileToWrite(filename);
+		write(out, data.array());
+		close(out);
+		
+		
+	}
+	
+	public static void saveBinaryVector(float[] vector, String filename, boolean isLittleEndian){
+		int totalSize =  2*Integer.SIZE + vector.length*Float.SIZE; //in bits
+		totalSize/=8;
+		
+		
+		ByteBuffer data = ByteBuffer.allocate(totalSize);
+		if(isLittleEndian) data.order(ByteOrder.LITTLE_ENDIAN);
+		data.putInt(vector.length);
+		for(float value : vector)
+			data.putFloat(value);
 		
 		OutputStream out = openFileToWrite(filename);
 		write(out, data.array());

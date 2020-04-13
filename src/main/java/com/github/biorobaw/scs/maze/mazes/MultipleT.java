@@ -41,7 +41,7 @@ public class MultipleT extends Maze {
 	LinkedList<Wall> fixed_walls = new LinkedList<>();
 	
 
-	private float[] generateWalls(float startX,float startY,XML e){
+	private float[] generateWalls(float startX,float startY,XML xml){
 		//assume startY is shifted by +width from (x,y) on drawing
 		//walls should not close the T, The T should be closed outside this function (due to overlaps between T's)
 		startPoints.push(new Float[] {startX-bufferRadius,startY+bufferRadius});
@@ -54,7 +54,7 @@ public class MultipleT extends Maze {
 		fixed_walls.add(new Wall(startX,  startY,  startX -= tSide, startY));
 		fixed_walls.add(new Wall(startX,  startY,  startX 		, startY+=width));
 				
-		XML left = e.getChild("left");
+		XML left = xml.getChild("left");
 		if (left!=null) {
 			directions.push("left");
 			float[] boundbox = generateWalls(startX, startY, left);
@@ -71,7 +71,7 @@ public class MultipleT extends Maze {
 		
 		fixed_walls.add(new Wall(startX,  startY,  startX += (2*tSide-width), startY));
 		
-		XML right = e.getChild("right");
+		XML right = xml.getChild("right");
 		if (right!=null) {
 			directions.push("right");
 			float[] boundbox = generateWalls(startX, startY, right);
@@ -133,21 +133,21 @@ public class MultipleT extends Maze {
 	
 	
 
-	public MultipleT(XML params) {
-		super(params);
-		width = params.getFloatAttribute("width");
-		length = params.getFloatAttribute("length");
-		tSide  = params.getFloatAttribute("tSide");
+	public MultipleT(XML xml) {
+		super(xml);
+		width = xml.getFloatAttribute("width");
+		length = xml.getFloatAttribute("length");
+		tSide  = xml.getFloatAttribute("tSide");
 		
-		x = params.getFloatAttribute("x");
-		y = params.getFloatAttribute("y");
+		x = xml.getFloatAttribute("x");
+		y = xml.getFloatAttribute("y");
 		
 		
-		XML bufferedWalls = params.getChild("bufferedWalls");
+		XML bufferedWalls = xml.getChild("bufferedWalls");
 		boolean showBufferedWalls = false;
 		if(bufferedWalls!=null){
 			//startPoints.clear();
-			bufferRadius = bufferedWalls.getFloatAttribute("buffereRadius");
+			bufferRadius = bufferedWalls.getFloatAttribute("bufferedRadius");
 			showBufferedWalls = bufferedWalls.getBooleanAttribute("showWalls");
 		}
 			
@@ -155,14 +155,14 @@ public class MultipleT extends Maze {
 		bufferLength = length-width - 2*bufferRadius;
 		
 		fixed_walls.add(new Wall(x,  y,  x  , y+width));
-		generateWalls(x, y+width, params); //needs to be called after setting buffer radiusw
+		generateWalls(x, y+width, xml); //needs to be called after setting buffer radiusw
 		fixed_walls.add(new Wall(x+width,  y+width,  x+width  , y));
 		fixed_walls.add(new Wall(x+width,  y,  x  , y));
 		
 			
 		if(showBufferedWalls){
 			fixed_walls.add(new Wall(x-bufferRadius,  y-bufferRadius,  x-bufferRadius  , y-bufferRadius+length-bufferLength));
-			generateBufferedWalls(bufferWidth, bufferLength, x-bufferRadius, y-bufferRadius+length-bufferLength, params);
+			generateBufferedWalls(bufferWidth, bufferLength, x-bufferRadius, y-bufferRadius+length-bufferLength, xml);
 			fixed_walls.add(new Wall( x+width+bufferRadius, y-bufferRadius+length-bufferLength  ,  x+width+bufferRadius  , y-bufferRadius ));
 			fixed_walls.add(new Wall(x+width+bufferRadius, y-bufferRadius, x-bufferRadius, y-bufferRadius ));
 		}

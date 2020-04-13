@@ -44,8 +44,10 @@ public class ExperimentController {
 	 */
 	public void runTrial(Trial t) {
 		// init variables
+		System.out.println("[+] Start Trial");
 		endTrial = false;
 		e.setGlobal("trial", t.trialName);
+		e.setGlobal("trial_episodes", t.numEpisodes);
 		
 		//signal new trial
 		signalNewTrial(t);
@@ -57,7 +59,9 @@ public class ExperimentController {
 
 		
 		// signal end trial
-		signalEndTrial(t);        			
+		signalEndTrial(t);      
+		
+		System.out.println("[+] End Trial");
 
 
 	}
@@ -189,7 +193,7 @@ public class ExperimentController {
 	 * @param episodeNumber
 	 */
 	private void signalNewEpisode(Trial t, int episodeNumber) {
-		for(var s : t.trialTasks) s.newEpisode();
+		// for(var s : t.trialTasks) s.newEpisode();
 		for(var s : t.episodeTasks) s.newEpisode();
 		for(var s : t.cycleTasks) s.newEpisode();
 		for(var m : e.subjects.values()) {
@@ -205,7 +209,7 @@ public class ExperimentController {
 	 * @param episodeNumber
 	 */
 	private void signalEndEpisode(Trial t, int episodeNumber) {
-		for(var s : t.trialTasks) s.endEpisode();
+		// for(var s : t.trialTasks) s.endEpisode();
 		for(var s : t.episodeTasks) s.endEpisode();
 		for(var s : t.cycleTasks) s.endEpisode();
 		for(var m : e.subjects.values()) {

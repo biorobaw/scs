@@ -143,10 +143,10 @@
 		<episodeTasks>
 			<init_pos class="$(SCS).tasks.episode.robot.PlaceRobotInitially"
 					  pointXYW="0.5, 0 ,1.57079"
-					  robot_id="subject_1"/>
+					  subject_id="subject_1"/>
 			<init_pos class="$(SCS).tasks.episode.robot.PlaceRobotInitially"
 					  pointXYW="1,0.3,3.14158"
-					  robot_id="subject_2"/>
+					  subject_id="subject_2"/>
 		</episodeTasks>
 		<cycleTasks>
 			<!-- the name of task nodes does not matter, you can name them however you wish -->
@@ -159,10 +159,10 @@
 		<episodeTasks>
 			<init_pos class="$(SCS).tasks.episode.robot.PlaceRobotInitially"
 					  pointXYW="0.5, 0 ,1.57079"
-					  robot_id="subject_1"/>
+					  subject_id="subject_1"/>
 			<init_pos class="$(SCS).tasks.episode.robot.PlaceRobotInitially"
 					  pointXYW="1,0.3,3.14158"
-					  robot_id="subject_2"/>
+					  subject_id="subject_2"/>
 		</episodeTasks>
 		<cycleTasks>
 			<!-- the name of task nodes does not matter, you can name them however you wish -->

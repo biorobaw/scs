@@ -501,6 +501,49 @@ public class Floats {
 	}
 	
 	/**
+	 * Calculates the softmax distribution from the given array.
+	 * Only elements where mask[i]!=0 are considered
+	 * @param values 
+	 * @param weights array of possitive weights
+	 * @return A new array with the result
+	 */
+	static public float[] softmaxWithWeights(float[] values, float[] weights) {
+		var res = new float[values.length];
+		return softmaxWithWeights(values,weights,res);
+	}
+	
+	/**
+	 * Calculates the softmax distribution from the given array
+	 * @param values 
+	 * @param weights array of positive weigths 
+	 * @param res Array to store the results
+	 * @return A reference to the argument 'res'
+	 */
+	static public float[] softmaxWithWeights(float[] values, float[] weights, float[] res) {
+		
+		// we first find the maximum to avoid numerical instability: e^large_value = infinity
+		float max_exponent = Float.NEGATIVE_INFINITY;
+		for(int i=0; i<values.length; i++){
+			if(weights[i]!=0 && max_exponent < values[i])
+				max_exponent = values[i];
+		}
+		
+		float sum = 0;
+		for(int i=0; i <values.length; i++) {
+			if(weights[i]!=0) {
+				res[i] = weights[i]*(float)Math.exp(values[i]-max_exponent);
+				sum+=res[i];
+			} else res[i] = 0;
+		}
+		if(sum==0) {
+			System.err.println("ERROR (Floats.java): weightd softmax is not a distribution");
+			System.exit(-1);
+		}
+		for(int i=0; i <values.length; i++) res[i]/=sum;
+		return res;
+	}
+	
+	/**
 	 * Round all values in the array
 	 * @param values
 	 * @return Returns an integer array of rounded values
