@@ -54,7 +54,7 @@ public class FeederSensor extends Thread {
 				Feeders newFs = Feeders.parseDelimitedFrom(protoInputStream);
 				if (fs == null) {
 					setFeeders(Feeders.getDefaultInstance());
-					establishConnection();
+	//				establishConnection();
 				} else {
 					setFeeders(newFs);
 //					if (newFs.getFeedersCount() > 0){
@@ -66,6 +66,8 @@ public class FeederSensor extends Thread {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+	//			establishConnection();
+                terminated = true;
 			}
 		}
 	}

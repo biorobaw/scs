@@ -162,7 +162,7 @@ public class Experiment implements Runnable {
 				e.printStackTrace();
 			}
 		
-		robot.startRobot();
+		//robot.startRobot();
 		
 		// Run each trial in order
 		for (Trial t : trials)
