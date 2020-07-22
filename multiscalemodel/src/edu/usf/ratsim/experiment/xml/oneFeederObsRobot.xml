@@ -236,11 +236,11 @@
 				<task>
 					<name>edu.usf.ratsim.robot.ssl.GoBackToStart</name>
 					<params>
-						<p_lin>0.002</p_lin>
-						<p_rot>2</p_rot>
+						<p_lin>0.050</p_lin>
+						<p_rot>30</p_rot>
 						<dist_thrs>100</dist_thrs>
-						<final_rot_thrs>0.196349541</final_rot_thrs>
-						<init_rot_thrs>0.196349541</init_rot_thrs>
+						<final_rot_thrs>0.1</final_rot_thrs>
+						<init_rot_thrs>0.05</init_rot_thrs>
 					</params>
 				</task>			
 				<!-- Release food from the feeder if the rat is close -->
