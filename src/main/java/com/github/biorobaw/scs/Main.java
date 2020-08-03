@@ -114,7 +114,7 @@ public class Main {
 	    }
 		
 	    // set logPath of the configuration:
-	    parsed_args.put("logPath", baseLogPath +"/" +parsed_args.get("config"));
+	    parsed_args.put("logPath", baseLogPath +"/configs/" +parsed_args.get("config"));
 	    
 	    
 	    return parsed_args;
