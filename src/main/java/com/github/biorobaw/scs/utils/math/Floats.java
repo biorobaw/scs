@@ -567,6 +567,30 @@ public class Floats {
 		return res;
 	}
 	
+	/**
+	 * Calculates absolute values for all values in the array
+	 * @param values
+	 * @return Returns an array with the absolute values
+	 */
+	static public float[] abs(float[] values) {
+		var res = new float[values.length];
+		for(int i=0; i< values.length; i++)
+			res[i] = Math.abs(values[i]);
+		return res;
+	}
+	
+	/**
+	 * Calculates absolute values for all values in the array
+	 * @param values
+	 * @param res Array to store the results
+	 * @return A reference to the argument 'res'
+	 */
+	static public float[] abs(float[] values, float[] res) {
+		for(int i=0; i< values.length; i++)
+			res[i] = Math.abs(values[i]);
+		return res;
+	}
+	
 
 	
 	
