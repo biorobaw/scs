@@ -74,6 +74,7 @@ public class ExperimentController {
 	private void runEpisode(Trial t, int episode) {
 		
 		// print episode start
+		if(episode % 100 == 0)
 		System.out.printf("[+] START (%s - %s) %s %d\n",
 							e.getGlobal("group"),
 							e.getGlobal("run_id"),
@@ -101,11 +102,11 @@ public class ExperimentController {
 		signalEndEpisode(t,episode);
 		
 		// print episode start
-		System.out.printf("[+] END (%s - %s) %s %d\n\n",
-							e.getGlobal("group"),
-							e.getGlobal("run_id"),
-							t.trialName,
-							episode);
+//		System.out.printf("[+] END (%s - %s) %s %d\n\n",
+//							e.getGlobal("group"),
+//							e.getGlobal("run_id"),
+//							t.trialName,
+//							episode);
 	}
 	
 	
