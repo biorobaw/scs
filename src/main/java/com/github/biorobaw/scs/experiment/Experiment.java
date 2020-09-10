@@ -180,6 +180,7 @@ public class Experiment implements Runnable {
 		
 		String seed_str = getGlobal("seed");
 		Long seed =  seed_str!=null ? Long.parseLong(seed_str) : new Random().nextLong();
+		setGlobal("seed", seed);
 		
 		if (seed_str != null) System.out.println("[+] Using seed from xml file");
 		RandomSingleton.getInstance().setSeed(seed);
