@@ -63,9 +63,7 @@ public class BinaryFile {
 	
 	
 	public static void saveBinaryMatrix(float[][] matrix,int rows,int cols,String filename, boolean isLittleEndian){
-		int totalSize =  2*Integer.SIZE + rows*cols*Float.SIZE; //in bits
-		totalSize/=8;
-		
+		int totalSize =  2*Integer.BYTES + rows*cols*Float.BYTES; //in bits		
 		
 		ByteBuffer data = ByteBuffer.allocate(totalSize);
 		if(isLittleEndian) data.order(ByteOrder.LITTLE_ENDIAN);
@@ -83,8 +81,7 @@ public class BinaryFile {
 	}
 	
 	public static void saveBinaryVector(float[] vector, String filename, boolean isLittleEndian){
-		int totalSize =  2*Integer.SIZE + vector.length*Float.SIZE; //in bits
-		totalSize/=8;
+		int totalSize =  2*Integer.BYTES + vector.length*Float.BYTES; //in bits
 		
 		
 		ByteBuffer data = ByteBuffer.allocate(totalSize);
@@ -101,8 +98,7 @@ public class BinaryFile {
 	}
 	
 	public static void saveBinaryVector(long[] vector, String filename, boolean isLittleEndian){
-		int totalSize =  Integer.SIZE + vector.length*Long.SIZE; //in bits
-		totalSize/=8;
+		int totalSize =  Integer.BYTES + vector.length*Long.BYTES; //in bits
 		
 		
 		ByteBuffer data = ByteBuffer.allocate(totalSize);
@@ -141,20 +137,73 @@ public class BinaryFile {
 //	}
 	
 	
-	public static float[][] loadMatrix(String filename){
+	public static float[][] loadMatrix(String filename, boolean isLittleEndian){
 		DataInputStream in = read( filename);
 		
 		try {
-			int rows = in.readInt();
-			int cols = in.readInt();
+			// get order
+			var order = isLittleEndian ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN;
 			
+			// prepare buffer to read ints
+			ByteBuffer int_buffer = ByteBuffer.wrap(new byte[2*Integer.BYTES]).order(order);
+			in.read(int_buffer.array());
+			
+			// read ints
+			int rows = int_buffer.getInt();
+			int cols = int_buffer.getInt();
+			
+			// prepare buffer to read floats
+			ByteBuffer float_buffer = ByteBuffer.wrap(new byte[rows*cols*Float.BYTES]).order(order);
+			in.read(float_buffer.array());
+			
+			
+			// read floats
 			float[][] matrix = new float[rows][cols];
-			
 			for(int i=0;i<rows;i++)
 				for(int j=0;j<cols;j++)
-					matrix[i][j]=in.readFloat();
+					matrix[i][j]=float_buffer.getFloat();
 			
 			return matrix;
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Unable to load file: "+filename);
+			System.exit(-1);
+		}
+		
+		
+		
+		return null;
+	}
+	
+	
+	
+	public static float[] loadFloatVector(String filename, boolean isLittleEndian){
+		DataInputStream in = read( filename);
+
+		try {
+			// get order
+			var order = isLittleEndian ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN;
+
+			
+			// prepare buffer to read int
+			ByteBuffer int_buffer = ByteBuffer.wrap(new byte[Integer.BYTES]).order(order);
+			in.read(int_buffer.array());
+			
+			// read int
+			int elements = int_buffer.getInt();
+			
+			// prepare buffer to read floats
+			ByteBuffer float_buffer = ByteBuffer.wrap(new byte[Float.BYTES*elements]).order(order);
+			in.read(float_buffer.array());
+			
+			// read the floats
+			float[] vector = new float[elements];
+			for(int i  =0;i<elements;i++)
+				vector[i] = float_buffer.getFloat();
+			
+			return vector;
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
