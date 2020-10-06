@@ -310,8 +310,7 @@ public class BinaryFile {
 //	}
 	
 	public static void writeArray(OutputStream o ,int[] array,boolean isLittleIndian) {
-		int totalSize =  (array.length+1)*Integer.SIZE; //in bits
-		totalSize/=8;
+		int totalSize =  (array.length+1)*Integer.BYTES; //in bits
 		
 		ByteBuffer data = ByteBuffer.allocate(totalSize);
 		if(isLittleIndian ) data.order(ByteOrder.LITTLE_ENDIAN);
@@ -319,5 +318,38 @@ public class BinaryFile {
 		for(int datum : array) data.putInt(datum); //store data
 		write(o, data.array());
 	}
+	
+	public static void writeArray(OutputStream o ,Integer[] array,boolean isLittleIndian) {
+		int totalSize =  (array.length+1)*Integer.BYTES; //in bits
+		
+		ByteBuffer data = ByteBuffer.allocate(totalSize);
+		if(isLittleIndian ) data.order(ByteOrder.LITTLE_ENDIAN);
+		data.putInt(array.length); //store size
+		for(int datum : array) data.putInt(datum); //store data
+		write(o, data.array());
+	}
+	
+	public static void writeArray(OutputStream o ,Float[] array,boolean isLittleIndian) {
+		int totalSize =  Integer.BYTES + array.length*Float.BYTES; //in bits
+		
+		ByteBuffer data = ByteBuffer.allocate(totalSize);
+		if(isLittleIndian ) data.order(ByteOrder.LITTLE_ENDIAN);
+		
+		data.putInt(array.length); //store size
+		for(var datum : array) data.putFloat(datum); //store data
+		write(o, data.array());
+	}
+	
+	public static void writeArray(OutputStream o ,float[] array,boolean isLittleIndian) {
+		int totalSize =  Integer.BYTES + array.length*Float.BYTES; //in bits
+		ByteBuffer data = ByteBuffer.allocate(totalSize);
+		if(isLittleIndian ) data.order(ByteOrder.LITTLE_ENDIAN);
+		
+		data.putInt(array.length); //store size
+		for(var datum : array) data.putFloat(datum); //store data
+		write(o, data.array());
+	}
+	
+
 
 }
