@@ -5,15 +5,23 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class CSVReader {
+	
+	/**
+	 * Load a csv file into a table of strings (does not remove blank lines)
+	 * @param filename   
+	 * @param separator 
+	 * @param warning    debugging warning to be added if filename is null
+	 * @return
+	 */
 	static public String[][] loadCSV(String filename, String separator,String warning){
 		
 		if (filename==null) {
-			System.out.println("WARNING: " + warning + " filename nor specified");
+			System.out.println("WARNING: " + warning + " filename not specified");
 			return null;
 		}
 		String[][] result = null;
 		try {
-			//System.out.println("filename "+filename);
+			// read full file and split by line:
 			Scanner scanner = new Scanner(new File(filename));
 			String entireFileText = scanner.useDelimiter("\\A").next();
 			scanner.close();
@@ -34,11 +42,23 @@ public class CSVReader {
 		
 	}
 	
+	/**
+	 * Load a csv file into a table of strings (does not remove blank lines nor end lines)
+	 * @param filename   
+	 * @param separator 
+	 * @return
+	 */
 	static public String[][] loadCSV(String filename,String separator)
 	{
 		return loadCSV(filename,separator,"");
 	}
 	
+	/**
+	 * Load a csv file into a table of strings (does not remove blank lines). 
+	 * By default, whitespace is used to separate entries. 
+	 * @param filename   
+	 * @return
+	 */
 	static public String[][] loadCSV(String filename){
 		return loadCSV(filename," ","");
 	}

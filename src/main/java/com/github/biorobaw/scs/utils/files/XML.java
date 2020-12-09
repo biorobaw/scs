@@ -128,8 +128,11 @@ public class XML  {
 	
 	public <T> List<T> getListAttribute(String name, TypeParser<T> c){
 		List<T> list = new LinkedList<>();
-		for(var token : getAttribute(name).split(","))
-			list.add(c.parse(token.trim()));
+		var text = getAttribute(name);
+		// check string is not empty
+		if( text.trim().length() > 0 )
+			for(var token : text.split(","))
+				list.add(c.parse(token.trim()));
 		return list;
 	}
 	
@@ -315,7 +318,8 @@ public class XML  {
 		while (regexMatcher.find()) {
 			String var = regexMatcher.group();
 			var = var.substring(2, var.length() - 1);
-			regexMatcher.appendReplacement(resultString, variables.get(var));
+			var replacement = variables.containsKey(var) ? variables.get(var) : "";
+			regexMatcher.appendReplacement(resultString, replacement);
 		}
 		regexMatcher.appendTail(resultString);
 		return resultString.toString();
