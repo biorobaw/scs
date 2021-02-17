@@ -424,6 +424,26 @@ public class SCSDisplay extends Display  {
 		}
 	}
 	
+	public boolean setSync(boolean new_value) {
+		synchronized (mutexSync) {
+			boolean old_value = syncDisplay;
+			
+			if(new_value == old_value) return old_value; 
+			syncDisplay = new_value;
+			if(!syncDisplay)
+			{
+				if(waitingPreviousFrame){
+					waitingPreviousFrame = false;
+					doneRenderLock.release();
+				}				
+			}else {
+				repaint();
+			}
+			return old_value;
+			
+		}
+	}
+	
 	
 	class DrawableContentPane extends JPanel {
 

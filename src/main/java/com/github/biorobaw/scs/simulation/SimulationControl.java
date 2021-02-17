@@ -83,7 +83,26 @@ public class SimulationControl {
 	 */
 	static synchronized public boolean togglePause() {
 		//toggle
-		paused=!paused;
+		asyncSetPause(!paused);
+		return paused; 
+	}
+	
+	/**
+	 * A function to pause the simulation.
+	 * @param new_value
+	 * @return Returns the old value of pause
+	 */
+	static synchronized public boolean setPause(boolean new_value) {
+		boolean old_value = paused;
+		asyncSetPause(new_value);
+		return old_value;
+	}
+	
+	static private void asyncSetPause(boolean new_value) {
+		//toggle
+		if(new_value == paused) return;
+		
+		paused=new_value;
 		
 		//if resuming, check weather a consumer is waiting, then remove any remaining steps
 		if(!paused){
@@ -96,7 +115,6 @@ public class SimulationControl {
 		//return the new value of pause
 		
 		for(var l : pauseStateListeners) l.apply(paused);
-		return paused; 
 	}
 	
 	
