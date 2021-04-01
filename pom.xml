@@ -13,32 +13,27 @@
   
   <dependencies>
 	<dependency>
+		<!--  Used in utils.files.IOUtils folder -->
 		<groupId>commons-io</groupId>
 		<artifactId>commons-io</artifactId>
 		<version>2.4</version>
 	</dependency>
 	<dependency>
-		<groupId>com.vividsolutions</groupId>
-		<artifactId>jts</artifactId>
-		<version>1.8</version>
-	</dependency>
-	<dependency>
-		<groupId>org.json</groupId>
-		<artifactId>json</artifactId>
-		<version>20160810</version>
-	</dependency>
-	<dependency>
-		<groupId>com.google.protobuf</groupId>
-		<artifactId>protobuf-java</artifactId>
-		<version>2.6.1</version>
-	</dependency>
-	<!-- https://mvnrepository.com/artifact/org.jdom/jdom2 -->
-	<dependency>
+		<!-- used in utils.files.XML -->
 	    <groupId>org.jdom</groupId>
 	    <artifactId>jdom2</artifactId>
 	    <version>2.0.6</version>
 	</dependency>
 	<dependency>
+		<!-- used in gui.utils.Scaler folder -->
+	    <groupId>org.locationtech.jts</groupId>
+	    <artifactId>jts-core</artifactId>
+	    <version>1.18.1</version>
+	</dependency>
+	<dependency>
+		<!-- Used extensively throughout code to represent 3d positions, and rotations. -->
+		<!-- In the future, we may wish to replace this with a better math library but changing it will have
+		backward compatibility issues.-->
 	    <groupId>org.apache.commons</groupId>
 	    <artifactId>commons-math3</artifactId>
 	    <version>3.0</version>

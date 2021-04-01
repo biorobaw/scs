@@ -3,8 +3,10 @@ package com.github.biorobaw.scs.gui.utils;
 import java.awt.Point;
 import java.util.List;
 
+import org.locationtech.jts.geom.Coordinate;
+
 import com.github.biorobaw.scs.utils.math.Floats;
-import com.vividsolutions.jts.geom.Coordinate;
+
 
 /**
  * A class to transform universe coordinates to component coordinates.
