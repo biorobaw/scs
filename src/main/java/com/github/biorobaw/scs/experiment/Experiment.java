@@ -35,8 +35,8 @@ public class Experiment implements Runnable {
 	public  HashMap<String, Subject> subjects = new HashMap<>();
 	public  ExperimentController controller = new ExperimentController(this);
 	
-	protected List<Script> tasks   = new LinkedList<>();
-	protected List<Trial> trials = new LinkedList<>();
+	public List<Script> tasks   = new LinkedList<>();
+	public List<Trial> trials = new LinkedList<>();
 	
 	/** 
 	 * Loads experiment from experiment file
@@ -58,11 +58,11 @@ public class Experiment implements Runnable {
 		
 		
 		// Load simulator
-		System.out.println("Loading simulator...");
+		System.out.println("[+] Loading simulator...");
 		simulator = root.getChild("simulator").loadObject();
 		
 		// Load the display. Must load after the simulator.
-		System.out.println("Loading display...");
+		System.out.println("[+] Loading display...");
 		display = root.getChild("display").loadObject();
 		
 		
@@ -72,7 +72,7 @@ public class Experiment implements Runnable {
 		// elements are added here and not in the constructor 
 		// in case other mazes are created but don't want to be added.
 		maze.addElementsToSimulator();
-		
+				
 		// Load group subjects, the function returns the trials that need to be loaded
 		// Also, each subject loads its robot and adds it to the simulation
 		var trial_names = loadGroupSubjects(root);
@@ -127,7 +127,9 @@ public class Experiment implements Runnable {
 			setGlobal("maze", m ); variables.put("maze",m);
 		}
 		setGlobal("trial",""); 
-	    setGlobal("episode",-1);		
+	    setGlobal("episode",-1);
+	    setGlobal("cycle",0L);
+	    setGlobal("cycle_abs",0L);
 			    
 	    
 	    // Print important globals:

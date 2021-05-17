@@ -1,4 +1,4 @@
-package com.github.biorobaw.scs.gui.drawer;
+package com.github.biorobaw.scs.gui.displays.scs_swing.drawer;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -6,11 +6,12 @@ import java.util.ArrayList;
 
 import com.github.biorobaw.scs.experiment.Experiment;
 import com.github.biorobaw.scs.gui.Drawer;
+import com.github.biorobaw.scs.gui.displays.scs_swing.DrawerSwing;
 import com.github.biorobaw.scs.gui.utils.Scaler;
 import com.github.biorobaw.scs.gui.utils.Window;
 import com.github.biorobaw.scs.maze.Maze;
 
-public class FeederDrawer extends Drawer {
+public class FeederDrawer extends DrawerSwing {
 
 	Maze maze;
 	
@@ -28,7 +29,7 @@ public class FeederDrawer extends Drawer {
 	}
 
 	@Override
-	public void draw(Graphics g, Window<Float> panelCoordinates) {
+	public void draw(Graphics g, Window panelCoordinates) {
 		if(!doDraw) return;
 		
 		Scaler s = new Scaler(worldCoordinates, panelCoordinates, true);
@@ -44,10 +45,6 @@ public class FeederDrawer extends Drawer {
 		
 	}
 
-	@Override
-	public void endEpisode() {
-		
-	}
 
 	@Override
 	public void updateData() {

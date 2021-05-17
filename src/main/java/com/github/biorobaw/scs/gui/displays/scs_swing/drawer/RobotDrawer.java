@@ -1,14 +1,15 @@
-package com.github.biorobaw.scs.gui.drawer;
+package com.github.biorobaw.scs.gui.displays.scs_swing.drawer;
 
 import java.awt.Color;
 import java.awt.Graphics;
 
 import com.github.biorobaw.scs.gui.Drawer;
+import com.github.biorobaw.scs.gui.displays.scs_swing.DrawerSwing;
 import com.github.biorobaw.scs.gui.utils.Scaler;
 import com.github.biorobaw.scs.gui.utils.Window;
 import com.github.biorobaw.scs.simulation.object.RobotProxy;
 
-public class RobotDrawer extends Drawer {
+public class RobotDrawer extends DrawerSwing {
 
 	private static final float RADIUS = .075f;
 	
@@ -21,7 +22,7 @@ public class RobotDrawer extends Drawer {
 	}
 	
 	@Override
-	public void draw(Graphics g, Window<Float> panelCoordinates) {
+	public void draw(Graphics g, Window panelCoordinates) {
 		if(!doDraw) return;
 		
 		Scaler s = new Scaler(worldCoordinates, panelCoordinates, true);
@@ -37,10 +38,6 @@ public class RobotDrawer extends Drawer {
 				(int)Math.round(p[1] - r * Math.sin(angle)));
 	}
 
-	@Override
-	public void endEpisode() {
-		
-	}
 
 	@Override
 	public void updateData() {

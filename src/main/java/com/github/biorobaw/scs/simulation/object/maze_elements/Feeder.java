@@ -32,4 +32,10 @@ public class Feeder extends SimulatedObject {
 	}
 	
 	
+	@Override
+	public Vector3D getPosition() {
+		return pos;
+	}
+	
+	
 }

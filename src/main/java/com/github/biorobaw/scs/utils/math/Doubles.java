@@ -51,6 +51,18 @@ public class Doubles {
 	/**
 	 * Makes a copy of the array.
 	 * @param from
+	 * @return new array containing the copy
+	 */
+	static public double[] copy(float[] from) {
+		var res = new double[from.length];
+		for(int i=0; i<from.length; i++)
+			res[i] = from[i];
+		return res;
+	}
+	
+	/**
+	 * Makes a copy of the array.
+	 * @param from
 	 * @param to array to store the results
 	 * @result pointer to param 'to'
 	 */
@@ -549,5 +561,37 @@ public class Doubles {
 		return res;
 	}
 	
+	/**
+	 * Returns array with all integers i such that min <= i < max.
+	 * @param min 
+	 * @param max
+	 * @return
+	 */
+	static public double[] range(double min, double max) {
+		min = Math.ceil(min);
+		max = Math.ceil(max);
+		int size = (int)(max-min);
+		var res = new double[size];
+		for(int i = 0; i < size; i++) res[i] = min + i;
+		return res;
+	}
+	
+	/**
+	 * Returns array with all integers i such that 0 <= i < max
+	 * @param max
+	 * @return
+	 */
+	static public double[] range(int max) {
+		var res = new double[max];
+		for(int i = 0; i < max; i++) res[i] = i;
+		return res;
+	}
+	
+	static public String toString(double[] data) {
+		var res = "";
+		if(data.length > 0) res += data[0];
+		for(int i=1; i<data.length; i++) res+= ", " + data[i];
+		return res;
+	}
 	
 }

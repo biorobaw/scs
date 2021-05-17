@@ -1,5 +1,7 @@
 package com.github.biorobaw.scs.experiment;
 
+import com.github.biorobaw.scs.simulation.SimulationControl;
+
 /**
  * Class in charge of running an experiment.
  * @author bucef
@@ -7,10 +9,16 @@ package com.github.biorobaw.scs.experiment;
  */
 public class ExperimentController {
 
-	Experiment e; 
+	Experiment e;
+	public State state = State.NEW_EXPERIMENT;
 	boolean endTrial = false;
 	boolean endEpisode = false;
-	long simulation_cycle = 0;
+	final static int points_per_line = 10;
+	int points = points_per_line;
+	long simulation_cycle = 0; // the simulation cycle for the current episode
+	long cycle_absolute	= 0;  // the simulation cycle from the start of the program
+	
+	Boolean quit = false;
 	
 	public ExperimentController(Experiment e) {
 		this.e = e;
@@ -25,16 +33,19 @@ public class ExperimentController {
 		System.out.println("[+] Starting experiment");
 		
 		// signal new experiment
+		state = State.NEW_EXPERIMENT;
 		signalNewExperiment();	
 		
 		// Run each trial in order
 		for (Trial t : e.trials) runTrial(t);
 
 		// signal end experiment
+		state = State.END_EXPERIMENT;
 		signalEndExperiment();
 		
 		// print finished
 		System.out.println("[+] Finished experiment");
+		quit();
 		
 	}
 	
@@ -49,17 +60,23 @@ public class ExperimentController {
 		e.setGlobal("trial", t.trialName);
 		e.setGlobal("trial_episodes", t.numEpisodes);
 		
-		//signal new trial
+		//signal new trial and wait if paused
+		state = State.NEW_TRIAL;
 		signalNewTrial(t);
+		e.simulator.waitIfPaused();
 		
 		
 		//execute episodes:
-		for(int episode = t.startingEpisode; episode < t.numEpisodes && !endTrial; episode++)			
+		for(int episode = t.startingEpisode; episode < t.numEpisodes && !endTrial; episode++) {
+			if(quit) break;
 			runEpisode(t,episode);
+		}
 
 		
-		// signal end trial
-		signalEndTrial(t);      
+		// signal end trial and wait if paused:
+		state = State.END_TRIAL;
+		signalEndTrial(t); 
+		e.simulator.waitIfPaused();
 		
 		System.out.println("[+] End Trial");
 
@@ -84,8 +101,11 @@ public class ExperimentController {
 		// set variables:
 		e.setGlobal("episode",episode);
 		
-		// signal new episode
-		signalNewEpisode(t,episode);		
+		// signal new episode, then wait if episode is paused
+		state = State.NEW_EPISODE;
+		signalNewEpisode(t,episode);
+		e.simulator.waitIfPaused();
+		
 		
 		// clear scheduler and then schedule this episode's scripts
 		e.simulator.clearScripts(); //clear scheduler
@@ -98,8 +118,9 @@ public class ExperimentController {
 		// run simulation
 		runSimulation();
 		
-		//signal end episode
+		//signal end episode and wait if paused:
 		signalEndEpisode(t,episode);
+		e.simulator.waitIfPaused();
 		
 		// print episode start
 //		System.out.printf("[+] END (%s - %s) %s %d\n\n",
@@ -116,15 +137,26 @@ public class ExperimentController {
 		endEpisode = false;
 		simulation_cycle=0;
 		
-		while(!endEpisode) {
+		while(!endEpisode && !quit) {
 			e.setGlobal("cycle",simulation_cycle);
+			e.setGlobal("cycle_abs", cycle_absolute);
 			
 			sim.advanceTime();
 			
 			simulation_cycle++;
-			if (simulation_cycle % 1000 == 0) System.out.println(".");
-			if (simulation_cycle % 5000 == 0) System.out.println("");
+			cycle_absolute++;
+			
+			// Draw points to show it is running, particularly useful when running with no gui
+			if (simulation_cycle % 1000 == 0) {
+				if(points==0) {
+					points = points_per_line;
+					System.out.println("");
+				}
+				points--;
+				System.out.print(".");
+			}
 		}
+
 	}
 	
 	/**
@@ -165,6 +197,7 @@ public class ExperimentController {
 	 * Signals a new trial
 	 */
 	private void signalNewTrial(Trial t) {
+		points = points_per_line;
 		for(var s : t.trialTasks) s.newTrial();
 		for(var s : t.episodeTasks) s.newTrial();
 		for(var s : t.cycleTasks) s.newTrial();
@@ -220,6 +253,7 @@ public class ExperimentController {
 		e.display.endEpisode();
 				
 	}
+
 	
 	public void endEpisode() {
 		endEpisode = true;
@@ -229,7 +263,17 @@ public class ExperimentController {
 		endTrial = true;
 	}
 	
+	public void quit() {
+		quit = true;
+		SimulationControl.exit();
+	}
+	
 	public long getSimulationCycle() {
 		return simulation_cycle;
 	}
+	
+	public enum State { NEW_EXPERIMENT, NEW_TRIAL, NEW_EPISODE, IN_EPISODE, END_EPISODE, END_TRIAL, END_EXPERIMENT}
+	
+	
+	
 }

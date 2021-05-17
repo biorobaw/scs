@@ -1,17 +1,17 @@
-package com.github.biorobaw.scs.gui.drawer;
+package com.github.biorobaw.scs.gui.displays.scs_swing.drawer;
 
 import java.awt.Color;
 import java.awt.Graphics;
 
 import com.github.biorobaw.scs.experiment.Experiment;
-import com.github.biorobaw.scs.gui.Drawer;
+import com.github.biorobaw.scs.gui.displays.scs_swing.DrawerSwing;
 import com.github.biorobaw.scs.gui.utils.Scaler;
 import com.github.biorobaw.scs.gui.utils.Window;
 
-public class CycleDataDrawer extends Drawer {
+public class CycleDataDrawer extends DrawerSwing {
 	
 	
-	Window<Float> localCoordinates = new Window<Float>(0f,0f,1f,1f);
+	Window localCoordinates = new Window(0f,0f,1f,1f);
 	Experiment e;
 	
 	final static int DEFAULT_WALL_THICKNESS = 2;
@@ -43,7 +43,7 @@ public class CycleDataDrawer extends Drawer {
 	}
 
 	@Override
-	public void draw(Graphics g, Window<Float> panelCoordinates) {
+	public void draw(Graphics g, Window panelCoordinates) {
 		if(!doDraw) return;
 		
 		Scaler s = new Scaler(localCoordinates, panelCoordinates, false);
@@ -65,9 +65,6 @@ public class CycleDataDrawer extends Drawer {
 		
 	}
 	
-	@Override
-	public void endEpisode() {
-	}
 
 	@Override
 	public void updateData() {

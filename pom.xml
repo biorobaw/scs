@@ -7,9 +7,17 @@
   <description>This project contains the 4th iteration of scs, where scs was simplified to enhance modularization and future mantainance of the project.</description>
   
   <properties>
-		<maven.compiler.source>10</maven.compiler.source>
-		<maven.compiler.target>10</maven.compiler.target>
+		<maven.compiler.source>14</maven.compiler.source>
+		<maven.compiler.target>14</maven.compiler.target>
   </properties>
+  
+  <repositories>
+<!--   	<repository>
+  		Used for screen recording
+  		<id>xuggle repo</id>
+  		<url>https://www.dcm4che.org/maven2/</url>
+  	</repository> -->
+  </repositories>
   
   <dependencies>
 	<dependency>
@@ -38,7 +46,49 @@
 	    <artifactId>commons-math3</artifactId>
 	    <version>3.0</version>
 	</dependency>
-
+	<dependency>
+		<!-- Used for screen recording -->
+  		<groupId>io.humble</groupId>
+	    <artifactId>humble-video-all</artifactId>
+	    <version>0.3.0</version>
+ 	</dependency>
+ 	<dependency>
+ 		<!-- used for scaling images in screen recording -->
+	    <groupId>org.imgscalr</groupId>
+	    <artifactId>imgscalr-lib</artifactId>
+	    <version>4.2</version>
+	</dependency>
 	
+	<dependency>
+		<!-- Added to remove warning related to screen recording -->
+	    <groupId>org.slf4j</groupId>
+	    <artifactId>slf4j-api</artifactId>
+	    <version>1.6.1</version>
+	</dependency>
+	<dependency>
+		<!-- Added to remove warning related to screen recording -->
+	    <groupId>org.slf4j</groupId>
+	    <artifactId>slf4j-simple</artifactId>
+	    <version>1.6.1</version>
+	</dependency>
+		
+  	<dependency>
+    	<!-- Added to support gui.displays.DisplayJavaFx  -->
+    	<groupId>org.openjfx</groupId>
+    	<artifactId>javafx-controls</artifactId>
+    	<version>15.0.1</version>
+  	</dependency>
+  	
+  	<dependency>
+  		<!-- Used for charts with java fx -->
+	    <groupId>de.gsi.chart</groupId>
+	    <artifactId>chartfx-chart</artifactId>
+    <version>11.1.5</version>
+  </dependency>
+  	
   </dependencies>
+  
+  
+	
+
 </project>

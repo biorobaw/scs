@@ -1,4 +1,4 @@
-package com.github.biorobaw.scs.gui.drawer;
+package com.github.biorobaw.scs.gui.displays.scs_swing.drawer;
 
 
 import java.awt.Color;
@@ -7,14 +7,15 @@ import java.util.ArrayList;
 
 import com.github.biorobaw.scs.experiment.Experiment;
 import com.github.biorobaw.scs.gui.Drawer;
+import com.github.biorobaw.scs.gui.displays.scs_swing.DrawerSwing;
 import com.github.biorobaw.scs.gui.utils.Scaler;
 import com.github.biorobaw.scs.gui.utils.Window;
 
 
-public class RuntimesDrawer extends Drawer {
+public class RuntimesDrawer extends DrawerSwing {
 
 
-	Window<Float> localCoordinates; 
+	Window localCoordinates; 
 	
 	float origin[] = {0.1f,0.1f};
 	float lengths[] = {0.8f, 0.8f};
@@ -31,14 +32,14 @@ public class RuntimesDrawer extends Drawer {
 
 	public RuntimesDrawer(int numEpisodes,int minY, int maxY) {
 		
-		localCoordinates = new Window<Float>(0f,0f,1f,1f);
+		localCoordinates = new Window(0f,0f,1f,1f);
 		this.numEpisodes = numEpisodes;
 		this.minY = minY;
 		this.maxY = maxY;
 	}
 
 	@Override
-	public void draw(Graphics g, Window<Float> panelCoordinates) {
+	public void draw(Graphics g, Window panelCoordinates) {
 		if(!doDraw) return;
 		
 		
@@ -76,12 +77,18 @@ public class RuntimesDrawer extends Drawer {
 
 	@Override
 	public void endEpisode() {
-		updateData();
-		nextValue = 0;
-		int nextID = runtimes.size();
-		float x = origin[0]+lengths[0]*(float)nextID/numEpisodes;
-		float y = origin[1];
-		runtimes.add(new float[] {x,y});
+		synchronized(this) {
+			// Drawing data cannot be accessed while rending
+			// Thus, use synchronized
+			
+			updateData();
+			nextValue = 0;
+			int nextID = runtimes.size();
+			float x = origin[0]+lengths[0]*(float)nextID/numEpisodes;
+			float y = origin[1];
+			runtimes.add(new float[] {x,y});
+		}
+			
 	}
 
 	long nextValue;

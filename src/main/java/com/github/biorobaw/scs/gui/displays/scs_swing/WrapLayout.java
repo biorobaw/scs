@@ -1,4 +1,4 @@
-package com.github.biorobaw.scs.gui;
+package com.github.biorobaw.scs.gui.displays.scs_swing;
 
 import java.awt.*;
 import javax.swing.JScrollPane;

@@ -38,7 +38,7 @@ public abstract class Subject implements Script{
 	final public void run() {
 		long next_wait_ms = runModel();
 		robot.clearEvents();		
-		simulator.schedule(next_wait_ms, this);
+		simulator.reschedule(next_wait_ms, this);
 	}
 	
 	/**

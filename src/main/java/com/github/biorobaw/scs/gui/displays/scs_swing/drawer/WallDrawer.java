@@ -1,4 +1,4 @@
-package com.github.biorobaw.scs.gui.drawer;
+package com.github.biorobaw.scs.gui.displays.scs_swing.drawer;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -9,13 +9,14 @@ import java.util.LinkedList;
 
 import com.github.biorobaw.scs.experiment.Experiment;
 import com.github.biorobaw.scs.gui.Drawer;
+import com.github.biorobaw.scs.gui.displays.scs_swing.DrawerSwing;
 import com.github.biorobaw.scs.gui.utils.Scaler;
 import com.github.biorobaw.scs.gui.utils.Window;
 import com.github.biorobaw.scs.simulation.object.maze_elements.walls.CylindricalWall;
 import com.github.biorobaw.scs.simulation.object.maze_elements.walls.Wall;
 
 
-public class WallDrawer extends Drawer {
+public class WallDrawer extends DrawerSwing {
 	
 	private LinkedList<Wall> walls = new LinkedList<>();
 	private LinkedList<CylindricalWall> cwalls = new LinkedList<>();
@@ -29,7 +30,7 @@ public class WallDrawer extends Drawer {
 	}
 
 	@Override
-	public void draw(Graphics g, Window<Float> panelCoordinates) {
+	public void draw(Graphics g, Window panelCoordinates) {
 		if(!doDraw) return;
 		
 		Scaler s = new Scaler(worldCoordinates, panelCoordinates, true);
@@ -55,27 +56,29 @@ public class WallDrawer extends Drawer {
 		g2d.setStroke(oldStroke);
 	}
 	
-	@Override
-	public void endEpisode() {
-		
-	}
 	
 	@Override
 	public void newEpisode() {
 		super.newEpisode();
 		
-		walls.clear();
+		var new_walls = new LinkedList<Wall>();
+		var new_cwalls = new LinkedList<CylindricalWall>();
 		var m = Experiment.get().maze;
 		for (var w : m.walls){
-			if(w instanceof Wall) walls.add(new Wall((Wall)w));
+			if(w instanceof Wall) new_walls.add(new Wall((Wall)w));
 			else if(w instanceof CylindricalWall) 
-				cwalls.add(new CylindricalWall((CylindricalWall)w));
+				new_cwalls.add(new CylindricalWall((CylindricalWall)w));
 		}
+		synchronized(this) {
+			walls = new_walls;
+			cwalls = new_cwalls;			
+		}
+
 		
 	}
 
 	@Override
-	public synchronized void updateData() {		
+	public void updateData() {		
 		
 	}
 	

@@ -7,9 +7,9 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 import com.github.biorobaw.scs.experiment.Experiment;
 import com.github.biorobaw.scs.experiment.Subject;
-import com.github.biorobaw.scs.gui.drawer.CycleDataDrawer;
-import com.github.biorobaw.scs.gui.drawer.RobotDrawer;
-import com.github.biorobaw.scs.gui.drawer.WallDrawer;
+import com.github.biorobaw.scs.gui.displays.scs_swing.drawer.CycleDataDrawer;
+import com.github.biorobaw.scs.gui.displays.scs_swing.drawer.RobotDrawer;
+import com.github.biorobaw.scs.gui.displays.scs_swing.drawer.WallDrawer;
 import com.github.biorobaw.scs.robot.commands.RotateT;
 import com.github.biorobaw.scs.robot.commands.SetSpeedVW;
 import com.github.biorobaw.scs.robot.commands.SetSpeedXYW;

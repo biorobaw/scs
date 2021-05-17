@@ -39,6 +39,10 @@ public abstract class AbstractSimulator {
 		if(xml.hasAttribute("simulation_speed"))
 			SimulationControl
 				.setSimulationSpeed(xml.getIntAttribute("simulation_speed"));
+		
+		// check if pause attribute was defined, if initialize pause accordingly
+		if(xml.hasAttribute("pause"))
+			SimulationControl.setPause(xml.getBooleanAttribute("pause"));
 	}
 	
 	/**
@@ -60,7 +64,7 @@ public abstract class AbstractSimulator {
 		}
 		
 		// display profiling results
-		if(Debug.profiling) System.out.println("Model time: " + Debug.toc(stamp));
+		if(Debug.profiling) System.out.println("Scripts time: " + Debug.toc(stamp));
 		
 		// update display and wait if paused
 		SimulationControl.waitIfPaused();  // check pause before simulating
@@ -86,10 +90,12 @@ public abstract class AbstractSimulator {
 	
 	/**
 	 * Function called by scripts to wait for next time (by rescheduling their execution)
+	 * If delta_ms = 0, the script is scheduled to the next simulation cycle by replacing
+	 * delta_ms by simulation_step_ms
 	 * @param delta_ms
 	 * @param script
 	 */
-	public void schedule(long delta_ms, Runnable script) {
+	public void reschedule(long delta_ms, Runnable script) {
 		if(delta_ms == 0)
 			scriptScheduler.squedule(script, getTime() + simulation_step_ms);
 		else if(delta_ms > 0) 
@@ -97,14 +103,16 @@ public abstract class AbstractSimulator {
 	}
 	
 	/**
-	 * Schedule a script for execution.
+	 * Schedule a script for execution during the simulation. 
+	 * If this is an initial script, use {@link AbstractSimulator#addInitialScript(Script)} instead. 
 	 * @param delta_ms  specifies in how many simulated ms will the script execute
 	 * @param priority	specifies the priority of the script
 	 * @param script
 	 */
 	public void addScript(Runnable script, long delta_ms, int priority) {
+		System.out.println("scheduling: " + delta_ms + " "  + script);
 		scriptScheduler.setPriority(script, priority);
-		schedule(delta_ms,script);
+		reschedule(delta_ms,script);
 	}
 	
 	/**
@@ -119,7 +127,7 @@ public abstract class AbstractSimulator {
 	 * @param scripts The set of scripts to be executed
 	 */
 	public void addInitialScripts(Collection<? extends Script> scripts) {
-		for(var s : scripts) addScript(s, s.getInitialSchedule(), s.getPriority());
+		for(var s : scripts) addInitialScript(s);
 	}
 	
 	/**
@@ -127,7 +135,9 @@ public abstract class AbstractSimulator {
 	 * @param script The script to be executed
 	 */
 	public void addInitialScript(Script s) {
-		addScript(s, s.getInitialSchedule(), s.getPriority());
+		scriptScheduler.setPriority(s, s.getPriority());
+		var time_ms = s.getInitialSchedule();
+		if(time_ms >= 0)  scriptScheduler.squedule(s, time_ms);
 	}
 	
 	/**
@@ -203,5 +213,8 @@ public abstract class AbstractSimulator {
 	 */
 	public abstract long getTime();
 	
+	public void waitIfPaused() {
+		SimulationControl.waitIfPaused();
+	}
 	
 }

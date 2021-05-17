@@ -1,15 +1,16 @@
-package com.github.biorobaw.scs.gui.drawer;
+package com.github.biorobaw.scs.gui.displays.scs_swing.drawer;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.LinkedList;
 
 import com.github.biorobaw.scs.gui.Drawer;
+import com.github.biorobaw.scs.gui.displays.scs_swing.DrawerSwing;
 import com.github.biorobaw.scs.gui.utils.Scaler;
 import com.github.biorobaw.scs.gui.utils.Window;
 import com.github.biorobaw.scs.simulation.object.RobotProxy;
 
-public class PathDrawer extends Drawer {
+public class PathDrawer extends DrawerSwing {
 
 	private LinkedList<float[]> poses;
 	private LinkedList<float[]> newPoses = new LinkedList<>();
@@ -27,7 +28,7 @@ public class PathDrawer extends Drawer {
 	}
 
 	@Override
-	public void draw(Graphics g, Window<Float> panelCoordinates) {
+	public void draw(Graphics g, Window panelCoordinates) {
 		if(!doDraw) return;
 
 				Scaler s = new Scaler(worldCoordinates, panelCoordinates, true);
@@ -55,7 +56,12 @@ public class PathDrawer extends Drawer {
 		poses = new LinkedList<>();
 		newPoses = new LinkedList<>();
 //		currentDrawLength = 0;
-		if(drawOldPaths) oldPaths.add(poses);
+		if(drawOldPaths) {
+			synchronized(this) {
+				// oldPaths is a variable that cannot be modified while rendering
+				oldPaths.add(poses);				
+			}
+		}
 		
 	}
 

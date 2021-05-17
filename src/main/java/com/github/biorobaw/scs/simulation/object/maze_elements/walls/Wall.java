@@ -1,5 +1,7 @@
 package com.github.biorobaw.scs.simulation.object.maze_elements.walls;
 
+import java.text.DecimalFormat;
+
 import com.github.biorobaw.scs.utils.files.XML;
 
 public class Wall extends AbstractWall{
@@ -9,6 +11,8 @@ public class Wall extends AbstractWall{
 	public float dir_x, dir_y, dir_normal;
 	public float length;
 	public float signed_distance;
+	
+	public final static DecimalFormat format = new DecimalFormat("0.###");
 	
 	public Wall(float x1, float y1, float x2, float y2,float width, float height) {
 		this.x1=x1;
@@ -52,6 +56,13 @@ public class Wall extends AbstractWall{
 	
 	public Wall(Wall w) {
 		this(w.x1, w.y1, w.x2, w.y2, w.width, w.height);
+	}
+	
+	@Override
+	public String toString() {
+		return "id: " + get_guid() + " - x1,x2,y1,y2: " 
+				+ format.format(x1) + "," + format.format(y1) + ","
+				+ format.format(x2) + "," + format.format(y2);
 	}
 	
 }

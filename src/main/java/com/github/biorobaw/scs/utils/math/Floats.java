@@ -591,8 +591,68 @@ public class Floats {
 		return res;
 	}
 	
+	/**
+	 * Converts the array to a comma separated string
+	 * @param data
+	 * @return
+	 */
+	static public String toString(float[] data) {
+		var res = "";
+		if(data.length > 0) res += data[0];
+		for(int i=1; i<data.length; i++) res+= ", " + data[i];
+		return res;
+	}
+	
+	/**
+	 * Sets all elements of the given array equal to the given constant
+	 * @param value
+	 * @param outputa copy of the the output array pointer
+	 * @return
+	 */
+	static public float[] constant(float value, float[] output) {
+		for(int i=0; i< output.length; i++) output[i] = value;
+		return output;
+	}
+	
+	/**
+	 * Creates a an array of the given length, with all its elements equal to the given value
+	 * @param value
+	 * @param length
+	 * @return
+	 */
+	static public float[] constant(float value, int length) {
+		return constant(value, new float[length]);
+	}
+	
 
+	/**
+	 * Creates a discrete uniform distribution of the given length
+	 * @param length
+	 * @return
+	 */
+	static public float[] uniform(int length) {
+		return constant(1f/length, length);
+	}
 	
-	
+	/**
+	 * Sets all elements of the output array to 1/output.length
+	 * @param output a copy of the the output array pointer
+	 * @return
+	 */
+	static public float[] uniform(float[] output) {
+		return constant(1f/output.length, output);
+	}
+
+	/**
+	 * Calculates the entropy of the input normalized by log(base);
+	 * @param distribution A probability distribution (we assume it is already normalized).
+	 * @param base
+	 * @return
+	 */
+	static public float entropy(float[] distribution, float base) {
+		double sum = 0;
+		for(var p : distribution) if(p != 0) sum+= p*Math.log(p);
+		return -(float)(sum / Math.log(base));
+	}
 	
 }

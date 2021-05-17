@@ -1,22 +1,23 @@
-package com.github.biorobaw.scs.gui.drawer;
+package com.github.biorobaw.scs.gui.displays.scs_swing.drawer;
 
 import java.awt.Color;
 import java.awt.Graphics;
 
 import com.github.biorobaw.scs.gui.Drawer;
+import com.github.biorobaw.scs.gui.displays.scs_swing.DrawerSwing;
 import com.github.biorobaw.scs.gui.utils.Scaler;
 import com.github.biorobaw.scs.gui.utils.Window;
 
-public class GridDrawer extends Drawer {
+public class GridDrawer extends DrawerSwing {
 	
 	float grid_width, grid_height;
 
 	public GridDrawer(float min_x, float min_y, float max_x, float max_y, float grid_width, float grid_height){
-		worldCoordinates = new Window<Float>(min_x, min_y, max_x - min_x, max_y - min_y);
+		worldCoordinates = new Window(min_x, min_y, max_x - min_x, max_y - min_y);
 	}
 
 	@Override
-	public void draw(Graphics g, Window<Float> panelCoordinates) {
+	public void draw(Graphics g, Window panelCoordinates) {
 		if(!doDraw) return;
 		
 		Scaler s = new Scaler(worldCoordinates, panelCoordinates, true);
@@ -34,10 +35,6 @@ public class GridDrawer extends Drawer {
 		}	
 	}
 	
-	@Override
-	public void endEpisode() {
-		
-	}
 
 	@Override
 	public void updateData() {

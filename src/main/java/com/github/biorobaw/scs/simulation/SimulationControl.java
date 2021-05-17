@@ -21,6 +21,10 @@ public class SimulationControl {
 	static private Semaphore waitSemaphore = new Semaphore(0);
 	static private int stepsAvailable = 0;
 	static private boolean paused = false;
+	static private boolean exited = false;
+	
+	// mutex to lock / unlock simulation from gui, gui sometimes needs to lock simulation to get data.
+	static private Semaphore control = new Semaphore(0);
 	
 	public static int[] sleepValues = new int[] {5000,3000,2000,1000,500,400,300,100,30,15,8,5,3,2,1,0};
 	private static int simulationSpeed = sleepValues.length-1;	
@@ -63,7 +67,11 @@ public class SimulationControl {
 	static public void waitIfPaused() {
 		
 		try {
-			if(!consumeStep()) waitSemaphore.acquire(); //if cant consume wait until step is produced
+			if(!consumeStep()) {
+				control.release();
+				waitSemaphore.acquire(); //if cant consume wait until step is produced
+				control.acquire();
+			}
 			else {
 				int sleep = sleepValues[getSimulationSpeed()];
 				long now = System.currentTimeMillis();
@@ -98,8 +106,20 @@ public class SimulationControl {
 		return old_value;
 	}
 	
+		
+	static public void pauseAndGetControl() {
+		if(exited) return;
+		setPause(true);
+		control.acquireUninterruptibly();
+	}
+	
+	static public void releaseControl() {
+		control.release();
+		setPause(false);
+	}
+	
 	static private void asyncSetPause(boolean new_value) {
-		//toggle
+		// if new value == old value, dont do anything
 		if(new_value == paused) return;
 		
 		paused=new_value;
@@ -117,6 +137,15 @@ public class SimulationControl {
 		for(var l : pauseStateListeners) l.apply(paused);
 	}
 	
+	static synchronized public boolean getPause() {
+		return paused;
+	}
+	
+	public static void exit() {
+		
+		exited = true;
+		control.release();
+	}
 	
 	/**
 	 * Sets the simulation speed

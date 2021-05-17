@@ -42,7 +42,7 @@ public abstract class SimulatedObject {
 	 * 
 	 * @return Returns the position of the object in the simulator
 	 */
-	final public Vector3D getPosition() {
+	public Vector3D getPosition() {
 		return simulator.getObjectPosition(guid);
 	}
 	
@@ -50,7 +50,7 @@ public abstract class SimulatedObject {
 	 * Sets the position of the object in the simulator
 	 * @param position The new position of the object
 	 */
-	final public void setPosition(Vector3D position) {
+	public void setPosition(Vector3D position) {
 		simulator.setObjectPosition(guid, position);
 	}
 	
@@ -58,7 +58,7 @@ public abstract class SimulatedObject {
 	 * 
 	 * @return Returns the orientation of the object
 	 */
-	final public Rotation getOrientation() {
+	public Rotation getOrientation() {
 		return simulator.getObjectOrientation(guid);
 	}
 	
@@ -66,7 +66,7 @@ public abstract class SimulatedObject {
 	 * Sets the orientation of the object
 	 * @param orientation The new orientation
 	 */
-	final public void setOrientation(Rotation orientation) {
+	public void setOrientation(Rotation orientation) {
 		
 	}
 	
@@ -74,7 +74,7 @@ public abstract class SimulatedObject {
 	 * Sets the orientation of the object assuming 2D coordinates.
 	 * @param angle The new orientation of the object
 	 */
-	final public void setOrientation2D(float angle) {
+	public void setOrientation2D(float angle) {
 		var z = AbstractSimulator.zVector;
 		simulator.setObjectOrientation(guid, new Rotation(z, angle));
 	}

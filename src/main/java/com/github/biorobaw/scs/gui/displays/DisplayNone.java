@@ -10,19 +10,15 @@ import com.github.biorobaw.scs.utils.files.XML;
  * @author martin
  *
  */
-public class NoDisplay extends Display {
+public class DisplayNone extends Display {
 
-	public NoDisplay(XML xml) {
+	public DisplayNone(XML xml) {
 		super(xml);
 	}
 	
 	@Override
 	public void log(String s) {
 		System.out.println(s);		
-	}
-
-	@Override
-	public void repaint() {
 	}
 
 	@Override
@@ -34,19 +30,12 @@ public class NoDisplay extends Display {
 	public void addDrawer(String panelID, String drawerID, Drawer d) {
 	}
 
-	@Override
-	public void addDrawer(String panelID, String drawerID, Drawer d, int pos) {
-		
-	}
+
 
 	@Override
 	public void newEpisode() {
 	}
 
-	@Override
-	public void addKeyAction(int key, Runnable action) {
-		
-	}
 	
 	@Override
 	public void updateData() {
@@ -54,10 +43,19 @@ public class NoDisplay extends Display {
 	}
 
 	@Override
-	public void sync(long cycle) {
+	public void signalPanelFinishedRendering(long cycle) {
 		
 	}
 
+	@Override
+	public void repaint() {
+		
+	}
+
+	@Override
+	protected void recordRenderCycle() {
+		
+	}
 
 	
 

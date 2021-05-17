@@ -1,7 +1,8 @@
 package com.github.biorobaw.scs.gui;
 
-import java.awt.Graphics;
 
+import com.github.biorobaw.scs.gui.DrawPanel.GuiPanel;
+import com.github.biorobaw.scs.gui.displays.scs_swing.DrawerSwing;
 import com.github.biorobaw.scs.gui.utils.Window;
 
 /**
@@ -13,14 +14,7 @@ public abstract class Drawer {
 	
 	public boolean doDraw = true;
 	public String drawerName;
-	public Window<Float> worldCoordinates;
-	
-	/**
-	 * Draw the relevant information in the specified graphics.
-	 * @param g The graphics element to paint with
-	 * @param s The scaling object. It maps the universe coordinates and dimensions to the container coordinate frame.
-	 */
-	abstract public void  draw(Graphics g, Window<Float> panelCoordinates);
+	protected Window worldCoordinates;
 
 	/**
 	 * Signals end of episode
@@ -43,19 +37,19 @@ public abstract class Drawer {
 	public void newTrial() {};
 	
 	
-	
 	/**
-	 * Updates data to be drawn in next cycle
-	 * Drawers which draw information of only one cycle should use this function
-	 * Drawers which draw info of multiple cycles should use appendData instead
-	 * Update data only gets called when last cycle has been rendered, if not synchronizing it may skip
+	 * Updates data to be drawn in next render cycle.
+	 * Note that multiple simulation cycles can be executed before next render cycle.
+	 * If drawer needs data from all simulation cycles, use function {@link Drawer#appendData()} to append the data 
+	 * to a temporal buffer and use this function to synchronize it with the data being drawn.
 	 */
-	abstract public void updateData();
+	abstract  public  void updateData();
 	
 	/**
 	 * Appends data to be drawn
-	 * Add's data to the list of data that that will be drawn (Example ratpath)
-	 * useful for drawers that require full history of a variable (example ratpath)
+	 * Add's data to the list of data that that will be drawn.
+	 * Ueful for drawers that require full history of a variable (example ratpath)
+	 * @see {@link Drawer#updateData()} for more info
 	 * 
 	 */
 	public void appendData(){
@@ -81,9 +75,8 @@ public abstract class Drawer {
 		this.drawerName = name;
 	}
 	
-	public void setWorldCoordinates(Window<Float> w) {
+	public void setWorldCoordinates(Window w) {
 		this.worldCoordinates = w;
 	}
-	
 
 }

@@ -29,6 +29,6 @@ public abstract class CycleTask implements Script {
 	@Override
 	final public void run() {
 		var delta_ms = perform();
-		simulator.schedule(delta_ms, this);
+		simulator.reschedule(delta_ms, this);
 	}
 }
