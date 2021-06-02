@@ -72,7 +72,7 @@ public abstract class Plot extends DrawerFX {
 
 	
 	
-	protected abstract class PlotScene extends DrawerScene {
+	public abstract class PlotScene extends DrawerScene {
 
 		protected float sminx = plot_to_view.scaleX(minx);
 		protected float smaxx = plot_to_view.scaleX(maxx);
