@@ -85,6 +85,14 @@
 	    <artifactId>chartfx-chart</artifactId>
     <version>11.1.5</version>
   </dependency>
+
+
+	  <dependency>
+		  <!-- geometry library for finding distances intersections and so on -->
+		  <groupId>org.locationtech.jts</groupId>
+		  <artifactId>jts-core</artifactId>
+		  <version>1.18.1</version>
+	  </dependency>
   	
   </dependencies>
   

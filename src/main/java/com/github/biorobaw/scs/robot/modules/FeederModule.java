@@ -121,7 +121,8 @@ public class FeederModule extends RobotModule {
 	 * @return	Boolean representing whether the robot can eat
 	 */
 	protected boolean canEat(Feeder f, Vector3D pos) {
-		return f.hasFood && pos.distanceSq(f.pos) < max_feeding_distance_sq;
+		var in_reach = f.hasFood && pos.distanceSq(f.pos) < max_feeding_distance_sq;
+		return in_reach && Experiment.get().getMaze().segmentInFreeSpace(pos, f.pos);
 	}
 	
 	@Override

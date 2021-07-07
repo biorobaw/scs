@@ -7,7 +7,7 @@ import com.github.biorobaw.scs.simulation.object.maze_elements.Feeder;
 import com.github.biorobaw.scs.simulation.object.maze_elements.walls.AbstractWall;
 import com.github.biorobaw.scs.simulation.object.maze_elements.walls.Wall;
 import com.github.biorobaw.scs.utils.files.XML;
-
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 /**
  * Defines an empty maze that allows adding walls and feeders.
  * @author bucef
@@ -70,6 +70,11 @@ public class Maze {
 	public void removeFeeder(Feeder feeder) {
 		feeders.remove(feeder.feeder_id);
 		feeder.removeFromSimulation();
+	}
+
+	public boolean segmentInFreeSpace(Vector3D pos1, Vector3D pos2){
+		for(var w : walls) if(w.intersectsSegment(pos1, pos2)) return false;
+		return true ;
 	}
 	
 }

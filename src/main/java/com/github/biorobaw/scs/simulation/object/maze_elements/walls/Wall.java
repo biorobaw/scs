@@ -3,6 +3,9 @@ package com.github.biorobaw.scs.simulation.object.maze_elements.walls;
 import java.text.DecimalFormat;
 
 import com.github.biorobaw.scs.utils.files.XML;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
 
 public class Wall extends AbstractWall{
 
@@ -64,5 +67,22 @@ public class Wall extends AbstractWall{
 				+ format.format(x1) + "," + format.format(y1) + ","
 				+ format.format(x2) + "," + format.format(y2);
 	}
-	
+
+	@Override
+	public boolean intersectsSegment(Vector3D pos1, Vector3D pos2) {
+
+		var factory = new GeometryFactory();
+		var wall_line = factory.createLineString(new Coordinate[] {
+				new Coordinate(x1, y1),
+				new Coordinate(x2, y2)
+		});
+
+		var segment = factory.createLineString(new Coordinate[] {
+				new Coordinate(pos1.getX(), pos1.getY()),
+				new Coordinate(pos2.getX(), pos2.getY())
+		});
+
+		return segment.intersects(wall_line);
+
+	}
 }

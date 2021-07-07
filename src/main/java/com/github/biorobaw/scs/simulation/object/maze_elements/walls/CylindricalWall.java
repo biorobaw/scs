@@ -1,6 +1,7 @@
 package com.github.biorobaw.scs.simulation.object.maze_elements.walls;
 
 import com.github.biorobaw.scs.utils.files.XML;
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 public class CylindricalWall extends AbstractWall {
 
@@ -34,5 +35,11 @@ public class CylindricalWall extends AbstractWall {
 		w = cw.w;
 		h = cw.h;
 	}
-	
+
+	@Override
+	public boolean intersectsSegment(Vector3D pos1, Vector3D pos2) {
+		System.err.println("Method not yet implemented: CyclindricalWall#intersectSegment");
+		System.exit(-1);
+		return false;
+	}
 }
