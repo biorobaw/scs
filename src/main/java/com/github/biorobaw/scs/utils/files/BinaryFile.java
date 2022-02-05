@@ -349,7 +349,24 @@ public class BinaryFile {
 		for(var datum : array) data.putFloat(datum); //store data
 		write(o, data.array());
 	}
-	
+
+	public static void writeBinaryMatrix(float[][] matrix,int rows,int cols,OutputStream out, boolean isLittleEndian){
+		int totalSize =  2*Integer.BYTES + rows*cols*Float.BYTES; //in bits
+
+		ByteBuffer data = ByteBuffer.allocate(totalSize);
+		if(isLittleEndian) data.order(ByteOrder.LITTLE_ENDIAN);
+		data.putInt(rows);
+		data.putInt(cols);
+		for(float[] r : matrix)
+			for(float v : r)
+				data.putFloat(v);
+
+//		OutputStream out = openFileToWrite(filename);
+		write(out, data.array());
+//		close(out);
+
+
+	}
 
 
 }
