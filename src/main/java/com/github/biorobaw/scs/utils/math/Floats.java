@@ -606,7 +606,7 @@ public class Floats {
 	/**
 	 * Sets all elements of the given array equal to the given constant
 	 * @param value
-	 * @param outputa copy of the the output array pointer
+	 * @param output a copy of the the output array pointer
 	 * @return
 	 */
 	static public float[] constant(float value, float[] output) {
