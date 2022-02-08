@@ -658,7 +658,7 @@ public class Floats {
 	/**
 	 * Negate the values in the array.
 	 * @param input
-	 * @return new array containing the copy
+	 * @return new array containing the negated copy
 	 */
 	static public float[] negate(float[] input) {
 		var output = new float[input.length];
@@ -668,9 +668,9 @@ public class Floats {
 	}
 
 	/**
-	 * Negate the values in the array.
+	 * Negates the values in the array in place.
 	 * @param input
-	 * @return new array containing the copy
+	 * @return array containing the negated copy
 	 */
 	static public float[] negate(float[] input, float[] output) {
 		for(int i=0; i<input.length; i++)
