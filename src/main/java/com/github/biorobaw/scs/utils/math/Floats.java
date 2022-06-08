@@ -60,8 +60,39 @@ public class Floats {
 			to[i] = from[i];
 		return to;
 	}
-	
-	
+
+
+	/**
+	 * Create new array concatenating left and right arrays
+	 * @param left  array of elements
+	 * @param right array of elements
+	 * @result pointer to param 'to'
+	 */
+	static public float[] concat(float[] left, float[] right) {
+		var res = new float[left.length + right.length];
+		for(int i=0; i<left.length; i++)
+			res[i] = left[i];
+		for(int i=0; i<right.length; i++)
+			res[i+left.length] = right[i];
+		return res;
+	}
+
+	/**
+	 * Create a new array concatenating left array with right element
+	 * @param left  array of elements
+	 * @param right element
+	 * @result pointer to param 'to'
+	 */
+	static public float[] concat(float[] left, float right) {
+		var res = new float[left.length + 1];
+		for(int i=0; i<left.length; i++)
+			res[i] = left[i];
+		res[left.length] = right;
+		return res;
+	}
+
+
+
 	/**
 	 * Applies the exponential function to all elements in the array.
 	 * @param data
@@ -73,7 +104,8 @@ public class Floats {
 			res[i] = (float)Math.exp(data[i]);
 		return res;
 	}
-	
+
+
 	/**
 	 * Applies the exp function to all elements in the array.
 	 * @param data
@@ -606,7 +638,7 @@ public class Floats {
 	/**
 	 * Sets all elements of the given array equal to the given constant
 	 * @param value
-	 * @param outputa copy of the the output array pointer
+	 * @param output copy of the output array pointer
 	 * @return
 	 */
 	static public float[] constant(float value, float[] output) {
@@ -677,5 +709,9 @@ public class Floats {
 		for(int i=0; i<input.length; i++)
 			output[i] = -input[i];
 		return output;
+	}
+
+	public interface GetArray {
+		public float[] get();
 	}
 }

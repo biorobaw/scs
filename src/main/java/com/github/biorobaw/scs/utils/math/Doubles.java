@@ -71,7 +71,36 @@ public class Doubles {
 			to[i] = from[i];
 		return to;
 	}
-	
+
+	/**
+	 * Create new array concatenating left and right arrays
+	 * @param left  array of elements
+	 * @param right array of elements
+	 * @result pointer to param 'to'
+	 */
+	static public double[] concat(double[] left, double[] right) {
+		var res = new double[left.length + right.length];
+		for(int i=0; i<left.length; i++)
+			res[i] = left[i];
+		for(int i=0; i<right.length; i++)
+			res[i+left.length] = right[i];
+		return res;
+	}
+
+	/**
+	 * Create a new array concatenating left array with right element
+	 * @param left  array of elements
+	 * @param right element
+	 * @result pointer to param 'to'
+	 */
+	static public double[] concat(double[] left, double right) {
+		var res = new double[left.length + 1];
+		for(int i=0; i<left.length; i++)
+			res[i] = left[i];
+		res[left.length] = right;
+		return res;
+	}
+
 	
 	/**
 	 * Applies the exponential function to all elements in the array.
@@ -592,6 +621,10 @@ public class Doubles {
 		if(data.length > 0) res += data[0];
 		for(int i=1; i<data.length; i++) res+= ", " + data[i];
 		return res;
+	}
+
+	public interface GetArray {
+		public double[] get();
 	}
 	
 }

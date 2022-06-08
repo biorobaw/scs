@@ -212,10 +212,42 @@ public class BinaryFile {
 			System.exit(-1);
 		}
 		
-		
-		
 		return null;
 	}
+
+	public static float[] readFloats(String filename, int num_floats, int skip, boolean isLittleEndian){
+		DataInputStream in = read( filename);
+
+		try {
+			// get order
+			var order = isLittleEndian ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN;
+
+
+			// prepare buffer to read int
+			if(skip > 0) in.read(ByteBuffer.wrap(new byte[Float.BYTES*skip]).array());
+
+			// prepare buffer to read floats
+			ByteBuffer float_buffer = ByteBuffer.wrap(new byte[Float.BYTES*num_floats]).order(order);
+			in.read(float_buffer.array());
+
+
+			// read the floats
+			float[] vector = new float[num_floats];
+			for(int i  =0;i<num_floats;i++)
+				vector[i] = float_buffer.getFloat();
+
+			return vector;
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Unable to load file: "+filename);
+			System.exit(-1);
+		}
+
+		return null;
+	}
+
 
 	
 	

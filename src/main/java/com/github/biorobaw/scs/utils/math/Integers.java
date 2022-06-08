@@ -106,6 +106,36 @@ public class Integers {
 			to[i] = (int)from[i];
 		return to;
 	}
+
+	/**
+	 * Create new array concatenating left and right arrays
+	 * @param left  array of elements
+	 * @param right array of elements
+	 * @result pointer to param 'to'
+	 */
+	static public int[] concat(int[] left, int[] right) {
+		var res = new int[left.length + right.length];
+		for(int i=0; i<left.length; i++)
+			res[i] = left[i];
+		for(int i=0; i<right.length; i++)
+			res[i+left.length] = right[i];
+		return res;
+	}
+
+	/**
+	 * Create a new array concatenating left array with right element
+	 * @param left  array of elements
+	 * @param right element
+	 * @result pointer to param 'to'
+	 */
+	static public int[] concat(int[] left, int right) {
+		var res = new int[left.length + 1];
+		for(int i=0; i<left.length; i++)
+			res[i] = left[i];
+		res[left.length] = right;
+		return res;
+	}
+
 	
 	/**
 	 * Gets all elements indicated by the ids
@@ -130,4 +160,30 @@ public class Integers {
 		for(int i=0; i<ids.length; i++) res[i] = from[ids[i]];
 		return res;
 	}
+
+	public interface GetArray {
+		public int[] get();
+	}
+
+	/**
+	 * Sets all elements of the given array equal to the given constant
+	 * @param value
+	 * @param output copy of the output array pointer
+	 * @return
+	 */
+	static public int[] constant(int value, int[] output) {
+		for(int i=0; i< output.length; i++) output[i] = value;
+		return output;
+	}
+
+	/**
+	 * Creates a an array of the given length, with all its elements equal to the given value
+	 * @param value
+	 * @param length
+	 * @return
+	 */
+	static public int[] constant(int value, int length) {
+		return constant(value, new int[length]);
+	}
+
 }
