@@ -113,6 +113,24 @@ public class BinaryFile {
 		
 		
 	}
+
+
+	public static void saveBinaryVector(int[] vector, String filename, boolean isLittleEndian){
+		int totalSize =  Integer.BYTES + vector.length*Integer.BYTES; //in bits
+
+
+		ByteBuffer data = ByteBuffer.allocate(totalSize);
+		if(isLittleEndian) data.order(ByteOrder.LITTLE_ENDIAN);
+		data.putInt(vector.length);
+		for(int value : vector)
+			data.putInt(value);
+
+		OutputStream out = openFileToWrite(filename);
+		write(out, data.array());
+		close(out);
+
+	}
+
 	
 //	public static void saveBinaryMatrix(Map<Entry,Float> matrix,int rows,int cols,String filename, boolean isLittleEndian){
 //		int totalSize =  2*Integer.SIZE + rows*cols*Float.SIZE; //in bits

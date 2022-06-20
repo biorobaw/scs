@@ -186,4 +186,23 @@ public class Integers {
 		return constant(value, new int[length]);
 	}
 
+	static public long sum(int[] data){
+		long res = 0;
+		for(var d: data) res+=d;
+		return res;
+	}
+
+	/**
+	 * Add all elements in the range (includes start position and excludes end)
+	 * @param data   data to be added
+	 * @param start  start index (inclusive)
+	 * @param end    end index (exclusive)
+	 * @return
+	 */
+	static public long sum(int[] data, int start, int end){
+		long res = 0;
+		for(var d: data) res+=d;
+		return res;
+	}
+
 }

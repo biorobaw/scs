@@ -714,4 +714,11 @@ public class Floats {
 	public interface GetArray {
 		public float[] get();
 	}
+
+	public float dot(float left[], float right[]){
+		float res = 0;
+		for(int i=0; i<left.length; i++) res+=left[i]*right[i];
+		return res;
+	}
+
 }
