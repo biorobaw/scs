@@ -201,7 +201,7 @@ public class Integers {
 	 */
 	static public long sum(int[] data, int start, int end){
 		long res = 0;
-		for(var d: data) res+=d;
+		for(int i=start; i<end; i++) res+=data[i];
 		return res;
 	}
 
