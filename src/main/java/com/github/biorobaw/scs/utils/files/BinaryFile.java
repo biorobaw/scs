@@ -233,9 +233,9 @@ public class BinaryFile {
 		return null;
 	}
 
-	public static float[] readFloats(String filename, int num_floats, int skip, boolean isLittleEndian){
-		DataInputStream in = read( filename);
 
+
+	public static float[] readFloats(DataInputStream in, int num_floats, int skip, boolean isLittleEndian){
 		try {
 			// get order
 			var order = isLittleEndian ? ByteOrder.LITTLE_ENDIAN : ByteOrder.BIG_ENDIAN;
@@ -259,14 +259,16 @@ public class BinaryFile {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.out.println("Unable to load file: "+filename);
+			System.out.println("Unable to read floats from: "+in.toString());
 			System.exit(-1);
 		}
 
 		return null;
 	}
 
-
+	public static float[] readFloats(String filename, int num_floats, int skip, boolean isLittleEndian){
+		return readFloats(read( filename), num_floats, skip, isLittleEndian);
+	}
 	
 	
 	
